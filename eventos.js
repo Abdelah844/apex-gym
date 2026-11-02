@@ -220,6 +220,13 @@ const ACCIONES = {
     const a = estado.activa;
     const e = a.ejercicios[ei];
     const s = e.series[si];
+    if (!s.hecha) {
+      for (const campo of ["peso", "reps"]) {
+        const inp = document.querySelector('input[data-in="' + campo + '"][data-e="' + ei + '"][data-s="' + si + '"]');
+        const v = inp ? (campo === "peso" ? parseFloat(inp.value) : parseInt(inp.value)) : NaN;
+        if (inp && !isNaN(v) && v !== s[campo]) cambiarSerie(e, si, campo, v);
+      }
+    }
     sesionRecuperada = false;
     if (s.hecha) {                         // desmarcar: vuelve a quedar pendiente
       copiaSesion(); s.hecha = false; s.prVivo = false; e.foco = si; a.actual = ei;
@@ -372,6 +379,12 @@ const ACCIONES = {
     if (series.length <= 1) return;
     copiaSesion(); series.pop(); guardar(); pintarSesion(); toast("−1 serie (ahora " + series.length + ")");
   },
+  "fav-sesion": function (id) {
+    const i = estado.favoritos.indexOf(id);
+    if (i >= 0) estado.favoritos.splice(i, 1); else estado.favoritos.push(id);
+    guardar(); pintarSesion();
+    toast(i >= 0 ? "Quitado de favoritos" : "★ Añadido a favoritos", i >= 0 ? "" : "ok");
+  },
   "cerrar-apix": function () { $("apixPop").hidden = true; },
   "mover-ej": function (ei, dir) {
     copiaSesion();
@@ -398,6 +411,12 @@ const ACCIONES = {
     guardar(); pintarSesion();
   },
   "terminar": function () {
+    if (!estado.activa) return;
+    if (!estado.activa.ejercicios.some(function (x) { return x.series.some(function (y) { return y.hecha; }); })) { toast("Completa al menos una serie para poder terminar"); return; }
+    hojaTerminar();
+  },
+  "terminar-si": function () {
+    cerrarHoja();
     pararDescanso();
     const semana = lunesDe(hoy());
     const rachaAntes = (sesionesPorSemana()[semana] || 0) >= minimoSemanal();
@@ -647,7 +666,14 @@ document.addEventListener("change", function (ev) {
     const e = estado.activa.ejercicios[d.e];
     if (d.in === "rpe") e.series[d.s].rpe = t.value ? parseFloat(t.value) : null;
     else cambiarSerie(e, parseInt(d.s), d.in, d.in === "peso" ? parseFloat(t.value) : parseInt(t.value));
-    guardar(); pintarSesion();
+    guardar();
+    // Actualiza solo los números de las series siguientes, sin redibujar la pantalla
+    e.series.forEach(function (x, j) {
+      for (const campo of ["peso", "reps"]) {
+        const inp = document.querySelector('input[data-in="' + campo + '"][data-e="' + d.e + '"][data-s="' + j + '"]');
+        if (inp && inp !== t) inp.value = x[campo];
+      }
+    });
   }
   if (d.in === "gim") {
     const id = d.e;
@@ -724,11 +750,11 @@ document.addEventListener("keydown", function (ev) {
   }
 });
 
-// El cronómetro de la sesión se actualiza cada 20 segundos
+// El cronómetro del entreno se actualiza cada segundo
 setInterval(function () {
   const c = $("cronometro");
-  if (c && estado && estado.activa) c.textContent = Math.round((Date.now() - estado.activa.inicio) / 60000);
-}, 20000);
+  if (c && estado && estado.activa) c.textContent = tiempoEntreno();
+}, 1000);
 
 // Si el último guardado falló, el navegador avisa antes de cerrar la página
 window.addEventListener("beforeunload", function (ev) {

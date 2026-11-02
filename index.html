@@ -198,6 +198,8 @@ ol.pasos, ul.pasos { margin: 0; padding-left: 20px; display: flex; flex-directio
 /* Entreno en curso: un ejercicio a la vez */
 .progreso-entreno { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 6px 0 10px; margin-bottom: 4px; display: flex; flex-direction: column; gap: 7px; }
 .progreso-entreno .bar { height: 8px; }
+.cronometro { font-family: var(--display); font-size: 1.35rem; font-weight: 700; color: var(--accent); }
+.cronometro b { color: var(--fg); }
 .chips.saltos .chip.hecho { color: var(--good); }
 .foto-mini { width: 56px; height: 56px; border-radius: 12px; overflow: hidden; flex: none; padding: 0; }
 .foto-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -310,6 +312,30 @@ body.destello-fin::after { content: ""; position: fixed; inset: 0; z-index: 28; 
 .series-botones { margin-top: 10px; }
 .ayuda-tipos { margin-top: 6px; }
 @media (prefers-reduced-motion: reduce) { #apixPop.entra, #apixPop .apix, .apix-resumen .apix, .confeti i, body.destello-fin::after { animation: none !important; } .confeti { display: none; } }
+
+/* Tabla de series del entreno */
+.tabla-series { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.ts-cab, .ts-fila { display: grid; grid-template-columns: 34px minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, .85fr) 46px; gap: 6px; align-items: center; }
+.ts-cab { font-size: .68rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; text-align: center; padding: 0 6px; }
+.ts-fila { background: transparent; border-radius: 14px; padding: 6px; }
+.ts-fila .n { width: 34px; height: 34px; border-radius: 9px; background: var(--surface2); display: grid; place-items: center; font-weight: 800; font-size: .85rem; }
+.ts-fila .previa { color: var(--muted); font-size: .85rem; letter-spacing: -.02em; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0; }
+.ts-fila input { min-height: 50px; text-align: center; font-family: var(--display); font-weight: 700; font-size: 1.25rem; background: var(--surface2); border-radius: 12px; padding: 6px 2px; border: 1px solid transparent; }
+.ts-fila input:focus { border-color: var(--accent); outline: none; }
+.ts-fila .tick { width: 46px; height: 46px; border-radius: 50%; background: var(--surface3); display: grid; place-items: center; }
+.ts-fila .tick svg { width: 20px; height: 20px; }
+.ts-fila.foco { background: var(--accent-soft); outline: none; }
+.ts-fila.foco .tick { background: var(--accent); color: var(--on-accent); }
+.ts-fila.done { background: color-mix(in srgb, var(--good) 14%, transparent); }
+.ts-fila.done input { background: transparent; color: var(--fg); }
+.ts-fila.done .tick { background: var(--good); color: #04140C; }
+.ajuste-rapido { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 0 6px 4px; }
+.ajuste-rapido button { background: var(--surface2); border-radius: 10px; padding: 11px 2px; font-weight: 800; font-size: .86rem; }
+.ajuste-rapido button:active { background: var(--accent-soft); transform: scale(.97); }
+.ts-nota { padding: 0 8px; }
+.anadir-serie { margin-top: 10px; padding: 15px; font-size: 1rem; }
+.icon-btn.fav { font-size: 1.1rem; color: var(--muted); }
+.icon-btn.fav.on { color: var(--warn); }
 
 /* Temporizador */
 #toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(80px + env(safe-area-inset-bottom, 0px)); z-index: 30; max-width: min(92vw, 480px);

@@ -456,6 +456,27 @@ let mensajeEntreno = "";        // frase corta de Apix durante el entreno
 function numero(n) { return String(n).replace(".", ","); }
 const ETIQUETA_TIPO = { drop: "↓", rp: "⏸" };
 
+// Tiempo desde que empezó el entreno: 12:34 (o 1:05:20 si pasa de una hora)
+// Ventana de confirmación antes de terminar (para no terminar sin querer)
+function hojaTerminar() {
+  const a = estado.activa;
+  let hechas = 0, total = 0;
+  for (const e of a.ejercicios) for (const x of e.series) { total++; if (x.hecha) hechas++; }
+  const faltan = total - hechas;
+  abrirHoja(cabeceraHoja("¿Terminar el entreno?", esc(a.diaNombre)) + '<div class="stack">' +
+    '<p>Llevas <b>' + hechas + ' de ' + total + ' series</b> en <b>' + tiempoEntreno() + '</b>.</p>' +
+    (faltan ? '<p class="small" style="color:var(--warn)">Te quedan ' + faltan + ' serie' + (faltan > 1 ? "s" : "") + ' sin hacer. No se guardarán.</p>' : '<p class="small" style="color:var(--good)">✓ Has completado todas las series.</p>') +
+    '<button class="btn" data-act="terminar-si">Sí, terminar</button>' +
+    '<button class="btn-sec full" data-act="cerrar-hoja">Seguir entrenando</button></div>');
+}
+
+function tiempoEntreno() {
+  const seg = Math.max(0, Math.floor((Date.now() - estado.activa.inicio) / 1000));
+  const h = Math.floor(seg / 3600), m = Math.floor(seg % 3600 / 60), s = seg % 60;
+  const dos = function (n) { return String(n).padStart(2, "0"); };
+  return h ? h + ":" + dos(m) + ":" + dos(s) : m + ":" + dos(s);
+}
+
 function pintarSesion() {
   const a = estado.activa;
   const minutos = Math.round((Date.now() - a.inicio) / 60000);
@@ -466,13 +487,14 @@ function pintarSesion() {
 
   let h = (sesionAntigua() ? '<div class="card stack tight" style="margin-bottom:12px;border-color:var(--warn)"><p class="small"><b>Empezó hace más de 12 horas.</b> Termínalo o descártalo.</p></div>' : "") +
     (sesionRecuperada && !sesionAntigua() ? '<div class="card" style="margin-bottom:12px;border-color:var(--good)"><p class="small"><b>Entreno recuperado.</b> Seguía guardado.</p></div>' : "") +
-    '<div class="head"><div class="grow"><p class="label"><span id="cronometro">' + minutos + '</span> min' + (hora ? ' · <span style="color:var(--good)">guardado ' + hora + '</span>' : "") + '</p><h1 style="font-size:1.4rem">' + esc(a.diaNombre) + '</h1></div>' +
+    '<div class="head"><div class="grow"><p class="label">Entreno en curso' + (hora ? ' · <span style="color:var(--good)">guardado ' + hora + '</span>' : "") + '</p><h1 style="font-size:1.4rem">' + esc(a.diaNombre) + '</h1></div>' +
     '<button class="icon-btn" data-act="deshacer" aria-label="Deshacer"' + (pilaDeshacer.length ? "" : " disabled") + '>' + I.deshacer + '</button>' +
     '<button class="btn auto btn-terminar" data-act="terminar"' + (hechas ? "" : " disabled") + '>Terminar</button></div>';
 
   // Progreso del entreno y salto rápido entre ejercicios
   const pct = total ? Math.round(hechas / total * 100) : 0;
-  h += '<div class="progreso-entreno"><div class="row between small"><b>' + hechas + ' de ' + total + ' series</b><span class="muted">' + pct + ' %</span></div>' +
+  h += '<div class="progreso-entreno"><div class="row between"><span class="cronometro" aria-label="Tiempo de entreno">⏱ <b id="cronometro" class="num">' + tiempoEntreno() + '</b></span>' +
+    '<span class="small"><b>' + hechas + ' de ' + total + ' series</b> <span class="muted">· ' + pct + ' %</span></span></div>' +
     '<div class="bar"><i style="width:' + pct + '%"></i></div>' +
     '<div class="chips saltos">' + a.ejercicios.map(function (e, i) {
       const n = e.series.filter(function (s) { return s.hecha; }).length;
@@ -511,7 +533,8 @@ function tarjetaEjercicio(ei) {
     '<div class="grow"><p class="label">Ejercicio ' + (ei + 1) + ' de ' + a.ejercicios.length + (e.superserie ? ' · superserie con el siguiente' : (ei > 0 && a.ejercicios[ei - 1].superserie ? ' · superserie con el anterior' : "")) + '</p><h3>' + esc(ej.nombre) + '</h3>' +
     '<p class="muted small num">' + e.objetivo.series + ' × ' + e.objetivo.repMin + '-' + e.objetivo.repMax + ' · descanso ' + e.objetivo.descanso + ' s</p>' +
     (record ? '<p class="small" style="color:var(--pr);font-weight:700">Récord: ' + numero(record.peso) + ' kg × ' + record.reps + '</p>' : "") + '</div>' +
-    '<button class="icon-btn sm" data-act="info-ej" data-a="' + e.id + '" aria-label="Cómo se hace">' + I.info + '</button></div>';
+    '<div class="stack tight" style="gap:6px"><button class="icon-btn sm fav' + (estado.favoritos.includes(e.id) ? " on" : "") + '" data-act="fav-sesion" data-a="' + e.id + '" aria-label="' + (estado.favoritos.includes(e.id) ? "Quitar de favoritos" : "Añadir a favoritos") + '">' + (estado.favoritos.includes(e.id) ? "★" : "☆") + '</button>' +
+    '<button class="icon-btn sm" data-act="info-ej" data-a="' + e.id + '" aria-label="Cómo se hace">' + I.info + '</button></div></div>';
 
   // Sugerencia de progresión (corta)
   h += '<div class="rec"><span class="pill ' + etiqueta[0] + '">' + etiqueta[1] + '</span><div class="grow"><p>' + esc(rec.motivo) + '</p>' +
@@ -522,50 +545,43 @@ function tarjetaEjercicio(ei) {
   if (frase && estado.ajustes.mascota !== false) h += '<div class="apix-entreno">' + apixSVG(mensajeEntreno.indexOf("récord") >= 0 ? "celebra" : "anima", "xs") + '<p class="small"><b>Apix:</b> ' + esc(frase) + '</p></div>';
   mensajeEntreno = "";
 
-  // Panel grande de la serie actual
-  if (si >= 0) {
-    const s = e.series[si];
-    const ultima = ultimaVez(e.id);
-    const ant = ultima && ultima.series[si] ? numero(ultima.series[si].peso) + " × " + ultima.series[si].reps : "";
-    const paso = pasoPeso(ej);
-    h += '<div class="panel-serie">' +
-      '<div class="row between"><p class="label">' + (s.tipo === "drop" ? "Serie descendente" : (s.tipo === "rp" ? "Descanso-pausa" : "Serie " + (si + 1) + " de " + e.series.length)) + '</p>' +
-      (ant ? '<button class="btn-txt small" data-act="copiar-anterior" data-a="' + ei + '" data-b="' + si + '">La última vez: ' + ant + '</button>' : "") + '</div>' +
-      '<div class="ajuste"><button class="paso" data-act="paso" data-a="' + ei + '" data-b="' + si + '" data-c="peso:-' + paso + '" aria-label="Menos ' + numero(paso) + ' kg">−' + numero(paso) + '</button>' +
-        '<label class="valor"><input type="number" inputmode="decimal" step="0.5" min="0" value="' + s.peso + '" data-in="peso" data-e="' + ei + '" data-s="' + si + '" aria-label="Kilos"><span>' + (ej.asistido ? "kg de ayuda" : "kg") + '</span></label>' +
-        '<button class="paso" data-act="paso" data-a="' + ei + '" data-b="' + si + '" data-c="peso:' + paso + '" aria-label="Más ' + numero(paso) + ' kg">+' + numero(paso) + '</button></div>' +
-      '<div class="ajuste"><button class="paso" data-act="paso" data-a="' + ei + '" data-b="' + si + '" data-c="reps:-1" aria-label="Una repetición menos">−1</button>' +
-        '<label class="valor"><input type="number" inputmode="numeric" min="0" value="' + s.reps + '" data-in="reps" data-e="' + ei + '" data-s="' + si + '" aria-label="Repeticiones"><span>reps</span></label>' +
-        '<button class="paso" data-act="paso" data-a="' + ei + '" data-b="' + si + '" data-c="reps:1" aria-label="Una repetición más">+1</button></div>' +
-      '<div class="row rpe-fila"><span class="muted small">Esfuerzo (opcional)</span><div class="chips">' + [7, 8, 9, 10].map(function (v) {
-        return '<button class="chip' + (s.rpe === v ? " on" : "") + '" data-act="rpe" data-a="' + ei + '" data-b="' + si + '" data-c="' + v + '">' + v + '</button>';
-      }).join("") + '</div></div>' +
-      (s.error ? '<p class="err small">' + esc(s.error) + '</p>' : "") +
-      (s.sospechosa && !s.confirmada ? '<div class="row small" style="color:var(--warn)"><span class="grow">⚠ ' + esc(s.aviso) + '</span><button class="btn-txt small" data-act="confirmar-serie" data-a="' + ei + '" data-b="' + si + '">Es correcto</button></div>' : "") +
-      '<button class="btn completar" data-act="marcar" data-a="' + ei + '" data-b="' + si + '">' + I.check + ' Completar serie</button></div>';
-  } else {
-    h += '<div class="panel-serie hecho"><p><b>✓ Ejercicio completado</b></p>' +
-      (ei < a.ejercicios.length - 1 ? '<button class="btn" data-act="ir-ej" data-a="' + (ei + 1) + '">Siguiente ejercicio →</button>' : '<button class="btn" data-act="terminar">Terminar entreno</button>') + '</div>';
-  }
-
-  // Todas las series (toca una para editarla)
-  h += (ej.asistido ? '<p class="small" style="color:var(--warn);margin-top:8px">Los kg son ayuda: cuantos menos, más difícil.</p>' : "") + '<div class="series-lista">';
-  e.series.forEach(function (s, j) {
-    const clase = (s.hecha ? " done" : "") + (j === si ? " foco" : "") + (serieMarcada === ei + "-" + j ? " recien" : "");
-    h += '<div class="serie-fila' + clase + '"><button class="n" data-act="foco-serie" data-a="' + ei + '" data-b="' + j + '" aria-label="Editar serie ' + (j + 1) + '">' + (ETIQUETA_TIPO[s.tipo] || (j + 1)) + '</button>' +
-      '<button class="grow txt num" data-act="foco-serie" data-a="' + ei + '" data-b="' + j + '">' + numero(s.peso) + ' kg × ' + s.reps + (s.rpe ? ' · RPE ' + numero(s.rpe) : "") + (s.prVivo ? ' <span class="pill pr">Récord</span>' : "") + '</button>' +
-      '<button class="tick" data-act="marcar" data-a="' + ei + '" data-b="' + j + '" aria-label="' + (s.hecha ? "Desmarcar" : "Marcar") + ' serie ' + (j + 1) + '">' + I.check + '</button></div>';
+  // Tabla de series: cada fila se edita directamente y se completa con ✓
+  const ultima = ultimaVez(e.id);
+  const paso = pasoPeso(ej);
+  h += (ej.asistido ? '<p class="small" style="color:var(--warn);margin-top:10px">Los kg son ayuda: cuantos menos, más difícil.</p>' : "") +
+    '<div class="tabla-series series-lista" role="table" aria-label="Series de ' + esc(ej.nombre) + '">' +
+    '<div class="ts-cab" role="row"><span>Serie</span><span>Previa</span><span>' + (ej.asistido ? "Ayuda" : "Kg") + '</span><span>Reps</span><span></span></div>';
+  e.series.forEach(function (x, j) {
+    const previa = ultima && ultima.series[j] ? numero(ultima.series[j].peso) + "×" + ultima.series[j].reps : "—";
+    const clase = (x.hecha ? " done" : "") + (j === si ? " foco" : "") + (serieMarcada === ei + "-" + j ? " recien" : "");
+    h += '<div class="serie-fila ts-fila' + clase + '" role="row">' +
+      '<button class="n" data-act="foco-serie" data-a="' + ei + '" data-b="' + j + '" aria-label="Serie ' + (j + 1) + '">' + (ETIQUETA_TIPO[x.tipo] || (j + 1)) + '</button>' +
+      (previa === "—" ? '<span class="previa num">—</span>' : '<button class="previa num" data-act="copiar-anterior" data-a="' + ei + '" data-b="' + j + '" title="Copiar la marca anterior">' + previa + '</button>') +
+      '<input type="number" inputmode="decimal" step="0.5" min="0" value="' + x.peso + '" data-in="peso" data-e="' + ei + '" data-s="' + j + '" aria-label="Kilos serie ' + (j + 1) + '"' + (x.hecha ? " readonly" : "") + '>' +
+      '<input type="number" inputmode="numeric" min="0" value="' + x.reps + '" data-in="reps" data-e="' + ei + '" data-s="' + j + '" aria-label="Repeticiones serie ' + (j + 1) + '"' + (x.hecha ? " readonly" : "") + '>' +
+      '<button class="tick" data-act="marcar" data-a="' + ei + '" data-b="' + j + '" aria-label="' + (x.hecha ? "Desmarcar" : "Completar") + ' serie ' + (j + 1) + '">' + I.check + '</button></div>';
+    // Debajo de la serie actual: ajuste rápido con botones grandes
+    if (j === si) {
+      h += '<div class="ajuste-rapido">' +
+        '<button data-act="paso" data-a="' + ei + '" data-b="' + j + '" data-c="peso:-' + paso + '">−' + numero(paso) + ' kg</button>' +
+        '<button data-act="paso" data-a="' + ei + '" data-b="' + j + '" data-c="peso:' + paso + '">+' + numero(paso) + ' kg</button>' +
+        '<button data-act="paso" data-a="' + ei + '" data-b="' + j + '" data-c="reps:-1">−1 rep</button>' +
+        '<button data-act="paso" data-a="' + ei + '" data-b="' + j + '" data-c="reps:1">+1 rep</button></div>';
+      if (x.tipo) h += '<p class="muted small ts-nota">' + (x.tipo === "drop" ? "Serie descendente: menos peso y sin descanso." : "Descanso-pausa: 15 s y las reps que puedas.") + '</p>';
+    }
+    if (x.error) h += '<p class="err small ts-nota">' + esc(x.error) + '</p>';
+    else if (x.sospechosa && !x.confirmada) h += '<div class="row small ts-nota" style="color:var(--warn)"><span class="grow">⚠ ' + esc(x.aviso) + '</span><button class="btn-txt small" data-act="confirmar-serie" data-a="' + ei + '" data-b="' + j + '">Es correcto</button></div>';
   });
   h += '</div>';
-  h += '<div class="tools series-botones"><button class="btn-sec small" data-act="serie-mas" data-a="' + ei + '">+ Serie</button>' +
-    '<button class="btn-sec small" data-act="serie-menos" data-a="' + ei + '"' + (e.series.length > 1 ? "" : " disabled") + '>− Serie</button>';
+  h += '<button class="btn-sec full anadir-serie" data-act="serie-mas" data-a="' + ei + '">+ Añadir serie</button>';
+  if (si < 0) h += '<div class="panel-serie hecho"><p><b>✓ Ejercicio completado</b></p>' +
+      (ei < a.ejercicios.length - 1 ? '<button class="btn" data-act="ir-ej" data-a="' + (ei + 1) + '">Siguiente ejercicio →</button>' : '<button class="btn" data-act="terminar">Terminar entreno</button>') + '</div>';
   const especialPendiente = e.series.some(function (x) { return x.tipo && !x.hecha; });
   if (hechasEj > 0 && !especialPendiente) {
-    h += '<button class="btn-sec small" data-act="drop-set" data-a="' + ei + '">+ Serie descendente</button>' +
-      '<button class="btn-sec small" data-act="rest-pause" data-a="' + ei + '">+ Descanso-pausa</button>';
+    h += '<div class="tools series-botones"><button class="btn-sec small" data-act="drop-set" data-a="' + ei + '">+ Serie descendente</button>' +
+      '<button class="btn-sec small" data-act="rest-pause" data-a="' + ei + '">+ Descanso-pausa</button></div>' +
+      '<p class="muted small ayuda-tipos"><b>Descendente:</b> bajas el peso y sigues sin descansar. <b>Descanso-pausa:</b> 15 s de pausa y más reps con el mismo peso.</p>';
   }
-  h += '</div>';
-  if (hechasEj > 0 && !especialPendiente) h += '<p class="muted small ayuda-tipos"><b>Descendente:</b> bajas el peso y sigues sin descansar. <b>Descanso-pausa:</b> 15 s de pausa y más reps con el mismo peso.</p>';
 
   // Historial rápido del ejercicio
   const historial = [];
@@ -582,6 +598,7 @@ function tarjetaEjercicio(ei) {
 
   // Más opciones
   h += '<details class="mas-opciones"><summary>Más opciones</summary><div class="tools">' +
+    '<button class="btn-sec small" data-act="serie-menos" data-a="' + ei + '"' + (e.series.length > 1 ? "" : " disabled") + '>− Quitar última serie</button>' +
     (ei < a.ejercicios.length - 1 ? '<button class="btn-sec small" data-act="superserie" data-a="' + ei + '">' + (e.superserie ? "Quitar superserie" : "Superserie con el siguiente") + '</button>' : "") +
     '<button class="icon-btn sm" data-act="mover-ej" data-a="' + ei + '" data-b="-1" aria-label="Mover antes"' + (ei > 0 ? "" : " disabled") + '>' + I.arriba + '</button>' +
     '<button class="icon-btn sm" data-act="mover-ej" data-a="' + ei + '" data-b="1" aria-label="Mover después"' + (ei < a.ejercicios.length - 1 ? "" : " disabled") + '>' + I.abajo + '</button>' +

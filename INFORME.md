@@ -191,3 +191,10 @@ Fecha: 1 de noviembre de 2026 · Respuesta a la revisión «Nuevos fallos encont
 - **+ Serie / − Serie** otra vez a la vista debajo de las series.
 - **Nombres en español:** «Serie descendente» y «Descanso-pausa», con explicación corta. No se pueden añadir varias seguidas sin completar la anterior.
 - **Pruebas:** 125 de 125.
+
+## Anexo 2.6.4 · Tabla de series, favoritos y confirmar al terminar
+
+- **Cronómetro del entreno** grande y fijo arriba (minutos y segundos).
+- **Tabla de series:** Serie · Previa · Kg · Reps · ✓, editable fila a fila. La fila actual se resalta y debajo tiene botones −/+ kg y −/+ rep. Tocar «Previa» copia la marca anterior. Lo que escribes se guarda aunque pulses ✓ sin salir del campo. Botón grande «+ Añadir serie».
+- **Favoritos** (☆/★) en la cabecera del ejercicio durante el entreno.
+- **Terminar** pide confirmación y avisa de las series que faltan.
