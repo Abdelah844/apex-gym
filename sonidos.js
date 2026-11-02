@@ -1,21 +1,27 @@
 // =====================================================
 // APEX GYM · EFECTOS DE SONIDO
-// Todos los sonidos se crean con código (Web Audio API): no hay archivos de audio
-// ni licencias de terceros. Cada sonido es una lista de notas.
+// Todos los sonidos se crean con código: no hay archivos de audio ni licencias de terceros.
+// Cada sonido es una lista de notas. Con esas notas se fabrica un pequeño archivo de audio (WAV)
+// que se reproduce con un elemento <audio>. Así suena también con el iPhone en modo silencio
+// (el otro sistema, Web Audio, se calla con el interruptor de silencio del iPhone).
 // =====================================================
 
 // Cada nota: f = frecuencia (Hz, más alto = más agudo), t = cuándo empieza (s), d = cuánto dura (s),
 // tipo = forma de la onda ("sine" suave, "triangle" redondo, "square" de videojuego, "sawtooth" áspero),
-// v = volumen (0 a 1), f2 = frecuencia final si la nota sube o baja (opcional).
+// v = volumen (0 a 0,3), f2 = frecuencia final si la nota sube o baja (opcional),
+// e = rapidez con la que se apaga (opcional; cuanto más alto, más seco). "ruido" es un golpe sin tono.
 const SONIDOS = {
   // Completar una serie: un "clic" corto
-  serie: [{ f: 1250, t: 0, d: 0.05, tipo: "triangle", v: 0.25 }],
-  // Fin del descanso: tres pitidos, el último más agudo y largo
+  serie: [{ f: 1250, t: 0, d: 0.06, tipo: "triangle", v: 0.25 }],
+  // Fin del descanso: CAMPANA DE RING DE BOXEO, tres golpes rápidos ("¡ding, ding, ding!").
+  // Cada golpe mezcla el tono principal con armónicos metálicos que se apagan antes, y un "clac" del martillo.
   descanso: [
-    { f: 880, t: 0, d: 0.15, tipo: "sine", v: 0.3 },
-    { f: 880, t: 0.3, d: 0.15, tipo: "sine", v: 0.3 },
-    { f: 1320, t: 0.6, d: 0.35, tipo: "sine", v: 0.3 }
+    { f: 1180, t: 0, d: 1.1, tipo: "sine", v: 0.3, e: 3.2 }, { f: 1187, t: 0, d: 1.1, tipo: "sine", v: 0.14, e: 3.4 }, { f: 2738, t: 0, d: 0.8, tipo: "sine", v: 0.16, e: 6 }, { f: 4401, t: 0, d: 0.5, tipo: "sine", v: 0.1, e: 9 }, { f: 6042, t: 0, d: 0.3, tipo: "sine", v: 0.06, e: 14 }, { f: 590, t: 0, d: 1.1, tipo: "sine", v: 0.07, e: 2.5 }, { f: 3000, t: 0, d: 0.025, tipo: "ruido", v: 0.12, e: 80 },
+    { f: 1180, t: 0.26, d: 1.1, tipo: "sine", v: 0.3, e: 3.2 }, { f: 1187, t: 0.26, d: 1.1, tipo: "sine", v: 0.14, e: 3.4 }, { f: 2738, t: 0.26, d: 0.8, tipo: "sine", v: 0.16, e: 6 }, { f: 4401, t: 0.26, d: 0.5, tipo: "sine", v: 0.1, e: 9 }, { f: 6042, t: 0.26, d: 0.3, tipo: "sine", v: 0.06, e: 14 }, { f: 590, t: 0.26, d: 1.1, tipo: "sine", v: 0.07, e: 2.5 }, { f: 3000, t: 0.26, d: 0.025, tipo: "ruido", v: 0.12, e: 80 },
+    { f: 1180, t: 0.52, d: 1.1, tipo: "sine", v: 0.3, e: 3.2 }, { f: 1187, t: 0.52, d: 1.1, tipo: "sine", v: 0.14, e: 3.4 }, { f: 2738, t: 0.52, d: 0.8, tipo: "sine", v: 0.16, e: 6 }, { f: 4401, t: 0.52, d: 0.5, tipo: "sine", v: 0.1, e: 9 }, { f: 6042, t: 0.52, d: 0.3, tipo: "sine", v: 0.06, e: 14 }, { f: 590, t: 0.52, d: 1.1, tipo: "sine", v: 0.07, e: 2.5 }, { f: 3000, t: 0.52, d: 0.025, tipo: "ruido", v: 0.12, e: 80 }
   ],
+  // Cuenta atrás de los últimos 3 segundos: "tic"
+  tic: [{ f: 1600, t: 0, d: 0.05, tipo: "sine", v: 0.2 }],
   // Nuevo récord: fanfarria (do, mi, sol, do agudo)
   record: [
     { f: 523, t: 0, d: 0.12, tipo: "square", v: 0.12 },
@@ -54,25 +60,82 @@ const SONIDOS = {
   ]
 };
 
-// Vibración que acompaña a cada sonido (milisegundos: vibra, pausa, vibra…)
+// Vibración que acompaña a cada sonido (milisegundos: vibra, pausa, vibra…). En iPhone no hay vibración web.
 const VIBRACIONES = {
-  serie: [30], descanso: [200, 100, 200], record: [80, 60, 80, 60, 200], rango: [100, 60, 100, 60, 400],
+  serie: [30], descanso: [120, 140, 120, 140, 300], tic: [20], record: [80, 60, 80, 60, 200], rango: [100, 60, 100, 60, 400],
   fin: [150], enfadado: [300], racha: [60, 40, 120]
 };
 
-let audioCtx = null;
+// ---------- Fabricar el audio ----------
+const FRECUENCIA_MUESTREO = 22050;      // muestras por segundo (suficiente para estos sonidos)
 
-// El navegador solo deja sonar después de que el usuario toque la pantalla.
-// Por eso el "altavoz" (AudioContext) se crea o se despierta en el primer toque.
+// Valor de la onda en un punto (fase entre 0 y 1)
+function onda(tipo, fase) {
+  const x = fase - Math.floor(fase);
+  if (tipo === "ruido") return Math.random() * 2 - 1;
+  if (tipo === "square") return x < 0.5 ? 1 : -1;
+  if (tipo === "sawtooth") return 2 * x - 1;
+  if (tipo === "triangle") return 1 - 4 * Math.abs(x - 0.5);
+  return Math.sin(2 * Math.PI * x);
+}
+
+// Convierte las notas en muestras de audio (números entre -1 y 1)
+function muestrasDe(notas) {
+  const total = Math.ceil((duracionSonido2(notas) + 0.05) * FRECUENCIA_MUESTREO);
+  const m = new Float32Array(total);
+  for (const n of notas) {
+    const ini = Math.floor(n.t * FRECUENCIA_MUESTREO), largo = Math.floor(n.d * FRECUENCIA_MUESTREO);
+    let fase = 0;
+    for (let i = 0; i < largo && ini + i < total; i++) {
+      const p = i / largo;
+      const f = n.f2 ? n.f + (n.f2 - n.f) * p : n.f;
+      fase += f / FRECUENCIA_MUESTREO;
+      // Sube en 5 ms y se apaga poco a poco (como una campana), sin "clics"
+      const ataque = Math.min(1, i / (0.005 * FRECUENCIA_MUESTREO));
+      // Caída: exponencial si la nota tiene "e" (como un metal golpeado); si no, suave
+      const caida = n.e ? Math.exp(-n.e * i / FRECUENCIA_MUESTREO) * Math.min(1, (1 - p) * 8) : Math.pow(1 - p, 2);
+      m[ini + i] += onda(n.tipo, fase) * n.v * ataque * caida;
+    }
+  }
+  // Ajusta el volumen para que el sonido más fuerte no se distorsione
+  let pico = 0;
+  for (let i = 0; i < total; i++) pico = Math.max(pico, Math.abs(m[i]));
+  const k = pico > 0 ? 0.9 / pico : 1;     // todos los sonidos al 90 % del volumen máximo: se oyen bien en el gimnasio
+  for (let i = 0; i < total; i++) m[i] *= k;
+  return m;
+}
+
+// Empaqueta las muestras como archivo WAV (cabecera de 44 bytes + datos de 16 bits)
+function wavDe(muestras) {
+  const datos = muestras.length * 2;
+  const b = new DataView(new ArrayBuffer(44 + datos));
+  const texto = function (pos, t) { for (let i = 0; i < t.length; i++) b.setUint8(pos + i, t.charCodeAt(i)); };
+  texto(0, "RIFF"); b.setUint32(4, 36 + datos, true); texto(8, "WAVE");
+  texto(12, "fmt "); b.setUint32(16, 16, true); b.setUint16(20, 1, true); b.setUint16(22, 1, true);
+  b.setUint32(24, FRECUENCIA_MUESTREO, true); b.setUint32(28, FRECUENCIA_MUESTREO * 2, true); b.setUint16(32, 2, true); b.setUint16(34, 16, true);
+  texto(36, "data"); b.setUint32(40, datos, true);
+  for (let i = 0; i < muestras.length; i++) b.setInt16(44 + i * 2, Math.max(-1, Math.min(1, muestras[i])) * 32767, true);
+  return b.buffer;
+}
+
+// ---------- Reproducir ----------
+let reproductor = null;           // elemento <audio> "desbloqueado" con el primer toque
+const urlsSonido = {};            // cada sonido se fabrica una sola vez
+
+// Los navegadores solo dejan sonar después de un toque. En el primer toque se reproduce
+// un silencio cortito para que el reproductor quede permitido para siempre.
 function prepararAudio() {
-  if (typeof window === "undefined") return null;                 // en las pruebas de Node no hay altavoz
-  const Ctx = window.AudioContext || window.webkitAudioContext;
-  if (!Ctx) return null;
+  if (typeof window === "undefined" || typeof Audio === "undefined" || reproductor) return reproductor;
   try {
-    if (!audioCtx) audioCtx = new Ctx();
-    if (audioCtx.state === "suspended") audioCtx.resume();
-  } catch (e) { audioCtx = null; }
-  return audioCtx;
+    reproductor = new Audio();
+    reproductor.setAttribute("playsinline", "");
+    reproductor.src = urlDe([{ f: 440, t: 0, d: 0.02, tipo: "sine", v: 0.0001 }]);
+    const p = reproductor.play(); if (p && p.catch) p.catch(function () { });
+  } catch (e) { reproductor = null; }
+  return reproductor;
+}
+function urlDe(notas) {
+  return URL.createObjectURL(new Blob([wavDe(muestrasDe(notas))], { type: "audio/wav" }));
 }
 
 // Reproduce un sonido por su nombre. Devuelve true si estaba permitido sonar.
@@ -80,37 +143,24 @@ function sonar(nombre) {
   const notas = SONIDOS[nombre];
   if (!notas) return false;
   const aj = (typeof estado !== "undefined" && estado && estado.ajustes) ? estado.ajustes : {};
-
-  // Vibración (si el móvil la tiene y no está desactivada)
   if (aj.vibracion !== false && typeof navigator !== "undefined" && navigator.vibrate) {
     try { navigator.vibrate(VIBRACIONES[nombre] || [50]); } catch (e) { }
   }
   if (aj.sonido === false) return false;
-
-  const ctx = prepararAudio();
-  if (!ctx) return true;
-  const ahora = ctx.currentTime + 0.02;
-  for (const n of notas) {
-    const osc = ctx.createOscillator();
-    const vol = ctx.createGain();
-    osc.type = n.tipo;
-    osc.frequency.setValueAtTime(n.f, ahora + n.t);
-    if (n.f2) osc.frequency.linearRampToValueAtTime(n.f2, ahora + n.t + n.d);
-    // El volumen sube rápido y baja suave, para que no haga "clic" al empezar y acabar
-    vol.gain.setValueAtTime(0.0001, ahora + n.t);
-    vol.gain.exponentialRampToValueAtTime(n.v, ahora + n.t + 0.01);
-    vol.gain.exponentialRampToValueAtTime(0.0001, ahora + n.t + n.d);
-    osc.connect(vol);
-    vol.connect(ctx.destination);
-    osc.start(ahora + n.t);
-    osc.stop(ahora + n.t + n.d + 0.05);
-  }
+  const r = prepararAudio();
+  if (!r) return true;
+  try {
+    if (!urlsSonido[nombre]) urlsSonido[nombre] = urlDe(notas);
+    r.pause(); r.src = urlsSonido[nombre]; r.currentTime = 0;
+    const p = r.play(); if (p && p.catch) p.catch(function () { });
+  } catch (e) { }
   return true;
 }
 
-// Duración total de un sonido en segundos (lo usan las pruebas)
-function duracionSonido(nombre) {
+// Duración total de un sonido en segundos
+function duracionSonido(nombre) { return duracionSonido2(SONIDOS[nombre] || []); }
+function duracionSonido2(notas) {
   let fin = 0;
-  for (const n of SONIDOS[nombre] || []) fin = Math.max(fin, n.t + n.d);
+  for (const n of notas) fin = Math.max(fin, n.t + n.d);
   return fin;
 }

@@ -758,7 +758,7 @@ const PRUEBAS = [
     return (svg.indexOf("Apix") > 0 && MENSAJES_APIX.contento.some(function (m) { return m.indexOf("Apix") >= 0; })) || "El nombre no es Apix";
   }],
   ["Sonido", "Existen los 7 efectos y todos son cortos (menos de 2 segundos)", function () {
-    const nombres = ["serie", "descanso", "record", "rango", "fin", "enfadado", "racha"];
+    const nombres = ["serie", "descanso", "tic", "record", "rango", "fin", "enfadado", "racha"];
     for (const n of nombres) {
       if (!SONIDOS[n] || SONIDOS[n].length === 0) return "Falta " + n;
       if (duracionSonido(n) > 2) return n + " dura " + duracionSonido(n) + " s";
@@ -912,6 +912,24 @@ const PRUEBAS = [
     sesionPrueba(fechaTexto(2), [["press-banca", [[50, 10]]]]);
     const m = estadoMascota();
     return (m.accion === "ver-retos" && m.mensaje.indexOf("4 entrenos") >= 0) || JSON.stringify(m);
+  }]
+  ,
+  ["2.6.2 Sonido", "El timbre del descanso es un audio WAV válido de más de 1 segundo", function () {
+    const w = new DataView(wavDe(muestrasDe(SONIDOS.descanso)));
+    const cab = String.fromCharCode(w.getUint8(0), w.getUint8(1), w.getUint8(2), w.getUint8(3));
+    if (cab !== "RIFF") return "Cabecera: " + cab;
+    if (w.getUint32(24, true) !== FRECUENCIA_MUESTREO) return "Frecuencia mal escrita";
+    const d = duracionSonido("descanso");
+    return (d > 1 && d < 2) || "Dura " + d + " s";
+  }],
+  ["2.6.2 Sonido", "El audio nunca se satura (sin distorsión)", function () {
+    for (const n in SONIDOS) {
+      const m = muestrasDe(SONIDOS[n]);
+      let pico = 0;
+      for (let i = 0; i < m.length; i++) pico = Math.max(pico, Math.abs(m[i]));
+      if (pico > 0.95) return n + " llega a " + pico;
+    }
+    return true;
   }]
 ];
 

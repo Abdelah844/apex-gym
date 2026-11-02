@@ -231,7 +231,7 @@ ol.pasos, ul.pasos { margin: 0; padding-left: 20px; display: flex; flex-directio
 .btn-terminar { margin-left: 8px; padding: 10px 14px; font-size: .82rem; }
 .rpe-fila .chip { background: var(--surface3); }
 .rpe-fila .chip.on { background: var(--fg); color: var(--bg); }
-body.con-timer #toast { bottom: auto; top: calc(12px + env(safe-area-inset-top, 0px)); }
+body.con-timer #toast { bottom: calc(300px + env(safe-area-inset-bottom, 0px)); }
 #toast.pr { background: var(--pr); color: #fff; font-size: 1rem; }
 @media (prefers-reduced-motion: reduce) { .serie-fila.recien, #toast { animation: none !important; } }
 
@@ -274,6 +274,42 @@ body.con-timer #toast { bottom: auto; top: calc(12px + env(safe-area-inset-top, 
 .editar-ej .btn-sec { display: flex; align-items: center; justify-content: center; gap: 6px; }
 .editar-ej .btn-sec svg { width: 16px; height: 16px; flex: none; }
 .stepper b { font-size: .9rem; }
+
+/* Apix emergente */
+#apixPop { position: fixed; z-index: 29; left: 50%; top: calc(110px + env(safe-area-inset-top, 0px)); transform: translateX(-50%); display: flex; align-items: center; gap: 10px;
+  width: max-content; max-width: min(92vw, 440px); background: var(--surface3); border: 1px solid var(--accent); border-radius: 18px; padding: 8px 14px 8px 8px; box-shadow: 0 14px 34px rgba(0,0,0,.45); text-align: left; }
+#apixPop p { font-weight: 800; font-size: .95rem; line-height: 1.25; }
+#apixPop p span { display: block; font-weight: 600; font-size: .8rem; color: var(--muted); margin-top: 2px; }
+#apixPop .apix.pop { width: 58px; height: 58px; flex: none; }
+#apixPop.entra { animation: apix-entra .45s cubic-bezier(.2, 1.4, .4, 1); }
+#apixPop.entra .apix { animation: apix-salto .9s ease-in-out 2; transform-origin: 50% 100%; }
+#apixPop.humor-celebra { border-color: var(--pr); }
+@keyframes apix-entra { from { opacity: 0; transform: translate(-50%, -24px) scale(.8); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
+.apix-resumen { position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; padding: 14px; border-radius: 18px; background: linear-gradient(160deg, var(--accent-soft), transparent); }
+.apix-resumen .apix { width: 110px; height: 110px; animation: apix-salto 1s ease-in-out infinite; transform-origin: 50% 100%; }
+.confeti { position: absolute; inset: 0; pointer-events: none; }
+.confeti i { position: absolute; top: -10px; width: 8px; height: 12px; border-radius: 2px; animation: confeti-cae 2.4s linear forwards; }
+.confeti i:nth-child(3n) { background: var(--pr); } .confeti i:nth-child(3n+1) { background: var(--warn); } .confeti i:nth-child(3n+2) { background: var(--accent); }
+.confeti i:nth-child(1) { left: 5%; animation-delay: 0.00s; }
+.confeti i:nth-child(2) { left: 11%; animation-delay: 0.18s; }
+.confeti i:nth-child(3) { left: 18%; animation-delay: 0.36s; }
+.confeti i:nth-child(4) { left: 24%; animation-delay: 0.54s; }
+.confeti i:nth-child(5) { left: 31%; animation-delay: 0.72s; }
+.confeti i:nth-child(6) { left: 37%; animation-delay: 0.00s; }
+.confeti i:nth-child(7) { left: 44%; animation-delay: 0.18s; }
+.confeti i:nth-child(8) { left: 50%; animation-delay: 0.36s; }
+.confeti i:nth-child(9) { left: 57%; animation-delay: 0.54s; }
+.confeti i:nth-child(10) { left: 63%; animation-delay: 0.72s; }
+.confeti i:nth-child(11) { left: 70%; animation-delay: 0.00s; }
+.confeti i:nth-child(12) { left: 76%; animation-delay: 0.18s; }
+.confeti i:nth-child(13) { left: 83%; animation-delay: 0.36s; }
+.confeti i:nth-child(14) { left: 89%; animation-delay: 0.54s; }
+@keyframes confeti-cae { 0% { transform: translateY(0) rotate(0); opacity: 1; } 100% { transform: translateY(240px) rotate(540deg); opacity: 0; } }
+body.destello-fin::after { content: ""; position: fixed; inset: 0; z-index: 28; pointer-events: none; background: var(--accent); animation: destello-fin .9s ease-out forwards; }
+@keyframes destello-fin { 0% { opacity: .35; } 100% { opacity: 0; } }
+.series-botones { margin-top: 10px; }
+.ayuda-tipos { margin-top: 6px; }
+@media (prefers-reduced-motion: reduce) { #apixPop.entra, #apixPop .apix, .apix-resumen .apix, .confeti i, body.destello-fin::after { animation: none !important; } .confeti { display: none; } }
 
 /* Temporizador */
 #toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(80px + env(safe-area-inset-bottom, 0px)); z-index: 30; max-width: min(92vw, 480px);
@@ -371,6 +407,7 @@ nav.tabs button.on svg { color: var(--accent); filter: drop-shadow(0 0 6px var(-
 </div></div>
 
 <div id="toast" hidden role="status" aria-live="polite"></div>
+<button id="apixPop" hidden data-act="cerrar-apix" aria-live="polite"></button>
 
 <div id="hoja" hidden><div class="sheet" id="hojaContenido"></div></div>
 

@@ -1,6 +1,6 @@
 {
   "name": "apex-gym",
-  "version": "2.6.0",
+  "version": "2.6.2",
   "description": "App de entrenamiento con rangos de fuerza, progresión y rutinas adaptativas",
   "private": true,
   "scripts": {

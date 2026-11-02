@@ -234,11 +234,16 @@ const ACCIONES = {
     // ¿Récord en directo?
     const record = serieValida(s) && esRecordEnVivo(ei, si);
     s.prVivo = record;
+    const ejercicioAcabado = e.series.every(function (x) { return x.hecha; });
     if (record) {
       sonar("record");
       toast("🏆 ¡Récord personal! " + numero(s.peso) + " kg × " + s.reps, "pr");
+      apixDice("celebra", "¡RÉCORD PERSONAL!|" + numero(s.peso) + " kg × " + s.reps + ". Eso antes no lo levantabas.", 3200);
       mensajeEntreno = "¡Eso es! Nuevo récord. Sigue así.";
-    } else sonar("serie");
+    } else {
+      sonar("serie");
+      apixDice(ejercicioAcabado ? "orgulloso" : "contento", ejercicioAcabado ? "¡Ejercicio terminado! ✓|" + buscarEj(e.id).nombre : fraseSerie());
+    }
     // Siguiente serie o ejercicio y descanso
     const paso = siguientePaso(ei);
     a.actual = paso.ir;
@@ -279,6 +284,7 @@ const ACCIONES = {
   },
   "drop-set": function (ei) {
     const e = estado.activa.ejercicios[ei];
+    if (e.series.some(function (x) { return x.tipo && !x.hecha; })) { toast("Primero completa la serie especial que ya tienes"); return; }
     const hechas = e.series.filter(function (s) { return s.hecha; });
     const base = hechas[hechas.length - 1];
     copiaSesion();
@@ -288,10 +294,11 @@ const ACCIONES = {
     e.series.splice(pos, 0, { peso: peso, reps: base.reps, rpe: null, hecha: false, tipo: "drop" });
     e.foco = pos; estado.activa.actual = parseInt(ei);
     pararDescanso(); guardar(); pintarSesion();
-    toast("Drop set: baja a " + numero(peso) + " kg y sigue sin descansar");
+    toast("Serie descendente: baja a " + numero(peso) + " kg y sigue sin descansar");
   },
   "rest-pause": function (ei) {
     const e = estado.activa.ejercicios[ei];
+    if (e.series.some(function (x) { return x.tipo && !x.hecha; })) { toast("Primero completa la serie especial que ya tienes"); return; }
     const hechas = e.series.filter(function (s) { return s.hecha; });
     const base = hechas[hechas.length - 1];
     copiaSesion();
@@ -300,7 +307,7 @@ const ACCIONES = {
     e.foco = pos; estado.activa.actual = parseInt(ei);
     guardar(); pintarSesion();
     empezarDescanso(15);
-    toast("Rest-pause: descansa 15 s y haz las que puedas con el mismo peso");
+    toast("Descanso-pausa: 15 s y haz las que puedas con el mismo peso");
   },
   "superserie": function (ei) {
     const e = estado.activa.ejercicios[ei];
@@ -354,11 +361,18 @@ const ACCIONES = {
   "serie-mas": function (ei) {
     copiaSesion();
     const series = estado.activa.ejercicios[ei].series;
-    const ult = series[series.length - 1];
+    const normales = series.filter(function (x) { return !x.tipo; });
+    const ult = normales[normales.length - 1] || series[series.length - 1];
     series.push({ peso: ult ? ult.peso : 0, reps: ult ? ult.reps : 10, rpe: null, hecha: false });
-    guardar(); pintarSesion();
+    estado.activa.actual = parseInt(ei);
+    guardar(); pintarSesion(); toast("+1 serie (ahora " + series.length + ")");
   },
-  "serie-menos": function (ei) { copiaSesion(); estado.activa.ejercicios[ei].series.pop(); guardar(); pintarSesion(); },
+  "serie-menos": function (ei) {
+    const series = estado.activa.ejercicios[ei].series;
+    if (series.length <= 1) return;
+    copiaSesion(); series.pop(); guardar(); pintarSesion(); toast("−1 serie (ahora " + series.length + ")");
+  },
+  "cerrar-apix": function () { $("apixPop").hidden = true; },
   "mover-ej": function (ei, dir) {
     copiaSesion();
     const l = estado.activa.ejercicios; const i = parseInt(ei), j = i + parseInt(dir);
@@ -394,6 +408,7 @@ const ACCIONES = {
     if (r.vacio) { mensaje("Entreno vacío", "No hay ninguna serie completada, así que no se ha guardado."); return; }
     if (r.duplicado) { abrirHoja(cabeceraHoja("Ya estaba guardado", "") + '<p>Este entreno era idéntico al último que guardaste hoy, así que no se ha duplicado.</p>'); return; }
     sonar(r.ascensos.length ? "rango" : (r.sesion.prs.length ? "record" : "fin"));
+    apixDice("celebra", "¡Entreno completado! Hoy has cumplido. 🔥", 3000);
     if (!rachaAntes && rachaAhora) setTimeout(function () { sonar("racha"); }, duracionSonido(r.ascensos.length ? "rango" : "record") * 1000 + 300);
     if (r.sesion.prs.length || r.ascensos.length) celebrar(r);
     else hojaResumen(r);
@@ -405,13 +420,15 @@ const ACCIONES = {
   "ver-resumen": function () { $("celebra").hidden = true; hojaResumen(window._resumen); },
   "compartir-sesion": function (id, x, y, boton) {
     const s = estado.sesiones.find(function (z) { return z.id === id; });
+    if (!s) return;
     if (!s.compartida) {
       const r = publicar("entreno", textoSesion(s));
-      if (!r.ok) { boton.textContent = r.msg; boton.disabled = true; return; }
+      if (!r.ok) { toast(r.msg, "error"); return; }
       for (const pr of s.prs) publicar("record", "Nuevo récord en " + buscarEj(pr).nombre);
       s.compartida = true; guardar();
     }
-    boton.textContent = "Compartido en Social"; boton.disabled = true;
+    boton.textContent = "✓ En tu diario"; boton.disabled = true;
+    toast("✓ Guardado en tu diario (Social → Mi diario)", "ok");
   },
   "borrar-sesion": function (id) {
     if (!pideConfirmar("borrar-sesion", function () { hojaSesion(id); })) return;
@@ -486,8 +503,8 @@ const ACCIONES = {
     toast("✓ Guardado en tu diario", "ok");
     setTimeout(function () { postNuevo = ""; }, 2000);
   },
-  "compartir-fuera": function () {
-    const s = estado.sesiones[estado.sesiones.length - 1];
+  "compartir-fuera": function (id) {
+    const s = (id && estado.sesiones.find(function (z) { return z.id === id; })) || estado.sesiones[estado.sesiones.length - 1];
     if (!s) return;
     const texto = "💪 " + textoSesion(s) + " en Apex Gym" + (rachaSemanas() > 1 ? " · racha de " + rachaSemanas() + " semanas 🔥" : "");
     compartirTexto("Mi entreno", texto, URL_APP);

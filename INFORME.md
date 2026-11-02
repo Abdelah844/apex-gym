@@ -182,3 +182,12 @@ Fecha: 1 de noviembre de 2026 · Respuesta a la revisión «Nuevos fallos encont
 - **Apix y retos:** te recuerda cuánto te falta para tu reto, el último día y te felicita al conseguirlo. Si no tienes retos, a veces te propone uno.
 - **Recordatorios locales:** día de entreno a la hora elegida, racha en peligro el fin de semana y último día de reto. Máximo 1 al día, nunca con molestias recientes. Funcionan al abrir la app o con ella en segundo plano; los avisos con la app cerrada del todo necesitan servidor.
 - **Pruebas:** 123 de 123 (15 nuevas). Navegador: sin errores.
+
+## Anexo 2.6.2 · Correcciones tras probarla en el gimnasio
+
+- **Timbre al acabar el descanso:** campana de dos toques y «tic» en los 3 últimos segundos. Los sonidos se fabrican como audio WAV y suenan con un elemento de audio, para que también se oigan con el iPhone en modo silencio. Destello en pantalla y Apix avisando del siguiente ejercicio. Con la app en segundo plano y los avisos activados, llega una notificación (si el iPhone la deja ejecutarse).
+- **Apix animado:** aparece al completar cada serie, al terminar un ejercicio, al batir un récord, al acabar el descanso y al terminar el entreno (resumen con Apix saltando y confeti).
+- **Compartir tras el entreno:** el botón del resumen solo cambiaba su texto y parecía colgado. Ahora avisa «✓ Guardado en tu diario» y tiene «Enviar a amigos».
+- **+ Serie / − Serie** otra vez a la vista debajo de las series.
+- **Nombres en español:** «Serie descendente» y «Descanso-pausa», con explicación corta. No se pueden añadir varias seguidas sin completar la anterior.
+- **Pruebas:** 125 de 125.

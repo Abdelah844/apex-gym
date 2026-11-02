@@ -454,7 +454,7 @@ let serieMarcada = "";          // "ei-si" de la última serie completada (para 
 let mensajeEntreno = "";        // frase corta de Apix durante el entreno
 
 function numero(n) { return String(n).replace(".", ","); }
-const ETIQUETA_TIPO = { drop: "D", rp: "RP" };
+const ETIQUETA_TIPO = { drop: "↓", rp: "⏸" };
 
 function pintarSesion() {
   const a = estado.activa;
@@ -529,7 +529,7 @@ function tarjetaEjercicio(ei) {
     const ant = ultima && ultima.series[si] ? numero(ultima.series[si].peso) + " × " + ultima.series[si].reps : "";
     const paso = pasoPeso(ej);
     h += '<div class="panel-serie">' +
-      '<div class="row between"><p class="label">' + (s.tipo === "drop" ? "Drop set" : (s.tipo === "rp" ? "Rest-pause" : "Serie " + (si + 1) + " de " + e.series.length)) + '</p>' +
+      '<div class="row between"><p class="label">' + (s.tipo === "drop" ? "Serie descendente" : (s.tipo === "rp" ? "Descanso-pausa" : "Serie " + (si + 1) + " de " + e.series.length)) + '</p>' +
       (ant ? '<button class="btn-txt small" data-act="copiar-anterior" data-a="' + ei + '" data-b="' + si + '">La última vez: ' + ant + '</button>' : "") + '</div>' +
       '<div class="ajuste"><button class="paso" data-act="paso" data-a="' + ei + '" data-b="' + si + '" data-c="peso:-' + paso + '" aria-label="Menos ' + numero(paso) + ' kg">−' + numero(paso) + '</button>' +
         '<label class="valor"><input type="number" inputmode="decimal" step="0.5" min="0" value="' + s.peso + '" data-in="peso" data-e="' + ei + '" data-s="' + si + '" aria-label="Kilos"><span>' + (ej.asistido ? "kg de ayuda" : "kg") + '</span></label>' +
@@ -557,7 +557,15 @@ function tarjetaEjercicio(ei) {
       '<button class="tick" data-act="marcar" data-a="' + ei + '" data-b="' + j + '" aria-label="' + (s.hecha ? "Desmarcar" : "Marcar") + ' serie ' + (j + 1) + '">' + I.check + '</button></div>';
   });
   h += '</div>';
-  if (hechasEj > 0) h += '<div class="tools"><button class="btn-sec small" data-act="drop-set" data-a="' + ei + '">+ Drop set</button><button class="btn-sec small" data-act="rest-pause" data-a="' + ei + '">+ Rest-pause</button></div>';
+  h += '<div class="tools series-botones"><button class="btn-sec small" data-act="serie-mas" data-a="' + ei + '">+ Serie</button>' +
+    '<button class="btn-sec small" data-act="serie-menos" data-a="' + ei + '"' + (e.series.length > 1 ? "" : " disabled") + '>− Serie</button>';
+  const especialPendiente = e.series.some(function (x) { return x.tipo && !x.hecha; });
+  if (hechasEj > 0 && !especialPendiente) {
+    h += '<button class="btn-sec small" data-act="drop-set" data-a="' + ei + '">+ Serie descendente</button>' +
+      '<button class="btn-sec small" data-act="rest-pause" data-a="' + ei + '">+ Descanso-pausa</button>';
+  }
+  h += '</div>';
+  if (hechasEj > 0 && !especialPendiente) h += '<p class="muted small ayuda-tipos"><b>Descendente:</b> bajas el peso y sigues sin descansar. <b>Descanso-pausa:</b> 15 s de pausa y más reps con el mismo peso.</p>';
 
   // Historial rápido del ejercicio
   const historial = [];
@@ -574,8 +582,6 @@ function tarjetaEjercicio(ei) {
 
   // Más opciones
   h += '<details class="mas-opciones"><summary>Más opciones</summary><div class="tools">' +
-    '<button class="btn-sec small" data-act="serie-mas" data-a="' + ei + '">+ Serie</button>' +
-    '<button class="btn-sec small" data-act="serie-menos" data-a="' + ei + '"' + (e.series.length > 1 ? "" : " disabled") + '>− Serie</button>' +
     (ei < a.ejercicios.length - 1 ? '<button class="btn-sec small" data-act="superserie" data-a="' + ei + '">' + (e.superserie ? "Quitar superserie" : "Superserie con el siguiente") + '</button>' : "") +
     '<button class="icon-btn sm" data-act="mover-ej" data-a="' + ei + '" data-b="-1" aria-label="Mover antes"' + (ei > 0 ? "" : " disabled") + '>' + I.arriba + '</button>' +
     '<button class="icon-btn sm" data-act="mover-ej" data-a="' + ei + '" data-b="1" aria-label="Mover después"' + (ei < a.ejercicios.length - 1 ? "" : " disabled") + '>' + I.abajo + '</button>' +
@@ -610,7 +616,7 @@ function textoSiguiente() {
   const si = serieEnFoco(e);
   if (si < 0) return "¡Entreno completado! Pulsa Terminar.";
   const s = e.series[si];
-  return buscarEj(e.id).nombre + " · " + (s.tipo === "drop" ? "drop set" : "serie " + (si + 1)) + " · " + numero(s.peso) + " kg × " + s.reps;
+  return buscarEj(e.id).nombre + " · " + (s.tipo === "drop" ? "serie descendente" : (s.tipo === "rp" ? "descanso-pausa" : "serie " + (si + 1))) + " · " + numero(s.peso) + " kg × " + s.reps;
 }
 
 // Guarda una copia de la sesión antes de cambiarla (para Deshacer)
@@ -1366,7 +1372,11 @@ function hojaPiloto() {
 // ---------- Resumen al terminar ----------
 function hojaResumen(r) {
   const s = r.sesion;
-  let h = cabeceraHoja("Entreno completado", esc(s.diaNombre)) + '<div class="stack"><div class="grid2">' +
+  const totalSeries = s.seriesEfectivas;
+  let h = cabeceraHoja("Entreno completado", esc(s.diaNombre)) + '<div class="stack">' +
+    (estado.ajustes.mascota !== false ? '<div class="apix-resumen">' + apixSVG(s.prs.length ? "celebra" : "orgulloso") + '<div class="confeti" aria-hidden="true">' + "<i></i>".repeat(14) + '</div>' +
+      '<p><b>¡Entreno completado!</b> ' + (s.prs.length ? s.prs.length + (s.prs.length > 1 ? " récords nuevos." : " récord nuevo.") + " ¡Eres una máquina!" : totalSeries + " series hechas. Estoy orgulloso de ti.") + '</p></div>' : "") +
+    '<div class="grid2">' +
     '<div class="card"><p class="label">Duración</p><div class="big-num num">' + s.duracion + ' min</div></div>' +
     '<div class="card"><p class="label">Ejercicios</p><div class="big-num num">' + s.ejercicios.filter(function (e) { return e.series.some(function (x) { return x.hecha; }); }).length + '</div></div>' +
     '<div class="card"><p class="label">Series efectivas</p><div class="big-num num">' + s.seriesEfectivas + '</div></div>' +
@@ -1374,7 +1384,7 @@ function hojaResumen(r) {
   if (r.anterior) {
     const ds = s.seriesEfectivas - r.anterior.seriesEfectivas;
     h += '<div class="card"><p class="label">Frente a la última vez (' + fechaBonita(r.anterior.fecha) + ')</p><p class="num"><b style="color:' + (ds >= 0 ? "var(--good)" : "var(--danger)") + '">' + (ds >= 0 ? "+" : "") + ds + '</b> series efectivas</p>' +
-      '<p class="muted small">El tonelaje solo se compara ejercicio a ejercicio (en Progreso), porque un apix en prensa no equivale a un apix en curl.</p></div>';
+      '<p class="muted small">El tonelaje solo se compara ejercicio a ejercicio (en Progreso), porque un kilo en prensa no equivale a un kilo en curl.</p></div>';
   }
   if (s.enRevision) h += '<div class="card" style="border-color:var(--warn)"><p class="small"><b>' + s.enRevision + ' serie(s) en revisión.</b> No cuentan para los rangos hasta que las confirmes en el historial.</p></div>';
   if (s.prs.length) {
@@ -1383,7 +1393,11 @@ function hojaResumen(r) {
   if (r.ascensos.length) {
     h += '<div class="card"><h3>Ascensos</h3><div class="list">' + r.ascensos.map(function (a) { return '<div class="item">' + insignia(a.rango, "sm") + '<span class="grow">' + esc(a.nombre) + ' → <b>' + RANGOS[a.rango].nombre + '</b></span></div>'; }).join("") + '</div></div>';
   }
-  h += '<button class="btn" data-act="compartir-sesion" data-a="' + s.id + '">Compartir en Social</button><button class="btn-sec full" data-act="cerrar-hoja">Cerrar</button></div>';
+  h += '<div class="card stack tight"><h3>Compartir</h3><div class="grid2">' +
+    (s.compartida ? '<button class="btn-sec" disabled>✓ En tu diario</button>' : '<button class="btn-sec" data-act="compartir-sesion" data-a="' + s.id + '">Guardar en mi diario</button>') +
+    '<button class="btn" data-act="compartir-fuera" data-a="' + s.id + '">Enviar a amigos</button></div>' +
+    '<p class="muted small">«Enviar» abre WhatsApp, Instagram u otra app de tu móvil.</p></div>' +
+    '<button class="btn-sec full" data-act="cerrar-hoja">Cerrar</button></div>';
   abrirHoja(h);
 }
 
@@ -1586,9 +1600,12 @@ function empezarDescanso(seg, finGuardado) {
   tTotal = seg; tFin = finGuardado || Date.now() + seg * 1000; $("timer").hidden = false; document.body.classList.add("con-timer");
   if (estado.activa && !finGuardado) { estado.activa.descanso = { fin: tFin, total: tTotal }; guardar(); }
   clearInterval(tIntervalo);
+  let ultimoTic = null;
   tIntervalo = setInterval(function () {
     tRest = Math.ceil((tFin - Date.now()) / 1000);
-    if (tRest <= 0) { pararDescanso(); avisoFinDescanso(); } else pintarTimer();
+    if (tRest <= 0) { pararDescanso(); avisoFinDescanso(); return; }
+    if (tRest <= 3 && tRest !== ultimoTic) { ultimoTic = tRest; sonar("tic"); }     // 3, 2, 1…
+    pintarTimer();
   }, 250);
   tRest = Math.max(1, Math.ceil((tFin - Date.now()) / 1000)); pintarTimer();
 }
@@ -1612,7 +1629,11 @@ function pintarTimer() {
 }
 // Pitido corto y vibración (si el dispositivo lo permite)
 function avisoFinDescanso() {
-  sonar("descanso");
+  sonar("descanso");                                    // timbre de campana
+  apixDice("anima", "¡Descanso terminado! A por ella." + (textoSiguiente() ? "|Siguiente: " + textoSiguiente() : ""), 3500);
+  document.body.classList.remove("destello-fin"); void document.body.offsetWidth; document.body.classList.add("destello-fin");
+  // Si la app está en segundo plano y tienes los avisos activados, llega también una notificación
+  if (document.visibilityState === "hidden" && typeof mostrarAviso === "function") mostrarAviso("⏰ Descanso terminado", textoSiguiente() || "A por la siguiente serie.");
 }
 function pararDescanso() {
   clearInterval(tIntervalo); $("timer").hidden = true; document.body.classList.remove("con-timer");
@@ -1634,6 +1655,24 @@ function avisoGuardado() {
   const el = document.getElementById("avisoGuardado");
   if (el) el.hidden = !errorGuardado;
 }
+
+// Apix aparece un momento con una frase (al completar series, récords, fin del descanso…)
+let tApix = null, fraseN = 0;
+const FRASES_SERIE = ["¡Una menos! 💪", "¡Bien hecho!", "¡Buena serie!", "Así se hace.", "¡Sigue así!", "¡Eso es constancia!", "Respira y a por la siguiente."];
+function apixDice(humor, texto, ms) {
+  if (!estado || estado.ajustes.mascota === false) return;
+  const el = $("apixPop");
+  if (!el) return;
+  const partes = String(texto).split("|");          // "Frase principal|detalle opcional"
+  el.innerHTML = apixSVG(humor, "pop") + '<p>' + esc(partes[0]) + (partes[1] ? '<span>' + esc(partes[1]) + '</span>' : "") + '</p>';
+  el.className = "";
+  el.hidden = false;
+  void el.offsetWidth;                       // reinicia la animación si ya estaba en pantalla
+  el.className = "entra humor-" + humor;
+  clearTimeout(tApix);
+  tApix = setTimeout(function () { el.hidden = true; }, ms || 2200);
+}
+function fraseSerie() { fraseN = (fraseN + 1) % FRASES_SERIE.length; return FRASES_SERIE[fraseN]; }
 
 // Aviso breve que aparece abajo y se va solo. Sirve para confirmar que algo ha funcionado.
 let tToast = null;
