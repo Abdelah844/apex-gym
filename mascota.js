@@ -1,13 +1,13 @@
 // =====================================================
-// APEX GYM · KILO, LA MASCOTA (personaje propio: una bolita morada)
+// APEX GYM · APIX, LA MASCOTA (personaje propio: una bolita morada)
 // - estadoMascota() decide su humor y su mensaje a partir de tus datos reales.
-// - kiloSVG() lo dibuja según el humor.
+// - apixSVG() lo dibuja según el humor.
 // Los mensajes se eligen según la fecha (no al azar), así se pueden probar.
 // =====================================================
 
 const FRASE_DISCIPLINA = "Hay que tener disciplina para conseguir aquello que deseas.";
 
-const MENSAJES_KILO = {
+const MENSAJES_APIX = {
   anima: [
     "Ya sé que hoy da pereza. " + FRASE_DISCIPLINA,
     "Las ganas van y vienen; la disciplina se queda. " + FRASE_DISCIPLINA,
@@ -36,8 +36,21 @@ const MENSAJES_KILO = {
   cuida: [
     "La última vez marcaste molestias. Hoy, con calma: si duele, para y consulta a un profesional.",
   ],
+  reto: [
+    "Te faltan {falta} {unidad} para tu reto «{reto}» y quedan {dias} días. " + FRASE_DISCIPLINA,
+    "Tu reto «{reto}» te espera: faltan {falta} {unidad}. ¡No lo sueltes ahora!"
+  ],
+  retoUltimo: [
+    "¡Último día para tu reto «{reto}»! Te faltan {falta} {unidad}. Hoy es el día."
+  ],
+  retoConseguido: [
+    "¡Reto «{reto}» conseguido! Sabía que podías. ¿Te pones otro más difícil?"
+  ],
+  sinReto: [
+    "¿Y si te pones un reto? Una meta clara ayuda a no faltar. Créalo en Social → Retos."
+  ],
   contento: [
-    "¡Hola! Soy Kilo. Cuando quieras, empezamos.",
+    "¡Hola! Soy Apix. Cuando quieras, empezamos.",
     "Cada serie cuenta. ¿Entrenamos?"
   ]
 };
@@ -73,7 +86,28 @@ function diasSinEntrenar() {
   return diasEntre(v[v.length - 1].fecha, hoy());
 }
 
-// Humor y mensaje de Kilo. Devuelve null si el usuario lo ha desactivado.
+// Reto activo más urgente que aún no has conseguido (el que acaba antes)
+function retoUrgente() {
+  const hoyF = hoy();
+  const activos = (estado.social.retos || []).filter(function (r) {
+    return TIPOS_RETO[r.tipo] && r.meta && r.inicio <= hoyF && r.fin >= hoyF && progresoReto(r) < r.meta;
+  });
+  activos.sort(function (a, b) { return a.fin < b.fin ? -1 : 1; });
+  return activos[0] || null;
+}
+// Reto conseguido en los últimos 2 días (para felicitar)
+function retoRecienConseguido() {
+  const hoyF = hoy();
+  return (estado.social.retos || []).find(function (r) {
+    return TIPOS_RETO[r.tipo] && r.meta && progresoReto(r) >= r.meta && r.fin >= sumarDias(hoyF, -2) && r.inicio <= hoyF;
+  }) || null;
+}
+function datosReto(r) {
+  const falta = Math.max(0, Math.round((r.meta - progresoReto(r)) * 10) / 10);
+  return { reto: TIPOS_RETO[r.tipo].nombre.toLowerCase(), falta: String(falta).replace(".", ","), unidad: TIPOS_RETO[r.tipo].unidad, dias: diasEntre(hoy(), r.fin) + 1 };
+}
+
+// Humor y mensaje de Apix. Devuelve null si el usuario lo ha desactivado.
 // Orden de prioridad: molestias → récord → racha perdida → hoy ya entrenaste → día de entreno → descanso → normal
 function estadoMascota() {
   if (estado.ajustes.mascota === false) return null;
@@ -83,7 +117,7 @@ function estadoMascota() {
 
   // 1. Molestias recientes: nunca presionar
   if (ultima && diasEntre(ultima.fecha, hoyF) <= 3 && ultima.ejercicios.some(function (e) { return e.molestias; })) {
-    return { humor: "cuida", mensaje: mensajeDelDia(MENSAJES_KILO.cuida, hoyF) };
+    return { humor: "cuida", mensaje: mensajeDelDia(MENSAJES_APIX.cuida, hoyF) };
   }
   // 2. Récord en los últimos 2 días: felicitar con el ejercicio y el peso
   if (ultima && diasEntre(ultima.fecha, hoyF) <= 2 && ultima.prs.length) {
@@ -93,32 +127,46 @@ function estadoMascota() {
     let mejor = null;
     for (const s of e.series) if (serieValida(s) && (!mejor || unaRM(cargaSerie(ej, s.peso, ultima.fecha), s.reps) > unaRM(cargaSerie(ej, mejor.peso, ultima.fecha), mejor.reps))) mejor = s;
     const peso = ej.asistido ? mejor.reps + " reps con " + String(mejor.peso).replace(".", ",") + " kg de ayuda" : String(mejor.peso).replace(".", ",") + " kg × " + mejor.reps;
-    return { humor: "celebra", mensaje: rellenar(mensajeDelDia(MENSAJES_KILO.celebra, hoyF), { peso: peso, ejercicio: ej.nombre.toLowerCase() }) };
+    return { humor: "celebra", mensaje: rellenar(mensajeDelDia(MENSAJES_APIX.celebra, hoyF), { peso: peso, ejercicio: ej.nombre.toLowerCase() }) };
+  }
+  // 2b. Reto conseguido: felicitar
+  const conseguido = retoRecienConseguido();
+  if (conseguido && !(retoUrgente())) {
+    return { humor: "celebra", mensaje: rellenar(mensajeDelDia(MENSAJES_APIX.retoConseguido, hoyF), datosReto(conseguido)), accion: "ver-retos" };
   }
   // 3. Racha perdida esta semana
   const perdida = rachaPerdida();
   if (perdida >= 1 && !(ultima && ultima.fecha === hoyF)) {
-    return { humor: "enfadado", mensaje: rellenar(mensajeDelDia(MENSAJES_KILO.enfadado, hoyF), { racha: perdida }) };
+    return { humor: "enfadado", mensaje: rellenar(mensajeDelDia(MENSAJES_APIX.enfadado, hoyF), { racha: perdida }) };
+  }
+  // 3b. Reto personal en marcha: te recuerda lo que falta (si hoy no has entrenado todavía)
+  const reto = retoUrgente();
+  if (reto && !(ultima && ultima.fecha === hoyF)) {
+    const d = datosReto(reto);
+    return { humor: "anima", mensaje: rellenar(mensajeDelDia(d.dias <= 1 ? MENSAJES_APIX.retoUltimo : MENSAJES_APIX.reto, hoyF), d), accion: "ver-retos" };
   }
   // 4. Hoy ya has entrenado
-  if (ultima && ultima.fecha === hoyF) return { humor: "orgulloso", mensaje: mensajeDelDia(MENSAJES_KILO.orgulloso, hoyF) };
+  if (ultima && ultima.fecha === hoyF) return { humor: "orgulloso", mensaje: mensajeDelDia(MENSAJES_APIX.orgulloso, hoyF) };
   // 5. Hoy toca entrenar (según tu calendario) y aún no lo has hecho
   const cal = estado.rutina && Array.isArray(estado.rutina.calendario) ? estado.rutina.calendario : (estado.perfil.diasSemana || []);
   const hoyN = (new Date(hoyF + "T12:00:00").getDay() + 6) % 7;
   if (cal.includes(hoyN)) {
     const dias = diasSinEntrenar();
-    if (dias !== null && dias >= 3) return { humor: "anima", mensaje: rellenar(mensajeDelDia(MENSAJES_KILO.animaFuerte, hoyF), { dias: dias }) };
-    return { humor: "anima", mensaje: mensajeDelDia(MENSAJES_KILO.anima, hoyF) };
+    if (dias !== null && dias >= 3) return { humor: "anima", mensaje: rellenar(mensajeDelDia(MENSAJES_APIX.animaFuerte, hoyF), { dias: dias }) };
+    return { humor: "anima", mensaje: mensajeDelDia(MENSAJES_APIX.anima, hoyF) };
   }
-  // 6. Día de descanso
-  if (cal.length) return { humor: "descanso", mensaje: mensajeDelDia(MENSAJES_KILO.descanso, hoyF) };
-  return { humor: "contento", mensaje: mensajeDelDia(MENSAJES_KILO.contento, hoyF) };
+  // 6. Día de descanso (si llevas unos entrenos y no tienes retos, te propone uno de vez en cuando)
+  if (!(estado.social.retos || []).length && validas.length >= 3 && (new Date(hoyF + "T12:00:00").getDate() % 3 === 0)) {
+    return { humor: "contento", mensaje: mensajeDelDia(MENSAJES_APIX.sinReto, hoyF), accion: "nuevo-reto" };
+  }
+  if (cal.length) return { humor: "descanso", mensaje: mensajeDelDia(MENSAJES_APIX.descanso, hoyF) };
+  return { humor: "contento", mensaje: mensajeDelDia(MENSAJES_APIX.contento, hoyF) };
 }
 
-// ---------- Dibujo de Kilo ----------
+// ---------- Dibujo de Apix ----------
 // Bolita suave morada con brillo, bracitos y patitas.
 // Según el humor cambian los ojos, las cejas, la boca y algún complemento.
-function kiloSVG(humor, tam) {
+function apixSVG(humor, tam) {
   const h = humor || "contento";
   const enfadado = h === "enfadado";
   const claro = enfadado ? "#FF9A9A" : "#C9B2FF";     // color de arriba
@@ -127,7 +175,7 @@ function kiloSVG(humor, tam) {
   const tinta = "#1F2B2B";                            // ojos, cejas y boca
   const id = "kg-" + h;                               // id del degradado (uno por humor)
 
-  let s = '<svg class="kilo kilo-' + h + ' ' + (tam || "") + '" viewBox="0 -16 120 136" role="img" aria-label="Kilo, la mascota de Apex Gym">';
+  let s = '<svg class="apix apix-' + h + ' ' + (tam || "") + '" viewBox="0 -16 120 136" role="img" aria-label="Apix, la mascota de Apex Gym">';
   s += '<defs><radialGradient id="' + id + '" cx="40%" cy="30%" r="80%">' +
        '<stop offset="0" stop-color="' + claro + '"/><stop offset=".6" stop-color="' + medio + '"/><stop offset="1" stop-color="' + borde + '"/></radialGradient></defs>';
   // Sombra, patas y brazos
@@ -138,7 +186,7 @@ function kiloSVG(humor, tam) {
   s += '<path d="M16,82 C14,44 38,22 60,22 C82,22 106,44 104,82 C103,98 86,104 60,104 C34,104 17,98 16,82 Z" fill="url(#' + id + ')"/>' +
        '<ellipse cx="42" cy="36" rx="12" ry="6" fill="#fff" opacity=".75" transform="rotate(-22 42 36)"/>';
   // Fuego encima de la cabeza cuando se enfada (3 llamas: roja, naranja y amarilla)
-  if (enfadado) s += '<g class="kilo-fuego">' +
+  if (enfadado) s += '<g class="apix-fuego">' +
     '<path d="M60,-14 C66,-4 78,0 76,14 C75,22 68,27 60,27 C52,27 45,22 44,14 C43,4 52,2 52,-6 C55,-2 57,0 58,4 C60,-2 58,-8 60,-14 Z" fill="#FF3B1F"/>' +
     '<path d="M60,-2 C64,5 71,8 70,16 C69,22 65,26 60,26 C55,26 51,22 50,16 C50,10 55,8 56,3 C58,6 59,8 60,10 C61,6 60,2 60,-2 Z" fill="#FF8A00"/>' +
     '<path d="M60,9 C63,13 66,16 65,20 C64,24 62,26 60,26 C58,26 56,24 55,20 C55,16 58,14 60,9 Z" fill="#FFD84A"/></g>';

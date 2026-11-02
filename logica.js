@@ -47,7 +47,7 @@ function fechaBonita(fecha) {
 // - Si falla, se avisa, los cambios siguen en memoria y se puede reintentar.
 
 // Versión del formato de datos. Si cambia, se añade un paso en migrarDatos().
-const VERSION_DATOS = 4;
+const VERSION_DATOS = 5;
 
 function datosValidos(d) {
   return d && typeof d === "object" && d.perfil && typeof d.perfil.nombre === "string" && Array.isArray(d.sesiones);
@@ -137,7 +137,7 @@ function estadoVacio(perfil) {
     evitados: [],
     noDisponibles: [],      // máquinas que no hay en tu gimnasio
     ascensos: [],
-    social: { amigos: [], bloqueados: [], posts: [], retos: [] },
+    social: { amigos: [], bloqueados: [], posts: [], retos: [], amigosReales: [] },
     denuncias: [],
     metricas: metricasVacias()
   };
@@ -183,6 +183,10 @@ function migrarDatos(d) {
   if (v < 4) {
     // v3 → v4: lista de máquinas que no hay en tu gimnasio
     if (!Array.isArray(d.noDisponibles)) d.noDisponibles = [];
+  }
+  if (v < 5) {
+    // v4 → v5: amigos reales (añadidos con su tarjeta de amigo)
+    if (!Array.isArray(d.social.amigosReales)) d.social.amigosReales = [];
   }
   d.version = VERSION_DATOS;
   return d;
@@ -316,6 +320,26 @@ const REPS_MAX_FORMULA = 12;
 function unaRM(peso, reps) {
   if (reps <= 0) return 0;
   return peso * (1 + Math.min(reps, REPS_MAX_FORMULA) / 30);
+}
+
+// Otras fórmulas de 1RM, para mostrar en Progreso (el usuario elige en Ajustes).
+// Los rangos siempre usan Epley (unaRM) para que todos se midan igual.
+const FORMULAS_1RM = {
+  epley: { nombre: "Epley (por defecto)", f: function (p, r) { return p * (1 + r / 30); } },
+  brzycki: { nombre: "Brzycki", f: function (p, r) { return p * 36 / (37 - r); } },
+  lombardi: { nombre: "Lombardi", f: function (p, r) { return p * Math.pow(r, 0.10); } },
+  oconner: { nombre: "O'Conner", f: function (p, r) { return p * (1 + r / 40); } },
+  media: { nombre: "Media de las cuatro", f: null }
+};
+function rm1Mostrado(peso, reps) {
+  if (reps <= 0) return 0;
+  const r = Math.min(reps, REPS_MAX_FORMULA);
+  const clave = (estado && estado.ajustes && FORMULAS_1RM[estado.ajustes.formula1RM]) ? estado.ajustes.formula1RM : "epley";
+  if (clave === "media") {
+    const ks = ["epley", "brzycki", "lombardi", "oconner"];
+    return ks.reduce(function (t, k) { return t + FORMULAS_1RM[k].f(peso, r); }, 0) / ks.length;
+  }
+  return FORMULAS_1RM[clave].f(peso, r);
 }
 
 // Carga que mueves de verdad.
@@ -823,6 +847,7 @@ function puntuarCandidato(e, ctx) {
   let p = 0;
   if (estado) p += Math.min(sesionesCon(e.id), 6) * 5;        // ejercicios que ya haces
   if (ctx.primeraVez && e.compuesto) p += 25;                 // empezar el grupo con un compuesto
+  if (e.compuesto && (e.grupo === "triceps" || e.grupo === "biceps")) p -= 30;   // en brazos, mejor aislamiento: los compuestos (press cerrado, fondos) suman volumen extra a pecho y hombro
   if (!ctx.primeraVez && !e.compuesto) p += 10;               // la segunda vez, mejor aislamiento
   p -= (ctx.usosSemana[e.id] || 0) * 12;                      // variedad entre días
   if (e.nivel === ctx.nivelIdeal) p += 4;
@@ -1242,13 +1267,70 @@ function crearSesionLibre() {
   estado.activa = { inicio: Date.now(), diaIndex: null, diaNombre: "Entreno libre", ejercicios: [] };
 }
 
+// Descanso para ejercicios añadidos a mano: más largo en los compuestos (mueven más músculo)
+function descansoPorDefecto(e) {
+  const a = estado.ajustes;
+  return e.compuesto ? (a.descansoCompuesto || 120) : (a.descansoAislamiento || 75);
+}
+
 function ejercicioParaSesion(id, objetivo) {
   const e = buscarEj(id);
-  const obj = objetivo || { series: 3, repMin: e.reps[0], repMax: e.reps[1], descanso: estado.ajustes.descanso };
+  const obj = objetivo || { series: 3, repMin: e.reps[0], repMax: e.reps[1], descanso: descansoPorDefecto(e) };
   const rec = recomendar(id, obj);
   const series = [];
   for (let i = 0; i < obj.series; i++) series.push({ peso: rec.peso, reps: obj.repMax, rpe: null, hecha: false });
   return { id: id, objetivo: { series: obj.series, repMin: obj.repMin, repMax: obj.repMax, descanso: obj.descanso }, series: series, nota: "", molestias: false, cambio: false };
+}
+
+// ---------- Flujo del entreno (un ejercicio a la vez) ----------
+// Ejercicio en pantalla: el elegido o el primero con series pendientes
+function ejercicioActual() {
+  const a = estado.activa;
+  if (!a.ejercicios.length) return -1;
+  if (typeof a.actual === "number" && a.actual >= 0 && a.actual < a.ejercicios.length) return a.actual;
+  const i = a.ejercicios.findIndex(function (e) { return e.series.some(function (s) { return !s.hecha; }); });
+  return i >= 0 ? i : 0;
+}
+// Serie en foco dentro del ejercicio: la elegida o la primera pendiente
+function serieEnFoco(e) {
+  if (typeof e.foco === "number" && e.series[e.foco] && !e.series[e.foco].hecha) return e.foco;
+  const i = e.series.findIndex(function (s) { return !s.hecha; });
+  return i;
+}
+// Paso de los botones − / + según el material
+function pasoPeso(ej) {
+  if (ej.equipo === "mancuernas") return estado.ajustes.incrementoMancuernas || 2;
+  return estado.ajustes.incremento || 2.5;
+}
+// ¿Esta serie supera tu mejor marca? (1RM estimada mayor que la de tu historial y que las de hoy)
+function esRecordEnVivo(ei, si) {
+  const e = estado.activa.ejercicios[ei];
+  const ej = buscarEj(e.id);
+  const s = e.series[si];
+  const valor = unaRM(cargaSerie(ej, s.peso, hoy()), s.reps);
+  const historico = mejor1RM(e.id);
+  if (historico <= 0 || valor <= historico) return false;
+  for (let j = 0; j < e.series.length; j++) {
+    const x = e.series[j];
+    if (j !== si && x.hecha && x.prVivo && unaRM(cargaSerie(ej, x.peso, hoy()), x.reps) >= valor) return false;
+  }
+  return true;
+}
+
+// Después de completar una serie: a dónde ir y cuánto descansar
+function siguientePaso(ei) {
+  const a = estado.activa;
+  const e = a.ejercicios[ei];
+  const pendiente = function (i) { return i >= 0 && i < a.ejercicios.length && a.ejercicios[i].series.some(function (s) { return !s.hecha; }); };
+  // Superserie: del primero se pasa al segundo sin descanso; del segundo se vuelve al primero tras descansar
+  if (e.superserie && pendiente(ei + 1)) return { ir: ei + 1, descanso: false };
+  if (ei > 0 && a.ejercicios[ei - 1].superserie && pendiente(ei - 1)) return { ir: ei - 1, descanso: true };
+  if (pendiente(ei)) return { ir: ei, descanso: true };
+  for (let i = 1; i <= a.ejercicios.length; i++) {
+    const j = (ei + i) % a.ejercicios.length;
+    if (pendiente(j)) return { ir: j, descanso: true };
+  }
+  return { ir: ei, descanso: false, fin: true };
 }
 
 function duracionSesion(a) {
@@ -1269,7 +1351,7 @@ function terminarSesion() {
   if (!hayAlgoValido(a) && !a.ejercicios.some(function (e) { return e.series.some(function (s) { return s.hecha; }); })) return { vacio: true };
   const fecha = aTexto(new Date(a.inicio));
   const ejercicios = a.ejercicios.map(function (e) {
-    return { id: e.id, series: e.series.map(function (s) { return { peso: s.peso, reps: s.reps, rpe: s.rpe, hecha: s.hecha, sospechosa: !!s.sospechosa, confirmada: !!s.confirmada, aviso: s.aviso || "" }; }),
+    return { id: e.id, series: e.series.map(function (s) { const x = { peso: s.peso, reps: s.reps, rpe: s.rpe, hecha: s.hecha, sospechosa: !!s.sospechosa, confirmada: !!s.confirmada, aviso: s.aviso || "" }; if (s.tipo) x.tipo = s.tipo; return x; }),
       nota: e.nota, molestias: !!e.molestias, cambio: !!e.cambio };
   });
 
@@ -1383,6 +1465,95 @@ function feedVisible() {
   });
 }
 
+// =====================================================
+// AMIGOS CON TARJETA (funciona sin servidor)
+// Cada persona comparte un enlace con un resumen de sus datos (rango, racha y mejores marcas).
+// Quien lo abre o pega el código lo añade como amigo. Para actualizarlo, se vuelve a enviar.
+// =====================================================
+const URL_APP = "https://abdelah844.github.io/apex-gym/";
+const TABLA_B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+
+// Texto → base64 "seguro para enlaces" (sin + / =). Primero se pasa a bytes UTF-8 para que funcionen las tildes.
+function aBase64(texto) {
+  const utf8 = unescape(encodeURIComponent(texto));
+  let r = "";
+  for (let i = 0; i < utf8.length; i += 3) {
+    const a = utf8.charCodeAt(i), b = utf8.charCodeAt(i + 1), c = utf8.charCodeAt(i + 2);
+    const n = (a << 16) | ((b || 0) << 8) | (c || 0);
+    r += TABLA_B64[(n >> 18) & 63] + TABLA_B64[(n >> 12) & 63];
+    if (i + 1 < utf8.length) r += TABLA_B64[(n >> 6) & 63];
+    if (i + 2 < utf8.length) r += TABLA_B64[n & 63];
+  }
+  return r;
+}
+function deBase64(codigo) {
+  let bytes = "", bits = 0, valor = 0;
+  for (const ch of codigo) {
+    const n = TABLA_B64.indexOf(ch);
+    if (n < 0) throw new Error("Carácter no válido");
+    valor = (valor << 6) | n; bits += 6;
+    if (bits >= 8) { bits -= 8; bytes += String.fromCharCode((valor >> bits) & 255); }
+  }
+  return decodeURIComponent(escape(bytes));
+}
+
+// Tu tarjeta: solo datos que tú decides compartir
+function miTarjeta() {
+  const pg = puntosGlobal();
+  const records = [];
+  for (const e of EJERCICIOS) {
+    const m = mejorSerie(e.id);
+    if (m && !e.asistido && e.equipo !== "corporal") records.push({ n: e.nombre, p: m.peso, r: m.reps, rm: unaRM(m.peso, m.reps) });
+  }
+  records.sort(function (a, b) { return b.rm - a.rm; });
+  return { v: 1, uid: miId(), usuario: miUsuario(), rango: pg === null ? null : rangoDePuntos(pg), racha: rachaSemanas(),
+    entrenos: sesionesValidas().length, records: records.slice(0, 3).map(function (x) { return { n: x.n, p: x.p, r: x.r }; }), fecha: hoy() };
+}
+function enlaceTarjeta() {
+  return URL_APP + "#amigo=" + aBase64(JSON.stringify(miTarjeta()));
+}
+function puedeCompartirTarjeta() {
+  if (estado.perfil.edad < 16) return { ok: false, msg: "La parte social está desactivada para menores de 16 años." };
+  if (estado.ajustes.privacidad === "privado") return { ok: false, msg: "Tu perfil es privado. Cámbialo en Ajustes para compartir tu tarjeta." };
+  return { ok: true, msg: "" };
+}
+
+// Lee un enlace o código pegado. Comprueba cada dato porque viene de fuera de la app.
+function leerTarjeta(texto) {
+  let codigo = String(texto || "").trim();
+  const i = codigo.indexOf("amigo=");
+  if (i >= 0) codigo = codigo.slice(i + 6);
+  codigo = codigo.split(/[\s&#]/)[0];
+  if (!codigo) return { ok: false, msg: "Pega el enlace o el código que te ha enviado tu amigo." };
+  if (codigo.length > 3000) return { ok: false, msg: "El código es demasiado largo." };
+  let t;
+  try { t = JSON.parse(deBase64(codigo)); } catch (e) { return { ok: false, msg: "El código no es válido. Pide a tu amigo que te lo vuelva a enviar." }; }
+  const texto60 = function (x) { return typeof x === "string" && x.length > 0 && x.length <= 60; };
+  if (!t || t.v !== 1 || !texto60(t.uid) || !texto60(t.usuario)) return { ok: false, msg: "El código no es una tarjeta de Apex Gym." };
+  if (t.rango !== null && !(Number.isInteger(t.rango) && t.rango >= 0 && t.rango < RANGOS.length)) return { ok: false, msg: "La tarjeta tiene un rango no válido." };
+  if (!(Number.isInteger(t.racha) && t.racha >= 0 && t.racha < 1000) || !(Number.isInteger(t.entrenos) && t.entrenos >= 0 && t.entrenos < 100000)) return { ok: false, msg: "La tarjeta tiene datos no válidos." };
+  if (!Array.isArray(t.records) || t.records.length > 3 || !t.records.every(function (r) { return r && texto60(r.n) && typeof r.p === "number" && r.p >= 0 && r.p <= 400 && Number.isInteger(r.r) && r.r >= 1 && r.r <= 50; })) return { ok: false, msg: "La tarjeta tiene marcas no válidas." };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(t.fecha)) return { ok: false, msg: "La tarjeta no tiene fecha válida." };
+  return { ok: true, tarjeta: { uid: t.uid, usuario: t.usuario, rango: t.rango, racha: t.racha, entrenos: t.entrenos, records: t.records, fecha: t.fecha } };
+}
+
+function anadirAmigoReal(texto) {
+  const r = leerTarjeta(texto);
+  if (!r.ok) return r;
+  const t = r.tarjeta;
+  if (t.uid === miId()) return { ok: false, msg: "Esa es tu propia tarjeta. Envíasela a tus amigos para que te añadan." };
+  if (!Array.isArray(estado.social.amigosReales)) estado.social.amigosReales = [];
+  const lista = estado.social.amigosReales;
+  const ya = lista.findIndex(function (a) { return a.uid === t.uid; });
+  if (ya >= 0) { lista[ya] = t; return { ok: true, nuevo: false, amigo: t, msg: "Datos de @" + t.usuario + " actualizados." }; }
+  if (lista.length >= 100) return { ok: false, msg: "Has llegado al máximo de 100 amigos." };
+  lista.push(t);
+  return { ok: true, nuevo: true, amigo: t, msg: "@" + t.usuario + " añadido a tus amigos." };
+}
+function quitarAmigoReal(uid) {
+  estado.social.amigosReales = (estado.social.amigosReales || []).filter(function (a) { return a.uid !== uid; });
+}
+
 function buscarUsuarios(texto) {
   if (estado.modo !== "demo") return [];
   const t = texto.trim().toLowerCase();
@@ -1443,6 +1614,86 @@ function progresoReto(r) {
 // - Series efectivas por músculo: directas × 1 + secundarias × 0,5.
 // - Tonelaje externo: kg × reps solo del peso que cargas (no incluye tu peso corporal).
 //   Sirve para comparar el mismo ejercicio consigo mismo, no ejercicios distintos.
+
+// ---------- Carga de entrenamiento y fatiga ----------
+// Tonelaje (kg × reps) y series efectivas de las sesiones entre dos fechas (incluidas)
+function cargaEntre(desde, hasta) {
+  let kg = 0, series = 0, n = 0;
+  for (const s of sesionesValidas()) {
+    if (s.fecha < desde || s.fecha > hasta) continue;
+    kg += s.volumen || 0; series += s.seriesEfectivas || 0; n++;
+  }
+  return { kg: kg, series: series, sesiones: n };
+}
+// Últimas N semanas (de lunes a domingo), de la más antigua a la actual
+function cargaPorSemanas(n) {
+  const lista = [];
+  let lunes = lunesDe(hoy());
+  for (let i = 0; i < n; i++) { lista.unshift({ desde: lunes, carga: cargaEntre(lunes, sumarDias(lunes, 6)) }); lunes = sumarDias(lunes, -7); }
+  return lista;
+}
+// Últimos N meses naturales
+function cargaPorMeses(n) {
+  const lista = [];
+  const d = new Date(hoy() + "T12:00:00");
+  for (let i = 0; i < n; i++) {
+    const y = d.getFullYear(), m = d.getMonth() - i;
+    const ini = new Date(y, m, 1, 12), fin = new Date(y, m + 1, 0, 12);
+    lista.unshift({ desde: aTexto(ini), carga: cargaEntre(aTexto(ini), aTexto(fin)) });
+  }
+  return lista;
+}
+// Índice de fatiga: carga de los últimos 7 días comparada con la media semanal de las 4 semanas anteriores.
+// Entre 0,8 y 1,3 es la zona normal; por encima, has subido la carga muy deprisa.
+function indiceFatiga() {
+  const aguda = cargaEntre(fechaTexto(6), hoy()).series;
+  const cronica = cargaEntre(fechaTexto(34), fechaTexto(7)).series / 4;
+  if (cronica < 3) return { ratio: null, nivel: "pocos", texto: "Necesitas al menos 4-5 semanas de entrenos para calcularla." };
+  const ratio = aguda / cronica;
+  if (ratio > 1.5) return { ratio: ratio, nivel: "muy-alta", texto: "Has subido mucho la carga de golpe. Plantéate una semana más suave." };
+  if (ratio > 1.3) return { ratio: ratio, nivel: "alta", texto: "Carga más alta de lo normal. Duerme bien y sube poco a poco." };
+  if (ratio < 0.8) return { ratio: ratio, nivel: "baja", texto: "Esta semana vas por debajo de lo habitual. Si estás descansado, puedes apretar." };
+  return { ratio: ratio, nivel: "normal", texto: "Carga estable. Buen equilibrio entre esfuerzo y recuperación." };
+}
+
+// ---------- Recordatorios ----------
+// Decide si toca avisar ahora (máximo 1 aviso al día). Prioridad: racha en peligro → reto → día de entreno.
+function recordatorioPendiente(ahora) {
+  const n = estado.ajustes.notif || {};
+  const hoyF = aTexto(ahora);
+  if (n.ultimoAviso === hoyF) return null;
+  if (ahora.getHours() < (n.hora || 18)) return null;
+  const validas = sesionesValidas();
+  if (validas.some(function (s) { return s.fecha === hoyF; })) return null;          // hoy ya entrenaste
+  if (validas.length && estado.sesiones.length && molestiasRecientes()) return null; // con molestias no se presiona
+  const diaSemana = (ahora.getDay() + 6) % 7;                                      // 0 = lunes … 6 = domingo
+  // Racha en peligro: fin de semana y aún no llegas al mínimo semanal
+  if (n.racha !== false && diaSemana >= 5) {
+    const estaSemana = (sesionesPorSemana()[lunesDe(hoyF)] || 0);
+    const racha = rachaSemanas();
+    const faltan = minimoSemanal() - estaSemana;
+    const pasada = (sesionesPorSemana()[sumarDias(lunesDe(hoyF), -7)] || 0) >= minimoSemanal();
+    if (faltan > 0 && pasada && faltan <= 7 - diaSemana) {
+      return { tipo: "racha", titulo: "🔥 Tu racha está en peligro", texto: "Te falta" + (faltan > 1 ? "n " + faltan + " entrenos" : " 1 entreno") + " esta semana para no perder tu racha." };
+    }
+  }
+  // Último día de un reto
+  if (n.retos !== false && typeof retoUrgente === "function") {
+    const r = retoUrgente();
+    if (r && r.fin === hoyF) return { tipo: "reto", titulo: "⏳ Último día de tu reto", texto: "Hoy acaba tu reto «" + TIPOS_RETO[r.tipo].nombre.toLowerCase() + "». ¡A por él!" };
+  }
+  // Día de entreno según tu calendario
+  if (n.recordatorios !== false) {
+    const cal = estado.rutina && Array.isArray(estado.rutina.calendario) ? estado.rutina.calendario : (estado.perfil.diasSemana || []);
+    if (cal.includes(diaSemana)) return { tipo: "entreno", titulo: "💪 Hoy toca entrenar", texto: "Hay que tener disciplina para conseguir aquello que deseas." };
+  }
+  return null;
+}
+function molestiasRecientes() {
+  const v = sesionesValidas();
+  const u = v[v.length - 1];
+  return !!u && diasEntre(u.fecha, hoy()) <= 3 && u.ejercicios.some(function (e) { return e.molestias; });
+}
 
 function seriesEfectivasPorGrupo(sesiones) {
   const v = {};

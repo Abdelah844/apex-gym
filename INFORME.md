@@ -135,7 +135,7 @@ Fecha: 1 de noviembre de 2026 · Respuesta a la revisión «Nuevos fallos encont
 
 ---
 
-## Anexo 2.3 · Kilo, la mascota
+## Anexo 2.3 · Apix (antes Kilo), la mascota
 
 - **Personaje propio:** una bolita morada con cara (dibujada con código, sin licencias de terceros), con 7 humores: normal, anima, enfadado, celebra, orgulloso, descanso y cuida.
 - **Cuándo aparece cada humor** (orden de prioridad, con tus datos reales):
@@ -155,3 +155,30 @@ Fecha: 1 de noviembre de 2026 · Respuesta a la revisión «Nuevos fallos encont
 - **Ajustes → Instalar en el móvil:** botón «Instalar Apex Gym» cuando Chrome lo permite y, si no, instrucciones para Android y iPhone.
 - **Requisito:** solo funciona en una web con https (por ejemplo, GitHub Pages). Dentro del enlace de Claude se ve la app, pero no se instala.
 - **Pruebas:** 99 de 99 (5 nuevas). En el navegador: se registra el service worker, se lee el manifest y la app abre con el modo sin conexión.
+
+## Anexo 2.5 · Más máquinas, fotos completas, Apix y sonidos
+
+- **Ejercicios:** de 59 a **106** (47 nuevos). Sobre todo máquinas y poleas: multipower (press banca, inclinado, hombro, cerrado, remo, zancada, gemelos, peso muerto), press inclinado y declinado en máquina, remo alto, jalones (estrecho y supino), pullover en polea, encogimientos, pájaros, curl predicador, extensiones con cuerda, crunch en máquina, curl femoral de pie, aductor en polea, etc. Cada uno con ficha, pasos, errores, seguridad, animación y fotos.
+- **Cada grupo muscular** tiene al menos 3 opciones de máquina o polea (aductores, 2).
+- **Fotos:** las 106 tienen foto (Free Exercise DB, dominio público). Tres son fotos de referencia con aviso.
+- **4 animaciones nuevas:** encogimiento, remo al mentón, elevación frontal y pullover.
+- **Generador:** en brazos se prefieren ejercicios de aislamiento, para que el press cerrado o los fondos no sumen volumen de más a pecho y hombro.
+- **La mascota se llama Apix.** Si la tocas en Inicio, contesta con un sonido.
+- **Sonidos (sonidos.js):** 7 efectos creados con código (serie, fin del descanso, récord, subir de rango, fin del entreno, racha salvada y Apix enfadado). Todos duran menos de 2 segundos. En Ajustes se pueden desactivar el sonido y la vibración y probar cada efecto.
+- **Pruebas:** 108 de 108 (9 nuevas). Navegador: las 212 fotos cargan, los sonidos suenan, sin errores.
+
+## Anexo 2.6 · Entreno guiado, amigos, progreso y recordatorios
+
+- **Social:** al compartir, ahora hay aviso inmediato («✓ Guardado en tu diario») y la publicación se resalta. Nuevo botón «Enviar a amigos» (WhatsApp, Instagram… con el menú de compartir del móvil; si no hay, copia el texto).
+- **Amigos sin servidor:** cada usuario tiene una tarjeta de amigo (rango, racha, entrenos y 3 mejores marcas) que se envía como enlace. Al abrirlo o pegar el código, se añade. Los datos que llegan se validan uno a uno.
+- **Entreno en curso:** un ejercicio a la vez, barra de progreso, salto rápido a cualquier ejercicio, anterior/siguiente y deslizar con el dedo. Panel grande con −/+ kg (según el material) y −/+ reps, esfuerzo opcional y botón «Completar serie». Tras completar, pasa solo a la siguiente serie o al siguiente ejercicio.
+- **Récord en directo:** aviso «🏆 ¡Récord personal!» con sonido al superar tu mejor marca. Animación al completar cada serie. Apix aparece con frases cortas en momentos clave (última serie, último ejercicio, récord).
+- **Historial rápido:** las 3 últimas veces de ese ejercicio debajo de las series.
+- **Superseries, drop sets y rest-pause:** la superserie pasa al segundo ejercicio sin descanso; el drop set baja un 20 % sin descanso; el rest-pause pone 15 s. El tipo de serie se guarda.
+- **Descanso:** temporizador grande con anillo y el «siguiente» bien visible, ±15 s, tiempos rápidos (1:00–3:00) y «Usar siempre en este ejercicio» (se guarda también en la rutina). En Ajustes, descanso distinto para compuestos y aislamiento.
+- **Rutinas:** generador guiado en 3 pasos; resumen claro de la propuesta y confirmación antes de sustituir la rutina; editor con botones −/+, cambiar, quitar (con deshacer), reordenar y avisos de «guardado». «Nueva rutina» y «Entreno libre» destacados en Entrenar.
+- **Progreso:** tabla comparando con el periodo anterior, carga semanal o mensual (tonelaje), índice de fatiga (últimos 7 días frente a la media de 4 semanas) y 1RM con 5 fórmulas a elegir (los rangos siguen con Epley).
+- **Rangos:** «Tu ranking por músculo» ordenado y destacado justo después del rango global.
+- **Apix y retos:** te recuerda cuánto te falta para tu reto, el último día y te felicita al conseguirlo. Si no tienes retos, a veces te propone uno.
+- **Recordatorios locales:** día de entreno a la hora elegida, racha en peligro el fin de semana y último día de reto. Máximo 1 al día, nunca con molestias recientes. Funcionan al abrir la app o con ella en segundo plano; los avisos con la app cerrada del todo necesitan servidor.
+- **Pruebas:** 123 de 123 (15 nuevas). Navegador: sin errores.

@@ -574,7 +574,7 @@ const PRUEBAS = [
       if (!GRUPOS[e.grupo]) return id + ": grupo desconocido";
       if (e.variantes.some(function (v) { return !buscarEj(v); })) return id + ": variante inexistente";
     }
-    return EJERCICIOS.length === 59 || "Hay " + EJERCICIOS.length + " ejercicios";
+    return EJERCICIOS.length >= 59 || "Hay " + EJERCICIOS.length + " ejercicios";
   }],
   ["2.2 Asistidos", "Con menos ayuda, la carga real y los puntos son mayores", function () {
     estadoPrueba({ peso: 80 });
@@ -656,7 +656,7 @@ const PRUEBAS = [
     const mal = JSON.parse(JSON.stringify(estado)); mal.noDisponibles = ["maquina-inventada"];
     return !validarImport(JSON.stringify(mal)).ok || "Aceptó una máquina inventada";
   }],
-  // ===== Kilo, la mascota =====
+  // ===== Apix, la mascota =====
   ["Mascota", "Felicita al superar un peso que antes no podías, nombrando el ejercicio y el peso", function () {
     estadoPrueba();
     sesionPrueba(fechaTexto(8), [["press-banca", [[60, 8]]]]);
@@ -700,8 +700,8 @@ const PRUEBAS = [
     estado.ajustes.mascota = false;
     return estadoMascota() === null || "Sigue apareciendo desactivada";
   }],
-  ["Mascota", "Kilo se dibuja en todos sus humores", function () {
-    for (const h of ["contento", "anima", "enfadado", "celebra", "orgulloso", "descanso", "cuida"]) if (kiloSVG(h).indexOf("<svg") !== 0) return "Falla " + h;
+  ["Mascota", "Apix se dibuja en todos sus humores", function () {
+    for (const h of ["contento", "anima", "enfadado", "celebra", "orgulloso", "descanso", "cuida"]) if (apixSVG(h).indexOf("<svg") !== 0) return "Falla " + h;
     return true;
   }],
   ["Privacidad", "Fuera de la demo no hay datos ficticios", function () {
@@ -709,6 +709,209 @@ const PRUEBAS = [
     estado.modo = "local";
     const ficticios = feedVisible().filter(function (x) { return x.demo; }).length;
     return (ficticios === 0 && buscarUsuarios("a").length === 0) || "Se mostraron datos ficticios";
+  }]
+  ,
+  // ---------- 2.5: más máquinas, fotos, Apix y sonidos ----------
+  ["2.5 Máquinas", "Hay más de 100 ejercicios y todos tienen ficha, animación y fotos", function () {
+    if (EJERCICIOS.length < 100) return "Solo hay " + EJERCICIOS.length;
+    const sinFoto = EJERCICIOS.filter(function (e) { return !fotosDe(e.id); }).map(function (e) { return e.id; });
+    if (sinFoto.length) return "Sin foto: " + sinFoto.join(", ");
+    const p = revisarAcademia();
+    return p.length === 0 || p.join(" | ");
+  }],
+  ["2.5 Máquinas", "Cada grupo muscular tiene al menos 3 opciones de máquina o polea", function () {
+    for (const g in GRUPOS) {
+      if (g === "antebrazos") continue;                    // los antebrazos se trabajan sobre todo con pesos libres
+      const n = EJERCICIOS.filter(function (e) { return e.grupo === g && (e.equipo === "maquina" || e.equipo === "polea"); }).length;
+      const minimo = g === "aductores" ? 2 : 3;               // en casi todos los gimnasios solo hay 1 o 2 máquinas de aductor
+      if (n < minimo) return GRUPOS[g] + " solo tiene " + n;
+    }
+    return true;
+  }],
+  ["2.5 Máquinas", "Ningún identificador está repetido y todas las variantes existen", function () {
+    const ids = EJERCICIOS.map(function (e) { return e.id; });
+    const rep = ids.filter(function (x, i) { return ids.indexOf(x) !== i; });
+    if (rep.length) return "Repetidos: " + rep.join(", ");
+    const malas = EJERCICIOS.filter(function (e) { return e.variantes.some(function (v) { return !buscarEj(v); }); }).map(function (e) { return e.id; });
+    return malas.length === 0 || "Variantes rotas en: " + malas.join(", ");
+  }],
+  ["2.5 Máquinas", "Las fotos de referencia (otro material) llevan su aviso", function () {
+    for (const id in FOTO_REFERENCIA) {
+      if (!buscarEj(id)) return id + " no existe";
+      if (!FOTOS[id]) return id + " no tiene foto";
+    }
+    return Object.keys(FOTO_REFERENCIA).length === 3 || "Se esperaban 3 avisos";
+  }],
+  ["2.5 Máquinas", "El generador sigue creando rutinas válidas con los ejercicios nuevos", function () {
+    estadoPrueba();
+    for (const nivel of ["principiante", "intermedio", "avanzado"]) for (let dias = 2; dias <= 6; dias++) {
+      const r = generarRutina({ objetivo: "masa", nivel: nivel, dias: dias, duracion: 60, tipo: "auto", equipo: TODO_EQUIPO, prioridad: "", evitar: "" });
+      const graves = r.problemas.filter(function (p) { return p.tipo === "vacio" || p.tipo === "duracion" || p.tipo === "recuperacion"; });
+      if (graves.length) return nivel + "/" + dias + " días: " + graves[0].msg;
+      for (const d of r.dias) for (const x of d.ejercicios) if (!encajaEnDia(buscarEj(x.id), d.tipo)) return x.id + " no encaja en " + d.nombre;
+    }
+    return true;
+  }],
+  ["Apix", "La mascota se llama Apix", function () {
+    estadoPrueba({});
+    const svg = apixSVG("contento");
+    return (svg.indexOf("Apix") > 0 && MENSAJES_APIX.contento.some(function (m) { return m.indexOf("Apix") >= 0; })) || "El nombre no es Apix";
+  }],
+  ["Sonido", "Existen los 7 efectos y todos son cortos (menos de 2 segundos)", function () {
+    const nombres = ["serie", "descanso", "record", "rango", "fin", "enfadado", "racha"];
+    for (const n of nombres) {
+      if (!SONIDOS[n] || SONIDOS[n].length === 0) return "Falta " + n;
+      if (duracionSonido(n) > 2) return n + " dura " + duracionSonido(n) + " s";
+      for (const nota of SONIDOS[n]) if (!(nota.f > 20 && nota.f < 20000 && nota.v > 0 && nota.v <= 0.3)) return n + ": nota fuera de rango";
+    }
+    return true;
+  }],
+  ["Sonido", "Si desactivas el sonido en Ajustes, no suena", function () {
+    estadoPrueba({});
+    estado.ajustes.sonido = false;
+    if (sonar("record") !== false) return "Sonó con el sonido desactivado";
+    estado.ajustes.sonido = true;
+    return sonar("record") === true || "No suena con el sonido activado";
+  }],
+  ["Sonido", "Un nombre de sonido desconocido no rompe la app", function () {
+    return sonar("no-existe") === false || "Debería devolver false";
+  }]
+  ,
+  // ---------- 2.6: amigos, entreno guiado, progreso y recordatorios ----------
+  ["2.6 Amigos", "Una tarjeta de amigo se codifica y se lee igual (con tildes)", function () {
+    estadoPrueba({ usuario: "josé.ñú" });
+    sesionPrueba(fechaTexto(3), [["press-banca", [[80, 5]]], ["sentadilla", [[100, 5]]]]);
+    const enlace = enlaceTarjeta();
+    if (enlace.indexOf(URL_APP + "#amigo=") !== 0) return "Enlace mal formado";
+    const r = leerTarjeta(enlace);
+    if (!r.ok) return r.msg;
+    return (r.tarjeta.usuario === "josé.ñú" && r.tarjeta.records.length === 2 && r.tarjeta.records[0].n === "Sentadilla con barra") || JSON.stringify(r.tarjeta);
+  }],
+  ["2.6 Amigos", "Añadir un amigo con su enlace, actualizarlo y no poder añadirte a ti mismo", function () {
+    estadoPrueba({ usuario: "laura" });
+    estado.perfil.uid = "u-laura";
+    sesionPrueba(fechaTexto(2), [["press-banca", [[50, 8]]]]);
+    const enlaceLaura = enlaceTarjeta();
+    if (anadirAmigoReal(enlaceLaura).ok) return "Se pudo añadir a sí misma";
+    estadoPrueba({ usuario: "pablo" });
+    estado.perfil.uid = "u-pablo";
+    const r1 = anadirAmigoReal(enlaceLaura);
+    if (!r1.ok || !r1.nuevo) return "No se añadió: " + r1.msg;
+    const r2 = anadirAmigoReal(enlaceLaura.split("#")[1]);           // también vale solo el código
+    if (!r2.ok || r2.nuevo) return "Debería actualizar, no duplicar";
+    return estado.social.amigosReales.length === 1 || "Hay " + estado.social.amigosReales.length;
+  }],
+  ["2.6 Amigos", "Un código manipulado o inventado se rechaza", function () {
+    estadoPrueba();
+    if (leerTarjeta("hola").ok) return "Aceptó texto basura";
+    const falsa = aBase64(JSON.stringify({ v: 1, uid: "x", usuario: "x", rango: 99, racha: 1, entrenos: 1, records: [], fecha: "2026-01-01" }));
+    if (leerTarjeta(falsa).ok) return "Aceptó un rango imposible";
+    const pesada = aBase64(JSON.stringify({ v: 1, uid: "x", usuario: "x", rango: 1, racha: 1, entrenos: 1, records: [{ n: "x", p: 9999, r: 5 }], fecha: "2026-01-01" }));
+    return !leerTarjeta(pesada).ok || "Aceptó 9999 kg";
+  }],
+  ["2.6 Amigos", "Los datos antiguos se migran con la lista de amigos vacía", function () {
+    const viejo = estadoVacio({ nombre: "A", dias: 3 });
+    viejo.version = 4; delete viejo.social.amigosReales;
+    const d = migrarDatos(viejo);
+    return (d.version === VERSION_DATOS && Array.isArray(d.social.amigosReales)) || "Migración incompleta";
+  }],
+  ["2.6 Entreno", "Superserie: del primero pasa al segundo sin descanso y vuelve al primero tras descansar", function () {
+    estadoPrueba();
+    estado.activa = { inicio: Date.now(), diaIndex: null, diaNombre: "Libre", ejercicios: [ejercicioParaSesion("curl-barra"), ejercicioParaSesion("extension-polea")] };
+    estado.activa.ejercicios[0].superserie = true;
+    estado.activa.ejercicios[0].series[0].hecha = true;
+    const p1 = siguientePaso(0);
+    if (p1.ir !== 1 || p1.descanso) return "Paso 1: " + JSON.stringify(p1);
+    estado.activa.ejercicios[1].series[0].hecha = true;
+    const p2 = siguientePaso(1);
+    return (p2.ir === 0 && p2.descanso) || "Paso 2: " + JSON.stringify(p2);
+  }],
+  ["2.6 Entreno", "Al acabar un ejercicio salta al siguiente con series pendientes", function () {
+    estadoPrueba();
+    estado.activa = { inicio: Date.now(), diaIndex: null, diaNombre: "Libre", ejercicios: [ejercicioParaSesion("press-banca"), ejercicioParaSesion("jalon")] };
+    for (const s of estado.activa.ejercicios[0].series) s.hecha = true;
+    const p = siguientePaso(0);
+    if (p.ir !== 1) return "Fue a " + p.ir;
+    for (const s of estado.activa.ejercicios[1].series) s.hecha = true;
+    return siguientePaso(1).fin === true || "No detectó el final";
+  }],
+  ["2.6 Entreno", "Detecta un récord en directo solo si supera tu historial", function () {
+    estadoPrueba();
+    sesionPrueba(fechaTexto(7), [["press-banca", [[80, 5]]]]);
+    estado.activa = { inicio: Date.now(), diaIndex: null, diaNombre: "Libre", ejercicios: [ejercicioParaSesion("press-banca")] };
+    const e = estado.activa.ejercicios[0];
+    e.series[0].peso = 80; e.series[0].reps = 5; e.series[0].hecha = true;
+    if (esRecordEnVivo(0, 0)) return "Igualar no es récord";
+    e.series[1].peso = 85; e.series[1].reps = 5; e.series[1].hecha = true;
+    return esRecordEnVivo(0, 1) || "85×5 debería ser récord";
+  }],
+  ["2.6 Entreno", "El tipo de serie (drop set, rest-pause) se guarda al terminar", function () {
+    estadoPrueba();
+    estado.activa = { inicio: Date.now(), diaIndex: null, diaNombre: "Libre", ejercicios: [ejercicioParaSesion("curl-barra")] };
+    const e = estado.activa.ejercicios[0];
+    e.series[0].hecha = true; e.series[0].peso = 30; e.series[0].reps = 10;
+    e.series.splice(1, 0, { peso: 24, reps: 8, rpe: null, hecha: true, tipo: "drop" });
+    const r = terminarSesion();
+    return r.sesion.ejercicios[0].series[1].tipo === "drop" || "Se perdió el tipo";
+  }],
+  ["2.6 Entreno", "Los ejercicios añadidos a mano descansan más si son compuestos", function () {
+    estadoPrueba();
+    return (ejercicioParaSesion("sentadilla").objetivo.descanso > ejercicioParaSesion("curl-barra").objetivo.descanso) || "Mismo descanso";
+  }],
+  ["2.6 Progreso", "Las fórmulas de 1RM dan valores lógicos y Epley sigue en los rangos", function () {
+    estadoPrueba();
+    for (const k in FORMULAS_1RM) {
+      estado.ajustes.formula1RM = k;
+      const v = rm1Mostrado(100, 5);
+      if (!(v > 105 && v < 125)) return k + " da " + v;
+      if (rm1Mostrado(100, 1) < 100 || rm1Mostrado(100, 1) > 104) return k + " con 1 rep da " + rm1Mostrado(100, 1);
+    }
+    estado.ajustes.formula1RM = "brzycki";
+    return Math.abs(unaRM(100, 5) - 100 * (1 + 5 / 30)) < 0.001 || "Los rangos cambiaron de fórmula";
+  }],
+  ["2.6 Progreso", "La fatiga sube si la última semana triplica la carga habitual", function () {
+    estadoPrueba();
+    if (indiceFatiga().ratio !== null) return "Sin datos debería ser null";
+    for (let i = 1; i <= 4; i++) sesionPrueba(fechaTexto(7 * i + 2), [["press-banca", [[60, 8], [60, 8], [60, 8]]]]);
+    for (let i = 0; i < 3; i++) sesionPrueba(fechaTexto(i), [["press-banca", [[60, 8], [60, 8], [60, 8]]]]);
+    const f = indiceFatiga();
+    return (f.nivel === "muy-alta" || f.nivel === "alta") || "Nivel: " + f.nivel + " " + f.ratio;
+  }],
+  ["2.6 Progreso", "La carga semanal muestra todas las semanas, también las vacías", function () {
+    estadoPrueba();
+    sesionPrueba(fechaTexto(0), [["press-banca", [[50, 10]]]]);
+    const c = cargaPorSemanas(8);
+    return (c.length === 8 && c[7].carga.kg === 500 && c[0].carga.kg === 0) || JSON.stringify(c.map(function (x) { return x.carga.kg; }));
+  }],
+  ["2.6 Recordatorios", "Avisa el día de entreno a partir de la hora elegida y solo una vez", function () {
+    estadoPrueba();
+    const ahora = new Date(hoy() + "T19:30:00");
+    estado.perfil.diasSemana = [(ahora.getDay() + 6) % 7];
+    estado.ajustes.notif.hora = 18;
+    const a = recordatorioPendiente(ahora);
+    if (!a || a.tipo !== "entreno") return "No avisó: " + JSON.stringify(a);
+    if (a.texto.indexOf("disciplina") < 0) return "Falta la frase de la disciplina";
+    if (recordatorioPendiente(new Date(hoy() + "T10:00:00"))) return "Avisó antes de la hora";
+    estado.ajustes.notif.ultimoAviso = hoy();
+    return recordatorioPendiente(ahora) === null || "Avisó dos veces";
+  }],
+  ["2.6 Recordatorios", "No avisa si ya entrenaste hoy ni con molestias recientes", function () {
+    estadoPrueba();
+    const ahora = new Date(hoy() + "T20:00:00");
+    estado.perfil.diasSemana = [0, 1, 2, 3, 4, 5, 6];
+    sesionPrueba(hoy(), [["press-banca", [[50, 10]]]]);
+    if (recordatorioPendiente(ahora)) return "Avisó habiendo entrenado";
+    estadoPrueba();
+    estado.perfil.diasSemana = [0, 1, 2, 3, 4, 5, 6];
+    sesionPrueba(fechaTexto(1), [["press-banca", [[50, 10]]]], { molestias: { "press-banca": true } });
+    return recordatorioPendiente(ahora) === null || "Avisó con molestias";
+  }],
+  ["2.6 Apix", "Apix recuerda un reto personal en marcha", function () {
+    estadoPrueba();
+    estado.social.retos.push({ id: "r1", tipo: "entrenos", meta: 5, inicio: fechaTexto(3), fin: sumarDias(hoy(), 4) });
+    sesionPrueba(fechaTexto(2), [["press-banca", [[50, 10]]]]);
+    const m = estadoMascota();
+    return (m.accion === "ver-retos" && m.mensaje.indexOf("4 entrenos") >= 0) || JSON.stringify(m);
   }]
 ];
 

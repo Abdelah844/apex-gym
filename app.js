@@ -11,10 +11,14 @@ let periodo = 28;               // días del periodo en Progreso (0 = todo)
 let ejGrafica = "";
 let metrica = "rm";
 let grupoVolumen = "";
+let vistaCarga = "semana";
+const MESES_CORTOS = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
 let vistaSocial = "feed";
+let postNuevo = "";            // publicación recién creada (se resalta un momento)
 let confirmar = "";             // botón que espera un segundo toque
 let propuesta = null;           // rutina generada que aún no se ha aceptado
 let sesionRecuperada = false;
+let cambioEditor = "";          // ejercicio recién cambiado en el editor de día (se resalta)
 let mensajeSugerencia = "";       // frase con el último cambio aplicado a la rutina    // se abrió la app con un entreno a medias
 
 // ---------- Ayudas ----------
@@ -280,12 +284,13 @@ function pintarInicio() {
 
   h += '<div class="stack">';
 
-  // Kilo, la mascota
-  const kilo = estadoMascota();
-  if (kilo) {
-    h += '<div class="kilo-card kilo-tono-' + kilo.humor + '">' + kiloSVG(kilo.humor) +
-      '<div class="bocadillo"><p class="label">Kilo</p><p>' + esc(kilo.mensaje) + '</p>' +
-      ((kilo.humor === "anima" || kilo.humor === "enfadado") && estado.rutina && !estado.activa ? '<button class="btn-txt small" data-act="empezar-dia" data-a="' + indiceSiguienteDia() + '">Vamos a entrenar →</button>' : "") +
+  // Apix, la mascota
+  const apix = estadoMascota();
+  if (apix) {
+    h += '<div class="apix-card apix-tono-' + apix.humor + '"><button class="apix-boton" data-act="tocar-apix" data-a="' + apix.humor + '" aria-label="Tocar a Apix">' + apixSVG(apix.humor) + '</button>' +
+      '<div class="bocadillo"><p class="label">Apix</p><p>' + esc(apix.mensaje) + '</p>' +
+      (apix.accion === "ver-retos" ? '<button class="btn-txt small" data-act="ir-retos">Ver mi reto →</button>' : (apix.accion === "nuevo-reto" ? '<button class="btn-txt small" data-act="nuevo-reto">Crear un reto →</button>' : "")) +
+      ((apix.humor === "anima" || apix.humor === "enfadado") && estado.rutina && !estado.activa ? '<button class="btn-txt small" data-act="empezar-dia" data-a="' + indiceSiguienteDia() + '">Vamos a entrenar →</button>' : "") +
       '</div></div>';
   }
 
@@ -379,11 +384,17 @@ function pintarInicio() {
     h += '</div></div>';
   }
 
-  // Actividad de amigos
+  // Amigos: los tuyos (con su tarjeta) y, en la demo, su actividad
+  const reales = (estado.social.amigosReales || []).slice().sort(function (x, y) { return y.racha - x.racha; }).slice(0, 3);
   const posts = feedVisible().filter(function (x) { return x.autorId !== miId(); }).slice(0, 2);
-  h += '<div class="card"><div class="row between"><h3>Actividad de amigos</h3><button class="btn-txt small" data-tab="social">Ver todo</button></div>';
-  if (posts.length === 0) h += '<p class="muted" style="padding-top:8px">' + (estado.modo === "demo" ? "Añade amigos en Social para ver su actividad." : "Los amigos llegarán con las cuentas en servidor.") + '</p>';
-  else {
+  h += '<div class="card"><div class="row between"><h3>Amigos</h3><button class="btn-txt small" data-act="ir-amigos">' + (reales.length ? "Ver todos" : "Invitar") + '</button></div>';
+  if (reales.length) {
+    h += '<div class="list">' + reales.map(function (a) {
+      return '<div class="item">' + insignia(a.rango, "sm") + '<div class="grow"><span class="name small">@' + esc(a.usuario) + '</span><span class="muted small">' + nombreRango(a.rango) + ' · racha ' + a.racha + ' sem</span></div></div>';
+    }).join("") + '</div>';
+  }
+  if (posts.length === 0 && !reales.length) h += '<p class="muted small" style="padding-top:6px">Invita a tus amigos y compara rango y racha.</p>';
+  else if (posts.length) {
     h += '<div class="list">';
     for (const x of posts) h += '<div class="item"><div class="avatar" style="width:32px;height:32px;font-size:.85rem">' + esc(nombreDe(x.autorId, x.autorNombre)[0]).toUpperCase() + '</div><div class="grow"><span class="name small">@' + esc(nombreDe(x.autorId, x.autorNombre)) + '</span><span class="muted small">' + esc(x.texto) + '</span></div></div>';
     h += '</div>';
@@ -401,11 +412,12 @@ function pintarEntrenar() {
   let h = '<div class="head"><div><p class="label">Tu plan</p><h1>Entrenar</h1></div>' +
     '<button class="avatar" data-act="abrir-ajustes" aria-label="Perfil">' + esc(estado.perfil.nombre[0] || "?").toUpperCase() + '</button></div><div class="stack">';
 
-  h += '<div class="grid2"><button class="btn-sec" data-act="abrir-generador">Generar rutina</button><button class="btn-sec" data-act="empezar-libre">Entreno libre</button></div>' +
-    '<div class="grid2"><button class="btn-sec" data-act="abrir-biblioteca">Academia y ejercicios</button><button class="btn-sec" data-act="abrir-gimnasio">Mi gimnasio</button></div>';
+  h += '<div class="grid2 acciones-entreno"><button class="accion-grande" data-act="abrir-generador"><span class="ico">✨</span><b>' + (estado.rutina ? "Nueva rutina" : "Generar rutina") + '</b><span class="muted small">En 3 pasos, a tu medida</span></button>' +
+    '<button class="accion-grande" data-act="empezar-libre"><span class="ico">⚡</span><b>Entreno libre</b><span class="muted small">Eliges sobre la marcha</span></button></div>' +
+    '<div class="grid2"><button class="btn-sec small" data-act="abrir-biblioteca">Ejercicios</button><button class="btn-sec small" data-act="abrir-gimnasio">Mi gimnasio</button></div>';
 
   if (!estado.rutina) {
-    h += '<div class="card stack tight" style="text-align:center;padding:28px 16px"><h2>Aún no tienes rutina</h2><p class="muted">Genera una con tus datos o empieza un entreno libre.</p><button class="btn" data-act="abrir-generador">Crear rutina</button></div>';
+    h += '<div class="card stack tight" style="text-align:center;padding:24px 16px"><h2>Aún no tienes rutina</h2><p class="muted">Créala en 3 pasos o entrena libre.</p><button class="btn" data-act="abrir-generador">Crear mi rutina</button></div>';
   } else {
     const sig = indiceSiguienteDia();
     const sug = sugerenciasRutina();
@@ -437,69 +449,168 @@ function pintarEntrenar() {
 }
 
 // ---------- Sesión en curso ----------
+// Un ejercicio a la vez: arriba el progreso y los ejercicios para saltar, en el centro la serie actual en grande.
+let serieMarcada = "";          // "ei-si" de la última serie completada (para su animación)
+let mensajeEntreno = "";        // frase corta de Apix durante el entreno
+
+function numero(n) { return String(n).replace(".", ","); }
+const ETIQUETA_TIPO = { drop: "D", rp: "RP" };
+
 function pintarSesion() {
   const a = estado.activa;
   const minutos = Math.round((Date.now() - a.inicio) / 60000);
   let hechas = 0, total = 0;
   for (const e of a.ejercicios) for (const s of e.series) { total++; if (s.hecha) hechas++; }
-
+  const ei = ejercicioActual();
   const hora = ultimoGuardado ? ultimoGuardado.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }) : "";
-  let h = (sesionAntigua() ? '<div class="card stack tight" style="margin-bottom:12px;border-color:var(--warn)"><p class="small"><b>Este entreno empezó hace más de 12 horas.</b> Termínalo para guardarlo con su fecha o descártalo.</p></div>' : "") +
-    (sesionRecuperada && !sesionAntigua() ? '<div class="card" style="margin-bottom:12px;border-color:var(--good)"><p class="small"><b>Entreno recuperado.</b> Seguía guardado aunque se cerró la app.</p></div>' : "") +
-    '<div class="head"><div class="grow"><p class="label">Entreno en curso · <span id="cronometro">' + minutos + '</span> min' + (hora ? ' · <span style="color:var(--good)">guardado ' + hora + '</span>' : "") + '</p><h1 style="font-size:1.45rem">' + esc(a.diaNombre) + '</h1></div>' +
-    '<button class="icon-btn" data-act="deshacer" aria-label="Deshacer"' + (pilaDeshacer.length ? "" : " disabled") + '>' + I.deshacer + '</button></div>';
-  if (estado.perfil.lesiones) h += '<p class="muted small" style="margin:-8px 0 12px">Recordatorio: ' + esc(estado.perfil.lesiones) + '. Para si notas dolor.</p>';
-  h += '<div class="stack"><div class="card row between"><div><p class="label">Series completadas</p><span class="big-num num">' + hechas + '</span><span class="muted"> / ' + total + '</span></div>' +
-    '<button class="btn auto" data-act="terminar"' + (hechas ? "" : " disabled") + '>Terminar</button></div>';
 
-  a.ejercicios.forEach(function (e, ei) {
-    const ej = buscarEj(e.id);
-    const ultima = ultimaVez(e.id);
-    const rec = recomendar(e.id, e.objetivo);
-    const pr = puntosEjercicio(e.id);
-    const record = mejorSerie(e.id);
-    const etiqueta = { subir: ["up", "Subir"], mantener: ["keep", "Mantener"], bajar: ["down", "Bajar"], empezar: ["keep", "Empezar"] }[rec.accion];
+  let h = (sesionAntigua() ? '<div class="card stack tight" style="margin-bottom:12px;border-color:var(--warn)"><p class="small"><b>Empezó hace más de 12 horas.</b> Termínalo o descártalo.</p></div>' : "") +
+    (sesionRecuperada && !sesionAntigua() ? '<div class="card" style="margin-bottom:12px;border-color:var(--good)"><p class="small"><b>Entreno recuperado.</b> Seguía guardado.</p></div>' : "") +
+    '<div class="head"><div class="grow"><p class="label"><span id="cronometro">' + minutos + '</span> min' + (hora ? ' · <span style="color:var(--good)">guardado ' + hora + '</span>' : "") + '</p><h1 style="font-size:1.4rem">' + esc(a.diaNombre) + '</h1></div>' +
+    '<button class="icon-btn" data-act="deshacer" aria-label="Deshacer"' + (pilaDeshacer.length ? "" : " disabled") + '>' + I.deshacer + '</button>' +
+    '<button class="btn auto btn-terminar" data-act="terminar"' + (hechas ? "" : " disabled") + '>Terminar</button></div>';
 
-    const fotosEj = fotosDe(e.id);
-    h += '<div class="card">' + (fotosEj ? '<button class="mini-fotos" data-act="info-ej" data-a="' + e.id + '" aria-label="Ver cómo se hace ' + esc(ej.nombre) + '">' +
-        fotosEj.map(function (src) { return '<img src="' + src + '" alt="" loading="lazy" decoding="async">'; }).join("") + '<span>Ver técnica</span></button>' : "") +
-      '<div class="ex-head">' + insignia(pr === null ? null : rangoDePuntos(pr), "sm") +
-      '<div class="grow"><h3>' + esc(ej.nombre) + '</h3><p class="muted small num">' + e.objetivo.series + ' × ' + e.objetivo.repMin + '-' + e.objetivo.repMax + ' · descanso ' + e.objetivo.descanso + ' s' +
-      '</p>' + (record ? '<p class="small" style="color:var(--pr);font-weight:700">Récord: ' + String(record.peso).replace(".", ",") + ' kg × ' + record.reps + '</p>' : "") + '</div>' +
-      '<button class="icon-btn sm" data-act="info-ej" data-a="' + e.id + '" aria-label="Cómo se hace">' + I.info + '</button></div>';
+  // Progreso del entreno y salto rápido entre ejercicios
+  const pct = total ? Math.round(hechas / total * 100) : 0;
+  h += '<div class="progreso-entreno"><div class="row between small"><b>' + hechas + ' de ' + total + ' series</b><span class="muted">' + pct + ' %</span></div>' +
+    '<div class="bar"><i style="width:' + pct + '%"></i></div>' +
+    '<div class="chips saltos">' + a.ejercicios.map(function (e, i) {
+      const n = e.series.filter(function (s) { return s.hecha; }).length;
+      const lleno = n === e.series.length && n > 0;
+      return '<button class="chip' + (i === ei ? " on" : "") + (lleno ? " hecho" : "") + '" data-act="ir-ej" data-a="' + i + '">' + (lleno ? "✓ " : (i + 1) + ". ") + esc(buscarEj(e.id).nombre.split(" ").slice(0, 2).join(" ")) + (e.superserie ? " ⇄" : "") + '</button>';
+    }).join("") + '</div></div>';
 
-    h += '<div class="rec"><span class="pill ' + etiqueta[0] + '">' + etiqueta[1] + '</span><div class="grow"><p>' + esc(rec.motivo) + '</p>' +
-      (rec.accion !== "mantener" && ej.equipo !== "corporal" ? '<button class="btn-txt small" data-act="aplicar-peso" data-a="' + ei + '" data-b="' + rec.peso + '">Usar ' + String(rec.peso).replace(".", ",") + ' kg en las series pendientes</button>' : "") + '</div></div>';
+  if (estado.perfil.lesiones) h += '<p class="muted small" style="margin:0 0 10px">Recuerda: ' + esc(estado.perfil.lesiones) + '. Para si notas dolor.</p>';
 
-    h += (ej.asistido ? '<p class="small" style="color:var(--warn);margin-top:8px">Los kg son ayuda: cuantos menos, más difícil.</p>' : "") +
-      '<div class="sets"><div class="set-h"><span>#</span><span title="Toca para copiar">Antes</span><span>' + (ej.asistido ? "Ayuda" : "Kg") + '</span><span>Reps</span><span>RPE</span><span></span></div>';
-    e.series.forEach(function (s, si) {
-      const ant = ultima && ultima.series[si] ? String(ultima.series[si].peso).replace(".", ",") + "×" + ultima.series[si].reps : "—";
-      let rpe = '<option value="">–</option>';
-      for (const v of [6, 7, 8, 8.5, 9, 9.5, 10]) rpe += '<option value="' + v + '"' + (s.rpe === v ? " selected" : "") + '>' + String(v).replace(".", ",") + '</option>';
-      h += '<div class="set' + (s.hecha ? " done" : "") + '"><span class="n">' + (si + 1) + '</span>' + (ant === "—" ? '<span class="prev num">—</span>' : '<button class="prev num" data-act="copiar-anterior" data-a="' + ei + '" data-b="' + si + '" title="Copiar">' + ant + '</button>') +
-        '<input type="number" inputmode="decimal" step="0.5" min="0" value="' + s.peso + '" data-in="peso" data-e="' + ei + '" data-s="' + si + '" aria-label="Kilos serie ' + (si + 1) + '">' +
-        '<input type="number" inputmode="numeric" min="0" value="' + s.reps + '" data-in="reps" data-e="' + ei + '" data-s="' + si + '" aria-label="Repeticiones serie ' + (si + 1) + '">' +
-        '<select data-in="rpe" data-e="' + ei + '" data-s="' + si + '" aria-label="Esfuerzo percibido">' + rpe + '</select>' +
-        '<button class="tick" data-act="marcar" data-a="' + ei + '" data-b="' + si + '" aria-label="Marcar serie como hecha">' + I.check + '</button></div>';
-      if (s.error) h += '<p class="err small" style="padding:0 6px">' + esc(s.error) + '</p>';
-      else if (s.sospechosa && !s.confirmada) h += '<div class="row small" style="padding:2px 6px;color:var(--warn)"><span class="grow">⚠ ' + esc(s.aviso) + ' No contará para rangos hasta que lo confirmes.</span><button class="btn-txt small" data-act="confirmar-serie" data-a="' + ei + '" data-b="' + si + '">Es correcto</button></div>';
-    });
-    h += '</div><div class="tools">' +
-      '<button class="btn-sec small" data-act="serie-mas" data-a="' + ei + '">+ Serie</button>' +
-      '<button class="btn-sec small" data-act="serie-menos" data-a="' + ei + '"' + (e.series.length > 1 ? "" : " disabled") + '>− Serie</button>' +
-      '<button class="icon-btn sm" data-act="mover-ej" data-a="' + ei + '" data-b="-1" aria-label="Subir"' + (ei > 0 ? "" : " disabled") + '>' + I.arriba + '</button>' +
-      '<button class="icon-btn sm" data-act="mover-ej" data-a="' + ei + '" data-b="1" aria-label="Bajar"' + (ei < a.ejercicios.length - 1 ? "" : " disabled") + '>' + I.abajo + '</button>' +
-      '<button class="icon-btn sm" data-act="sustituir-sesion" data-a="' + ei + '" aria-label="Sustituir">' + I.cambiar + '</button>' +
-      '<button class="icon-btn sm btn-danger" data-act="quitar-ej" data-a="' + ei + '" aria-label="Quitar">' + I.borrar + '</button></div>' +
-      '<div class="tools"><label class="check small" style="padding:7px 10px"><input type="checkbox" data-in="molestias" data-e="' + ei + '"' + (e.molestias ? " checked" : "") + '>Molestias</label>' +
-      '<label class="check small" style="padding:7px 10px"><input type="checkbox" data-in="cambio" data-e="' + ei + '"' + (e.cambio ? " checked" : "") + '>Otra máquina o técnica</label></div>' +
-      '<textarea data-in="nota" data-e="' + ei + '" placeholder="Notas (opcional)" style="margin-top:10px;min-height:42px">' + esc(e.nota) + '</textarea></div>';
-  });
+  if (ei < 0) {
+    h += '<div class="card stack tight" style="text-align:center;padding:26px 16px"><h3>Entreno vacío</h3><p class="muted">Añade el primer ejercicio.</p></div>';
+  } else {
+    h += tarjetaEjercicio(ei);
+  }
 
-  h += '<button class="btn-sec full" data-act="anadir-a-sesion" style="padding:14px">+ Añadir ejercicio</button>' +
-    '<button class="btn-txt btn-danger" data-act="cancelar-sesion">' + (confirmar === "cancelar-sesion" ? "Pulsa otra vez para descartar el entreno" : "Descartar entreno") + '</button></div>';
+  h += '<button class="btn-sec full" data-act="anadir-a-sesion" style="padding:14px;margin-top:12px">+ Añadir ejercicio</button>' +
+    '<button class="btn-txt btn-danger" data-act="cancelar-sesion" style="margin-top:6px">' + (confirmar === "cancelar-sesion" ? "Pulsa otra vez para descartar" : "Descartar entreno") + '</button>';
   $("app").innerHTML = h;
+  serieMarcada = "";
+}
+
+function tarjetaEjercicio(ei) {
+  const a = estado.activa;
+  const e = a.ejercicios[ei];
+  const ej = buscarEj(e.id);
+  const rec = recomendar(e.id, e.objetivo);
+  const pr = puntosEjercicio(e.id);
+  const record = mejorSerie(e.id);
+  const etiqueta = { subir: ["up", "Subir"], mantener: ["keep", "Mantener"], bajar: ["down", "Bajar"], empezar: ["keep", "Empezar"] }[rec.accion];
+  const fotosEj = fotosDe(e.id);
+  const si = serieEnFoco(e);
+  const hechasEj = e.series.filter(function (s) { return s.hecha; }).length;
+
+  let h = '<div class="card ejercicio-foco" id="tarjetaEj">' +
+    '<div class="ex-head">' + (fotosEj ? '<button class="foto-mini" data-act="info-ej" data-a="' + e.id + '" aria-label="Ver técnica"><img src="' + fotosEj[0] + '" alt="" decoding="async"></button>' : insignia(pr === null ? null : rangoDePuntos(pr), "sm")) +
+    '<div class="grow"><p class="label">Ejercicio ' + (ei + 1) + ' de ' + a.ejercicios.length + (e.superserie ? ' · superserie con el siguiente' : (ei > 0 && a.ejercicios[ei - 1].superserie ? ' · superserie con el anterior' : "")) + '</p><h3>' + esc(ej.nombre) + '</h3>' +
+    '<p class="muted small num">' + e.objetivo.series + ' × ' + e.objetivo.repMin + '-' + e.objetivo.repMax + ' · descanso ' + e.objetivo.descanso + ' s</p>' +
+    (record ? '<p class="small" style="color:var(--pr);font-weight:700">Récord: ' + numero(record.peso) + ' kg × ' + record.reps + '</p>' : "") + '</div>' +
+    '<button class="icon-btn sm" data-act="info-ej" data-a="' + e.id + '" aria-label="Cómo se hace">' + I.info + '</button></div>';
+
+  // Sugerencia de progresión (corta)
+  h += '<div class="rec"><span class="pill ' + etiqueta[0] + '">' + etiqueta[1] + '</span><div class="grow"><p>' + esc(rec.motivo) + '</p>' +
+    (rec.accion !== "mantener" && ej.equipo !== "corporal" ? '<button class="btn-txt small" data-act="aplicar-peso" data-a="' + ei + '" data-b="' + rec.peso + '">Usar ' + numero(rec.peso) + ' kg</button>' : "") + '</div></div>';
+
+  // Apix con una frase corta, solo en momentos clave
+  const frase = mensajeEntreno || fraseApixEntreno(ei, si);
+  if (frase && estado.ajustes.mascota !== false) h += '<div class="apix-entreno">' + apixSVG(mensajeEntreno.indexOf("récord") >= 0 ? "celebra" : "anima", "xs") + '<p class="small"><b>Apix:</b> ' + esc(frase) + '</p></div>';
+  mensajeEntreno = "";
+
+  // Panel grande de la serie actual
+  if (si >= 0) {
+    const s = e.series[si];
+    const ultima = ultimaVez(e.id);
+    const ant = ultima && ultima.series[si] ? numero(ultima.series[si].peso) + " × " + ultima.series[si].reps : "";
+    const paso = pasoPeso(ej);
+    h += '<div class="panel-serie">' +
+      '<div class="row between"><p class="label">' + (s.tipo === "drop" ? "Drop set" : (s.tipo === "rp" ? "Rest-pause" : "Serie " + (si + 1) + " de " + e.series.length)) + '</p>' +
+      (ant ? '<button class="btn-txt small" data-act="copiar-anterior" data-a="' + ei + '" data-b="' + si + '">La última vez: ' + ant + '</button>' : "") + '</div>' +
+      '<div class="ajuste"><button class="paso" data-act="paso" data-a="' + ei + '" data-b="' + si + '" data-c="peso:-' + paso + '" aria-label="Menos ' + numero(paso) + ' kg">−' + numero(paso) + '</button>' +
+        '<label class="valor"><input type="number" inputmode="decimal" step="0.5" min="0" value="' + s.peso + '" data-in="peso" data-e="' + ei + '" data-s="' + si + '" aria-label="Kilos"><span>' + (ej.asistido ? "kg de ayuda" : "kg") + '</span></label>' +
+        '<button class="paso" data-act="paso" data-a="' + ei + '" data-b="' + si + '" data-c="peso:' + paso + '" aria-label="Más ' + numero(paso) + ' kg">+' + numero(paso) + '</button></div>' +
+      '<div class="ajuste"><button class="paso" data-act="paso" data-a="' + ei + '" data-b="' + si + '" data-c="reps:-1" aria-label="Una repetición menos">−1</button>' +
+        '<label class="valor"><input type="number" inputmode="numeric" min="0" value="' + s.reps + '" data-in="reps" data-e="' + ei + '" data-s="' + si + '" aria-label="Repeticiones"><span>reps</span></label>' +
+        '<button class="paso" data-act="paso" data-a="' + ei + '" data-b="' + si + '" data-c="reps:1" aria-label="Una repetición más">+1</button></div>' +
+      '<div class="row rpe-fila"><span class="muted small">Esfuerzo (opcional)</span><div class="chips">' + [7, 8, 9, 10].map(function (v) {
+        return '<button class="chip' + (s.rpe === v ? " on" : "") + '" data-act="rpe" data-a="' + ei + '" data-b="' + si + '" data-c="' + v + '">' + v + '</button>';
+      }).join("") + '</div></div>' +
+      (s.error ? '<p class="err small">' + esc(s.error) + '</p>' : "") +
+      (s.sospechosa && !s.confirmada ? '<div class="row small" style="color:var(--warn)"><span class="grow">⚠ ' + esc(s.aviso) + '</span><button class="btn-txt small" data-act="confirmar-serie" data-a="' + ei + '" data-b="' + si + '">Es correcto</button></div>' : "") +
+      '<button class="btn completar" data-act="marcar" data-a="' + ei + '" data-b="' + si + '">' + I.check + ' Completar serie</button></div>';
+  } else {
+    h += '<div class="panel-serie hecho"><p><b>✓ Ejercicio completado</b></p>' +
+      (ei < a.ejercicios.length - 1 ? '<button class="btn" data-act="ir-ej" data-a="' + (ei + 1) + '">Siguiente ejercicio →</button>' : '<button class="btn" data-act="terminar">Terminar entreno</button>') + '</div>';
+  }
+
+  // Todas las series (toca una para editarla)
+  h += (ej.asistido ? '<p class="small" style="color:var(--warn);margin-top:8px">Los kg son ayuda: cuantos menos, más difícil.</p>' : "") + '<div class="series-lista">';
+  e.series.forEach(function (s, j) {
+    const clase = (s.hecha ? " done" : "") + (j === si ? " foco" : "") + (serieMarcada === ei + "-" + j ? " recien" : "");
+    h += '<div class="serie-fila' + clase + '"><button class="n" data-act="foco-serie" data-a="' + ei + '" data-b="' + j + '" aria-label="Editar serie ' + (j + 1) + '">' + (ETIQUETA_TIPO[s.tipo] || (j + 1)) + '</button>' +
+      '<button class="grow txt num" data-act="foco-serie" data-a="' + ei + '" data-b="' + j + '">' + numero(s.peso) + ' kg × ' + s.reps + (s.rpe ? ' · RPE ' + numero(s.rpe) : "") + (s.prVivo ? ' <span class="pill pr">Récord</span>' : "") + '</button>' +
+      '<button class="tick" data-act="marcar" data-a="' + ei + '" data-b="' + j + '" aria-label="' + (s.hecha ? "Desmarcar" : "Marcar") + ' serie ' + (j + 1) + '">' + I.check + '</button></div>';
+  });
+  h += '</div>';
+  if (hechasEj > 0) h += '<div class="tools"><button class="btn-sec small" data-act="drop-set" data-a="' + ei + '">+ Drop set</button><button class="btn-sec small" data-act="rest-pause" data-a="' + ei + '">+ Rest-pause</button></div>';
+
+  // Historial rápido del ejercicio
+  const historial = [];
+  for (let k = 0; k < 3; k++) { const u = ultimaVez(e.id, k); if (u) historial.push(u); }
+  if (historial.length) {
+    h += '<div class="historial-rapido"><p class="label">Últimas veces</p>' + historial.map(function (u) {
+      return '<p class="small num"><span class="muted">' + fechaBonita(u.fecha) + '</span> ' + u.series.map(function (x) { return numero(x.peso) + '×' + x.reps; }).join(" · ") + '</p>';
+    }).join("") + '</div>';
+  }
+
+  // Anterior / Siguiente
+  h += '<div class="grid2 nav-ej"><button class="btn-sec" data-act="ir-ej" data-a="' + (ei - 1) + '"' + (ei > 0 ? "" : " disabled") + '>← Anterior</button>' +
+    '<button class="btn-sec" data-act="ir-ej" data-a="' + (ei + 1) + '"' + (ei < a.ejercicios.length - 1 ? "" : " disabled") + '>Siguiente →</button></div>';
+
+  // Más opciones
+  h += '<details class="mas-opciones"><summary>Más opciones</summary><div class="tools">' +
+    '<button class="btn-sec small" data-act="serie-mas" data-a="' + ei + '">+ Serie</button>' +
+    '<button class="btn-sec small" data-act="serie-menos" data-a="' + ei + '"' + (e.series.length > 1 ? "" : " disabled") + '>− Serie</button>' +
+    (ei < a.ejercicios.length - 1 ? '<button class="btn-sec small" data-act="superserie" data-a="' + ei + '">' + (e.superserie ? "Quitar superserie" : "Superserie con el siguiente") + '</button>' : "") +
+    '<button class="icon-btn sm" data-act="mover-ej" data-a="' + ei + '" data-b="-1" aria-label="Mover antes"' + (ei > 0 ? "" : " disabled") + '>' + I.arriba + '</button>' +
+    '<button class="icon-btn sm" data-act="mover-ej" data-a="' + ei + '" data-b="1" aria-label="Mover después"' + (ei < a.ejercicios.length - 1 ? "" : " disabled") + '>' + I.abajo + '</button>' +
+    '<button class="icon-btn sm" data-act="sustituir-sesion" data-a="' + ei + '" aria-label="Sustituir">' + I.cambiar + '</button>' +
+    '<button class="icon-btn sm btn-danger" data-act="quitar-ej" data-a="' + ei + '" aria-label="Quitar">' + I.borrar + '</button></div>' +
+    '<div class="tools"><label class="check small" style="padding:7px 10px"><input type="checkbox" data-in="molestias" data-e="' + ei + '"' + (e.molestias ? " checked" : "") + '>Molestias</label>' +
+    '<label class="check small" style="padding:7px 10px"><input type="checkbox" data-in="cambio" data-e="' + ei + '"' + (e.cambio ? " checked" : "") + '>Otra máquina o técnica</label></div>' +
+    '<textarea data-in="nota" data-e="' + ei + '" placeholder="Notas (opcional)" style="margin-top:10px;min-height:42px">' + esc(e.nota) + '</textarea></details>';
+  return h + '</div>';
+}
+
+// Frases cortas de Apix en momentos clave del entreno (no en cada serie)
+function fraseApixEntreno(ei, si) {
+  const a = estado.activa;
+  const e = a.ejercicios[ei];
+  if (si < 0) return "";
+  const pendientesEj = e.series.filter(function (s) { return !s.hecha; }).length;
+  const quedanOtros = a.ejercicios.some(function (x, i) { return i !== ei && x.series.some(function (s) { return !s.hecha; }); });
+  if (pendientesEj === 1 && !quedanOtros) return "¡Última serie del entreno! Dalo todo.";
+  if (pendientesEj === 1 && e.series.length > 1) return "¡Vamos con esa última serie!";
+  if (!quedanOtros && si === 0 && a.ejercicios.length > 1) return "Último ejercicio. ¡Termina fuerte!";
+  return "";
+}
+
+// Texto "Siguiente: …" que se muestra durante el descanso
+function textoSiguiente() {
+  const a = estado.activa;
+  if (!a) return "";
+  const ei = ejercicioActual();
+  if (ei < 0) return "";
+  const e = a.ejercicios[ei];
+  const si = serieEnFoco(e);
+  if (si < 0) return "¡Entreno completado! Pulsa Terminar.";
+  const s = e.series[si];
+  return buscarEj(e.id).nombre + " · " + (s.tipo === "drop" ? "drop set" : "serie " + (si + 1)) + " · " + numero(s.peso) + " kg × " + s.reps;
 }
 
 // Guarda una copia de la sesión antes de cambiarla (para Deshacer)
@@ -535,6 +646,19 @@ function pintarRangos() {
   } else h += '<p class="muted">Completa tu primer entreno para obtener rango.</p>';
   h += '</div>';
 
+  // Ranking por grupo muscular: ordenado de mejor a peor y bien visible
+  const datosG = [];
+  for (const g in GRUPOS) datosG.push({ g: g, p: puntosGrupo(g) });
+  const ordenados = datosG.slice().sort(function (a, b) { return (b.p === null ? -1 : b.p) - (a.p === null ? -1 : a.p); });
+  h += '<div class="card"><div class="row between"><h3>Tu ranking por músculo</h3><span class="muted small">Toca para ver detalle</span></div><div class="list">';
+  ordenados.forEach(function (d, pos) {
+    const ri = d.p === null ? null : rangoDePuntos(d.p);
+    h += '<button class="item ranking-fila" data-act="ver-grupo" data-a="' + d.g + '"><span class="pos num">' + (d.p === null ? "–" : pos + 1) + '</span>' + insignia(ri, "sm") +
+      '<div class="grow stack tight" style="gap:4px"><div class="row between"><span class="name">' + GRUPOS[d.g] + '</span><span class="small" style="color:' + (ri === null ? "var(--muted)" : RANGOS[ri].color) + ';font-weight:800">' + nombreRango(ri) + (d.p === null ? "" : ' · <span class="num">' + d.p.toFixed(0) + '</span>') + '</span></div>' +
+      (d.p === null ? '<span class="muted small">Sin datos todavía</span>' : '<div class="bar"><i style="width:' + Math.min(100, d.p) + '%;background:' + RANGOS[ri].color + '"></i></div>') + '</div></button>';
+  });
+  h += '</div><p class="muted small">Los grupos marcados en el mapa y los 8 principales cuentan para tu rango global.</p></div>';
+
   // Escala de los 9 rangos: el tuyo resaltado, los que aún no tienes atenuados
   h += '<div class="card stack"><div class="row between"><h3>Los 9 rangos</h3><span class="muted small">De principiante a élite</span></div><div class="escala">';
   RANGOS.forEach(function (r, i) {
@@ -547,18 +671,6 @@ function pintarRangos() {
   h += '<div class="card stack"><div class="row between"><h3>Mapa corporal</h3><span class="muted small">Toca un músculo</span></div>' + mapaCorporal() +
     '<div class="row wrap" style="gap:6px;justify-content:center">';
   RANGOS.forEach(function (r, i) { h += '<span class="row small" style="gap:4px"><i style="width:10px;height:10px;border-radius:3px;background:' + r.color + ';display:inline-block"></i>' + r.nombre + '</span>'; });
-  h += '</div></div>';
-
-  // Grupos
-  const datosG = [];
-  for (const g in GRUPOS) datosG.push({ g: g, p: puntosGrupo(g) });
-  h += '<div class="card"><h3>Por grupo muscular</h3><div class="list">';
-  for (const d of datosG) {
-    const ri = d.p === null ? null : rangoDePuntos(d.p);
-    const fia = fiabilidadGrupo(d.g);
-    h += '<button class="item" data-act="ver-grupo" data-a="' + d.g + '">' + insignia(ri, "sm") + '<div class="grow stack tight" style="gap:4px"><div class="row between"><span class="name">' + GRUPOS[d.g] + (GRUPOS_PRINCIPALES.includes(d.g) ? "" : ' <span class="muted small">(no cuenta en el global)</span>') + '</span><span class="muted small">' + nombreRango(ri) + (d.p !== null ? " · fiabilidad " + fia.nivel : "") + '</span></div>' +
-      (d.p === null ? '<span class="muted small">Sin datos todavía</span>' : '<div class="bar"><i style="width:' + progresoRango(d.p) + '%"></i></div>') + '</div></button>';
-  }
   h += '</div></div>';
 
   // Mejores y a mejorar
@@ -667,7 +779,31 @@ function pintarProgreso() {
       '<div class="card"><p class="label">Series efectivas</p><div class="big-num num">' + efectivas + delta(efectivas, efectivasPrev) + '</div><p class="muted small">hechas y válidas</p></div>' +
       '<div class="card"><p class="label">Duración media</p><div class="big-num num">' + (ses.length ? Math.round(dur / ses.length) : 0) + '</div><p class="muted small">minutos reales</p></div>' +
       '<div class="card"><p class="label">Récords</p><div class="big-num num" style="color:var(--pr)">' + prs + '</div><p class="muted small">racha: ' + rachaSemanas() + ' sem</p></div>' +
-    '</div>' + (periodo ? '<p class="muted small">Porcentajes comparados con el periodo anterior de la misma duración.</p>' : "");
+    '</div>';
+
+  // Comparativa con el periodo anterior, en tabla
+  if (periodo) {
+    let volAhora = 0, volAntes = 0, durPrev = 0, prsPrev = 0;
+    for (const s of ses) volAhora += s.volumen || 0;
+    for (const s of prev) { volAntes += s.volumen || 0; durPrev += s.duracion; prsPrev += s.prs.length; }
+    const filas = [["Entrenos", ses.length, prev.length], ["Series efectivas", efectivas, efectivasPrev], ["Tonelaje (kg)", Math.round(volAhora), Math.round(volAntes)],
+      ["Duración media (min)", ses.length ? Math.round(dur / ses.length) : 0, prev.length ? Math.round(durPrev / prev.length) : 0], ["Récords", prs, prsPrev]];
+    h += '<div class="card"><h3 style="margin-bottom:8px">Comparado con las ' + (periodo / 7) + ' semanas anteriores</h3><table class="tabla-comp"><tr><th></th><th>Ahora</th><th>Antes</th><th>Cambio</th></tr>' +
+      filas.map(function (f) {
+        const d = f[1] - f[2];
+        const clase = d > 0 ? "sube" : (d < 0 ? "baja" : "");
+        return '<tr><td>' + f[0] + '</td><td class="num"><b>' + miles(f[1]) + '</b></td><td class="num muted">' + miles(f[2]) + '</td><td class="num ' + clase + '">' + (d > 0 ? "▲ +" : (d < 0 ? "▼ " : "= ")) + (d !== 0 ? miles(d) : "") + '</td></tr>';
+      }).join("") + '</table></div>';
+  }
+
+  // Carga semanal o mensual y fatiga
+  const serie = vistaCarga === "mes" ? cargaPorMeses(6) : cargaPorSemanas(8);
+  const fat = indiceFatiga();
+  const colorFat = { "muy-alta": "var(--danger)", alta: "var(--warn)", normal: "var(--good)", baja: "var(--muted)", pocos: "var(--muted)" }[fat.nivel];
+  h += '<div class="card stack"><div class="row between"><h3>Carga de entrenamiento</h3><div class="seg mini">' + [["semana", "Semanal"], ["mes", "Mensual"]].map(function (o) { return '<button data-act="vista-carga" data-a="' + o[0] + '" class="' + (vistaCarga === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div></div>' +
+    graficaBarras(serie.map(function (x) { return vistaCarga === "mes" ? MESES_CORTOS[parseInt(x.desde.slice(5, 7)) - 1] : fechaBonita(x.desde); }), serie.map(function (x) { return Math.round(x.carga.kg); }), "kg") +
+    '<div class="fatiga" style="border-color:' + colorFat + '"><p class="label" style="color:' + colorFat + '">Fatiga · ' + { "muy-alta": "muy alta", alta: "alta", normal: "normal", baja: "baja", pocos: "sin datos" }[fat.nivel] + (fat.ratio ? ' (' + fat.ratio.toFixed(2).replace(".", ",") + ')' : "") + '</p><p class="small">' + fat.texto + '</p></div>' +
+    '<p class="muted small">Tonelaje = kg × reps. La fatiga compara tus series de los últimos 7 días con tu media de las 4 semanas anteriores.</p></div>';
 
   // Evolución de un ejercicio (aquí sí tiene sentido el peso: se compara el ejercicio consigo mismo)
   const hechos = ejerciciosHechos();
@@ -678,7 +814,7 @@ function pintarProgreso() {
     for (const s of seriesDe(ejGrafica)) {
       if (!enPeriodo(s.fecha, periodo)) continue;
       let v;
-      if (metrica === "rm") v = unaRM(cargaSerie(ej, s.peso, s.fecha), s.reps);
+      if (metrica === "rm") v = rm1Mostrado(cargaSerie(ej, s.peso, s.fecha), s.reps);
       else if (metrica === "peso") v = s.peso;
       else if (metrica === "reps") v = s.reps;
       else v = s.peso * s.reps;
@@ -691,7 +827,7 @@ function pintarProgreso() {
       '<select data-cambio="ej-grafica" aria-label="Ejercicio">' + hechos.map(function (id) { return '<option value="' + id + '"' + (id === ejGrafica ? " selected" : "") + '>' + esc(buscarEj(id).nombre) + '</option>'; }).join("") + '</select>' +
       '<div class="seg">' + [["rm", "1RM"], ["peso", "Peso máx."], ["reps", "Reps máx."], ["tonelaje", "Tonelaje"]].map(function (o) { return '<button data-act="metrica" data-a="' + o[0] + '" class="' + (metrica === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div>' +
       graficaLinea(fechas.map(fechaBonita), fechas.map(function (f) { return porDia[f]; }), unidades[metrica]) +
-      (metrica === "rm" ? '<p class="muted small">La 1RM es una estimación (fórmula de Epley), no una medición real.</p>' : "") +
+      (metrica === "rm" ? '<p class="muted small">1RM estimada con ' + FORMULAS_1RM[estado.ajustes.formula1RM || "epley"].nombre.replace(" (por defecto)", "") + '. Cámbiala en Ajustes.</p>' : "") +
       (metrica === "tonelaje" ? '<p class="muted small">Tonelaje externo de este ejercicio (kg × reps). ' + (ej.equipo === "corporal" ? "En este ejercicio no incluye tu peso corporal, así que puede ser 0." : "") + '</p>' : "") + '</div>';
   }
 
@@ -751,11 +887,9 @@ function pintarSocial() {
     return;
   }
   const demo = estado.modo === "demo";
-  const vistas = demo ? [["feed", "Actividad"], ["amigos", "Amigos"], ["retos", "Retos"]] : [["feed", "Mi diario"], ["retos", "Retos"]];
-  if (!demo && vistaSocial === "amigos") vistaSocial = "feed";
+  const vistas = [["feed", demo ? "Actividad" : "Mi diario"], ["amigos", "Amigos"], ["retos", "Retos"]];
   let h = '<div class="head"><div><p class="label">Comunidad</p><h1>Social</h1></div>' + (demo ? '<span class="demo-tag">Demo</span>' : "") + '</div><div class="stack">' +
-    (demo ? '<p class="muted small">Los demás usuarios son ficticios y solo existen en la demo. Nunca se mezclan con tus datos reales.</p>'
-          : '<p class="muted small">Amigos y comunidad llegarán con las cuentas en servidor. Por ahora, aquí tienes tu diario y tus retos personales.</p>') +
+    (demo ? '<p class="muted small">Los demás usuarios de la demo son ficticios.</p>' : "") +
     '<div class="seg">' + vistas.map(function (o) { return '<button data-act="vista-social" data-a="' + o[0] + '" class="' + (vistaSocial === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div>';
   if (vistaSocial === "feed") h += feedHtml();
   if (vistaSocial === "amigos") h += amigosHtml();
@@ -767,15 +901,24 @@ function feedHtml() {
   const yo = miId();
   const posts = feedVisible();
   const permiso = puedePublicar();
-  let h = '<button class="btn-sec full" data-act="publicar-ultimo"' + (estado.sesiones.length && permiso.ok ? "" : " disabled") + '>Compartir mi último entreno</button>';
-  if (!permiso.ok) h += '<p class="muted small">' + esc(permiso.msg) + '</p>';
+  const ultima = estado.sesiones[estado.sesiones.length - 1];
+  let h = '<div class="card stack tight"><h3>Tu último entreno</h3>';
+  if (!ultima) h += '<p class="muted small">Cuando termines un entreno podrás guardarlo aquí y enviarlo a tus amigos.</p>';
+  else {
+    h += '<p class="small">' + esc(textoSesion(ultima)) + '</p><div class="grid2">' +
+      (ultima.compartida ? '<button class="btn-sec" disabled>✓ En tu diario</button>' : '<button class="btn-sec" data-act="publicar-ultimo"' + (permiso.ok ? "" : " disabled") + '>Guardar en mi diario</button>') +
+      '<button class="btn" data-act="compartir-fuera">Enviar a amigos</button></div>' +
+      '<p class="muted small">«Enviar» abre WhatsApp, Instagram u otra app de tu móvil.</p>';
+    if (!permiso.ok) h += '<p class="muted small">' + esc(permiso.msg) + '</p>';
+  }
+  h += '</div>';
   h += '<div class="card"><div>';
   if (posts.length === 0) h += '<p class="muted">Todavía no hay publicaciones.</p>';
   for (const x of posts) {
     const mio = x.autorId === yo;
     const autor = nombreDe(x.autorId, x.autorNombre);
     const gusta = x.likes.includes(yo);
-    h += '<div class="post"><div class="row"><div class="avatar" style="width:34px;height:34px;font-size:.85rem">' + esc(autor[0]).toUpperCase() + '</div>' +
+    h += '<div class="post' + (x.id === postNuevo ? " nuevo" : "") + '"><div class="row"><div class="avatar" style="width:34px;height:34px;font-size:.85rem">' + esc(autor[0]).toUpperCase() + '</div>' +
       '<div class="grow"><span class="name small">@' + esc(autor) + (mio ? " (tú)" : "") + '</span><span class="muted small">' + fechaBonita(x.fecha) + (x.demo ? " · ficticio" : "") + '</span></div>' +
       '<span class="pill ' + (x.tipo === "record" ? "pr" : (x.tipo === "rango" ? "up" : "keep")) + '">' + { record: "Récord", rango: "Rango", entreno: "Entreno" }[x.tipo] + '</span></div>' +
       '<p>' + esc(x.texto) + '</p>' +
@@ -790,13 +933,37 @@ function feedHtml() {
 }
 
 function amigosHtml() {
+  const t = miTarjeta();
+  const permiso = puedeCompartirTarjeta();
+  let h = '<div class="card stack tight"><h3>Tu tarjeta de amigo</h3><div class="item" style="padding:4px 0">' + insignia(t.rango, "sm") +
+    '<div class="grow"><span class="name">@' + esc(t.usuario) + '</span><span class="muted small">' + nombreRango(t.rango) + ' · racha ' + t.racha + ' sem · ' + t.entrenos + ' entrenos</span></div></div>' +
+    '<button class="btn" data-act="compartir-tarjeta"' + (permiso.ok ? "" : " disabled") + '>Invitar a un amigo</button>' +
+    '<p class="muted small">' + (permiso.ok ? "Le llega un enlace con tu rango, racha y 3 mejores marcas. Vuelve a enviarlo cuando mejores." : esc(permiso.msg)) + '</p></div>';
+  h += '<div class="card stack tight"><h3>Añadir amigo</h3><div class="row"><input id="codigoAmigo" placeholder="Pega su enlace o código" aria-label="Enlace o código de tu amigo"><button class="btn-sec" data-act="anadir-amigo-real">Añadir</button></div>' +
+    '<p class="muted small">Si abres su enlace en este móvil, se añade solo.</p></div>';
+  const reales = estado.social.amigosReales || [];
+  h += '<div class="card"><h3>Tus amigos' + (reales.length ? ' (' + reales.length + ')' : "") + '</h3><div class="list">';
+  if (reales.length === 0) h += '<p class="muted" style="padding-top:8px">Aún no has añadido a nadie.</p>';
+  for (const a of reales.slice().sort(function (x, y) { return (y.rango === null ? -1 : y.rango) - (x.rango === null ? -1 : x.rango); })) {
+    h += '<div class="item" style="align-items:flex-start">' + insignia(a.rango, "sm") + '<div class="grow bloque"><span class="name">@' + esc(a.usuario) + '</span>' +
+      '<span class="muted small">' + nombreRango(a.rango) + ' · racha ' + a.racha + ' sem · ' + a.entrenos + ' entrenos</span>' +
+      (a.records.length ? '<span class="small">' + a.records.map(function (r) { return esc(r.n) + ' ' + String(r.p).replace(".", ",") + '×' + r.r; }).join(" · ") + '</span>' : "") +
+      '<span class="muted small">Actualizado ' + fechaBonita(a.fecha) + '</span></div>' +
+      '<button class="btn-txt small btn-danger" data-act="quitar-amigo-real" data-a="' + esc(a.uid) + '">' + (confirmar === "quitar-amigo-real" + a.uid ? "¿Seguro?" : "Quitar") + '</button></div>';
+  }
+  h += '</div></div>';
+  if (estado.modo === "demo") h += amigosDemoHtml();
+  return h;
+}
+
+function amigosDemoHtml() {
   let h = '<div class="card stack tight"><h3>Buscar usuarios (demo)</h3><div class="search">' + I.buscar + '<input id="buscarUsuario" placeholder="Nombre de usuario" aria-label="Buscar usuario"></div><div class="list" id="resultadosUsuarios"></div>' +
-    '<p class="muted small">Los perfiles privados y los bloqueados no aparecen en la búsqueda.</p></div>';
-  h += '<div class="card"><h3>Tus amigos</h3><div class="list">';
-  if (estado.social.amigos.length === 0) h += '<p class="muted" style="padding-top:8px">Todavía no tienes amigos añadidos.</p>';
+    '<p class="muted small">Los perfiles privados y los bloqueados no aparecen.</p></div>';
+  h += '<div class="card"><h3>Amigos de la demo</h3><div class="list">';
+  if (estado.social.amigos.length === 0) h += '<p class="muted" style="padding-top:8px">Todavía no has añadido ninguno.</p>';
   for (const u of estado.social.amigos) {
     const d = usuarioDemo(u);
-    h += '<div class="item">' + insignia(d ? d.rango : null, "sm") + '<div class="grow"><span class="name">@' + esc(d ? d.usuario : u) + '</span><span class="muted small">Ficticio · rango de ejemplo</span></div>' +
+    h += '<div class="item">' + insignia(d ? d.rango : null, "sm") + '<div class="grow"><span class="name">@' + esc(d ? d.usuario : u) + '</span><span class="muted small">Ficticio</span></div>' +
       '<button class="btn-txt small btn-danger" data-act="quitar-amigo" data-a="' + u + '">Eliminar</button><button class="btn-txt small" data-act="bloquear" data-a="' + u + '" style="color:var(--muted)">Bloquear</button></div>';
   }
   h += '</div></div>';
@@ -854,35 +1021,67 @@ function cabeceraHoja(titulo, sub) {
 }
 
 // ---------- Generador de rutinas ----------
-function hojaGenerador() {
+// Generador guiado en 3 pasos. Las respuestas se guardan en "genOp" al pasar de un paso a otro.
+let pasoGen = 1;
+let genOp = null;
+const OBJETIVO_INFO = { masa: ["💪", "Ganar músculo"], fuerza: ["🏋️", "Más fuerza"], condicion: ["🔥", "Condición física"], activo: ["🙂", "Mantenerme activo"] };
+
+function hojaGenerador(reiniciar) {
   const p = estado.perfil;
-  let eq = "";
-  for (const k in EQUIPOS) eq += '<label class="check"><input type="checkbox" name="gEquipo" value="' + k + '"' + (p.equipo.includes(k) ? " checked" : "") + '>' + EQUIPOS[k] + '</label>';
-  const tipos = Object.keys(TIPOS_RUTINA).map(function (k) { return [k, TIPOS_RUTINA[k]]; });
-  abrirHoja(cabeceraHoja("Generar rutina", "Generador por reglas") + '<div class="stack">' +
-    '<p class="muted small">Se crea con reglas fijas de entrenamiento, no con IA. Es una propuesta: puedes editarla después.</p>' +
-    '<label class="f">Objetivo<select id="gObjetivo">' + opciones(OP_OBJETIVO, p.objetivo) + '</select></label>' +
-    '<label class="f">Nivel<select id="gNivel">' + opciones(OP_EXPERIENCIA, p.experiencia) + '</select></label>' +
-    '<div class="grid2"><label class="f">Días por semana<select id="gDias">' + opciones(OP_DIAS, p.dias) + '</select></label>' +
-    '<label class="f">Tiempo por sesión<select id="gDuracion">' + opciones(OP_DURACION, p.duracion) + '</select></label></div>' +
-    '<div class="stack tight"><span class="label">Qué días entrenas</span><div class="row wrap" style="gap:6px" id="gCalendario">' +
-      NOMBRES_DIAS_SEMANA.map(function (n, i) { return '<label class="check" style="padding:8px 10px"><input type="checkbox" name="gDia" value="' + i + '"' + ((p.diasSemana || []).includes(i) ? " checked" : "") + '>' + n.slice(0, 3) + '</label>'; }).join("") +
-      '</div><p class="muted small">Marca tantos días como «Días por semana». Se usa para comprobar la recuperación entre días seguidos.</p></div>' +
-    '<label class="f">Distribución<select id="gTipo">' + opciones(tipos, "auto") + '</select></label>' +
-    '<label class="f">Grupo prioritario<select id="gPrioridad"><option value="">Ninguno</option>' + Object.keys(GRUPOS).map(function (g) { return '<option value="' + g + '">' + GRUPOS[g] + '</option>'; }).join("") + '</select></label>' +
-    '<div class="stack tight"><span class="label">Equipamiento</span><div class="grid2">' + eq + '</div></div>' +
-    '<label class="f">Evitar ejercicios que contengan<input id="gEvitar" value="' + esc(p.evitar) + '"></label>' +
-    '<p class="err" id="gError"></p>' +
-    (estado.evitados.length ? '<p class="muted small">Se excluyen ' + estado.evitados.length + ' ejercicio(s) que marcaste como «No puedo hacerlo».</p>' : "") +
-    '<p class="muted small">' + (estado.noDisponibles.length ? 'No se usarán ' + estado.noDisponibles.length + ' máquina(s) que no hay en tu gimnasio. ' : '') + '<button class="btn-txt small" data-act="abrir-gimnasio">Mi gimnasio</button></p>' +
-    '<button class="btn" data-act="generar">Ver propuesta</button></div>');
+  if (reiniciar || !genOp) {
+    genOp = { objetivo: p.objetivo, nivel: p.experiencia, dias: Math.max(2, p.dias), duracion: p.duracion,
+      calendario: (p.diasSemana && p.diasSemana.length === Math.max(2, p.dias)) ? p.diasSemana.slice() : calendarioPorDefecto(Math.max(2, p.dias)),
+      equipo: p.equipo.slice(), tipo: "auto", prioridad: "", evitar: p.evitar || "" };
+    pasoGen = 1;
+  }
+  const g = genOp;
+  let h = cabeceraHoja("Generar rutina", "Paso " + pasoGen + " de 3") +
+    '<div class="pasos-gen">' + [1, 2, 3].map(function (n) { return '<i class="' + (n <= pasoGen ? "on" : "") + '"></i>'; }).join("") + '</div><div class="stack">';
+  if (pasoGen === 1) {
+    h += '<h3>¿Qué quieres conseguir?</h3><div class="grid2 opciones-grandes">' + OP_OBJETIVO.map(function (o) {
+      return '<button class="opcion' + (g.objetivo === o[0] ? " on" : "") + '" data-act="gen-elegir" data-a="objetivo" data-b="' + o[0] + '"><span class="ico">' + OBJETIVO_INFO[o[0]][0] + '</span><b>' + OBJETIVO_INFO[o[0]][1] + '</b></button>';
+    }).join("") + '</div>' +
+      '<h3>¿Cuánta experiencia tienes?</h3><div class="stack tight">' + OP_EXPERIENCIA.map(function (o) {
+      return '<button class="opcion fila' + (g.nivel === o[0] ? " on" : "") + '" data-act="gen-elegir" data-a="nivel" data-b="' + o[0] + '">' + o[1] + '</button>';
+    }).join("") + '</div>';
+  }
+  if (pasoGen === 2) {
+    h += '<h3>¿Cuántos días a la semana?</h3><div class="chips grandes">' + [2, 3, 4, 5, 6].map(function (n) {
+      return '<button class="chip' + (g.dias === n ? " on" : "") + '" data-act="gen-elegir" data-a="dias" data-b="' + n + '">' + n + '</button>';
+    }).join("") + '</div>' +
+      '<h3>¿Qué días?</h3><div class="chips grandes dias-semana">' + NOMBRES_DIAS_SEMANA.map(function (n, i) {
+      return '<button class="chip' + (g.calendario.includes(i) ? " on" : "") + '" data-act="gen-dia" data-a="' + i + '">' + n.slice(0, 2) + '</button>';
+    }).join("") + '</div><p class="muted small">' + (g.calendario.length === g.dias ? "✓ " + g.dias + " días elegidos." : "Elige " + g.dias + " días (llevas " + g.calendario.length + ").") + '</p>' +
+      '<h3>¿Cuánto tiempo por sesión?</h3><div class="chips grandes">' + OP_DURACION.map(function (o) {
+      return '<button class="chip' + (g.duracion === o[0] ? " on" : "") + '" data-act="gen-elegir" data-a="duracion" data-b="' + o[0] + '">' + o[1] + '</button>';
+    }).join("") + '</div>';
+  }
+  if (pasoGen === 3) {
+    let eq = "";
+    for (const k in EQUIPOS) eq += '<button class="opcion fila' + (g.equipo.includes(k) ? " on" : "") + '" data-act="gen-equipo" data-a="' + k + '">' + (g.equipo.includes(k) ? "✓ " : "") + EQUIPOS[k] + '</button>';
+    h += '<h3>¿Qué material tienes?</h3><div class="grid2">' + eq + '</div>' +
+      '<details class="mas-opciones"><summary>Opciones avanzadas (opcional)</summary><div class="stack tight" style="margin-top:8px">' +
+      '<label class="f">Distribución<select id="gTipo">' + opciones(Object.keys(TIPOS_RUTINA).map(function (k) { return [k, TIPOS_RUTINA[k]]; }), g.tipo) + '</select></label>' +
+      '<label class="f">Músculo prioritario<select id="gPrioridad"><option value="">Ninguno</option>' + Object.keys(GRUPOS).map(function (k) { return '<option value="' + k + '"' + (g.prioridad === k ? " selected" : "") + '>' + GRUPOS[k] + '</option>'; }).join("") + '</select></label>' +
+      '<label class="f">Evitar ejercicios que contengan<input id="gEvitar" value="' + esc(g.evitar) + '"></label></div></details>' +
+      (estado.evitados.length || estado.noDisponibles.length ? '<p class="muted small">Se excluyen ' + (estado.evitados.length + estado.noDisponibles.length) + ' ejercicio(s) que no puedes hacer o no hay en tu gimnasio. <button class="btn-txt small" data-act="abrir-gimnasio">Mi gimnasio</button></p>' : "");
+  }
+  h += '<p class="err" id="gError"></p><div class="grid2">' +
+    (pasoGen > 1 ? '<button class="btn-sec" data-act="gen-paso" data-a="-1">← Atrás</button>' : '<button class="btn-sec" data-act="cerrar-hoja">Cancelar</button>') +
+    (pasoGen < 3 ? '<button class="btn" data-act="gen-paso" data-a="1">Siguiente →</button>' : '<button class="btn" data-act="generar">Ver mi rutina</button>') + '</div>' +
+    '<p class="muted small">Se crea con reglas de entrenamiento (sin IA). Luego puedes editarla.</p></div>';
+  abrirHoja(h);
 }
 
 function hojaPropuesta() {
   const r = propuesta;
   const obj = objetivoVolumen(r.objetivo, r.nivel);
   const v = volumenSemanal(r);
-  let h = cabeceraHoja("Tu propuesta", esc(r.nombre)) + '<div class="stack">';
+  const prob = validarRutina(r);
+  let h = cabeceraHoja("Tu nueva rutina", esc(r.nombre)) + '<div class="stack">' +
+    '<div class="card resumen-rutina ' + (prob.length ? "aviso" : "ok") + '"><p class="big-num">' + (prob.length ? "⚠ Casi lista" : "✓ Lista para usar") + '</p>' +
+    '<p class="small">' + r.dias.length + ' días · ' + r.dias.reduce(function (t, d) { return t + d.ejercicios.length; }, 0) + ' ejercicios · ~' + Math.round(r.dias.reduce(function (t, d) { return t + duracionDia(d, r.factorDuracion); }, 0) / r.dias.length) + ' min por día</p>' +
+    (prob.length ? '<p class="muted small">' + prob.length + ' detalle(s) a revisar abajo. Puedes usarla igual y ajustarla después.</p>' : '<p class="muted small">Pasa todas las comprobaciones de volumen, tiempo y recuperación.</p>') + '</div>';
   r.dias.forEach(function (d) {
     const di = r.dias.indexOf(d);
     h += '<div class="card stack tight"><div class="row between"><div><p class="label">' + NOMBRES_DIAS_SEMANA[r.calendario[di]] + '</p><h3>' + esc(d.nombre) + '</h3></div><span class="muted small num">~' + duracionDia(d, r.factorDuracion) + ' min</span></div>';
@@ -906,8 +1105,9 @@ function hojaPropuesta() {
     h += '<div class="musculo"><span>' + GRUPOS[g] + '</span><div class="bar' + (v[g] < obj * 0.6 ? " fire" : "") + '"><i style="width:' + pct + '%"></i></div><span class="num muted" style="text-align:right">' + Math.round(v[g]) + '</span></div>';
   }
   h += '<p class="muted small" style="margin-top:6px">Los músculos secundarios cuentan como media serie. Duración estimada: 45 s por serie + descanso + 1,5 min de cambio entre ejercicios + 5 min de calentamiento + 3 min de aproximación por compuesto.</p></div>' +
-    '<button class="btn" data-act="usar-propuesta">' + (estado.rutina ? (confirmar === "usar-propuesta" ? "Pulsa otra vez para reemplazar" : "Reemplazar mi rutina") : "Usar esta rutina") + '</button>' +
-    '<button class="btn-sec full" data-act="abrir-generador">Volver a las opciones</button></div>';
+    (estado.rutina && confirmar === "usar-propuesta" ? '<p class="small" style="color:var(--warn)"><b>Tu rutina actual «' + esc(estado.rutina.nombre) + '» se sustituirá.</b> Tus entrenos guardados no se borran.</p>' : "") +
+    '<button class="btn" data-act="usar-propuesta">' + (estado.rutina ? (confirmar === "usar-propuesta" ? "Sí, sustituir mi rutina" : "Usar esta rutina") : "Usar esta rutina") + '</button>' +
+    '<button class="btn-sec full" data-act="abrir-generador">← Cambiar respuestas</button></div>';
   abrirHoja(h);
 }
 
@@ -915,23 +1115,30 @@ function hojaPropuesta() {
 function hojaEditarDia(i) {
   const d = estado.rutina.dias[i];
   let h = cabeceraHoja("Editar día", esc(estado.rutina.nombre)) + '<div class="stack">' +
-    '<label class="f">Nombre del día<input data-in="nombre-dia" data-e="' + i + '" value="' + esc(d.nombre) + '" maxlength="40"></label>';
+    '<label class="f">Nombre del día<input data-in="nombre-dia" data-e="' + i + '" value="' + esc(d.nombre) + '" maxlength="40"></label>' +
+    '<p class="muted small">Los cambios se guardan solos. ~' + duracionDia(d, factorDuracion()) + ' min con ' + d.ejercicios.length + ' ejercicios.</p>';
+  if (!d.ejercicios.length) h += '<div class="card" style="text-align:center"><p class="muted">Este día no tiene ejercicios.</p></div>';
   d.ejercicios.forEach(function (o, k) {
-    h += '<div class="card stack tight" style="padding:12px"><div class="row between"><b class="grow small">' + esc(buscarEj(o.id).nombre) + '</b>' +
-      '<button class="icon-btn sm" data-act="dia-mover" data-a="' + i + '" data-b="' + k + '" data-c="-1" aria-label="Subir"' + (k ? "" : " disabled") + '>' + I.arriba + '</button>' +
-      '<button class="icon-btn sm" data-act="dia-mover" data-a="' + i + '" data-b="' + k + '" data-c="1" aria-label="Bajar"' + (k < d.ejercicios.length - 1 ? "" : " disabled") + '>' + I.abajo + '</button>' +
-      '<button class="icon-btn sm" data-act="dia-sustituir" data-a="' + i + '" data-b="' + k + '" aria-label="Sustituir">' + I.cambiar + '</button>' +
-      '<button class="icon-btn sm btn-danger" data-act="dia-quitar" data-a="' + i + '" data-b="' + k + '" aria-label="Quitar">' + I.borrar + '</button></div>' +
-      '<div class="grid2" style="grid-template-columns:repeat(4,1fr)">' +
-      ['series', 'repMin', 'repMax', 'descanso'].map(function (campo) {
-        const t = { series: "Series", repMin: "Reps mín.", repMax: "Reps máx.", descanso: "Descanso s" }[campo];
-        return '<label class="f small">' + t + '<input type="number" inputmode="numeric" min="1" value="' + o[campo] + '" data-in="dia-campo" data-e="' + i + '" data-s="' + k + '" data-k="' + campo + '"></label>';
-      }).join("") + '</div></div>';
+    const ej = buscarEj(o.id);
+    const fotos = fotosDe(o.id);
+    const resaltar = cambioEditor === i + "-" + k ? " recien" : "";
+    h += '<div class="card editar-ej' + resaltar + '"><div class="row" style="gap:10px">' +
+      '<span class="orden num">' + (k + 1) + '</span>' + (fotos ? '<img class="foto-mini" src="' + fotos[0] + '" alt="" style="width:44px;height:44px">' : "") +
+      '<div class="grow"><b class="small">' + esc(ej.nombre) + '</b><p class="muted small">' + GRUPOS[ej.grupo] + ' · ' + EQUIPOS[ej.equipo] + '</p></div>' +
+      '<div class="stack tight" style="gap:4px"><button class="icon-btn sm" data-act="dia-mover" data-a="' + i + '" data-b="' + k + '" data-c="-1" aria-label="Subir"' + (k ? "" : " disabled") + '>' + I.arriba + '</button>' +
+      '<button class="icon-btn sm" data-act="dia-mover" data-a="' + i + '" data-b="' + k + '" data-c="1" aria-label="Bajar"' + (k < d.ejercicios.length - 1 ? "" : " disabled") + '>' + I.abajo + '</button></div></div>' +
+      '<div class="steppers">' + [["series", "Series", 1], ["repMin", "Reps mín.", 1], ["repMax", "Reps máx.", 1], ["descanso", "Desc. (s)", 15]].map(function (c) {
+        return '<div class="stepper"><span class="muted small">' + c[1] + '</span><div class="row"><button data-act="dia-paso" data-a="' + i + '" data-b="' + k + '" data-c="' + c[0] + ':-' + c[2] + '" aria-label="Menos">−</button>' +
+          '<b class="num">' + o[c[0]] + '</b><button data-act="dia-paso" data-a="' + i + '" data-b="' + k + '" data-c="' + c[0] + ':' + c[2] + '" aria-label="Más">+</button></div></div>';
+      }).join("") + '</div>' +
+      '<div class="grid2"><button class="btn-sec small" data-act="dia-sustituir" data-a="' + i + '" data-b="' + k + '">' + I.cambiar + ' Cambiar</button>' +
+      '<button class="btn-sec small btn-danger" data-act="dia-quitar" data-a="' + i + '" data-b="' + k + '">' + I.borrar + ' Quitar</button></div></div>';
   });
+  cambioEditor = "";
   h += '<button class="btn-sec full" data-act="dia-anadir" data-a="' + i + '">+ Añadir ejercicio</button>' +
     '<div class="grid2"><button class="btn-sec" data-act="dia-duplicar" data-a="' + i + '">Duplicar día</button>' +
-    '<button class="btn-sec btn-danger" data-act="dia-eliminar" data-a="' + i + '">' + (confirmar === "dia-eliminar" ? "Confirmar" : "Eliminar día") + '</button></div>' +
-    '<button class="btn" data-act="cerrar-hoja">Listo</button></div>';
+    '<button class="btn-sec btn-danger" data-act="dia-eliminar" data-a="' + i + '">' + (confirmar === "dia-eliminar" ? "¿Seguro? Pulsa otra vez" : "Eliminar día") + '</button></div>' +
+    '<button class="btn" data-act="dia-listo">Listo</button></div>';
   abrirHoja(h);
 }
 
@@ -996,7 +1203,8 @@ function hojaEjercicio(id) {
   if (fotos) {
     h += '<div class="fotos">' + fotos.map(function (src, i) {
       return '<figure><img src="' + src + '" alt="' + esc(e.nombre) + ', posición ' + (i + 1) + ' de 2" loading="lazy" decoding="async"><figcaption>Posición ' + (i + 1) + '</figcaption></figure>';
-    }).join("") + '</div><p class="muted small" style="margin-top:-6px">Fotos: Free Exercise DB · dominio público.</p>';
+    }).join("") + '</div><p class="muted small" style="margin-top:-6px">Fotos: Free Exercise DB · dominio público.</p>' +
+      (FOTO_REFERENCIA[id] ? '<p class="small aviso-foto">ⓘ ' + FOTO_REFERENCIA[id] + '</p>' : "");
   }
 
   // Animación propia del patrón de movimiento
@@ -1166,7 +1374,7 @@ function hojaResumen(r) {
   if (r.anterior) {
     const ds = s.seriesEfectivas - r.anterior.seriesEfectivas;
     h += '<div class="card"><p class="label">Frente a la última vez (' + fechaBonita(r.anterior.fecha) + ')</p><p class="num"><b style="color:' + (ds >= 0 ? "var(--good)" : "var(--danger)") + '">' + (ds >= 0 ? "+" : "") + ds + '</b> series efectivas</p>' +
-      '<p class="muted small">El tonelaje solo se compara ejercicio a ejercicio (en Progreso), porque un kilo en prensa no equivale a un kilo en curl.</p></div>';
+      '<p class="muted small">El tonelaje solo se compara ejercicio a ejercicio (en Progreso), porque un apix en prensa no equivale a un apix en curl.</p></div>';
   }
   if (s.enRevision) h += '<div class="card" style="border-color:var(--warn)"><p class="small"><b>' + s.enRevision + ' serie(s) en revisión.</b> No cuentan para los rangos hasta que las confirmes en el historial.</p></div>';
   if (s.prs.length) {
@@ -1270,20 +1478,29 @@ function hojaAjustes() {
   abrirHoja(cabeceraHoja("Perfil y ajustes", estado.modo === "demo" ? "Modo demo" : "Cuenta en este dispositivo") + '<div class="stack">' +
     '<div class="card stack">' + formPerfil(estado.perfil) + '</div>' +
     '<div class="card stack"><h3>Entrenamiento</h3>' +
-      '<div class="grid2"><label class="f">Descanso por defecto<select id="aDescanso">' + opciones([[60, "60 s"], [90, "90 s"], [120, "2 min"], [180, "3 min"]], a.descanso) + '</select></label>' +
-      '<label class="f">Incremento barra y máquina<select id="aIncremento">' + opciones([[1, "1 kg"], [1.25, "1,25 kg"], [2.5, "2,5 kg"], [5, "5 kg"]], a.incremento) + '</select></label></div>' +
-      '<label class="f">Incremento de mancuernas<select id="aIncMancuernas">' + opciones([[1, "1 kg"], [2, "2 kg"], [2.5, "2,5 kg"]], a.incrementoMancuernas) + '</select></label>' +
+      '<div class="grid2"><label class="f">Descanso en compuestos<select id="aDescComp">' + opciones([[90, "90 s"], [120, "2 min"], [150, "2:30"], [180, "3 min"], [240, "4 min"]], a.descansoCompuesto || 120) + '</select></label>' +
+      '<label class="f">Descanso en aislamiento<select id="aDescanso">' + opciones([[45, "45 s"], [60, "60 s"], [75, "75 s"], [90, "90 s"], [120, "2 min"]], a.descansoAislamiento || 75) + '</select></label></div>' +
+      '<p class="muted small" style="margin-top:-4px">Para ejercicios añadidos a mano. En la rutina, cada ejercicio guarda su propio descanso.</p>' +
+      '<div class="grid2"><label class="f">Incremento barra y máquina<select id="aIncremento">' + opciones([[1, "1 kg"], [1.25, "1,25 kg"], [2.5, "2,5 kg"], [5, "5 kg"]], a.incremento) + '</select></label>' +
+      '<label class="f">Incremento de mancuernas<select id="aIncMancuernas">' + opciones([[1, "1 kg"], [2, "2 kg"], [2.5, "2,5 kg"]], a.incrementoMancuernas) + '</select></label></div>' +
+      '<label class="f">Fórmula del 1RM estimado<select id="aFormula">' + opciones(Object.keys(FORMULAS_1RM).map(function (k) { return [k, FORMULAS_1RM[k].nombre]; }), a.formula1RM || "epley") + '</select></label>' +
+      '<p class="muted small" style="margin-top:-4px">Cambia el 1RM que ves en Progreso. Los rangos usan siempre Epley, para que sean justos para todos.</p>' +
       '<label class="f">Unidades<select disabled><option>Kilogramos (kg)</option></select></label><p class="muted small">Las libras llegarán en una próxima versión.</p></div>' +
     '<div class="card stack"><h3>Apariencia</h3><div class="seg">' + [["oscuro", "Oscuro"], ["claro", "Claro"], ["sistema", "Sistema"]].map(function (o) { return '<button data-act="tema" data-a="' + o[0] + '" class="' + (a.tema === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div></div>' +
     '<div class="card stack"><h3>Privacidad</h3><label class="f">Quién ve tu perfil<select id="aPrivacidad">' + opciones([["publico", "Todo el mundo"], ["amigos", "Solo amigos"], ["privado", "Solo yo"]], a.privacidad) + '</select></label>' +
       chk("aCompartir", a.compartir, "Mostrar mis entrenos a mis amigos") + '</div>' +
     '<div class="card stack tight"><h3>Instalar en el móvil</h3>' + textoInstalar() + '</div>' +
-    '<div class="card stack tight"><h3>Kilo, la mascota</h3>' + chk("aMascota", a.mascota !== false, "Mostrar a Kilo en Inicio") +
-      '<p class="muted small">Te anima los días de entreno, se enfada si pierdes la racha y celebra tus récords.</p></div>' +
+    '<div class="card stack tight"><h3>Sonido y vibración</h3>' + chk("aSonido", a.sonido !== false, "Efectos de sonido") + chk("aVibracion", a.vibracion !== false, "Vibración") +
+      '<p class="muted small">Prueba los sonidos:</p><div class="chips" style="flex-wrap:wrap">' + [["serie", "Serie"], ["descanso", "Descanso"], ["record", "Récord"], ["rango", "Rango"], ["fin", "Fin"], ["racha", "Racha"], ["enfadado", "Apix enfadado"]].map(function (x) { return '<button class="chip" data-act="probar-sonido" data-a="' + x[0] + '">' + x[1] + '</button>'; }).join("") + '</div></div>' +
+    '<div class="card stack tight"><h3>Apix, la mascota</h3>' + chk("aMascota", a.mascota !== false, "Mostrar a Apix en Inicio") +
+      '<p class="muted small">Te anima los días de entreno, se enfada si pierdes la racha y celebra tus récords. Tócalo en Inicio y te contestará.</p></div>' +
     '<div class="card stack tight"><h3>Notificaciones</h3>' +
-      chk("nRec", n.recordatorios, "Recordatorios de entreno") + chk("nRecords", n.records, "Récords personales") + chk("nRangos", n.rangos, "Ascensos de rango") +
-      chk("nAmigos", n.amigos, "Solicitudes y retos de amigos") + chk("nSemanal", n.semanal, "Resumen semanal") +
-      '<p class="muted small">Se guardan tus preferencias. El envío real necesita la app instalada y tu permiso.</p></div>' +
+      chk("nRec", n.recordatorios, "Recordatorio los días de entreno") + chk("nRacha", n.racha !== false, "Aviso si tu racha está en peligro") + chk("nReto", n.retos !== false, "Aviso del último día de un reto") +
+      '<label class="f">Hora del recordatorio<select id="nHora">' + opciones([[8, "8:00"], [10, "10:00"], [12, "12:00"], [16, "16:00"], [17, "17:00"], [18, "18:00"], [19, "19:00"], [20, "20:00"]], n.hora || 18) + '</select></label>' +
+      '<button class="btn-sec" data-act="activar-avisos">' + (permisoAvisos() === "granted" ? "✓ Avisos activados en este móvil · Probar" : "Activar avisos en este móvil") + '</button>' +
+      '<p class="muted small">' + (permisoAvisos() === "denied" ? "Has bloqueado los avisos. Actívalos en los ajustes del navegador." : (permisoAvisos() === "no" ? "Este navegador no permite avisos. En iPhone, instala la app en la pantalla de inicio." : "Llegan si abres la app ese día o la tienes en segundo plano. Máximo 1 al día.")) + '</p>' +
+      chk("nRecords", n.records, "Récords personales") + chk("nRangos", n.rangos, "Ascensos de rango") + chk("nSemanal", n.semanal, "Resumen semanal") +
+      '</div>' +
     '<button class="btn" data-act="guardar-ajustes">Guardar cambios</button><p class="muted small" id="aOk"></p>' +
     '<div class="card stack tight"><h3>Tus datos</h3>' +
       '<button class="btn-sec full" data-act="exportar">Exportar mis datos</button>' +
@@ -1321,9 +1538,9 @@ function celebrar(resultado) {
   const asc = resultado.ascensos[0];
   const s = resultado.sesion;
   const rango = asc ? asc.rango : (puntosGlobal() !== null ? rangoDePuntos(puntosGlobal()) : 0);
-  const conKilo = estado.ajustes.mascota !== false && s.prs.length;
+  const conApix = estado.ajustes.mascota !== false && s.prs.length;
   $("celebraMsg").innerHTML = insignia(rango, "xl") +
-    (conKilo ? '<div class="row" style="gap:8px;text-align:left">' + kiloSVG("celebra", "sm") + '<p class="small"><b>Kilo:</b> ¡Eso antes no lo levantabas! Estoy orgulloso de ti.</p></div>' : "") +
+    (conApix ? '<div class="row" style="gap:8px;text-align:left">' + apixSVG("celebra", "sm") + '<p class="small"><b>Apix:</b> ¡Eso antes no lo levantabas! Estoy orgulloso de ti.</p></div>' : "") +
     '<p class="label" style="color:var(--accent)">' + (asc ? "Subes de rango" : "Entreno completado") + '</p>' +
     '<h1>' + (asc ? esc(asc.nombre) + ' · ' + RANGOS[asc.rango].nombre : s.prs.length + " récord" + (s.prs.length > 1 ? "s" : "") + " nuevo" + (s.prs.length > 1 ? "s" : "")) + '</h1>' +
     '<p class="muted">' + (s.prs.length ? s.prs.map(function (id) { return esc(buscarEj(id).nombre); }).join(" · ") : "") + '</p>' +
@@ -1366,7 +1583,7 @@ function destello(color) {
 // La hora de fin se guarda en la sesión: sobrevive a bloquear el móvil y a recargar la página
 let tRest = 0, tTotal = 0, tFin = 0, tIntervalo = null;
 function empezarDescanso(seg, finGuardado) {
-  tTotal = seg; tFin = finGuardado || Date.now() + seg * 1000; $("timer").hidden = false;
+  tTotal = seg; tFin = finGuardado || Date.now() + seg * 1000; $("timer").hidden = false; document.body.classList.add("con-timer");
   if (estado.activa && !finGuardado) { estado.activa.descanso = { fin: tFin, total: tTotal }; guardar(); }
   clearInterval(tIntervalo);
   tIntervalo = setInterval(function () {
@@ -1389,20 +1606,16 @@ function ajustarDescanso(seg) {
 function pintarTimer() {
   $("timerTxt").textContent = Math.floor(tRest / 60) + ":" + String(tRest % 60).padStart(2, "0");
   $("timerBar").style.width = (tRest / tTotal * 100) + "%";
+  $("timerAnillo").style.strokeDashoffset = (276.5 * (1 - tRest / tTotal)).toFixed(1);
+  const sig = textoSiguiente();
+  if ($("timerSig").textContent !== sig) $("timerSig").textContent = sig;
 }
 // Pitido corto y vibración (si el dispositivo lo permite)
 function avisoFinDescanso() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator(), vol = ctx.createGain();
-    osc.frequency.value = 880; vol.gain.value = 0.15;
-    osc.connect(vol); vol.connect(ctx.destination);
-    osc.start(); osc.stop(ctx.currentTime + 0.25);
-  } catch (e) { }
-  try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch (e) { }
+  sonar("descanso");
 }
 function pararDescanso() {
-  clearInterval(tIntervalo); $("timer").hidden = true;
+  clearInterval(tIntervalo); $("timer").hidden = true; document.body.classList.remove("con-timer");
   if (estado && estado.activa && estado.activa.descanso) { estado.activa.descanso = null; guardar(); }
 }
 
@@ -1420,6 +1633,38 @@ function aplicarTema() {
 function avisoGuardado() {
   const el = document.getElementById("avisoGuardado");
   if (el) el.hidden = !errorGuardado;
+}
+
+// Aviso breve que aparece abajo y se va solo. Sirve para confirmar que algo ha funcionado.
+let tToast = null;
+function toast(texto, tipo) {
+  const t = $("toast");
+  if (!t) return;
+  t.textContent = texto;
+  t.className = tipo || "";
+  t.hidden = false;
+  clearTimeout(tToast);
+  tToast = setTimeout(function () { t.hidden = true; }, 2600);
+}
+
+// Compartir con otras apps del móvil (WhatsApp, Instagram…). Si no se puede, copia el texto.
+function compartirTexto(titulo, texto, url) {
+  const completo = texto + (url ? "\n" + url : "");
+  if (navigator.share) {
+    navigator.share({ title: titulo, text: texto, url: url || undefined }).then(function () { toast("✓ Enviado", "ok"); }).catch(function (e) {
+      if (e && e.name === "AbortError") return;           // el usuario cerró el menú: no es un error
+      copiarTexto(completo);
+    });
+  } else copiarTexto(completo);
+}
+function copiarTexto(texto) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(texto).then(function () { toast("✓ Copiado. Pégalo en WhatsApp o donde quieras.", "ok"); }, function () { hojaCopiar(texto); });
+  } else hojaCopiar(texto);
+}
+function hojaCopiar(texto) {
+  abrirHoja(cabeceraHoja("Copia este texto", "Compartir") + '<textarea id="textoCopiar" readonly style="min-height:120px">' + esc(texto) + '</textarea><p class="muted small">Mantén pulsado el texto para copiarlo y pégalo en WhatsApp.</p>');
+  const ta = $("textoCopiar"); if (ta) { ta.focus(); ta.select(); }
 }
 
 function mensaje(titulo, texto) {
@@ -1449,6 +1694,29 @@ function pideConfirmar(clave, repintar) {
 
 function textoSesion(s) {
   return "Completó " + s.diaNombre + " · " + s.seriesEfectivas + " series efectivas" + (s.prs.length ? " · " + s.prs.length + " récord(s)" : "");
+}
+
+// ---------- Avisos locales (recordatorios) ----------
+function permisoAvisos() {
+  if (typeof Notification === "undefined") return "no";
+  return Notification.permission;          // "default", "granted" o "denied"
+}
+function mostrarAviso(titulo, texto) {
+  if (permisoAvisos() !== "granted") return false;
+  const op = { body: texto, icon: "iconos/icono-192.png", badge: "iconos/icono-192.png", tag: "apex-recordatorio" };
+  if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+    navigator.serviceWorker.ready.then(function (reg) { reg.showNotification(titulo, op); });
+  } else {
+    try { new Notification(titulo, op); } catch (e) { return false; }
+  }
+  return true;
+}
+// Se llama al abrir la app, al volver a ella y cada 5 minutos mientras está abierta
+function comprobarRecordatorios() {
+  if (!estado || !estado.perfil || estado.modo === "demo") return;
+  const aviso = recordatorioPendiente(new Date());
+  if (!aviso) return;
+  if (mostrarAviso(aviso.titulo, aviso.texto)) { estado.ajustes.notif.ultimoAviso = hoy(); guardar(); }
 }
 
 // ---------- Instalar la app (PWA) ----------

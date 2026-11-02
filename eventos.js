@@ -4,6 +4,7 @@
 // =====================================================
 
 document.addEventListener("click", function (ev) {
+  prepararAudio();                       // el navegador solo deja sonar tras un toque
   const b = ev.target.closest("[data-act], [data-tab]");
   if (!b || b.disabled) return;
   if (b.dataset.tab) { cerrarHoja(); irA(b.dataset.tab); return; }
@@ -18,6 +19,10 @@ document.addEventListener("click", function (ev) {
 $("hoja").addEventListener("click", function (ev) { if (ev.target.id === "hoja") cerrarHoja(); });
 
 const ACCIONES = {
+  "tocar-apix": function (humor) {
+    sonar(humor === "enfadado" ? "enfadado" : (humor === "celebra" ? "record" : "racha"));
+  },
+  "probar-sonido": function (nombre) { sonar(nombre); },
   "instalar-app": function () {
     if (!avisoInstalar) return;
     avisoInstalar.prompt();
@@ -41,7 +46,33 @@ const ACCIONES = {
   // ---------- Hojas ----------
   "cerrar-hoja": function () { cerrarHoja(); confirmar = ""; pintar(); },
   "abrir-ajustes": function () { confirmar = ""; hojaAjustes(); },
-  "abrir-generador": function () { confirmar = ""; hojaGenerador(); },
+  "abrir-generador": function () { confirmar = ""; hojaGenerador(!genOp); },
+  "gen-elegir": function (campo, valor) {
+    leerOpcionesAvanzadas();
+    genOp[campo] = campo === "dias" || campo === "duracion" ? parseInt(valor) : valor;
+    if (campo === "dias") genOp.calendario = calendarioPorDefecto(genOp.dias);   // propone días repartidos
+    hojaGenerador();
+  },
+  "gen-dia": function (d) {
+    d = parseInt(d);
+    const c = genOp.calendario;
+    if (c.includes(d)) c.splice(c.indexOf(d), 1); else c.push(d);
+    c.sort(); hojaGenerador();
+  },
+  "gen-equipo": function (k) {
+    leerOpcionesAvanzadas();
+    const l = genOp.equipo;
+    if (l.includes(k)) l.splice(l.indexOf(k), 1); else l.push(k);
+    hojaGenerador();
+  },
+  "gen-paso": function (dir) {
+    leerOpcionesAvanzadas();
+    if (parseInt(dir) > 0 && pasoGen === 2 && genOp.calendario.length !== genOp.dias) {
+      $("gError").textContent = "Elige exactamente " + genOp.dias + " días (llevas " + genOp.calendario.length + ")."; return;
+    }
+    pasoGen = Math.max(1, Math.min(3, pasoGen + parseInt(dir)));
+    hojaGenerador();
+  },
   "abrir-biblioteca": function () { hojaBiblioteca("ver"); },
   "info-ej": function (id) { hojaEjercicio(id); },
   "ver-sesion": function (id) { confirmar = ""; hojaSesion(id); },
@@ -51,22 +82,20 @@ const ACCIONES = {
 
   // ---------- Generador y editor de rutina ----------
   "generar": function () {
-    const equipo = [];
-    for (const x of document.querySelectorAll('input[name="gEquipo"]:checked')) equipo.push(x.value);
-    if (equipo.length === 0) { $("gError").textContent = "Marca al menos un tipo de equipamiento."; return; }
-    const dias = parseInt($("gDias").value);
-    const calendario = [];
-    for (const x of document.querySelectorAll('input[name="gDia"]:checked')) calendario.push(parseInt(x.value));
-    if (calendario.length !== dias) { $("gError").textContent = "Marca exactamente " + dias + " días en el calendario (has marcado " + calendario.length + ")."; return; }
-    propuesta = generarRutina({ objetivo: $("gObjetivo").value, nivel: $("gNivel").value, dias: dias, calendario: calendario,
-      duracion: parseInt($("gDuracion").value), tipo: $("gTipo").value, prioridad: $("gPrioridad").value, equipo: equipo, evitar: $("gEvitar").value.trim() });
+    leerOpcionesAvanzadas();
+    const g = genOp;
+    if (g.equipo.length === 0) { $("gError").textContent = "Marca al menos un tipo de material."; return; }
+    if (g.calendario.length !== g.dias) { pasoGen = 2; hojaGenerador(); $("gError").textContent = "Elige exactamente " + g.dias + " días."; return; }
+    propuesta = generarRutina({ objetivo: g.objetivo, nivel: g.nivel, dias: g.dias, calendario: g.calendario.slice(),
+      duracion: g.duracion, tipo: g.tipo, prioridad: g.prioridad, equipo: g.equipo.slice(), evitar: g.evitar.trim() });
     confirmar = ""; hojaPropuesta();
   },
   "usar-propuesta": function () {
     if (estado.rutina && !pideConfirmar("usar-propuesta", hojaPropuesta)) return;
-    estado.rutina = propuesta; propuesta = null;
+    estado.rutina = propuesta; propuesta = null; genOp = null;
     estado.perfil.diasSemana = estado.rutina.calendario.slice();
     guardar(); cerrarHoja(); irA("entrenar");
+    toast("✓ Rutina guardada. ¡A entrenar!", "ok");
   },
   "aplicar-sugerencia": function (i) {
     const sug = sugerenciasRutina()[parseInt(i)];
@@ -102,9 +131,35 @@ const ACCIONES = {
     const lista = estado.rutina.dias[i].ejercicios;
     k = parseInt(k); const j = k + parseInt(dir);
     const tmp = lista[k]; lista[k] = lista[j]; lista[j] = tmp;
+    cambioEditor = i + "-" + j;
     guardar(); hojaEditarDia(parseInt(i));
   },
-  "dia-quitar": function (i, k) { estado.rutina.dias[i].ejercicios.splice(parseInt(k), 1); guardar(); hojaEditarDia(parseInt(i)); },
+  "dia-quitar": function (i, k) {
+    const quitado = estado.rutina.dias[i].ejercicios.splice(parseInt(k), 1)[0];
+    deshacerEditor = { i: parseInt(i), k: parseInt(k), o: quitado };
+    guardar(); hojaEditarDia(parseInt(i));
+    toast("Quitado: " + buscarEj(quitado.id).nombre + ". Pulsa «Deshacer» si fue sin querer.");
+    const t = $("toast"); t.innerHTML += ' <button data-act="dia-deshacer" style="text-decoration:underline;font-weight:800;color:inherit">Deshacer</button>';
+  },
+  "dia-deshacer": function () {
+    if (!deshacerEditor) return;
+    estado.rutina.dias[deshacerEditor.i].ejercicios.splice(deshacerEditor.k, 0, deshacerEditor.o);
+    cambioEditor = deshacerEditor.i + "-" + deshacerEditor.k;
+    const i = deshacerEditor.i; deshacerEditor = null;
+    guardar(); hojaEditarDia(i); toast("✓ Recuperado", "ok");
+  },
+  "dia-paso": function (i, k, c) {
+    const o = estado.rutina.dias[i].ejercicios[k];
+    const partes = c.split(":"), campo = partes[0];
+    let v = o[campo] + parseInt(partes[1]);
+    const limites = { series: [1, 10], repMin: [1, 50], repMax: [1, 50], descanso: [15, 600] }[campo];
+    v = Math.max(limites[0], Math.min(limites[1], v));
+    o[campo] = v;
+    if (o.repMin > o.repMax) { if (campo === "repMin") o.repMax = o.repMin; else o.repMin = o.repMax; }
+    cambioEditor = i + "-" + k;
+    guardar(); hojaEditarDia(parseInt(i));
+  },
+  "dia-listo": function () { cerrarHoja(); pintar(); toast("✓ Cambios guardados", "ok"); },
   "dia-sustituir": function (i, k) { hojaBiblioteca("sust-dia:" + i + ":" + k, estado.rutina.dias[i].ejercicios[k].id); },
   "dia-anadir": function (i) { hojaBiblioteca("dia:" + i); },
   "dia-duplicar": function (i) {
@@ -147,7 +202,8 @@ const ACCIONES = {
     }
     if (partes[0] === "sust-dia") {
       estado.rutina.dias[partes[1]].ejercicios[partes[2]].id = id;
-      guardar(); hojaEditarDia(parseInt(partes[1])); return;
+      cambioEditor = partes[1] + "-" + partes[2];
+      guardar(); hojaEditarDia(parseInt(partes[1])); toast("✓ Cambiado por " + buscarEj(id).nombre, "ok"); return;
     }
     guardar(); cerrarHoja(); pintar();
   },
@@ -160,17 +216,118 @@ const ACCIONES = {
   "empezar-libre": function () { pilaDeshacer = []; crearSesionLibre(); guardar(); irA("entrenar"); hojaBiblioteca("sesion"); },
   "anadir-a-sesion": function () { hojaBiblioteca("sesion"); },
   "marcar": function (ei, si) {
-    const e = estado.activa.ejercicios[ei];
+    ei = parseInt(ei); si = parseInt(si);
+    const a = estado.activa;
+    const e = a.ejercicios[ei];
     const s = e.series[si];
     sesionRecuperada = false;
-    if (!s.hecha) {
-      const v = validarSerie(e.id, s.peso, s.reps, e.objetivo);
-      if (v.nivel === "error") { s.error = v.msg; pintarSesion(); return; }
+    if (s.hecha) {                         // desmarcar: vuelve a quedar pendiente
+      copiaSesion(); s.hecha = false; s.prVivo = false; e.foco = si; a.actual = ei;
+      guardar(); pintarSesion(); return;
     }
+    const v = validarSerie(e.id, s.peso, s.reps, e.objetivo);
+    if (v.nivel === "error") { s.error = v.msg; pintarSesion(); return; }
     copiaSesion();
-    s.hecha = !s.hecha;
+    s.hecha = true;
+    e.foco = null;
+    serieMarcada = ei + "-" + si;
+    // ¿Récord en directo?
+    const record = serieValida(s) && esRecordEnVivo(ei, si);
+    s.prVivo = record;
+    if (record) {
+      sonar("record");
+      toast("🏆 ¡Récord personal! " + numero(s.peso) + " kg × " + s.reps, "pr");
+      mensajeEntreno = "¡Eso es! Nuevo récord. Sigue así.";
+    } else sonar("serie");
+    // Siguiente serie o ejercicio y descanso
+    const paso = siguientePaso(ei);
+    a.actual = paso.ir;
     guardar(); pintarSesion();
-    if (s.hecha) empezarDescanso(e.objetivo.descanso || estado.ajustes.descanso);
+    const tarjeta = $("tarjetaEj"); if (tarjeta && paso.ir !== ei) tarjeta.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (paso.fin) { pararDescanso(); toast("✓ ¡Todas las series hechas! Pulsa Terminar.", "ok"); return; }
+    if (!paso.descanso) { pararDescanso(); if (paso.ir !== ei) toast("Superserie: ahora " + buscarEj(a.ejercicios[paso.ir].id).nombre); return; }
+    const seg = s.tipo === "drop" ? 0 : (s.tipo === "rp" ? 15 : (e.objetivo.descanso || estado.ajustes.descanso));
+    if (seg > 0) empezarDescanso(seg); else pararDescanso();
+  },
+  "paso": function (ei, si, c) {
+    const e = estado.activa.ejercicios[ei];
+    const partes = c.split(":"), campo = partes[0], delta = parseFloat(partes[1]);
+    copiaSesion();
+    const actual = e.series[si][campo];
+    let nuevo = campo === "peso" ? Math.max(0, Math.round((actual + delta) * 100) / 100) : Math.max(0, Math.min(50, actual + delta));
+    cambiarSerie(e, parseInt(si), campo, nuevo);
+    e.foco = parseInt(si);
+    guardar(); pintarSesion();
+  },
+  "rpe": function (ei, si, v) {
+    const s = estado.activa.ejercicios[ei].series[si];
+    copiaSesion();
+    s.rpe = s.rpe === parseFloat(v) ? null : parseFloat(v);    // tocar otra vez lo quita (es opcional)
+    estado.activa.ejercicios[ei].foco = parseInt(si);
+    guardar(); pintarSesion();
+  },
+  "foco-serie": function (ei, si) {
+    const e = estado.activa.ejercicios[ei];
+    if (e.series[si].hecha) { toast("Esta serie ya está hecha. Toca ✓ para desmarcarla y editarla."); return; }
+    e.foco = parseInt(si); pintarSesion();
+  },
+  "ir-ej": function (i) {
+    i = parseInt(i);
+    if (i < 0 || i >= estado.activa.ejercicios.length) return;
+    estado.activa.actual = i; guardar(); pintarSesion();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  },
+  "drop-set": function (ei) {
+    const e = estado.activa.ejercicios[ei];
+    const hechas = e.series.filter(function (s) { return s.hecha; });
+    const base = hechas[hechas.length - 1];
+    copiaSesion();
+    const paso = pasoPeso(buscarEj(e.id));
+    const peso = Math.max(0, Math.round(base.peso * 0.8 / paso) * paso);     // un 20 % menos, redondeado a tus discos
+    const pos = e.series.indexOf(base) + 1;
+    e.series.splice(pos, 0, { peso: peso, reps: base.reps, rpe: null, hecha: false, tipo: "drop" });
+    e.foco = pos; estado.activa.actual = parseInt(ei);
+    pararDescanso(); guardar(); pintarSesion();
+    toast("Drop set: baja a " + numero(peso) + " kg y sigue sin descansar");
+  },
+  "rest-pause": function (ei) {
+    const e = estado.activa.ejercicios[ei];
+    const hechas = e.series.filter(function (s) { return s.hecha; });
+    const base = hechas[hechas.length - 1];
+    copiaSesion();
+    const pos = e.series.indexOf(base) + 1;
+    e.series.splice(pos, 0, { peso: base.peso, reps: Math.max(1, Math.round(base.reps / 3)), rpe: null, hecha: false, tipo: "rp" });
+    e.foco = pos; estado.activa.actual = parseInt(ei);
+    guardar(); pintarSesion();
+    empezarDescanso(15);
+    toast("Rest-pause: descansa 15 s y haz las que puedas con el mismo peso");
+  },
+  "superserie": function (ei) {
+    const e = estado.activa.ejercicios[ei];
+    copiaSesion();
+    e.superserie = !e.superserie;
+    guardar(); pintarSesion();
+    toast(e.superserie ? "Superserie: harás una serie de cada uno y luego descansas" : "Superserie quitada");
+  },
+  "fijar-descanso": function () {
+    const a = estado.activa;
+    if (!a) return;
+    const ei = ejercicioActual();
+    const e = a.ejercicios[ei];
+    e.objetivo.descanso = tTotal;
+    // También en la rutina, para las próximas veces
+    if (a.diaIndex !== null && estado.rutina && estado.rutina.dias[a.diaIndex]) {
+      const o = estado.rutina.dias[a.diaIndex].ejercicios.find(function (x) { return x.id === e.id; });
+      if (o) o.descanso = tTotal;
+    }
+    guardar(); pintarTimer();
+    toast("✓ Descanso de " + buscarEj(e.id).nombre + ": " + tTotal + " s", "ok");
+  },
+  "timer-fijo": function (seg) {
+    seg = parseInt(seg);
+    tFin = Date.now() + seg * 1000; tTotal = seg; tRest = seg;
+    if (estado.activa) { estado.activa.descanso = { fin: tFin, total: tTotal }; guardar(); }
+    pintarTimer();
   },
   "copiar-anterior": function (ei, si) {
     const e = estado.activa.ejercicios[ei];
@@ -206,15 +363,20 @@ const ACCIONES = {
     copiaSesion();
     const l = estado.activa.ejercicios; const i = parseInt(ei), j = i + parseInt(dir);
     const tmp = l[i]; l[i] = l[j]; l[j] = tmp;
+    estado.activa.actual = j;
     guardar(); pintarSesion();
   },
-  "quitar-ej": function (ei) { copiaSesion(); estado.activa.ejercicios.splice(parseInt(ei), 1); guardar(); pintarSesion(); },
+  "quitar-ej": function (ei) {
+    copiaSesion(); estado.activa.ejercicios.splice(parseInt(ei), 1);
+    estado.activa.actual = Math.min(parseInt(ei), estado.activa.ejercicios.length - 1);
+    guardar(); pintarSesion(); toast("Ejercicio quitado. Puedes deshacerlo arriba.");
+  },
   "sustituir-sesion": function (ei) { hojaBiblioteca("sust-sesion:" + ei, estado.activa.ejercicios[ei].id); },
   "aplicar-peso": function (ei, peso) {
     copiaSesion();
     for (const s of estado.activa.ejercicios[ei].series) if (!s.hecha) s.peso = parseFloat(peso);
     estado.metricas.aceptadas++;
-    guardar(); pintarSesion();
+    guardar(); pintarSesion(); toast("✓ " + numero(parseFloat(peso)) + " kg en las series pendientes", "ok");
   },
   "deshacer": function () {
     if (pilaDeshacer.length === 0) return;
@@ -223,11 +385,16 @@ const ACCIONES = {
   },
   "terminar": function () {
     pararDescanso();
+    const semana = lunesDe(hoy());
+    const rachaAntes = (sesionesPorSemana()[semana] || 0) >= minimoSemanal();
     const r = terminarSesion();
+    const rachaAhora = (sesionesPorSemana()[semana] || 0) >= minimoSemanal();
     pilaDeshacer = []; sesionRecuperada = false;
     tab = "inicio"; pintar();
     if (r.vacio) { mensaje("Entreno vacío", "No hay ninguna serie completada, así que no se ha guardado."); return; }
     if (r.duplicado) { abrirHoja(cabeceraHoja("Ya estaba guardado", "") + '<p>Este entreno era idéntico al último que guardaste hoy, así que no se ha duplicado.</p>'); return; }
+    sonar(r.ascensos.length ? "rango" : (r.sesion.prs.length ? "record" : "fin"));
+    if (!rachaAntes && rachaAhora) setTimeout(function () { sonar("racha"); }, duracionSonido(r.ascensos.length ? "rango" : "record") * 1000 + 300);
     if (r.sesion.prs.length || r.ascensos.length) celebrar(r);
     else hojaResumen(r);
   },
@@ -271,6 +438,18 @@ const ACCIONES = {
   },
 
   // ---------- Social ----------
+  "ir-amigos": function () { vistaSocial = "amigos"; irA("social"); },
+  "ir-retos": function () { vistaSocial = "retos"; irA("social"); },
+  "activar-avisos": function () {
+    if (permisoAvisos() === "no") { mensaje("Avisos", "Este navegador no permite avisos. En iPhone, primero añade la app a la pantalla de inicio."); return; }
+    if (permisoAvisos() === "granted") { mostrarAviso("Apex Gym", "Así te llegarán los recordatorios. 💪"); return; }
+    Notification.requestPermission().then(function (p) {
+      if (p === "granted") { toast("✓ Avisos activados", "ok"); mostrarAviso("Apex Gym", "Avisos activados. Te recordaré tus entrenos. 💪"); }
+      else toast("No se han activado los avisos", "error");
+      hojaAjustes();
+    });
+  },
+  "vista-carga": function (v) { vistaCarga = v; pintarProgreso(); },
   "vista-social": function (v) { vistaSocial = v; confirmar = ""; pintarSocial(); },
   "like": function (id) {
     const p = estado.social.posts.find(function (x) { return x.id === id; });
@@ -301,7 +480,31 @@ const ACCIONES = {
     if (s.compartida) { mensaje("Ya compartido", "Tu último entreno ya está publicado."); return; }
     const r = publicar("entreno", textoSesion(s));
     if (!r.ok) { mensaje("No se puede publicar", r.msg); return; }
-    s.compartida = true; guardar(); pintarSocial();
+    s.compartida = true; guardar();
+    postNuevo = estado.social.posts[0].id;
+    pintarSocial();
+    toast("✓ Guardado en tu diario", "ok");
+    setTimeout(function () { postNuevo = ""; }, 2000);
+  },
+  "compartir-fuera": function () {
+    const s = estado.sesiones[estado.sesiones.length - 1];
+    if (!s) return;
+    const texto = "💪 " + textoSesion(s) + " en Apex Gym" + (rachaSemanas() > 1 ? " · racha de " + rachaSemanas() + " semanas 🔥" : "");
+    compartirTexto("Mi entreno", texto, URL_APP);
+  },
+  "compartir-tarjeta": function () {
+    const p = puedeCompartirTarjeta();
+    if (!p.ok) { mensaje("No se puede compartir", p.msg); return; }
+    compartirTexto("Añádeme en Apex Gym", "¡Añádeme como amigo en Apex Gym! Abre el enlace:", enlaceTarjeta());
+  },
+  "anadir-amigo-real": function () {
+    const r = anadirAmigoReal($("codigoAmigo").value);
+    if (!r.ok) { toast(r.msg, "error"); return; }
+    guardar(); pintarSocial(); toast("✓ " + r.msg, "ok");
+  },
+  "quitar-amigo-real": function (uid) {
+    if (!pideConfirmar("quitar-amigo-real" + uid, pintarSocial)) return;
+    quitarAmigoReal(uid); guardar(); pintarSocial(); toast("Amigo quitado");
   },
   "anadir-amigo": function (u) {
     if (!estado.social.amigos.includes(u) && usuarioDemo(u)) estado.social.amigos.push(u);
@@ -341,9 +544,10 @@ const ACCIONES = {
     p.diasSemana = estado.perfil.diasSemana;
     estado.perfil = p;
     const a = estado.ajustes;
-    a.descanso = parseInt($("aDescanso").value); a.incremento = parseFloat($("aIncremento").value); a.incrementoMancuernas = parseFloat($("aIncMancuernas").value);
+    a.descanso = parseInt($("aDescanso").value); a.descansoAislamiento = a.descanso; a.descansoCompuesto = parseInt($("aDescComp").value); a.formula1RM = $("aFormula").value; a.incremento = parseFloat($("aIncremento").value); a.incrementoMancuernas = parseFloat($("aIncMancuernas").value);
     a.privacidad = $("aPrivacidad").value; a.compartir = $("aCompartir").checked; a.mascota = $("aMascota").checked;
-    a.notif = { recordatorios: $("nRec").checked, records: $("nRecords").checked, rangos: $("nRangos").checked, amigos: $("nAmigos").checked, semanal: $("nSemanal").checked };
+    a.sonido = $("aSonido").checked; a.vibracion = $("aVibracion").checked;
+    a.notif = { recordatorios: $("nRec").checked, racha: $("nRacha").checked, retos: $("nReto").checked, hora: parseInt($("nHora").value), records: $("nRecords").checked, rangos: $("nRangos").checked, amigos: a.notif.amigos, semanal: $("nSemanal").checked, ultimoAviso: a.notif.ultimoAviso || "" };
     guardar(); pintar();
     $("aOk").textContent = "Cambios guardados.";
   },
@@ -531,9 +735,52 @@ function registrarServiceWorker() {
   navigator.serviceWorker.register("sw.js").catch(function () { /* si falla, la app sigue funcionando con internet */ });
 }
 
+let deshacerEditor = null;      // último ejercicio quitado de un día (para poder recuperarlo)
+// Lee las opciones avanzadas del paso 3 del generador (si están en pantalla)
+function leerOpcionesAvanzadas() {
+  if (!genOp) return;
+  if ($("gTipo")) genOp.tipo = $("gTipo").value;
+  if ($("gPrioridad")) genOp.prioridad = $("gPrioridad").value;
+  if ($("gEvitar")) genOp.evitar = $("gEvitar").value;
+}
+
+// Si la app se abre con un enlace de amigo (…#amigo=código), lo añade
+function abrirEnlaceAmigo() {
+  if (location.hash.indexOf("#amigo=") !== 0) return;
+  const codigo = location.hash.slice(1);
+  try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { }
+  if (!estado || !estado.perfil || estado.modo === "demo") {
+    mensaje("Enlace de amigo", "Crea tu perfil y vuelve a abrir el enlace (o pega el código en Social → Amigos).");
+    return;
+  }
+  const r = anadirAmigoReal(codigo);
+  if (r.ok) { guardar(); tab = "social"; vistaSocial = "amigos"; pintar(); toast("✓ " + r.msg, "ok"); }
+  else mensaje("Enlace de amigo", r.msg);
+}
+
+// Deslizar a izquierda o derecha durante el entreno cambia de ejercicio
+let toqueX = null, toqueY = null;
+document.addEventListener("touchstart", function (ev) {
+  if (tab !== "entrenar" || !estado || !estado.activa || !$("hoja").hidden) { toqueX = null; return; }
+  if (ev.target.closest("input, textarea, select, .chips")) { toqueX = null; return; }
+  toqueX = ev.touches[0].clientX; toqueY = ev.touches[0].clientY;
+}, { passive: true });
+document.addEventListener("touchend", function (ev) {
+  if (toqueX === null) return;
+  const dx = ev.changedTouches[0].clientX - toqueX, dy = ev.changedTouches[0].clientY - toqueY;
+  toqueX = null;
+  if (Math.abs(dx) < 70 || Math.abs(dy) > Math.abs(dx) * 0.6) return;     // solo gestos claramente horizontales
+  const ei = ejercicioActual();
+  ACCIONES["ir-ej"](dx < 0 ? ei + 1 : ei - 1);
+}, { passive: true });
+
 // ---------- Arranque ----------
 cargar();
 if (estado && estado.activa) { sesionRecuperada = true; tab = "entrenar"; }
 pintar();
 reanudarDescanso();
 registrarServiceWorker();
+abrirEnlaceAmigo();
+comprobarRecordatorios();
+setInterval(comprobarRecordatorios, 5 * 60 * 1000);
+document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") comprobarRecordatorios(); });

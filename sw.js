@@ -5,12 +5,12 @@
 // Si cambias algún archivo, sube el número de VERSION para que los móviles descarguen la nueva.
 // =====================================================
 
-const VERSION = "apex-gym-2.4.0";
+const VERSION = "apex-gym-2.6.0";
 
 // Archivos que se guardan nada más instalar la app
 const ARCHIVOS = [
   "./", "./index.html", "./manifest.json",
-  "./datos.js", "./logica.js", "./academia.js", "./mascota.js", "./app.js", "./pruebas.js", "./eventos.js",
+  "./datos.js", "./logica.js", "./academia.js", "./mascota.js", "./sonidos.js", "./app.js", "./pruebas.js", "./eventos.js",
   "./iconos/icono-192.png", "./iconos/icono-512.png"
 ];
 
@@ -43,5 +43,14 @@ self.addEventListener("fetch", function (evento) {
       }
       return respuesta;
     });
+  }));
+});
+
+// 4. Al tocar un aviso, abre la app (o la trae al frente si ya estaba abierta)
+self.addEventListener("notificationclick", function (evento) {
+  evento.notification.close();
+  evento.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (ventanas) {
+    for (const v of ventanas) if ("focus" in v) return v.focus();
+    return self.clients.openWindow("./index.html");
   }));
 });
