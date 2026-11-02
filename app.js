@@ -1,0 +1,1463 @@
+// =====================================================
+// APEX GYM · PANTALLAS (todo lo que se pinta y los botones)
+// =====================================================
+
+// ---------- Variables de la interfaz ----------
+let tab = "inicio";
+let pilaDeshacer = [];          // copias de la sesión para poder deshacer
+let filtroBib = { texto: "", grupo: "", equipo: "", favoritos: false };
+let modoBib = "ver";            // "ver" o a dónde va el ejercicio elegido
+let periodo = 28;               // días del periodo en Progreso (0 = todo)
+let ejGrafica = "";
+let metrica = "rm";
+let grupoVolumen = "";
+let vistaSocial = "feed";
+let confirmar = "";             // botón que espera un segundo toque
+let propuesta = null;           // rutina generada que aún no se ha aceptado
+let sesionRecuperada = false;
+let mensajeSugerencia = "";       // frase con el último cambio aplicado a la rutina    // se abrió la app con un entreno a medias
+
+// ---------- Ayudas ----------
+function $(id) { return document.getElementById(id); }
+
+// Evita que un texto escrito por el usuario se convierta en HTML
+function esc(t) {
+  return String(t === undefined || t === null ? "" : t).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+
+function kg(n) { return (Math.round(n * 10) / 10).toLocaleString("es-ES") + " kg"; }
+function miles(n) { return Math.round(n).toLocaleString("es-ES"); }
+
+const I = {
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5 9-10"/></svg>',
+  cerrar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  arriba: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 15l6-6 6 6"/></svg>',
+  abajo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>',
+  cambiar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg>',
+  borrar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
+  info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>',
+  buscar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>',
+  estrella: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>',
+  estrellaLlena: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>',
+  deshacer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>',
+  rayo: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>'
+};
+
+// ---------- Insignia de rango (diseño propio de Apex Gym) ----------
+// Gema hexagonal con relieve. Cuanto más alto el rango, más adornos:
+//   Hierro, Bronce, Plata → 1, 2 o 3 galones
+//   Oro, Platino, Esmeralda → estrella y 1, 2 o 3 puntos
+//   Diamante, Titán → gema central y alas · Apex → gema, alas, corona y brillo
+let contadorInsignia = 0;
+function insignia(i, tam) {
+  const vacio = i === null || i === undefined;
+  let s = '<svg class="badge ' + (tam || "") + '" viewBox="-22 -16 144 140" role="img" aria-label="' + (vacio ? "Sin rango" : "Rango " + RANGOS[i].nombre) + '">';
+  const hex = "50,4 94,29 94,83 50,108 6,83 6,29";
+  if (vacio) return s + '<polygon points="' + hex + '" fill="var(--surface2)" stroke="var(--surface3)" stroke-width="4" stroke-dasharray="8 6"/>' +
+    '<text x="50" y="66" text-anchor="middle" font-size="30" font-weight="700" fill="var(--muted)">–</text></svg>';
+
+  const r = RANGOS[i];
+  const id = "ins" + (++contadorInsignia);
+  s += '<defs><linearGradient id="' + id + 'c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + r.claro + '"/><stop offset=".55" stop-color="' + r.color + '"/><stop offset="1" stop-color="' + r.oscuro + '"/></linearGradient>' +
+    '<linearGradient id="' + id + 'a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + r.color + '"/><stop offset="1" stop-color="' + r.oscuro + '"/></linearGradient></defs>';
+
+  // Brillo de fondo (Apex)
+  if (i === 8) s += '<circle cx="50" cy="58" r="60" fill="' + r.color + '" opacity=".18"/>';
+  // Alas (Diamante, Titán y Apex)
+  if (i >= 6) {
+    const ala = function (lado) {
+      let t = "";
+      for (let k = 0; k < 3; k++) {
+        const y = 40 + k * 16, largo = 30 - k * 6;
+        const x0 = lado < 0 ? 12 : 88, x1 = x0 + lado * largo;
+        t += '<path d="M' + x0 + ',' + y + ' Q' + (x0 + lado * largo * 0.6) + ',' + (y - 10) + ' ' + x1 + ',' + (y - 6) + ' Q' + (x0 + lado * largo * 0.5) + ',' + (y + 6) + ' ' + x0 + ',' + (y + 10) + 'Z" fill="url(#' + id + 'a)" stroke="' + r.oscuro + '" stroke-width="1.5"/>';
+      }
+      return t;
+    };
+    s += ala(-1) + ala(1);
+  }
+  // Pinchos laterales (Titán y Apex)
+  if (i >= 7) s += '<polygon points="50,-8 58,6 42,6" fill="url(#' + id + 'a)"/><polygon points="50,120 58,106 42,106" fill="url(#' + id + 'a)"/>';
+
+  // Cuerpo de la gema con facetas
+  s += '<polygon points="' + hex + '" fill="url(#' + id + 'c)" stroke="' + r.oscuro + '" stroke-width="3.5"/>' +
+    '<polygon points="50,18 82,36 82,76 50,94 18,76 18,36" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="2"/>' +
+    '<path d="M50,4 L50,18 M94,29 L82,36 M94,83 L82,76 M50,108 L50,94 M6,83 L18,76 M6,29 L18,36" stroke="#fff" stroke-opacity=".25" stroke-width="2"/>' +
+    '<polygon points="50,4 94,29 50,40 6,29" fill="#fff" opacity=".18"/>';
+
+  // Emblema central
+  const blanco = 'fill="#fff" stroke="' + r.oscuro + '" stroke-width="2.5" stroke-linejoin="round"';
+  if (i <= 2) {
+    const n = i + 1, alto = n * 14;
+    for (let k = 0; k < n; k++) {
+      const y = 56 + alto / 2 - k * 14 - 7;
+      s += '<polyline points="30,' + (y + 11) + ' 50,' + y + ' 70,' + (y + 11) + '" fill="none" stroke="' + r.oscuro + '" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<polyline points="30,' + (y + 11) + ' 50,' + y + ' 70,' + (y + 11) + '" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>';
+    }
+  } else if (i <= 5) {
+    // Estrella de 5 puntas
+    let p = "";
+    for (let k = 0; k < 10; k++) {
+      const ang = -Math.PI / 2 + k * Math.PI / 5, rad = k % 2 === 0 ? 24 : 10;
+      p += (50 + Math.cos(ang) * rad).toFixed(1) + "," + (52 + Math.sin(ang) * rad).toFixed(1) + " ";
+    }
+    s += '<polygon points="' + p + '" ' + blanco + '/>';
+    const n = i - 2;
+    for (let k = 0; k < n; k++) s += '<circle cx="' + (50 + (k - (n - 1) / 2) * 12) + '" cy="86" r="4" ' + blanco + '/>';
+  } else {
+    // Gema central facetada
+    s += '<polygon points="50,30 70,48 50,82 30,48" ' + blanco + '/>' +
+      '<path d="M30,48 L70,48 M50,30 L42,48 L50,82 L58,48 Z" fill="none" stroke="' + r.oscuro + '" stroke-opacity=".55" stroke-width="1.5"/>';
+  }
+  // Corona (Apex)
+  if (i === 8) s += '<path d="M30,2 L36,-8 L43,0 L50,-12 L57,0 L64,-8 L70,2 Z" fill="#FFD25A" stroke="#9A6A00" stroke-width="2" stroke-linejoin="round"/>';
+  return s + '</svg>';
+}
+
+function nombreRango(i) { return i === null || i === undefined ? "Sin rango" : RANGOS[i].nombre; }
+
+// ---------- Gráficas ----------
+function graficaLinea(etiquetas, valores, unidad) {
+  if (valores.length < 2) return '<p class="muted">Necesitas al menos 2 registros para ver la gráfica.</p>';
+  const W = 340, H = 170, mx = 36, mt = 14, mb = 26;
+  let min = Math.min.apply(null, valores), max = Math.max.apply(null, valores);
+  if (max === min) { max += 1; min -= 1; }
+  const pad = (max - min) * 0.1; max += pad; min -= pad;
+  function x(i) { return mx + i * (W - mx - 10) / (valores.length - 1); }
+  function y(v) { return mt + (max - v) * (H - mt - mb) / (max - min); }
+  let pts = "";
+  valores.forEach(function (v, i) { pts += x(i).toFixed(1) + "," + y(v).toFixed(1) + " "; });
+  let s = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Gráfica de ' + valores.length + ' registros, de ' + (Math.round(valores[0] * 10) / 10) + ' a ' + (Math.round(valores[valores.length - 1] * 10) / 10) + ' ' + unidad + '">';
+  for (let k = 0; k <= 2; k++) {
+    const v = min + (max - min) * k / 2;
+    s += '<line x1="' + mx + '" x2="' + (W - 10) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="var(--line)"/>' +
+      '<text x="' + (mx - 6) + '" y="' + (y(v) + 4) + '" text-anchor="end" font-size="10" fill="var(--muted)">' + Math.round(v) + '</text>';
+  }
+  s += '<polygon points="' + x(0) + ',' + (H - mb) + ' ' + pts + x(valores.length - 1) + ',' + (H - mb) + '" fill="var(--accent)" fill-opacity=".14"/>' +
+    '<polyline points="' + pts + '" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>';
+  valores.forEach(function (v, i) {
+    const ult = i === valores.length - 1;
+    s += '<circle cx="' + x(i) + '" cy="' + y(v) + '" r="' + (ult ? 5 : 3) + '" fill="' + (ult ? "var(--pr)" : "var(--accent)") + '"><title>' + etiquetas[i] + ': ' + (Math.round(v * 10) / 10) + ' ' + unidad + '</title></circle>';
+  });
+  s += '<text x="' + mx + '" y="' + (H - 6) + '" font-size="10" fill="var(--muted)">' + etiquetas[0] + '</text>' +
+    '<text x="' + (W - 10) + '" y="' + (H - 6) + '" font-size="10" text-anchor="end" fill="var(--muted)">' + etiquetas[etiquetas.length - 1] + '</text>' +
+    '<text x="' + (W - 10) + '" y="' + (y(valores[valores.length - 1]) - 10) + '" font-size="11" font-weight="700" text-anchor="end" fill="var(--fg)">' + (Math.round(valores[valores.length - 1] * 10) / 10) + ' ' + unidad + '</text>';
+  return s + '</svg>';
+}
+
+function graficaBarras(etiquetas, valores, unidad) {
+  if (valores.length === 0 || Math.max.apply(null, valores) === 0) return '<p class="muted">Todavía no hay datos en este periodo.</p>';
+  const W = 340, H = 160, mb = 24, mt = 18;
+  const max = Math.max.apply(null, valores);
+  const ancho = (W - 10) / valores.length;
+  let s = '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Gráfica de barras de ' + valores.length + ' semanas, máximo ' + miles(max) + ' ' + unidad + '"><line x1="0" x2="' + W + '" y1="' + (H - mb) + '" y2="' + (H - mb) + '" stroke="var(--line)"/>';
+  valores.forEach(function (v, i) {
+    const h = v / max * (H - mb - mt);
+    const bx = 5 + i * ancho + ancho * 0.18;
+    const ult = i === valores.length - 1;
+    s += '<rect x="' + bx + '" y="' + (H - mb - h) + '" width="' + (ancho * 0.64) + '" height="' + h + '" rx="3" fill="var(--accent)" fill-opacity="' + (ult ? 1 : 0.55) + '"><title>' + etiquetas[i] + ': ' + miles(v) + ' ' + unidad + '</title></rect>';
+    if (valores.length <= 12) s += '<text x="' + (bx + ancho * 0.32) + '" y="' + (H - 8) + '" font-size="9" text-anchor="middle" fill="var(--muted)">' + etiquetas[i] + '</text>';
+  });
+  s += '<text x="' + W + '" y="11" font-size="10" text-anchor="end" fill="var(--muted)">máx. ' + miles(max) + ' ' + unidad + '</text>';
+  return s + '</svg>';
+}
+
+// =====================================================
+// BIENVENIDA Y CONFIGURACIÓN INICIAL
+// =====================================================
+
+function pintarBienvenida() {
+  $("tabs").hidden = true;
+  $("app").innerHTML =
+    '<div class="welcome">' +
+      insignia(8, "logo") +
+      '<div><h1>Apex Gym</h1><p class="muted" style="font-size:1rem;margin-top:6px">Registra tus entrenos, sigue tu progreso y sube de rango con datos reales.</p></div>' +
+      '<button class="btn" data-act="ir-registro">Crear mi perfil</button>' +
+      '<button class="btn-sec full" data-act="usar-demo">Probar con datos de ejemplo</button>' +
+      '<p class="muted small">Tu perfil se guarda en este dispositivo. El inicio de sesión con cuenta (Google o correo) se activará cuando la app tenga servidor.</p>' +
+    '</div>';
+}
+
+function opciones(lista, actual) {
+  let h = "";
+  for (const par of lista) h += '<option value="' + par[0] + '"' + (String(par[0]) === String(actual) ? " selected" : "") + '>' + par[1] + '</option>';
+  return h;
+}
+
+const OP_EXPERIENCIA = [["principiante", "Principiante (menos de 1 año)"], ["intermedio", "Intermedio (1-3 años)"], ["avanzado", "Avanzado (más de 3 años)"]];
+const OP_OBJETIVO = [["masa", "Ganar masa muscular"], ["fuerza", "Mejorar la fuerza"], ["condicion", "Mejorar la condición física"], ["activo", "Mantenerse activo"]];
+const OP_SEXO = [["", "Elige una opción"], ["hombre", "Hombre"], ["mujer", "Mujer"], ["nd", "Prefiero no decirlo"]];
+const OP_LUGAR = [["gimnasio", "Gimnasio"], ["casa", "Casa"], ["calistenia", "Calistenia"]];
+const OP_DIAS = [[1, "1 día"], [2, "2 días"], [3, "3 días"], [4, "4 días"], [5, "5 días"], [6, "6 días"]];
+const OP_DURACION = [[30, "30 min"], [45, "45 min"], [60, "60 min"], [90, "90 min"]];
+
+// Formulario de perfil (sirve para el registro y para Ajustes)
+function formPerfil(p) {
+  let eq = "";
+  for (const k in EQUIPOS) eq += '<label class="check"><input type="checkbox" name="equipo" value="' + k + '"' + (p.equipo.includes(k) ? " checked" : "") + '>' + EQUIPOS[k] + '</label>';
+  return '' +
+    '<div class="grid2">' +
+      '<label class="f">Nombre<input id="fNombre" value="' + esc(p.nombre) + '" maxlength="30" autocomplete="given-name"></label>' +
+      '<label class="f">Usuario<input id="fUsuario" value="' + esc(p.usuario) + '" maxlength="24" placeholder="tu.usuario"></label>' +
+    '</div>' +
+    '<label class="f">Sexo<select id="fSexo">' + opciones(OP_SEXO, p.sexo || "") + '</select></label>' +
+    '<p class="muted small" style="margin-top:-6px">Solo se usa para ajustar los rangos de fuerza. Nunca se muestra a otros usuarios.</p>' +
+    '<div class="grid3">' +
+      '<label class="f">Edad<input id="fEdad" type="number" inputmode="numeric" value="' + esc(p.edad) + '"></label>' +
+      '<label class="f">Altura (cm)<input id="fAltura" type="number" inputmode="numeric" value="' + esc(p.altura) + '"></label>' +
+      '<label class="f">Peso (kg)<input id="fPeso" type="number" inputmode="decimal" step="0.1" value="' + esc(p.peso) + '"></label>' +
+    '</div>' +
+    '<label class="f">Experiencia<select id="fExperiencia">' + opciones(OP_EXPERIENCIA, p.experiencia) + '</select></label>' +
+    '<label class="f">Objetivo principal<select id="fObjetivo">' + opciones(OP_OBJETIVO, p.objetivo) + '</select></label>' +
+    '<div class="grid2">' +
+      '<label class="f">Días por semana<select id="fDias">' + opciones(OP_DIAS, p.dias) + '</select></label>' +
+      '<label class="f">Duración<select id="fDuracion">' + opciones(OP_DURACION, p.duracion) + '</select></label>' +
+    '</div>' +
+    '<label class="f">Dónde entrenas<select id="fLugar" data-cambio="lugar">' + opciones(OP_LUGAR, p.lugar) + '</select></label>' +
+    '<div class="stack tight"><span class="label">Equipamiento disponible</span><div class="grid2" id="fEquipo">' + eq + '</div></div>' +
+    '<label class="f">Ejercicios que prefieres evitar (opcional)<input id="fEvitar" value="' + esc(p.evitar) + '" placeholder="Ej.: sentadilla"></label>' +
+    '<label class="f">Lesiones o limitaciones (opcional)<textarea id="fLesiones" placeholder="Solo como recordatorio para ti">' + esc(p.lesiones) + '</textarea></label>' +
+    '<p class="muted small">La app no hace diagnósticos. Si tienes dolor o una lesión, consulta con un profesional sanitario.</p>' +
+    '<p class="err" id="fError"></p>';
+}
+
+// Lee y valida el formulario. Devuelve el perfil o null si hay errores.
+function leerPerfil() {
+  const equipo = [];
+  for (const c of document.querySelectorAll('input[name="equipo"]:checked')) equipo.push(c.value);
+  const p = {
+    nombre: $("fNombre").value.trim(),
+    usuario: $("fUsuario").value.trim().toLowerCase().replace(/[^a-z0-9._]/g, ""),
+    sexo: $("fSexo").value,
+    edad: parseInt($("fEdad").value), altura: parseInt($("fAltura").value), peso: parseFloat($("fPeso").value),
+    experiencia: $("fExperiencia").value, objetivo: $("fObjetivo").value,
+    dias: parseInt($("fDias").value), duracion: parseInt($("fDuracion").value), lugar: $("fLugar").value,
+    equipo: equipo, evitar: $("fEvitar").value.trim(), lesiones: $("fLesiones").value.trim()
+  };
+  let error = "";
+  if (!p.nombre) error = "Escribe tu nombre.";
+  else if (!p.usuario || p.usuario.length < 3) error = "El usuario necesita al menos 3 letras o números.";
+  else if (!p.sexo) error = "Elige una opción en Sexo (puedes elegir «Prefiero no decirlo»).";
+  else if (!(p.edad >= 14 && p.edad <= 90)) error = "La edad debe estar entre 14 y 90 años.";
+  else if (!(p.altura >= 120 && p.altura <= 230)) error = "La altura debe estar entre 120 y 230 cm.";
+  else if (!(p.peso >= 35 && p.peso <= 250)) error = "El peso debe estar entre 35 y 250 kg.";
+  else if (p.equipo.length === 0) error = "Marca al menos un tipo de equipamiento.";
+  $("fError").textContent = error;
+  return error ? null : p;
+}
+
+function pintarRegistro() {
+  $("tabs").hidden = true;
+  const vacio = { nombre: "", usuario: "", sexo: "", edad: "", altura: "", peso: "", experiencia: "principiante", objetivo: "masa",
+    dias: 3, duracion: 60, lugar: "gimnasio", equipo: ["barra", "mancuernas", "maquina", "polea", "corporal"], evitar: "", lesiones: "" };
+  $("app").innerHTML = '<div class="stack" style="padding-top:8px">' +
+    '<div><p class="label">Paso 1 de 1</p><h1>Tu perfil</h1><p class="muted" style="margin-top:6px">Con estos datos creamos tu primera rutina. Puedes cambiarlos cuando quieras.</p></div>' +
+    '<div class="card stack">' + formPerfil(vacio) + '</div>' +
+    '<button class="btn" data-act="crear-perfil">Crear perfil y rutina</button>' +
+    '<button class="btn-txt" data-act="volver-bienvenida">Volver</button></div>';
+}
+
+// =====================================================
+// PANTALLA: INICIO
+// =====================================================
+
+function pintarInicio() {
+  const p = estado.perfil;
+  const semana = sesionesPorSemana()[lunesDe(hoy())] || 0;
+  const pg = puntosGlobal();
+  const rg = pg === null ? null : rangoDePuntos(pg);
+  const ultima = estado.sesiones[estado.sesiones.length - 1];
+
+  let h = '<div class="head"><div class="grow"><p class="label">' + new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }) + '</p>' +
+    '<h1>Hola, ' + esc(p.nombre) + '</h1></div>' +
+    '<button class="avatar" data-act="abrir-ajustes" aria-label="Perfil y ajustes">' + esc(p.nombre[0] || "?").toUpperCase() + '</button></div>';
+
+  if (erroresCarga.length) h += '<div class="card" style="margin-bottom:14px;border-color:var(--warn)"><p class="small"><b>Tus datos tienen algún valor incorrecto</b> (' + esc(erroresCarga[0]) + '). Se han cargado igualmente. Revisa tu perfil en Ajustes y exporta una copia.</p></div>';
+  if (recuperadoDeCopia) h += '<div class="card" style="margin-bottom:14px;border-color:var(--warn)"><p class="small"><b>Se recuperaron tus datos de la copia de seguridad</b> porque el archivo principal estaba dañado.</p></div>';
+  if (estado.modo === "demo") h += '<div class="row between" style="margin-bottom:14px"><span class="demo-tag">Datos de ejemplo</span><button class="btn-txt small" data-act="salir-demo">Crear mi perfil</button></div>';
+
+  h += '<div class="stack">';
+
+  // Kilo, la mascota
+  const kilo = estadoMascota();
+  if (kilo) {
+    h += '<div class="kilo-card kilo-tono-' + kilo.humor + '">' + kiloSVG(kilo.humor) +
+      '<div class="bocadillo"><p class="label">Kilo</p><p>' + esc(kilo.mensaje) + '</p>' +
+      ((kilo.humor === "anima" || kilo.humor === "enfadado") && estado.rutina && !estado.activa ? '<button class="btn-txt small" data-act="empezar-dia" data-a="' + indiceSiguienteDia() + '">Vamos a entrenar →</button>' : "") +
+      '</div></div>';
+  }
+
+  // Entreno en curso o entreno de hoy
+  if (estado.activa) {
+    h += '<div class="card hero stack tight"><p class="label" style="color:var(--accent)">Entreno en curso</p><h2>' + esc(estado.activa.diaNombre) + '</h2>' +
+      '<button class="btn" data-tab="entrenar">Continuar entreno</button></div>';
+  } else if (!estado.rutina) {
+    h += '<div class="card hero stack tight"><p class="label" style="color:var(--accent)">Sin rutina</p><h2>Crea tu rutina</h2><p class="muted">Te proponemos una según tu objetivo, días y equipamiento.</p>' +
+      '<button class="btn" data-act="abrir-generador">Crear rutina</button></div>';
+  } else {
+    const idx = indiceSiguienteDia();
+    const dia = estado.rutina.dias[idx];
+    const cal = estado.rutina.calendario || [];
+    const hoyN = (new Date().getDay() + 6) % 7;
+    const descanso = cal.length > 0 && !cal.includes(hoyN);
+    let proximo = "";
+    if (descanso) { for (let k = 1; k <= 7; k++) { const d = (hoyN + k) % 7; if (cal.includes(d)) { proximo = NOMBRES_DIAS_SEMANA[d].toLowerCase(); break; } } }
+    h += '<div class="card hero stack tight"><div class="row between"><p class="label" style="color:var(--accent)">' + (descanso ? "Hoy toca descanso · próximo: " + proximo : "Entreno de hoy") + '</p><span class="muted small">' + dia.ejercicios.length + ' ejercicios</span></div>' +
+      '<h2>' + esc(dia.nombre) + '</h2><p class="muted">' + dia.ejercicios.map(function (o) { return esc(buscarEj(o.id).nombre); }).join(" · ") + '</p>' +
+      '<button class="' + (descanso ? "btn-sec full" : "btn") + '" data-act="empezar-dia" data-a="' + idx + '">' + (descanso ? "Entrenar igualmente" : "Empezar entrenamiento") + '</button></div>';
+
+    // Siguiente paso recomendado (primer ejercicio del día)
+    if (dia.ejercicios.length > 0) {
+      const o = dia.ejercicios[0];
+      const rec = recomendar(o.id, o);
+      h += '<div class="card row" style="align-items:flex-start"><span style="color:var(--accent);width:22px;flex:none;margin-top:2px">' + I.rayo + '</span>' +
+        '<div class="grow stack tight"><p class="label">Siguiente paso · ' + esc(buscarEj(o.id).nombre) + '</p><p>' + esc(rec.motivo) + '</p></div></div>';
+    }
+  }
+
+  // Racha y rango
+  let semanaHtml = "";
+  const hoyNum = (new Date().getDay() + 6) % 7;
+  const fechas = estado.sesiones.map(function (s) { return s.fecha; });
+  ["L", "M", "X", "J", "V", "S", "D"].forEach(function (l, i) {
+    const f = fechaTexto(hoyNum - i);
+    const on = fechas.includes(f);
+    semanaHtml += '<div>' + l + '<i class="' + (on ? "on" : "") + (i === hoyNum ? " today" : "") + '">' + (on ? '<span style="color:var(--on-accent)">' + I.check + '</span>' : "") + '</i></div>';
+  });
+  h += '<div class="card stack tight"><div class="row between"><div><p class="label">Racha de constancia</p>' +
+    '<div class="row" style="gap:6px;align-items:baseline"><span class="big-num num" style="color:var(--fire)">' + rachaSemanas() + '</span><span class="muted">semanas</span></div></div>' +
+    '<div style="text-align:right"><p class="label">Esta semana</p><span class="big-num num">' + semana + '</span><span class="muted"> / ' + p.dias + '</span></div></div>' +
+    '<div class="week">' + semanaHtml + '</div><p class="muted small">Una semana cuenta si entrenas al menos ' + minimoSemanal() + ' días.</p></div>';
+
+  h += '<button class="card row" data-tab="rangos" style="text-align:left">' + insignia(rg, "") +
+    '<div class="grow stack tight"><p class="label">Rango global</p><h2>' + nombreRango(rg) + '</h2>' +
+    (pg === null ? '<p class="muted">Completa un entreno para conseguir rango.</p>' :
+      '<div class="bar"><i style="width:' + progresoRango(pg) + '%"></i></div><p class="muted small">' +
+      (rg < RANGOS.length - 1 ? progresoRango(pg) + "% hacia " + RANGOS[rg + 1].nombre : "Rango máximo") + '</p>') + '</div></button>';
+
+  // Próximo ascenso: el objetivo más cercano para subir de rango
+  const prox = proximoAscenso();
+  if (prox) {
+    h += '<button class="card row" data-act="ver-rango-ej" data-a="' + prox.id + '" style="text-align:left">' + insignia(prox.rango, "sm") +
+      '<div class="grow stack tight"><p class="label" style="color:' + RANGOS[prox.rango].color + '">Próximo ascenso · ' + RANGOS[prox.rango].nombre + '</p>' +
+      '<p><b>' + esc(buscarEj(prox.id).nombre) + '</b>: ' + (prox.peso > 0 ? kg(prox.peso) + ' × ' + prox.reps : prox.reps + ' reps') + '</p>' +
+      '<p class="muted small">Te falta un ' + Math.max(1, Math.round(prox.falta * 100)) + ' % de fuerza en este ejercicio.</p></div></button>';
+  }
+
+  // Datos rápidos
+  const pesoC = estado.pesoCorporal.length ? estado.pesoCorporal[estado.pesoCorporal.length - 1].kg : null;
+  const hace4 = puntosGlobal(fechaTexto(28));
+  let fuerza = "—";
+  if (pg !== null && hace4 !== null) { const d = pg - hace4; fuerza = (d >= 0 ? "+" : "") + d.toFixed(1); }
+  h += '<div class="grid3">' +
+    '<div class="card"><p class="label">Peso</p><div class="big-num num">' + (pesoC ? pesoC : "—") + '</div><p class="muted small">kg</p></div>' +
+    '<div class="card"><p class="label">Fuerza</p><div class="big-num num">' + fuerza + '</div><p class="muted small">pts · 4 sem</p></div>' +
+    '<div class="card"><p class="label">Entrenos</p><div class="big-num num">' + estado.sesiones.length + '</div><p class="muted small">en total</p></div>' +
+  '</div>';
+
+  // Último entreno
+  if (ultima) {
+    h += '<button class="card stack tight" data-act="ver-sesion" data-a="' + ultima.id + '" style="text-align:left"><div class="row between"><p class="label">Último entreno</p><span class="muted small">' + fechaBonita(ultima.fecha) + '</span></div>' +
+      '<h3>' + esc(ultima.diaNombre) + '</h3><p class="muted num">' + ultima.duracion + ' min · ' + ultima.seriesEfectivas + ' series efectivas' +
+      (ultima.prs.length ? ' · <span style="color:var(--pr);font-weight:700">' + ultima.prs.length + ' récord' + (ultima.prs.length > 1 ? "s" : "") + '</span>' : "") + '</p></button>';
+  }
+
+  // Récords recientes
+  const prs = [];
+  for (let i = estado.sesiones.length - 1; i >= 0 && prs.length < 3; i--) {
+    for (const id of estado.sesiones[i].prs) if (prs.length < 3) prs.push({ id: id, fecha: estado.sesiones[i].fecha, s: estado.sesiones[i] });
+  }
+  if (prs.length) {
+    h += '<div class="card"><div class="row between"><h3>Récords recientes</h3><button class="btn-txt small" data-tab="progreso">Ver progreso</button></div><div class="list">';
+    for (const r of prs) {
+      const e = r.s.ejercicios.find(function (x) { return x.id === r.id; });
+      const mejor = e.series.filter(function (x) { return x.hecha; }).sort(function (a, b) { return unaRM(b.peso, b.reps) - unaRM(a.peso, a.reps); })[0];
+      h += '<div class="item"><div class="grow"><span class="name">' + esc(buscarEj(r.id).nombre) + '</span><span class="muted num">' + mejor.peso + ' kg × ' + mejor.reps + ' · ' + fechaBonita(r.fecha) + '</span></div><span class="pill pr">Récord</span></div>';
+    }
+    h += '</div></div>';
+  }
+
+  // Actividad de amigos
+  const posts = feedVisible().filter(function (x) { return x.autorId !== miId(); }).slice(0, 2);
+  h += '<div class="card"><div class="row between"><h3>Actividad de amigos</h3><button class="btn-txt small" data-tab="social">Ver todo</button></div>';
+  if (posts.length === 0) h += '<p class="muted" style="padding-top:8px">' + (estado.modo === "demo" ? "Añade amigos en Social para ver su actividad." : "Los amigos llegarán con las cuentas en servidor.") + '</p>';
+  else {
+    h += '<div class="list">';
+    for (const x of posts) h += '<div class="item"><div class="avatar" style="width:32px;height:32px;font-size:.85rem">' + esc(nombreDe(x.autorId, x.autorNombre)[0]).toUpperCase() + '</div><div class="grow"><span class="name small">@' + esc(nombreDe(x.autorId, x.autorNombre)) + '</span><span class="muted small">' + esc(x.texto) + '</span></div></div>';
+    h += '</div>';
+  }
+  h += '</div></div>';
+  $("app").innerHTML = h;
+}
+
+// =====================================================
+// PANTALLA: ENTRENAR
+// =====================================================
+
+function pintarEntrenar() {
+  if (estado.activa) { pintarSesion(); return; }
+  let h = '<div class="head"><div><p class="label">Tu plan</p><h1>Entrenar</h1></div>' +
+    '<button class="avatar" data-act="abrir-ajustes" aria-label="Perfil">' + esc(estado.perfil.nombre[0] || "?").toUpperCase() + '</button></div><div class="stack">';
+
+  h += '<div class="grid2"><button class="btn-sec" data-act="abrir-generador">Generar rutina</button><button class="btn-sec" data-act="empezar-libre">Entreno libre</button></div>' +
+    '<div class="grid2"><button class="btn-sec" data-act="abrir-biblioteca">Academia y ejercicios</button><button class="btn-sec" data-act="abrir-gimnasio">Mi gimnasio</button></div>';
+
+  if (!estado.rutina) {
+    h += '<div class="card stack tight" style="text-align:center;padding:28px 16px"><h2>Aún no tienes rutina</h2><p class="muted">Genera una con tus datos o empieza un entreno libre.</p><button class="btn" data-act="abrir-generador">Crear rutina</button></div>';
+  } else {
+    const sig = indiceSiguienteDia();
+    const sug = sugerenciasRutina();
+    if (sug.length) {
+      h += '<div class="card stack tight"><p class="label" style="color:var(--accent)">Ajustes recomendados</p><p class="muted small">Basados en tu historial. Tú decides si aplicarlos.</p>';
+      sug.forEach(function (x, i) {
+        h += '<div class="stack tight" style="padding:10px 0;border-top:1px solid var(--line)"><p><b>' + esc(x.texto) + '</b></p><p class="muted small">' + esc(x.motivo) + '</p>' +
+          (x.aplicar ? '<button class="btn-sec" data-act="aplicar-sugerencia" data-a="' + i + '">' + esc(x.boton) + '</button>' : "") + '</div>';
+      });
+      h += '</div>';
+    }
+    if (mensajeSugerencia) { h += '<div class="card" style="border-color:var(--good)"><p class="small"><b>Cambio aplicado:</b> ' + esc(mensajeSugerencia) + '</p></div>'; mensajeSugerencia = ""; }
+    const fd = factorDuracion();
+    h += '<div class="row between"><h2>' + esc(estado.rutina.nombre) + '</h2><span class="muted small">' + estado.rutina.dias.length + ' días</span></div>';
+    estado.rutina.dias.forEach(function (d, i) {
+      const reales = sesionesValidas().filter(function (s) { return s.diaIndex === i && s.diaNombre === d.nombre; });
+      const media = reales.length ? Math.round(reales.reduce(function (t, s) { return t + s.duracion; }, 0) / reales.length) : 0;
+      const diaSemana = estado.rutina.calendario && estado.rutina.calendario[i] !== undefined ? NOMBRES_DIAS_SEMANA[estado.rutina.calendario[i]] + " · " : "";
+      h += '<div class="card stack tight' + (i === sig ? " hero" : "") + '"><div class="row between"><div><p class="label">' + diaSemana + '~' + duracionDia(d, fd) + ' min' + (media ? ' (real: ' + media + ')' : "") + '</p><h3>' + esc(d.nombre) + '</h3></div>' + (i === sig ? '<span class="pill up">Siguiente</span>' : "") + '</div><div class="list">';
+      for (const o of d.ejercicios) {
+        h += '<div class="item" style="padding:7px 0"><span class="grow small">' + esc(buscarEj(o.id).nombre) + '</span><span class="muted small num">' + o.series + ' × ' + o.repMin + '-' + o.repMax + '</span></div>';
+      }
+      if (d.ejercicios.length === 0) h += '<p class="muted small">Sin ejercicios. Pulsa Editar para añadir.</p>';
+      h += '</div><div class="grid2"><button class="btn-sec" data-act="editar-dia" data-a="' + i + '">Editar</button><button class="btn' + (i === sig ? "" : "-sec") + '" data-act="empezar-dia" data-a="' + i + '"' + (d.ejercicios.length ? "" : " disabled") + '>Empezar</button></div></div>';
+    });
+    h += '<button class="btn-txt" data-act="anadir-dia">+ Añadir día</button>';
+  }
+  $("app").innerHTML = h + '</div>';
+}
+
+// ---------- Sesión en curso ----------
+function pintarSesion() {
+  const a = estado.activa;
+  const minutos = Math.round((Date.now() - a.inicio) / 60000);
+  let hechas = 0, total = 0;
+  for (const e of a.ejercicios) for (const s of e.series) { total++; if (s.hecha) hechas++; }
+
+  const hora = ultimoGuardado ? ultimoGuardado.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }) : "";
+  let h = (sesionAntigua() ? '<div class="card stack tight" style="margin-bottom:12px;border-color:var(--warn)"><p class="small"><b>Este entreno empezó hace más de 12 horas.</b> Termínalo para guardarlo con su fecha o descártalo.</p></div>' : "") +
+    (sesionRecuperada && !sesionAntigua() ? '<div class="card" style="margin-bottom:12px;border-color:var(--good)"><p class="small"><b>Entreno recuperado.</b> Seguía guardado aunque se cerró la app.</p></div>' : "") +
+    '<div class="head"><div class="grow"><p class="label">Entreno en curso · <span id="cronometro">' + minutos + '</span> min' + (hora ? ' · <span style="color:var(--good)">guardado ' + hora + '</span>' : "") + '</p><h1 style="font-size:1.45rem">' + esc(a.diaNombre) + '</h1></div>' +
+    '<button class="icon-btn" data-act="deshacer" aria-label="Deshacer"' + (pilaDeshacer.length ? "" : " disabled") + '>' + I.deshacer + '</button></div>';
+  if (estado.perfil.lesiones) h += '<p class="muted small" style="margin:-8px 0 12px">Recordatorio: ' + esc(estado.perfil.lesiones) + '. Para si notas dolor.</p>';
+  h += '<div class="stack"><div class="card row between"><div><p class="label">Series completadas</p><span class="big-num num">' + hechas + '</span><span class="muted"> / ' + total + '</span></div>' +
+    '<button class="btn auto" data-act="terminar"' + (hechas ? "" : " disabled") + '>Terminar</button></div>';
+
+  a.ejercicios.forEach(function (e, ei) {
+    const ej = buscarEj(e.id);
+    const ultima = ultimaVez(e.id);
+    const rec = recomendar(e.id, e.objetivo);
+    const pr = puntosEjercicio(e.id);
+    const record = mejorSerie(e.id);
+    const etiqueta = { subir: ["up", "Subir"], mantener: ["keep", "Mantener"], bajar: ["down", "Bajar"], empezar: ["keep", "Empezar"] }[rec.accion];
+
+    const fotosEj = fotosDe(e.id);
+    h += '<div class="card">' + (fotosEj ? '<button class="mini-fotos" data-act="info-ej" data-a="' + e.id + '" aria-label="Ver cómo se hace ' + esc(ej.nombre) + '">' +
+        fotosEj.map(function (src) { return '<img src="' + src + '" alt="" loading="lazy" decoding="async">'; }).join("") + '<span>Ver técnica</span></button>' : "") +
+      '<div class="ex-head">' + insignia(pr === null ? null : rangoDePuntos(pr), "sm") +
+      '<div class="grow"><h3>' + esc(ej.nombre) + '</h3><p class="muted small num">' + e.objetivo.series + ' × ' + e.objetivo.repMin + '-' + e.objetivo.repMax + ' · descanso ' + e.objetivo.descanso + ' s' +
+      '</p>' + (record ? '<p class="small" style="color:var(--pr);font-weight:700">Récord: ' + String(record.peso).replace(".", ",") + ' kg × ' + record.reps + '</p>' : "") + '</div>' +
+      '<button class="icon-btn sm" data-act="info-ej" data-a="' + e.id + '" aria-label="Cómo se hace">' + I.info + '</button></div>';
+
+    h += '<div class="rec"><span class="pill ' + etiqueta[0] + '">' + etiqueta[1] + '</span><div class="grow"><p>' + esc(rec.motivo) + '</p>' +
+      (rec.accion !== "mantener" && ej.equipo !== "corporal" ? '<button class="btn-txt small" data-act="aplicar-peso" data-a="' + ei + '" data-b="' + rec.peso + '">Usar ' + String(rec.peso).replace(".", ",") + ' kg en las series pendientes</button>' : "") + '</div></div>';
+
+    h += (ej.asistido ? '<p class="small" style="color:var(--warn);margin-top:8px">Los kg son ayuda: cuantos menos, más difícil.</p>' : "") +
+      '<div class="sets"><div class="set-h"><span>#</span><span title="Toca para copiar">Antes</span><span>' + (ej.asistido ? "Ayuda" : "Kg") + '</span><span>Reps</span><span>RPE</span><span></span></div>';
+    e.series.forEach(function (s, si) {
+      const ant = ultima && ultima.series[si] ? String(ultima.series[si].peso).replace(".", ",") + "×" + ultima.series[si].reps : "—";
+      let rpe = '<option value="">–</option>';
+      for (const v of [6, 7, 8, 8.5, 9, 9.5, 10]) rpe += '<option value="' + v + '"' + (s.rpe === v ? " selected" : "") + '>' + String(v).replace(".", ",") + '</option>';
+      h += '<div class="set' + (s.hecha ? " done" : "") + '"><span class="n">' + (si + 1) + '</span>' + (ant === "—" ? '<span class="prev num">—</span>' : '<button class="prev num" data-act="copiar-anterior" data-a="' + ei + '" data-b="' + si + '" title="Copiar">' + ant + '</button>') +
+        '<input type="number" inputmode="decimal" step="0.5" min="0" value="' + s.peso + '" data-in="peso" data-e="' + ei + '" data-s="' + si + '" aria-label="Kilos serie ' + (si + 1) + '">' +
+        '<input type="number" inputmode="numeric" min="0" value="' + s.reps + '" data-in="reps" data-e="' + ei + '" data-s="' + si + '" aria-label="Repeticiones serie ' + (si + 1) + '">' +
+        '<select data-in="rpe" data-e="' + ei + '" data-s="' + si + '" aria-label="Esfuerzo percibido">' + rpe + '</select>' +
+        '<button class="tick" data-act="marcar" data-a="' + ei + '" data-b="' + si + '" aria-label="Marcar serie como hecha">' + I.check + '</button></div>';
+      if (s.error) h += '<p class="err small" style="padding:0 6px">' + esc(s.error) + '</p>';
+      else if (s.sospechosa && !s.confirmada) h += '<div class="row small" style="padding:2px 6px;color:var(--warn)"><span class="grow">⚠ ' + esc(s.aviso) + ' No contará para rangos hasta que lo confirmes.</span><button class="btn-txt small" data-act="confirmar-serie" data-a="' + ei + '" data-b="' + si + '">Es correcto</button></div>';
+    });
+    h += '</div><div class="tools">' +
+      '<button class="btn-sec small" data-act="serie-mas" data-a="' + ei + '">+ Serie</button>' +
+      '<button class="btn-sec small" data-act="serie-menos" data-a="' + ei + '"' + (e.series.length > 1 ? "" : " disabled") + '>− Serie</button>' +
+      '<button class="icon-btn sm" data-act="mover-ej" data-a="' + ei + '" data-b="-1" aria-label="Subir"' + (ei > 0 ? "" : " disabled") + '>' + I.arriba + '</button>' +
+      '<button class="icon-btn sm" data-act="mover-ej" data-a="' + ei + '" data-b="1" aria-label="Bajar"' + (ei < a.ejercicios.length - 1 ? "" : " disabled") + '>' + I.abajo + '</button>' +
+      '<button class="icon-btn sm" data-act="sustituir-sesion" data-a="' + ei + '" aria-label="Sustituir">' + I.cambiar + '</button>' +
+      '<button class="icon-btn sm btn-danger" data-act="quitar-ej" data-a="' + ei + '" aria-label="Quitar">' + I.borrar + '</button></div>' +
+      '<div class="tools"><label class="check small" style="padding:7px 10px"><input type="checkbox" data-in="molestias" data-e="' + ei + '"' + (e.molestias ? " checked" : "") + '>Molestias</label>' +
+      '<label class="check small" style="padding:7px 10px"><input type="checkbox" data-in="cambio" data-e="' + ei + '"' + (e.cambio ? " checked" : "") + '>Otra máquina o técnica</label></div>' +
+      '<textarea data-in="nota" data-e="' + ei + '" placeholder="Notas (opcional)" style="margin-top:10px;min-height:42px">' + esc(e.nota) + '</textarea></div>';
+  });
+
+  h += '<button class="btn-sec full" data-act="anadir-a-sesion" style="padding:14px">+ Añadir ejercicio</button>' +
+    '<button class="btn-txt btn-danger" data-act="cancelar-sesion">' + (confirmar === "cancelar-sesion" ? "Pulsa otra vez para descartar el entreno" : "Descartar entreno") + '</button></div>';
+  $("app").innerHTML = h;
+}
+
+// Guarda una copia de la sesión antes de cambiarla (para Deshacer)
+function copiaSesion() {
+  pilaDeshacer.push(JSON.stringify(estado.activa));
+  if (pilaDeshacer.length > 20) pilaDeshacer.shift();
+}
+
+// =====================================================
+// PANTALLA: RANGOS
+// =====================================================
+
+function pintarRangos() {
+  const pg = puntosGlobal();
+  const rg = pg === null ? null : rangoDePuntos(pg);
+  let h = '<div class="head"><div><p class="label">Clasificación</p><h1>Rangos</h1></div><button class="btn-txt small" data-act="como-rangos">¿Cómo funciona?</button></div><div class="stack">';
+
+  // Global
+  h += '<div class="card hero stack" style="align-items:center;text-align:center">' + insignia(rg, "lg") +
+    '<div><p class="label">Rango global</p><h1>' + nombreRango(rg) + '</h1>' + (pg !== null ? '<p class="muted num">' + pg.toFixed(1) + ' puntos</p>' : "") + '</div>';
+  if (pg !== null) {
+    h += '<div style="width:100%" class="stack tight"><div class="bar"><i style="width:' + progresoRango(pg) + '%"></i></div>' +
+      '<div class="row between small"><span>' + nombreRango(rg) + '</span><span class="muted">' + (rg < 8 ? progresoRango(pg) + "% · " + RANGOS[rg + 1].nombre : "Máximo") + '</span></div></div>';
+    const cob = coberturaMuscular();
+    h += '<div style="width:100%;text-align:left" class="stack tight"><div class="row between small"><span>Cobertura muscular</span><b class="num">' + cob + ' de ' + GRUPOS_PRINCIPALES.length + '</b></div><div class="bar fire"><i style="width:' + (cob / GRUPOS_PRINCIPALES.length * 100) + '%"></i></div></div>';
+    h += '<p class="muted" style="text-align:left;width:100%">' + esc(consejoGlobal(pg)) + '</p>';
+    const hace4 = puntosGlobal(fechaTexto(28));
+    if (hace4 !== null) {
+      const d = pg - hace4;
+      h += '<p class="small" style="width:100%;text-align:left">Hace 4 semanas: <b class="num">' + hace4.toFixed(1) + '</b> pts · ' +
+        '<span style="color:' + (d >= 0 ? "var(--good)" : "var(--danger)") + ';font-weight:700">' + (d >= 0 ? "+" : "") + d.toFixed(1) + '</span></p>';
+    }
+  } else h += '<p class="muted">Completa tu primer entreno para obtener rango.</p>';
+  h += '</div>';
+
+  // Escala de los 9 rangos: el tuyo resaltado, los que aún no tienes atenuados
+  h += '<div class="card stack"><div class="row between"><h3>Los 9 rangos</h3><span class="muted small">De principiante a élite</span></div><div class="escala">';
+  RANGOS.forEach(function (r, i) {
+    const clase = rg === i ? "actual" : (rg !== null && i < rg ? "logrado" : "bloqueado");
+    h += '<div class="escalon ' + clase + '">' + insignia(i, "md") + '<b style="color:' + r.color + '">' + r.nombre + '</b><span class="muted small num">' + r.min + ' pts</span>' + (rg === i ? '<span class="pill up">Tú</span>' : "") + '</div>';
+  });
+  h += '</div></div>';
+
+  // Mapa corporal
+  h += '<div class="card stack"><div class="row between"><h3>Mapa corporal</h3><span class="muted small">Toca un músculo</span></div>' + mapaCorporal() +
+    '<div class="row wrap" style="gap:6px;justify-content:center">';
+  RANGOS.forEach(function (r, i) { h += '<span class="row small" style="gap:4px"><i style="width:10px;height:10px;border-radius:3px;background:' + r.color + ';display:inline-block"></i>' + r.nombre + '</span>'; });
+  h += '</div></div>';
+
+  // Grupos
+  const datosG = [];
+  for (const g in GRUPOS) datosG.push({ g: g, p: puntosGrupo(g) });
+  h += '<div class="card"><h3>Por grupo muscular</h3><div class="list">';
+  for (const d of datosG) {
+    const ri = d.p === null ? null : rangoDePuntos(d.p);
+    const fia = fiabilidadGrupo(d.g);
+    h += '<button class="item" data-act="ver-grupo" data-a="' + d.g + '">' + insignia(ri, "sm") + '<div class="grow stack tight" style="gap:4px"><div class="row between"><span class="name">' + GRUPOS[d.g] + (GRUPOS_PRINCIPALES.includes(d.g) ? "" : ' <span class="muted small">(no cuenta en el global)</span>') + '</span><span class="muted small">' + nombreRango(ri) + (d.p !== null ? " · fiabilidad " + fia.nivel : "") + '</span></div>' +
+      (d.p === null ? '<span class="muted small">Sin datos todavía</span>' : '<div class="bar"><i style="width:' + progresoRango(d.p) + '%"></i></div>') + '</div></button>';
+  }
+  h += '</div></div>';
+
+  // Mejores y a mejorar
+  const conDatos = ejerciciosHechos().map(function (id) { return { id: id, p: puntosEjercicio(id) }; }).sort(function (a, b) { return b.p - a.p; });
+  if (conDatos.length) {
+    h += '<div class="grid2"><div class="card stack tight"><p class="label" style="color:var(--good)">Tus mejores</p>';
+    for (const d of conDatos.slice(0, 3)) h += '<p class="small"><b>' + esc(buscarEj(d.id).nombre) + '</b><br><span class="muted">' + nombreRango(rangoDePuntos(d.p)) + '</span></p>';
+    h += '</div><div class="card stack tight"><p class="label" style="color:var(--warn)">A mejorar</p>';
+    const sinDatos = datosG.filter(function (d) { return d.p === null; }).map(function (d) { return GRUPOS[d.g]; });
+    for (const d of conDatos.slice(-2).reverse()) h += '<p class="small"><b>' + esc(buscarEj(d.id).nombre) + '</b><br><span class="muted">' + nombreRango(rangoDePuntos(d.p)) + '</span></p>';
+    if (sinDatos.length) h += '<p class="small"><b>Sin datos</b><br><span class="muted">' + sinDatos.slice(0, 4).join(", ") + '</span></p>';
+    h += '</div></div>';
+
+    // Por ejercicio
+    h += '<div class="card"><h3>Por ejercicio</h3><div class="list">';
+    for (const d of conDatos) {
+      const ri = rangoDePuntos(d.p);
+      h += '<button class="item" data-act="ver-rango-ej" data-a="' + d.id + '">' + insignia(ri, "sm") + '<div class="grow stack tight" style="gap:4px"><div class="row between"><span class="name">' + esc(buscarEj(d.id).nombre) + '</span><span class="muted small">' + RANGOS[ri].nombre + '</span></div><div class="bar"><i style="width:' + progresoRango(d.p) + '%"></i></div></div></button>';
+    }
+    h += '</div></div>';
+  }
+
+  // Historial de ascensos
+  h += '<div class="card"><h3>Historial de ascensos</h3><div class="list">';
+  if (estado.ascensos.length === 0) h += '<p class="muted" style="padding-top:8px">Cuando subas de rango aparecerá aquí.</p>';
+  for (const a of estado.ascensos.slice().reverse().slice(0, 12)) {
+    h += '<div class="item">' + insignia(a.rango, "sm") + '<div class="grow"><span class="name small">' + esc(a.nombre) + ' → ' + RANGOS[a.rango].nombre + '</span><span class="muted small">' + fechaBonita(a.fecha) + '</span></div></div>';
+  }
+  $("app").innerHTML = h + '</div></div></div>';
+}
+
+function consejoGlobal(pg) {
+  const n = sesionesValidas().length;
+  if (n < 5 && pg >= 35) return "Tu rango global está limitado a " + RANGOS[rangoDePuntos(35)].nombre + " hasta completar 5 entrenos válidos (llevas " + n + ").";
+  if (n < 15 && pg >= 67) return "Tu rango global está limitado a " + RANGOS[rangoDePuntos(67)].nombre + " hasta completar 15 entrenos válidos (llevas " + n + ").";
+  const sinDatos = GRUPOS_PRINCIPALES.filter(function (g) { return puntosGrupo(g) === null; });
+  if (sinDatos.length) return "Te faltan datos de " + sinDatos.map(function (g) { return GRUPOS[g]; }).join(", ") + ". Cada músculo sin datos cuenta 0 en el global.";
+  const grupos = GRUPOS_PRINCIPALES.map(function (g) { return { g: g, p: puntosGrupo(g) }; }).sort(function (a, b) { return a.p - b.p; });
+  return "Para subir, mejora tus músculos más flojos: " + grupos.slice(0, 2).map(function (x) { return GRUPOS[x.g]; }).join(" y ") + ".";
+}
+
+function colorGrupo(g) {
+  const p = puntosGrupo(g);
+  return p === null ? "var(--surface3)" : RANGOS[rangoDePuntos(p)].color;
+}
+
+// Mapa corporal sencillo (vista frontal y trasera)
+function mapaCorporal() {
+  function z(g, forma) { return '<g class="zona" data-act="ver-grupo" data-a="' + g + '" role="button" tabindex="0" aria-label="' + GRUPOS[g] + '"><title>' + GRUPOS[g] + '</title>' + forma.replace(/FILL/g, colorGrupo(g)) + '</g>'; }
+  const base = 'fill="var(--surface2)" stroke="var(--line)"';
+  let s = '<svg class="mapa" viewBox="0 0 240 230">';
+  // Silueta frontal (x=60) y trasera (x=180)
+  for (const cx of [60, 180]) {
+    s += '<circle cx="' + cx + '" cy="20" r="13" ' + base + '/>' +
+      '<rect x="' + (cx - 26) + '" y="38" width="52" height="78" rx="18" ' + base + '/>' +
+      '<rect x="' + (cx - 40) + '" y="42" width="13" height="72" rx="6" ' + base + '/>' +
+      '<rect x="' + (cx + 27) + '" y="42" width="13" height="72" rx="6" ' + base + '/>' +
+      '<rect x="' + (cx - 22) + '" y="114" width="20" height="104" rx="9" ' + base + '/>' +
+      '<rect x="' + (cx + 2) + '" y="114" width="20" height="104" rx="9" ' + base + '/>';
+  }
+  const op = 'fill="FILL" fill-opacity=".85"';
+  // Frontal
+  s += z("hombros", '<ellipse cx="38" cy="46" rx="11" ry="9" ' + op + '/><ellipse cx="82" cy="46" rx="11" ry="9" ' + op + '/>');
+  s += z("pecho", '<rect x="40" y="46" width="40" height="22" rx="9" ' + op + '/>');
+  s += z("biceps", '<rect x="21" y="58" width="12" height="24" rx="6" ' + op + '/><rect x="87" y="58" width="12" height="24" rx="6" ' + op + '/>');
+  s += z("antebrazos", '<rect x="21" y="86" width="12" height="26" rx="6" ' + op + '/><rect x="87" y="86" width="12" height="26" rx="6" ' + op + '/>');
+  s += z("abdominales", '<rect x="47" y="72" width="26" height="38" rx="8" ' + op + '/>');
+  s += z("cuadriceps", '<rect x="40" y="122" width="17" height="48" rx="8" ' + op + '/><rect x="63" y="122" width="17" height="48" rx="8" ' + op + '/>');
+  s += z("gemelos", '<rect x="42" y="178" width="13" height="34" rx="6" ' + op + '/><rect x="65" y="178" width="13" height="34" rx="6" ' + op + '/><rect x="162" y="176" width="14" height="36" rx="6" ' + op + '/><rect x="184" y="176" width="14" height="36" rx="6" ' + op + '/>');
+  // Trasera
+  s += z("espalda", '<rect x="158" y="44" width="44" height="50" rx="12" ' + op + '/>');
+  s += z("triceps", '<rect x="141" y="56" width="12" height="28" rx="6" ' + op + '/><rect x="207" y="56" width="12" height="28" rx="6" ' + op + '/>');
+  s += z("gluteos", '<rect x="158" y="100" width="44" height="26" rx="12" ' + op + '/>');
+  s += z("isquios", '<rect x="160" y="130" width="17" height="42" rx="8" ' + op + '/><rect x="183" y="130" width="17" height="42" rx="8" ' + op + '/>');
+  s += '<text x="60" y="229" text-anchor="middle" font-size="9" fill="var(--muted)">FRENTE</text><text x="180" y="229" text-anchor="middle" font-size="9" fill="var(--muted)">ESPALDA</text>';
+  return s + '</svg>';
+}
+
+// =====================================================
+// PANTALLA: PROGRESO
+// =====================================================
+
+function enPeriodo(fecha, dias, desplazar) {
+  if (dias === 0) return !desplazar;
+  const desde = fechaTexto(dias * (desplazar ? 2 : 1) - 1);
+  const hasta = desplazar ? fechaTexto(dias) : hoy();
+  return fecha >= desde && (desplazar ? fecha < hasta : fecha <= hasta);
+}
+
+function pintarProgreso() {
+  const ses = sesionesValidas().filter(function (s) { return enPeriodo(s.fecha, periodo); });
+  const prev = sesionesValidas().filter(function (s) { return enPeriodo(s.fecha, periodo, true); });
+  let efectivas = 0, efectivasPrev = 0, dur = 0, prs = 0;
+  for (const s of ses) { efectivas += s.seriesEfectivas; dur += s.duracion; prs += s.prs.length; }
+  for (const s of prev) efectivasPrev += s.seriesEfectivas;
+  function delta(a, b) {
+    if (periodo === 0 || b === 0) return "";
+    const d = Math.round((a - b) / b * 100);
+    return '<span class="small" style="color:' + (d >= 0 ? "var(--good)" : "var(--danger)") + ';font-weight:700"> ' + (d >= 0 ? "+" : "") + d + '%</span>';
+  }
+
+  let h = '<div class="head"><div><p class="label">Estadísticas</p><h1>Progreso</h1></div></div><div class="stack">' +
+    '<div class="seg">' + [[28, "4 semanas"], [84, "12 semanas"], [0, "Todo"]].map(function (o) { return '<button data-act="periodo" data-a="' + o[0] + '" class="' + (periodo === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div>' +
+    '<div class="grid2">' +
+      '<div class="card"><p class="label">Entrenos</p><div class="big-num num">' + ses.length + delta(ses.length, prev.length) + '</div></div>' +
+      '<div class="card"><p class="label">Series efectivas</p><div class="big-num num">' + efectivas + delta(efectivas, efectivasPrev) + '</div><p class="muted small">hechas y válidas</p></div>' +
+      '<div class="card"><p class="label">Duración media</p><div class="big-num num">' + (ses.length ? Math.round(dur / ses.length) : 0) + '</div><p class="muted small">minutos reales</p></div>' +
+      '<div class="card"><p class="label">Récords</p><div class="big-num num" style="color:var(--pr)">' + prs + '</div><p class="muted small">racha: ' + rachaSemanas() + ' sem</p></div>' +
+    '</div>' + (periodo ? '<p class="muted small">Porcentajes comparados con el periodo anterior de la misma duración.</p>' : "");
+
+  // Evolución de un ejercicio (aquí sí tiene sentido el peso: se compara el ejercicio consigo mismo)
+  const hechos = ejerciciosHechos();
+  if (hechos.length) {
+    if (!hechos.includes(ejGrafica)) ejGrafica = hechos[0];
+    const ej = buscarEj(ejGrafica);
+    const porDia = {};
+    for (const s of seriesDe(ejGrafica)) {
+      if (!enPeriodo(s.fecha, periodo)) continue;
+      let v;
+      if (metrica === "rm") v = unaRM(cargaSerie(ej, s.peso, s.fecha), s.reps);
+      else if (metrica === "peso") v = s.peso;
+      else if (metrica === "reps") v = s.reps;
+      else v = s.peso * s.reps;
+      if (metrica === "tonelaje") porDia[s.fecha] = (porDia[s.fecha] || 0) + v;
+      else if (porDia[s.fecha] === undefined || v > porDia[s.fecha]) porDia[s.fecha] = v;
+    }
+    const fechas = Object.keys(porDia).sort();
+    const unidades = { rm: "kg", peso: "kg", reps: "reps", tonelaje: "kg" };
+    h += '<div class="card stack"><h3>Evolución por ejercicio</h3>' +
+      '<select data-cambio="ej-grafica" aria-label="Ejercicio">' + hechos.map(function (id) { return '<option value="' + id + '"' + (id === ejGrafica ? " selected" : "") + '>' + esc(buscarEj(id).nombre) + '</option>'; }).join("") + '</select>' +
+      '<div class="seg">' + [["rm", "1RM"], ["peso", "Peso máx."], ["reps", "Reps máx."], ["tonelaje", "Tonelaje"]].map(function (o) { return '<button data-act="metrica" data-a="' + o[0] + '" class="' + (metrica === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div>' +
+      graficaLinea(fechas.map(fechaBonita), fechas.map(function (f) { return porDia[f]; }), unidades[metrica]) +
+      (metrica === "rm" ? '<p class="muted small">La 1RM es una estimación (fórmula de Epley), no una medición real.</p>' : "") +
+      (metrica === "tonelaje" ? '<p class="muted small">Tonelaje externo de este ejercicio (kg × reps). ' + (ej.equipo === "corporal" ? "En este ejercicio no incluye tu peso corporal, así que puede ser 0." : "") + '</p>' : "") + '</div>';
+  }
+
+  // Series efectivas por semana (todas las semanas, también las que no entrenaste)
+  const desde = ses.length ? ses[0].fecha : hoy();
+  const lunes = semanasEntre(periodo ? fechaTexto(periodo - 1) : desde, hoy());
+  const porSemana = {};
+  for (const l of lunes) porSemana[l] = 0;
+  for (const s of ses) {
+    const l = lunesDe(s.fecha);
+    if (porSemana[l] === undefined) continue;
+    const g = seriesEfectivasPorGrupo([s]);
+    if (grupoVolumen) porSemana[l] += g[grupoVolumen];
+    else porSemana[l] += s.seriesEfectivas;
+  }
+  h += '<div class="card stack"><h3>Series efectivas por semana</h3><select data-cambio="grupo-volumen" aria-label="Grupo muscular"><option value="">Todo el cuerpo</option>' +
+    Object.keys(GRUPOS).map(function (g) { return '<option value="' + g + '"' + (g === grupoVolumen ? " selected" : "") + '>' + GRUPOS[g] + '</option>'; }).join("") + '</select>' +
+    graficaBarras(lunes.map(fechaBonita), lunes.map(function (l) { return porSemana[l]; }), "series") +
+    '<p class="muted small">' + (grupoVolumen ? "Directas cuentan 1 y secundarias 0,5. " : "") + 'Las semanas sin entrenos aparecen a 0.</p></div>';
+
+  // Series efectivas por grupo en el periodo
+  const cuenta = seriesEfectivasPorGrupo(ses);
+  let maxC = 1;
+  for (const g in cuenta) maxC = Math.max(maxC, cuenta[g]);
+  h += '<div class="card"><h3 style="margin-bottom:6px">Series efectivas por músculo</h3><p class="muted small" style="margin-bottom:6px">Directas cuentan 1 y como músculo secundario 0,5.</p>';
+  for (const g in GRUPOS) h += '<div class="musculo"><span>' + GRUPOS[g] + '</span><div class="bar"><i style="width:' + (cuenta[g] / maxC * 100) + '%"></i></div><span class="num muted" style="text-align:right">' + String(cuenta[g]).replace(".", ",") + '</span></div>';
+  h += '</div>';
+
+  // Peso corporal
+  const pc = estado.pesoCorporal.filter(function (x) { return enPeriodo(x.fecha, periodo); });
+  h += '<div class="card stack"><h3>Peso corporal</h3>' + graficaLinea(pc.map(function (x) { return fechaBonita(x.fecha); }), pc.map(function (x) { return x.kg; }), "kg") +
+    '<div class="row"><input id="nuevoPeso" type="number" inputmode="decimal" step="0.1" placeholder="Peso de hoy (kg)" aria-label="Peso de hoy"><button class="btn auto" data-act="guardar-peso">Guardar</button></div><p class="err" id="errPeso"></p></div>';
+
+  // Historial
+  h += '<div class="card"><h3>Historial de sesiones</h3><div class="list">';
+  if (estado.sesiones.length === 0) h += '<p class="muted" style="padding-top:8px">Tus entrenos completados aparecerán aquí.</p>';
+  for (const s of estado.sesiones.slice().reverse().slice(0, 30)) {
+    h += '<button class="item" data-act="ver-sesion" data-a="' + s.id + '"><div class="grow"><span class="name">' + esc(s.diaNombre) + '</span><span class="muted small num">' + fechaBonita(s.fecha) + ' · ' + s.duracion + ' min · ' + s.seriesEfectivas + ' series efectivas</span></div>' +
+      (s.prs.length ? '<span class="pill pr">' + s.prs.length + ' PR</span>' : "") + '</button>';
+  }
+  h += '</div></div><p class="muted small">Fotos de progreso: llegarán en la versión con servidor, privadas por defecto.</p></div>';
+  $("app").innerHTML = h;
+}
+
+
+// =====================================================
+// PANTALLA: SOCIAL
+// =====================================================
+// Fuera del modo demo no hay otros usuarios (no hay servidor): Social es tu diario y tus retos.
+// En modo demo, el contenido ficticio va siempre marcado como "Demo".
+
+function usuarioDemo(uid) { return USUARIOS_DEMO.find(function (x) { return x.uid === uid; }); }
+
+function pintarSocial() {
+  if (estado.perfil.edad < 16) {
+    $("app").innerHTML = '<div class="head"><div><p class="label">Comunidad</p><h1>Social</h1></div></div><div class="card stack tight"><h3>No disponible</h3><p class="muted">La parte social está desactivada para menores de 16 años para proteger tu privacidad. El resto de la app funciona igual.</p></div>';
+    return;
+  }
+  const demo = estado.modo === "demo";
+  const vistas = demo ? [["feed", "Actividad"], ["amigos", "Amigos"], ["retos", "Retos"]] : [["feed", "Mi diario"], ["retos", "Retos"]];
+  if (!demo && vistaSocial === "amigos") vistaSocial = "feed";
+  let h = '<div class="head"><div><p class="label">Comunidad</p><h1>Social</h1></div>' + (demo ? '<span class="demo-tag">Demo</span>' : "") + '</div><div class="stack">' +
+    (demo ? '<p class="muted small">Los demás usuarios son ficticios y solo existen en la demo. Nunca se mezclan con tus datos reales.</p>'
+          : '<p class="muted small">Amigos y comunidad llegarán con las cuentas en servidor. Por ahora, aquí tienes tu diario y tus retos personales.</p>') +
+    '<div class="seg">' + vistas.map(function (o) { return '<button data-act="vista-social" data-a="' + o[0] + '" class="' + (vistaSocial === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div>';
+  if (vistaSocial === "feed") h += feedHtml();
+  if (vistaSocial === "amigos") h += amigosHtml();
+  if (vistaSocial === "retos") h += retosHtml();
+  $("app").innerHTML = h + '</div>';
+}
+
+function feedHtml() {
+  const yo = miId();
+  const posts = feedVisible();
+  const permiso = puedePublicar();
+  let h = '<button class="btn-sec full" data-act="publicar-ultimo"' + (estado.sesiones.length && permiso.ok ? "" : " disabled") + '>Compartir mi último entreno</button>';
+  if (!permiso.ok) h += '<p class="muted small">' + esc(permiso.msg) + '</p>';
+  h += '<div class="card"><div>';
+  if (posts.length === 0) h += '<p class="muted">Todavía no hay publicaciones.</p>';
+  for (const x of posts) {
+    const mio = x.autorId === yo;
+    const autor = nombreDe(x.autorId, x.autorNombre);
+    const gusta = x.likes.includes(yo);
+    h += '<div class="post"><div class="row"><div class="avatar" style="width:34px;height:34px;font-size:.85rem">' + esc(autor[0]).toUpperCase() + '</div>' +
+      '<div class="grow"><span class="name small">@' + esc(autor) + (mio ? " (tú)" : "") + '</span><span class="muted small">' + fechaBonita(x.fecha) + (x.demo ? " · ficticio" : "") + '</span></div>' +
+      '<span class="pill ' + (x.tipo === "record" ? "pr" : (x.tipo === "rango" ? "up" : "keep")) + '">' + { record: "Récord", rango: "Rango", entreno: "Entreno" }[x.tipo] + '</span></div>' +
+      '<p>' + esc(x.texto) + '</p>' +
+      '<div class="acts"><button class="' + (gusta ? "on" : "") + '" data-act="like" data-a="' + x.id + '">' + (gusta ? "♥" : "♡") + ' ' + x.likes.length + '</button>' +
+      '<span>' + x.comentarios.length + ' comentarios</span>' +
+      (mio ? '<button data-act="borrar-post" data-a="' + x.id + '">' + (confirmar === "borrar-post" + x.id ? "Pulsa otra vez" : "Eliminar") + '</button>'
+           : '<button data-act="denunciar" data-a="' + x.id + '">Denunciar</button>') + '</div>';
+    for (const c of x.comentarios) h += '<p class="comment"><b>@' + esc(nombreDe(c.autorId, c.autorNombre)) + '</b> ' + esc(c.texto) + '</p>';
+    h += '<div class="row"><input placeholder="Escribe un comentario" id="com-' + x.id + '" maxlength="200" aria-label="Comentario"><button class="btn-sec" data-act="comentar" data-a="' + x.id + '">Enviar</button></div></div>';
+  }
+  return h + '</div></div>';
+}
+
+function amigosHtml() {
+  let h = '<div class="card stack tight"><h3>Buscar usuarios (demo)</h3><div class="search">' + I.buscar + '<input id="buscarUsuario" placeholder="Nombre de usuario" aria-label="Buscar usuario"></div><div class="list" id="resultadosUsuarios"></div>' +
+    '<p class="muted small">Los perfiles privados y los bloqueados no aparecen en la búsqueda.</p></div>';
+  h += '<div class="card"><h3>Tus amigos</h3><div class="list">';
+  if (estado.social.amigos.length === 0) h += '<p class="muted" style="padding-top:8px">Todavía no tienes amigos añadidos.</p>';
+  for (const u of estado.social.amigos) {
+    const d = usuarioDemo(u);
+    h += '<div class="item">' + insignia(d ? d.rango : null, "sm") + '<div class="grow"><span class="name">@' + esc(d ? d.usuario : u) + '</span><span class="muted small">Ficticio · rango de ejemplo</span></div>' +
+      '<button class="btn-txt small btn-danger" data-act="quitar-amigo" data-a="' + u + '">Eliminar</button><button class="btn-txt small" data-act="bloquear" data-a="' + u + '" style="color:var(--muted)">Bloquear</button></div>';
+  }
+  h += '</div></div>';
+  if (estado.social.bloqueados.length) {
+    h += '<div class="card"><h3>Bloqueados</h3><div class="list">';
+    for (const u of estado.social.bloqueados) h += '<div class="item"><span class="grow">@' + esc(usuarioDemo(u) ? usuarioDemo(u).usuario : u) + '</span><button class="btn-txt small" data-act="desbloquear" data-a="' + u + '">Desbloquear</button></div>';
+    h += '</div></div>';
+  }
+  return h;
+}
+
+function resultadosUsuarios(texto) {
+  const cont = $("resultadosUsuarios");
+  if (!cont) return;
+  if (!texto.trim()) { cont.innerHTML = ""; return; }
+  const lista = buscarUsuarios(texto);
+  if (lista.length === 0) { cont.innerHTML = '<p class="muted small" style="padding-top:8px">No hay usuarios con ese nombre.</p>'; return; }
+  cont.innerHTML = lista.map(function (u) {
+    const ya = estado.social.amigos.includes(u.uid);
+    return '<div class="item">' + insignia(u.rango, "sm") + '<span class="grow name">@' + esc(u.usuario) + '</span>' +
+      (ya ? '<span class="muted small">Amigos</span>' : '<button class="btn-sec small" data-act="anadir-amigo" data-a="' + u.uid + '">Añadir</button>') + '</div>';
+  }).join("");
+}
+
+// Retos personales: meta propia y progreso calculado solo con tus entrenos registrados
+function retosHtml() {
+  let h = '<button class="btn full" data-act="nuevo-reto">Crear reto personal</button>' +
+    '<p class="muted small">Los retos entre amigos necesitan cuentas reales en servidor, para que cada resultado venga de entrenos verificables. Hasta entonces, compites contigo.</p>';
+  if (estado.social.retos.length === 0) h += '<div class="card"><p class="muted">No tienes retos activos.</p></div>';
+  for (const r of estado.social.retos) {
+    if (!TIPOS_RETO[r.tipo] || !r.meta) continue;    // retos antiguos con datos inventados se ignoran
+    const valor = progresoReto(r);
+    const pct = Math.min(100, Math.round(valor / r.meta * 100));
+    const terminado = r.fin < hoy();
+    const conseguido = valor >= r.meta;
+    const estadoTxt = conseguido ? "Conseguido" : (terminado ? "No conseguido" : "En curso");
+    h += '<div class="card stack tight"><div class="row between"><h3>' + esc(TIPOS_RETO[r.tipo].nombre) + '</h3><span class="pill ' + (conseguido ? "up" : (terminado ? "down" : "keep")) + '">' + estadoTxt + '</span></div>' +
+      '<p class="muted small">' + fechaBonita(r.inicio) + ' – ' + fechaBonita(r.fin) + (r.ejercicio ? " · " + esc(buscarEj(r.ejercicio).nombre) : "") + '</p>' +
+      '<div class="row between"><span class="big-num num">' + String(valor).replace(".", ",") + '</span><span class="muted">meta: ' + r.meta + ' ' + TIPOS_RETO[r.tipo].unidad + '</span></div>' +
+      '<div class="bar"><i style="width:' + pct + '%"></i></div>' +
+      '<p class="muted small">Calculado con tus sesiones válidas. Nunca a costa de entrenar con dolor o mala técnica.</p>' +
+      '<button class="btn-txt small btn-danger" data-act="borrar-reto" data-a="' + r.id + '">Eliminar reto</button></div>';
+  }
+  return h;
+}
+
+// =====================================================
+// HOJAS (ventanas que suben desde abajo)
+// =====================================================
+
+function abrirHoja(html) { $("hojaContenido").innerHTML = html; $("hoja").hidden = false; $("hojaContenido").scrollTop = 0; }
+function cerrarHoja() { $("hoja").hidden = true; $("hojaContenido").innerHTML = ""; }
+function cabeceraHoja(titulo, sub) {
+  return '<div class="row between" style="margin-bottom:14px"><div class="grow">' + (sub ? '<p class="label">' + sub + '</p>' : "") + '<h2>' + titulo + '</h2></div><button class="icon-btn" data-act="cerrar-hoja" aria-label="Cerrar">' + I.cerrar + '</button></div>';
+}
+
+// ---------- Generador de rutinas ----------
+function hojaGenerador() {
+  const p = estado.perfil;
+  let eq = "";
+  for (const k in EQUIPOS) eq += '<label class="check"><input type="checkbox" name="gEquipo" value="' + k + '"' + (p.equipo.includes(k) ? " checked" : "") + '>' + EQUIPOS[k] + '</label>';
+  const tipos = Object.keys(TIPOS_RUTINA).map(function (k) { return [k, TIPOS_RUTINA[k]]; });
+  abrirHoja(cabeceraHoja("Generar rutina", "Generador por reglas") + '<div class="stack">' +
+    '<p class="muted small">Se crea con reglas fijas de entrenamiento, no con IA. Es una propuesta: puedes editarla después.</p>' +
+    '<label class="f">Objetivo<select id="gObjetivo">' + opciones(OP_OBJETIVO, p.objetivo) + '</select></label>' +
+    '<label class="f">Nivel<select id="gNivel">' + opciones(OP_EXPERIENCIA, p.experiencia) + '</select></label>' +
+    '<div class="grid2"><label class="f">Días por semana<select id="gDias">' + opciones(OP_DIAS, p.dias) + '</select></label>' +
+    '<label class="f">Tiempo por sesión<select id="gDuracion">' + opciones(OP_DURACION, p.duracion) + '</select></label></div>' +
+    '<div class="stack tight"><span class="label">Qué días entrenas</span><div class="row wrap" style="gap:6px" id="gCalendario">' +
+      NOMBRES_DIAS_SEMANA.map(function (n, i) { return '<label class="check" style="padding:8px 10px"><input type="checkbox" name="gDia" value="' + i + '"' + ((p.diasSemana || []).includes(i) ? " checked" : "") + '>' + n.slice(0, 3) + '</label>'; }).join("") +
+      '</div><p class="muted small">Marca tantos días como «Días por semana». Se usa para comprobar la recuperación entre días seguidos.</p></div>' +
+    '<label class="f">Distribución<select id="gTipo">' + opciones(tipos, "auto") + '</select></label>' +
+    '<label class="f">Grupo prioritario<select id="gPrioridad"><option value="">Ninguno</option>' + Object.keys(GRUPOS).map(function (g) { return '<option value="' + g + '">' + GRUPOS[g] + '</option>'; }).join("") + '</select></label>' +
+    '<div class="stack tight"><span class="label">Equipamiento</span><div class="grid2">' + eq + '</div></div>' +
+    '<label class="f">Evitar ejercicios que contengan<input id="gEvitar" value="' + esc(p.evitar) + '"></label>' +
+    '<p class="err" id="gError"></p>' +
+    (estado.evitados.length ? '<p class="muted small">Se excluyen ' + estado.evitados.length + ' ejercicio(s) que marcaste como «No puedo hacerlo».</p>' : "") +
+    '<p class="muted small">' + (estado.noDisponibles.length ? 'No se usarán ' + estado.noDisponibles.length + ' máquina(s) que no hay en tu gimnasio. ' : '') + '<button class="btn-txt small" data-act="abrir-gimnasio">Mi gimnasio</button></p>' +
+    '<button class="btn" data-act="generar">Ver propuesta</button></div>');
+}
+
+function hojaPropuesta() {
+  const r = propuesta;
+  const obj = objetivoVolumen(r.objetivo, r.nivel);
+  const v = volumenSemanal(r);
+  let h = cabeceraHoja("Tu propuesta", esc(r.nombre)) + '<div class="stack">';
+  r.dias.forEach(function (d) {
+    const di = r.dias.indexOf(d);
+    h += '<div class="card stack tight"><div class="row between"><div><p class="label">' + NOMBRES_DIAS_SEMANA[r.calendario[di]] + '</p><h3>' + esc(d.nombre) + '</h3></div><span class="muted small num">~' + duracionDia(d, r.factorDuracion) + ' min</span></div>';
+    for (const o of d.ejercicios) h += '<div class="row between small"><span>' + esc(buscarEj(o.id).nombre) + (sesionesCon(o.id) ? ' <span class="muted">· lo haces</span>' : "") + '</span><span class="muted num">' + o.series + ' × ' + o.repMin + '-' + o.repMax + '</span></div>';
+    h += '</div>';
+  });
+  const pr = validarRutina(r);
+  const tipos = [["duracion", "Duración dentro de tu tiempo"], ["volumen-bajo", "Volumen suficiente por músculo"], ["volumen-alto", "Sin exceso de volumen"], ["recuperacion", "Recuperación entre días"]];
+  h += '<div class="card stack tight"><h3>Comprobaciones de la rutina completa</h3>';
+  for (const t of tipos) {
+    const fallos = pr.filter(function (x) { return x.tipo === t[0]; });
+    h += '<div class="row small"><span style="width:20px;color:' + (fallos.length ? "var(--warn)" : "var(--good)") + '">' + (fallos.length ? "⚠" : "✓") + '</span><span class="grow">' + t[1] + '</span></div>';
+    for (const x of fallos) h += '<p class="muted small" style="padding-left:30px">' + esc(x.msg) + '</p>';
+  }
+  h += '<p class="muted small">La recuperación se comprueba con tu calendario: ' + r.calendario.map(function (x) { return NOMBRES_DIAS_SEMANA[x].toLowerCase(); }).join(", ") + '. Cuentan también los músculos que trabajan como secundarios.</p>';
+  if (r.factorDuracion !== 1) h += '<p class="muted small">Duraciones ajustadas a lo que tardas de verdad (× ' + String(r.factorDuracion).replace(".", ",") + ').</p>';
+  h += '</div>';
+  h += '<div class="card"><h3 style="margin-bottom:6px">Series por semana</h3><p class="muted small" style="margin-bottom:6px">Recomendado para tu objetivo y nivel: unas ' + obj + ' por músculo.</p>';
+  for (const g of GRUPOS_PRINCIPALES) {
+    const pct = Math.min(100, v[g] / obj * 100);
+    h += '<div class="musculo"><span>' + GRUPOS[g] + '</span><div class="bar' + (v[g] < obj * 0.6 ? " fire" : "") + '"><i style="width:' + pct + '%"></i></div><span class="num muted" style="text-align:right">' + Math.round(v[g]) + '</span></div>';
+  }
+  h += '<p class="muted small" style="margin-top:6px">Los músculos secundarios cuentan como media serie. Duración estimada: 45 s por serie + descanso + 1,5 min de cambio entre ejercicios + 5 min de calentamiento + 3 min de aproximación por compuesto.</p></div>' +
+    '<button class="btn" data-act="usar-propuesta">' + (estado.rutina ? (confirmar === "usar-propuesta" ? "Pulsa otra vez para reemplazar" : "Reemplazar mi rutina") : "Usar esta rutina") + '</button>' +
+    '<button class="btn-sec full" data-act="abrir-generador">Volver a las opciones</button></div>';
+  abrirHoja(h);
+}
+
+// ---------- Editor de un día ----------
+function hojaEditarDia(i) {
+  const d = estado.rutina.dias[i];
+  let h = cabeceraHoja("Editar día", esc(estado.rutina.nombre)) + '<div class="stack">' +
+    '<label class="f">Nombre del día<input data-in="nombre-dia" data-e="' + i + '" value="' + esc(d.nombre) + '" maxlength="40"></label>';
+  d.ejercicios.forEach(function (o, k) {
+    h += '<div class="card stack tight" style="padding:12px"><div class="row between"><b class="grow small">' + esc(buscarEj(o.id).nombre) + '</b>' +
+      '<button class="icon-btn sm" data-act="dia-mover" data-a="' + i + '" data-b="' + k + '" data-c="-1" aria-label="Subir"' + (k ? "" : " disabled") + '>' + I.arriba + '</button>' +
+      '<button class="icon-btn sm" data-act="dia-mover" data-a="' + i + '" data-b="' + k + '" data-c="1" aria-label="Bajar"' + (k < d.ejercicios.length - 1 ? "" : " disabled") + '>' + I.abajo + '</button>' +
+      '<button class="icon-btn sm" data-act="dia-sustituir" data-a="' + i + '" data-b="' + k + '" aria-label="Sustituir">' + I.cambiar + '</button>' +
+      '<button class="icon-btn sm btn-danger" data-act="dia-quitar" data-a="' + i + '" data-b="' + k + '" aria-label="Quitar">' + I.borrar + '</button></div>' +
+      '<div class="grid2" style="grid-template-columns:repeat(4,1fr)">' +
+      ['series', 'repMin', 'repMax', 'descanso'].map(function (campo) {
+        const t = { series: "Series", repMin: "Reps mín.", repMax: "Reps máx.", descanso: "Descanso s" }[campo];
+        return '<label class="f small">' + t + '<input type="number" inputmode="numeric" min="1" value="' + o[campo] + '" data-in="dia-campo" data-e="' + i + '" data-s="' + k + '" data-k="' + campo + '"></label>';
+      }).join("") + '</div></div>';
+  });
+  h += '<button class="btn-sec full" data-act="dia-anadir" data-a="' + i + '">+ Añadir ejercicio</button>' +
+    '<div class="grid2"><button class="btn-sec" data-act="dia-duplicar" data-a="' + i + '">Duplicar día</button>' +
+    '<button class="btn-sec btn-danger" data-act="dia-eliminar" data-a="' + i + '">' + (confirmar === "dia-eliminar" ? "Confirmar" : "Eliminar día") + '</button></div>' +
+    '<button class="btn" data-act="cerrar-hoja">Listo</button></div>';
+  abrirHoja(h);
+}
+
+// ---------- Biblioteca de ejercicios ----------
+// modo: "ver", "sesion", "dia:i", "sust-sesion:k", "sust-dia:i:k"
+let bibBase = null;
+function hojaBiblioteca(modo, soloVariantesDe) {
+  modoBib = modo;
+  bibBase = soloVariantesDe || null;
+  let titulo = modo === "ver" ? "Academia" : (modo.startsWith("sust") ? "Sustituir ejercicio" : "Añadir ejercicio");
+  let h = cabeceraHoja(titulo, EJERCICIOS.length + " ejercicios");
+  if (soloVariantesDe) {
+    const e = buscarEj(soloVariantesDe);
+    h += '<p class="label" style="margin-bottom:6px">Equivalentes a ' + esc(e.nombre) + '</p><div class="list" style="margin-bottom:14px">' +
+      e.variantes.map(function (id) { return filaEj(buscarEj(id)); }).join("") + '</div><p class="label">O elige cualquier otro</p>';
+  }
+  h += '<div class="stack tight" style="margin-top:8px"><div class="search">' + I.buscar + '<input id="bibTexto" placeholder="Buscar ejercicio" value="' + esc(filtroBib.texto) + '" aria-label="Buscar ejercicio"></div>' +
+    '<div class="chips"><button class="chip' + (filtroBib.favoritos ? " on" : "") + '" data-act="bib-fav">★ Favoritos</button>' +
+    '<button class="chip' + (!filtroBib.grupo ? " on" : "") + '" data-act="bib-grupo" data-a="">Todos</button>' +
+    Object.keys(GRUPOS).map(function (g) { return '<button class="chip' + (filtroBib.grupo === g ? " on" : "") + '" data-act="bib-grupo" data-a="' + g + '">' + GRUPOS[g] + '</button>'; }).join("") + '</div>' +
+    '<div class="chips"><button class="chip' + (!filtroBib.equipo ? " on" : "") + '" data-act="bib-equipo" data-a="">Todo el material</button>' +
+    Object.keys(EQUIPOS).map(function (k) { return '<button class="chip' + (filtroBib.equipo === k ? " on" : "") + '" data-act="bib-equipo" data-a="' + k + '">' + EQUIPOS[k] + '</button>'; }).join("") + '</div></div>' +
+    '<div class="list" id="bibLista" style="margin-top:8px"></div>';
+  abrirHoja(h);
+  pintarListaBib();
+}
+
+function filaEj(e) {
+  const fav = estado.favoritos.includes(e.id);
+  const accion = modoBib === "ver" ? "info-ej" : "elegir-ej";
+  return '<button class="item" data-act="' + accion + '" data-a="' + e.id + '">' + (fotosDe(e.id) ? '<img class="gico foto" src="' + fotosDe(e.id)[0] + '" alt="" loading="lazy" decoding="async">' : '<span class="gico">' + GRUPOS[e.grupo].slice(0, 3).toUpperCase() + '</span>') +
+    '<span class="grow"><span class="name">' + esc(e.nombre) + (fav ? ' <span style="color:var(--warn)">★</span>' : "") + ((estado.noDisponibles || []).includes(e.id) ? ' <span class="muted small">· no hay en tu gimnasio</span>' : "") + '</span><span class="muted small">' + GRUPOS[e.grupo] + ' · ' + EQUIPOS[e.equipo] + ' · ' + ["", "Básico", "Medio", "Avanzado"][e.nivel] + '</span></span></button>';
+}
+
+function pintarListaBib() {
+  const t = filtroBib.texto.toLowerCase();
+  const lista = EJERCICIOS.filter(function (e) {
+    return (!filtroBib.grupo || e.grupo === filtroBib.grupo) && (!filtroBib.equipo || e.equipo === filtroBib.equipo) &&
+      (!filtroBib.favoritos || estado.favoritos.includes(e.id)) && e.nombre.toLowerCase().includes(t);
+  });
+  $("bibLista").innerHTML = lista.length ? lista.map(filaEj).join("") : '<p class="muted" style="padding:14px 0">No hay ejercicios con esos filtros.</p>';
+}
+
+// ---------- Ficha de la Academia ----------
+function hojaEjercicio(id) {
+  const e = buscarEj(id);
+  const f = fichaEjercicio(id);
+  const fav = estado.favoritos.includes(id);
+  const p = puntosEjercicio(id);
+  const rm = mejor1RM(id);
+  const maquina = e.equipo === "maquina" || e.equipo === "polea";
+  const noHay = (estado.noDisponibles || []).includes(id);
+  function lista(items) { return '<ul class="pasos">' + items.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul>'; }
+  function bloque(num, titulo, color, cuerpo) {
+    return '<div class="card stack tight"><div class="row"><span class="num-paso" style="background:' + color + '">' + num + '</span><h3>' + titulo + '</h3></div>' + cuerpo + '</div>';
+  }
+
+  let h = cabeceraHoja(esc(e.nombre), "Academia · " + GRUPOS[e.grupo]) + '<div class="stack">';
+
+  // Fotos reales (dominio público), si hay una que muestre este mismo ejercicio
+  const fotos = fotosDe(id);
+  if (fotos) {
+    h += '<div class="fotos">' + fotos.map(function (src, i) {
+      return '<figure><img src="' + src + '" alt="' + esc(e.nombre) + ', posición ' + (i + 1) + ' de 2" loading="lazy" decoding="async"><figcaption>Posición ' + (i + 1) + '</figcaption></figure>';
+    }).join("") + '</div><p class="muted small" style="margin-top:-6px">Fotos: Free Exercise DB · dominio público.</p>';
+  }
+
+  // Animación propia del patrón de movimiento
+  const anim = animacionSVG(id, e.nombre);
+  if (anim) {
+    if (fotos) h += '<p class="label">Animación del movimiento</p>';
+    h += '<div class="anim-caja">' + anim +
+      '<div class="row between" style="padding:8px 12px 10px"><span class="muted small">Animación del patrón: ' + esc(e.patron.toLowerCase()) + '</span>' +
+      '<button class="btn-txt small" data-act="pausar-anim">' + (animPausada ? "▶ Reproducir" : "❚❚ Pausar") + '</button></div></div>';
+  }
+  h += '<div class="video-pendiente"><p class="small"><b>Vídeo demostrativo (20-45 s):</b> pendiente de grabación propia. Mientras tanto, ' + (fotos ? "las fotos, la animación" : "la animación") + ' y los pasos escritos explican el movimiento.</p></div>';
+
+  // Datos clave
+  h += '<div class="row wrap" style="gap:6px"><span class="pill keep">' + EQUIPOS[e.equipo] + '</span><span class="pill keep">Nivel: ' + ["", "básico", "medio", "avanzado"][e.nivel] + '</span><span class="pill keep">' + e.reps[0] + '-' + e.reps[1] + ' reps</span>' +
+    (e.asistido ? '<span class="pill up">Asistido</span>' : "") + '</div>' +
+    '<p class="small"><b>Músculo principal:</b> ' + GRUPOS[e.grupo] + (e.sec.length ? ' · <b>Secundarios:</b> ' + e.sec.map(function (g) { return GRUPOS[g]; }).join(", ") : "") + '</p>';
+  if (e.asistido) h += '<p class="small" style="color:var(--warn)">En esta máquina los kg que escribes son <b>ayuda</b>: cuantos menos, más difícil.</p>';
+
+  // Las cuatro partes de la ficha
+  h += bloque("01", maquina ? "Preparación y ajuste de la máquina" : "Preparación", "var(--accent)", lista(f.preparacion));
+  h += bloque("02", "Ejecución", "var(--accent)", '<ol class="pasos">' + f.ejecucion.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ol><p class="small" style="color:var(--good)"><b>Consejo:</b> ' + esc(f.consejo) + '</p>');
+  h += bloque("03", "Errores que debes evitar", "var(--danger)", lista(f.errores));
+  h += bloque("04", "Seguridad", "var(--warn)", lista(f.seguridad));
+
+  if (f.alternativa) {
+    h += '<div class="card row"><div class="grow"><p class="label">Alternativa para principiantes</p><p class="small">' + esc(f.alternativa.nombre) + '</p></div><button class="btn-sec small" data-act="info-ej" data-a="' + f.alternativa.id + '">Ver ficha</button></div>';
+  }
+  if (rm) {
+    h += '<div class="card row">' + insignia(rangoDePuntos(p), "sm") + '<div class="grow"><p class="label">Tu marca</p><p><b class="num">' + kg(rm) + '</b> <span class="muted small">1RM estimada · ' + RANGOS[rangoDePuntos(p)].nombre + '</span></p></div></div>';
+  }
+  if (e.variantes.length) {
+    h += '<div class="stack tight"><p class="label">Variantes equivalentes</p><div class="row wrap" style="gap:6px">' +
+      e.variantes.map(function (v) { return '<button class="chip" data-act="info-ej" data-a="' + v + '">' + esc(buscarEj(v).nombre) + '</button>'; }).join("") + '</div></div>';
+  }
+
+  h += '<div class="grid2"><button class="btn-sec" data-act="fav" data-a="' + id + '">' + (fav ? "★ Quitar favorito" : "☆ Favorito") + '</button>' +
+    '<button class="btn-sec" data-act="no-puedo" data-a="' + id + '">' + (estado.evitados.includes(id) ? "Sí puedo hacerlo" : "No puedo hacerlo") + '</button></div>';
+  if (maquina) h += '<button class="btn-sec full" data-act="no-hay" data-a="' + id + '">' + (noHay ? "✓ Sí hay en mi gimnasio" : "No hay en mi gimnasio") + '</button>';
+  if (estado.evitados.includes(id) || noHay) h += '<p class="muted small">Este ejercicio no aparecerá en las rutinas que generes.</p>';
+  abrirHoja(h + '</div>');
+  aplicarPausaAnim();
+}
+
+// Pausa las animaciones si el usuario lo pidió o si su sistema pide reducir el movimiento
+let animPausada = false;
+try { animPausada = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { }
+function aplicarPausaAnim() {
+  for (const s of document.querySelectorAll("svg.anim")) {
+    try { if (animPausada) s.pauseAnimations(); else s.unpauseAnimations(); } catch (e) { }
+  }
+}
+
+// ---------- Mi gimnasio: qué máquinas hay ----------
+function hojaMiGimnasio() {
+  const maquinas = EJERCICIOS.filter(function (e) { return e.equipo === "maquina" || e.equipo === "polea"; });
+  let h = cabeceraHoja("Mi gimnasio", "Máquinas disponibles") + '<div class="stack">' +
+    '<p class="muted small">Desmarca las máquinas que no hay en tu gimnasio. Las rutinas y las sugerencias solo usarán las que tengas.</p>' +
+    '<div class="grid2"><button class="btn-sec" data-act="gim-todas" data-a="1">Marcar todas</button><button class="btn-sec" data-act="gim-todas" data-a="0">Desmarcar todas</button></div>';
+  for (const g in GRUPOS) {
+    const delGrupo = maquinas.filter(function (e) { return e.grupo === g; });
+    if (!delGrupo.length) continue;
+    h += '<div class="stack tight"><p class="label">' + GRUPOS[g] + '</p>';
+    for (const e of delGrupo) {
+      const hay = !estado.noDisponibles.includes(e.id);
+      h += '<label class="check"><input type="checkbox" data-in="gim" data-e="' + e.id + '"' + (hay ? " checked" : "") + '>' + esc(e.nombre) + '<span class="muted small" style="margin-left:auto">' + EQUIPOS[e.equipo] + '</span></label>';
+    }
+    h += '</div>';
+  }
+  h += '<p class="muted small"><b>' + (maquinas.length - estado.noDisponibles.length) + ' de ' + maquinas.length + '</b> máquinas disponibles.</p>' +
+    '<button class="btn" data-act="cerrar-hoja">Listo</button></div>';
+  abrirHoja(h);
+}
+
+// ---------- Detalle de sesión ----------
+function hojaSesion(id) {
+  const s = estado.sesiones.find(function (x) { return x.id === id; });
+  if (!s) return;
+  let h = cabeceraHoja(esc(s.diaNombre), fechaBonita(s.fecha)) + '<div class="stack"><div class="grid3">' +
+    '<div class="card"><p class="label">Duración</p><div class="big-num num">' + s.duracion + '</div><p class="muted small">min</p></div>' +
+    '<div class="card"><p class="label">Series efectivas</p><div class="big-num num">' + s.seriesEfectivas + '</div>' + (s.enRevision ? '<p class="muted small">+' + s.enRevision + ' en revisión</p>' : "") + '</div>' +
+    '<div class="card"><p class="label">Tonelaje externo</p><div class="big-num num">' + miles(s.volumen) + '</div><p class="muted small">kg (sin peso corporal)</p></div></div>';
+  for (const e of s.ejercicios) {
+    h += '<div class="card stack tight"><div class="row between"><h3>' + esc(buscarEj(e.id).nombre) + '</h3>' + (s.prs.includes(e.id) ? '<span class="pill pr">Récord</span>' : "") + '</div>';
+    e.series.forEach(function (x, i) {
+      h += '<div class="row between small' + (x.hecha ? "" : " muted") + '"><span>Serie ' + (i + 1) + (x.hecha ? "" : " (no hecha)") + '</span><span class="num">' + x.peso + ' kg × ' + x.reps + (x.rpe ? ' · RPE ' + String(x.rpe).replace(".", ",") : "") + '</span></div>';
+      if (x.hecha && !serieValida(x)) h += '<div class="row small" style="color:var(--warn)"><span class="grow">⚠ En revisión: ' + esc(x.aviso || "") + '</span><button class="btn-txt small" data-act="confirmar-historial" data-a="' + s.id + '" data-b="' + e.id + '" data-c="' + i + '">Es correcto</button></div>';
+    });
+    if (e.nota) h += '<p class="muted small">Nota: ' + esc(e.nota) + '</p>';
+    h += '</div>';
+  }
+  h += '<button class="btn-sec full" data-act="editar-sesion" data-a="' + s.id + '">Corregir este entreno</button>';
+  h += '<button class="btn-txt btn-danger" data-act="borrar-sesion" data-a="' + s.id + '">' + (confirmar === "borrar-sesion" ? "Pulsa otra vez para eliminar" : "Eliminar esta sesión") + '</button></div>';
+  abrirHoja(h);
+}
+
+// ---------- Corregir un entreno guardado ----------
+function hojaEditarSesion(id) {
+  const s = estado.sesiones.find(function (x) { return x.id === id; });
+  let h = cabeceraHoja("Corregir entreno", esc(s.diaNombre) + " · " + fechaBonita(s.fecha)) + '<div class="stack"><p class="muted small">Al guardar se recalculan el volumen, los récords y los rangos.</p>';
+  s.ejercicios.forEach(function (e, ei) {
+    h += '<div class="card stack tight"><h3>' + esc(buscarEj(e.id).nombre) + '</h3>';
+    e.series.forEach(function (x, si) {
+      h += '<div class="row small"><span style="width:56px">Serie ' + (si + 1) + '</span>' +
+        '<input type="number" step="0.5" min="0" value="' + x.peso + '" id="ed-p-' + ei + '-' + si + '" aria-label="Kilos" style="padding:8px">' +
+        '<span>kg ×</span><input type="number" min="0" value="' + x.reps + '" id="ed-r-' + ei + '-' + si + '" aria-label="Repeticiones" style="padding:8px">' +
+        '<label class="row small" style="gap:4px"><input type="checkbox" id="ed-h-' + ei + '-' + si + '"' + (x.hecha ? " checked" : "") + ' style="width:18px;height:18px">hecha</label></div>';
+    });
+    h += '</div>';
+  });
+  h += '<p class="err" id="edError"></p><button class="btn" data-act="guardar-edicion" data-a="' + id + '">Guardar cambios</button><button class="btn-sec full" data-act="ver-sesion" data-a="' + id + '">Cancelar</button></div>';
+  abrirHoja(h);
+}
+
+// ---------- Importar ----------
+function hojaImportar() {
+  abrirHoja(cabeceraHoja("Importar datos", "Restaurar copia") + '<div class="stack"><p class="muted">Pega aquí el texto que exportaste. Sustituirá todos los datos de este dispositivo.</p>' +
+    '<textarea id="importTxt" style="min-height:200px;font-family:ui-monospace,monospace;font-size:.75rem" placeholder="{ ... }"></textarea>' +
+    '<p class="err" id="importError"></p><button class="btn" data-act="importar">' + (confirmar === "importar" ? "Pulsa otra vez para sustituir tus datos" : "Importar") + '</button></div>');
+}
+
+// ---------- Denunciar una publicación ----------
+function hojaDenuncia(postId) {
+  let ops = "";
+  for (const k in MOTIVOS_DENUNCIA) ops += '<label class="check"><input type="radio" name="motivo" value="' + k + '">' + MOTIVOS_DENUNCIA[k] + '</label>';
+  abrirHoja(cabeceraHoja("Denunciar publicación", "Moderación") + '<div class="stack"><div class="stack tight">' + ops + '</div>' +
+    '<label class="f">Detalles (opcional)<textarea id="denDetalle" maxlength="300"></textarea></label>' +
+    '<p class="muted small">La publicación se ocultará para ti. La denuncia queda guardada con su motivo y fecha, y se enviará al equipo de moderación cuando la app tenga servidor.</p>' +
+    '<p class="err" id="denError"></p><button class="btn" data-act="enviar-denuncia" data-a="' + postId + '">Denunciar</button></div>');
+}
+
+// ---------- Prueba piloto: métricas e informes de problemas ----------
+function hojaPiloto() {
+  const m = estado.metricas;
+  const tasa = m.propuestas ? Math.round(m.aceptadas / m.propuestas * 100) + " %" : "—";
+  const pendientes = estado.denuncias.filter(function (d) { return d.estado === "pendiente-envio"; }).length;
+  let h = cabeceraHoja("Prueba piloto", "Datos para evaluar la app") + '<div class="stack">' +
+    '<p class="muted small">Estos datos se quedan en tu dispositivo. Si participas en la prueba piloto, exporta tus datos y entrégalos: incluyen estas métricas.</p>' +
+    '<div class="card"><div class="list">' +
+      '<div class="item"><span class="grow">Entrenos válidos</span><b class="num">' + sesionesValidas().length + '</b></div>' +
+      '<div class="item"><span class="grow">Cambios de peso propuestos</span><b class="num">' + m.propuestas + '</b></div>' +
+      '<div class="item"><span class="grow">Propuestas aceptadas</span><b class="num">' + m.aceptadas + ' (' + tasa + ')</b></div>' +
+      '<div class="item"><span class="grow">Avisos de datos raros</span><b class="num">' + m.avisos + '</b></div>' +
+      '<div class="item"><span class="grow">Avisos confirmados como correctos</span><b class="num">' + m.avisosConfirmados + '</b></div>' +
+      '<div class="item"><span class="grow">Series corregidas después de guardar</span><b class="num">' + m.correcciones + '</b></div>' +
+      '<div class="item"><span class="grow">Denuncias pendientes de envío</span><b class="num">' + pendientes + '</b></div>' +
+    '</div></div>' +
+    '<div class="card stack tight"><h3>Informar de un problema</h3><p class="muted small">Una recomendación incorrecta, un rango injusto, algo difícil de usar…</p>' +
+    '<select id="probTipo" aria-label="Tipo de problema"><option value="recomendacion">Recomendación incorrecta</option><option value="rango">Rango injusto</option><option value="uso">Difícil de usar</option><option value="error">Error o fallo</option><option value="otro">Otro</option></select>' +
+    '<textarea id="probTexto" maxlength="500" placeholder="¿Qué ha pasado?"></textarea><p class="err" id="probError"></p>' +
+    '<button class="btn" data-act="informar-problema">Guardar informe</button></div>';
+  if (m.problemas.length) {
+    h += '<div class="card"><h3>Tus informes (' + m.problemas.length + ')</h3><div class="list">';
+    for (const p of m.problemas.slice().reverse().slice(0, 10)) h += '<div class="item"><div class="grow"><span class="small" style="font-weight:700">' + esc(p.tipo) + ' · ' + fechaBonita(p.fecha.slice(0, 10)) + '</span><span class="muted small" style="display:block">' + esc(p.texto) + '</span></div></div>';
+    h += '</div></div>';
+  }
+  abrirHoja(h + '</div>');
+}
+
+// ---------- Resumen al terminar ----------
+function hojaResumen(r) {
+  const s = r.sesion;
+  let h = cabeceraHoja("Entreno completado", esc(s.diaNombre)) + '<div class="stack"><div class="grid2">' +
+    '<div class="card"><p class="label">Duración</p><div class="big-num num">' + s.duracion + ' min</div></div>' +
+    '<div class="card"><p class="label">Ejercicios</p><div class="big-num num">' + s.ejercicios.filter(function (e) { return e.series.some(function (x) { return x.hecha; }); }).length + '</div></div>' +
+    '<div class="card"><p class="label">Series efectivas</p><div class="big-num num">' + s.seriesEfectivas + '</div></div>' +
+    '<div class="card"><p class="label">Tonelaje externo</p><div class="big-num num">' + miles(s.volumen) + '</div><p class="muted small">kg (sin peso corporal)</p></div></div>';
+  if (r.anterior) {
+    const ds = s.seriesEfectivas - r.anterior.seriesEfectivas;
+    h += '<div class="card"><p class="label">Frente a la última vez (' + fechaBonita(r.anterior.fecha) + ')</p><p class="num"><b style="color:' + (ds >= 0 ? "var(--good)" : "var(--danger)") + '">' + (ds >= 0 ? "+" : "") + ds + '</b> series efectivas</p>' +
+      '<p class="muted small">El tonelaje solo se compara ejercicio a ejercicio (en Progreso), porque un kilo en prensa no equivale a un kilo en curl.</p></div>';
+  }
+  if (s.enRevision) h += '<div class="card" style="border-color:var(--warn)"><p class="small"><b>' + s.enRevision + ' serie(s) en revisión.</b> No cuentan para los rangos hasta que las confirmes en el historial.</p></div>';
+  if (s.prs.length) {
+    h += '<div class="card"><h3>Récords</h3><div class="list">' + s.prs.map(function (id) { return '<div class="item"><span class="grow">' + esc(buscarEj(id).nombre) + '</span><span class="pill pr">Nuevo</span></div>'; }).join("") + '</div></div>';
+  }
+  if (r.ascensos.length) {
+    h += '<div class="card"><h3>Ascensos</h3><div class="list">' + r.ascensos.map(function (a) { return '<div class="item">' + insignia(a.rango, "sm") + '<span class="grow">' + esc(a.nombre) + ' → <b>' + RANGOS[a.rango].nombre + '</b></span></div>'; }).join("") + '</div></div>';
+  }
+  h += '<button class="btn" data-act="compartir-sesion" data-a="' + s.id + '">Compartir en Social</button><button class="btn-sec full" data-act="cerrar-hoja">Cerrar</button></div>';
+  abrirHoja(h);
+}
+
+// ---------- Grupo muscular ----------
+function hojaGrupo(g) {
+  const p = puntosGrupo(g);
+  const ri = p === null ? null : rangoDePuntos(p);
+  const ids = ejerciciosHechos().filter(function (id) { return buscarEj(id).grupo === g; });
+  let h = cabeceraHoja(GRUPOS[g], "Grupo muscular") + '<div class="stack"><div class="row">' + insignia(ri, "lg") +
+    '<div class="grow stack tight"><h2>' + nombreRango(ri) + '</h2>' + (p !== null ? '<p class="muted num">' + p.toFixed(1) + ' puntos</p><div class="bar"><i style="width:' + progresoRango(p) + '%"></i></div>' : '<p class="muted">Aún no has registrado ejercicios de este grupo.</p>') + '</div></div>';
+  if (ids.length) {
+    h += '<div class="card"><h3>Ejercicios registrados</h3><div class="list">';
+    for (const id of ids) {
+      const pe = puntosEjercicio(id);
+      h += '<button class="item" data-act="ver-rango-ej" data-a="' + id + '">' + insignia(rangoDePuntos(pe), "sm") + '<div class="grow"><span class="name">' + esc(buscarEj(id).nombre) + '</span><span class="muted small">' + RANGOS[rangoDePuntos(pe)].nombre + ' · ' + kg(mejor1RM(id)) + ' 1RM</span></div></button>';
+    }
+    h += '</div></div>';
+  }
+  const sugeridos = EJERCICIOS.filter(function (e) { return e.grupo === g && !ids.includes(e.id) && estado.perfil.equipo.includes(e.equipo); }).slice(0, 3);
+  if (sugeridos.length) h += '<p class="muted small">Para tener más datos en este grupo puedes añadir: ' + sugeridos.map(function (e) { return esc(e.nombre); }).join(", ") + '.</p>';
+  abrirHoja(h + '<p class="muted small">El rango refleja lo que registras al entrenar, no tu genética.</p></div>');
+}
+
+// ---------- Rango de un ejercicio ----------
+function hojaRangoEj(id) {
+  const e = buscarEj(id);
+  const p = puntosEjercicio(id);
+  const ri = rangoDePuntos(p);
+  const n = sesionesCon(id);
+  let falta = "";
+  if (ri < RANGOS.length - 1) {
+    const sig = RANGOS[ri + 1];
+    if (sig.min > topePorSesiones(n)) {
+      falta = "Necesitas " + sesionesParaDesbloquear(n) + " sesión(es) más con este ejercicio para poder subir a " + sig.nombre + ". El tope evita subir de rango con un solo día bueno.";
+    } else {
+      const rmN = rmParaPuntos(id, sig.min);
+      const reps = e.reps[0] + 2;
+      const peso = redondearA(pesoParaRM(id, rmN, reps), 0.5);
+      falta = "Para " + sig.nombre + " necesitas una 1RM estimada de " + kg(rmN) + ". Por ejemplo: " + (e.asistido ? kg(peso) + " de ayuda × " + reps : (peso > 0 ? kg(peso) + (e.cuerpo ? " de lastre" : "") + " × " + reps : reps + " reps")) + ".";
+    }
+  }
+  const fechas = [];
+  for (const s of seriesDe(id)) if (!fechas.includes(s.fecha)) fechas.push(s.fecha);
+  fechas.sort();
+  const valores = fechas.map(function (f) { return puntosEjercicio(id, f); });
+  abrirHoja(cabeceraHoja(esc(e.nombre), "Rango por ejercicio") + '<div class="stack"><div class="row">' + insignia(ri, "lg") +
+    '<div class="grow stack tight"><h2>' + RANGOS[ri].nombre + '</h2><p class="muted num">' + p.toFixed(1).replace(".", ",") + ' puntos · ' + n + ' sesiones</p><div class="bar"><i style="width:' + progresoRango(p) + '%"></i></div></div></div>' +
+    (falta ? '<div class="card"><p class="label">Qué te falta</p><p>' + falta + '</p></div>' : "") +
+    '<div class="card stack tight"><h3>Tu evolución (puntos)</h3>' + graficaLinea(fechas.map(fechaBonita), valores, "pts") + '</div>' +
+    '<p class="muted small">Cada ejercicio tiene su propia escala (factor ' + String(Math.round(factorEj(e) * 100) / 100).replace(".", ",") + ', ajustado a tu perfil), así que dos máquinas distintas nunca se mezclan.</p></div>');
+}
+
+function hojaComoRangos() {
+  let filas = "";
+  RANGOS.forEach(function (r, i) { filas += '<div class="item">' + insignia(i, "sm") + '<span class="grow" style="font-weight:700">' + r.nombre + '</span><span class="muted num small">desde ' + r.min + ' pts</span></div>'; });
+  const e = buscarEj("press-banca");
+  const bw = pesoCorporalActual();
+  const ref = referenciaCorporal(bw);
+  const rm = unaRM(60, 8);
+  const pts = Math.min(100, 75 * rm / (factorEj(e) * ref));
+  function f(n) { return (Math.round(n * 10) / 10).toLocaleString("es-ES"); }
+  function paso(t, txt) { return '<div class="card stack tight"><h3>' + t + '</h3>' + txt + '</div>'; }
+  abrirHoja(cabeceraHoja("Reglas de los rangos", "Algoritmo público · v2") + '<div class="stack">' +
+    paso("1. Fuerza estimada", '<p class="small"><b>1RM = peso × (1 + reps ÷ 30)</b>. Cada repetición extra suma un 3,3 %, hasta 12 repeticiones.</p>') +
+    paso("2. Peso corporal justo", '<p class="small">Referencia = <b>75 × (peso ÷ 75)<sup>0,67</sup></b>. Una persona de 90 kg necesita un 31 % más que una de 60 kg, no un 50 %. Se usa tu peso del día de cada serie.</p>') +
+    paso("3. Puntos de una serie", '<p class="small"><b>75 × 1RM ÷ (factor × referencia)</b>, máximo 100.</p><p class="small">El factor se ajusta a tu sexo: para mujeres, tren superior × 0,6 y tren inferior × 0,75; con «Prefiero no decirlo», un punto intermedio. Así, cada persona se compara con un nivel justo para ella.</p><p class="small muted">Ejemplo con tu peso (' + f(bw) + ' kg): press banca 60 kg × 8 → ' + f(pts) + ' puntos.</p>') +
+    paso("4. Rendimiento habitual, no un día suelto", '<p class="small">La nota de un ejercicio es la <b>media de tus 3 mejores sesiones</b> en las 12 semanas anteriores a tu último registro. Un día excepcional no te sube de rango por sí solo.</p>') +
+    paso("5. Fiabilidad", '<p class="small">Tope según sesiones con el ejercicio: 1 → ' + RANGOS[rangoDePuntos(35)].nombre + ', 2-3 → ' + RANGOS[rangoDePuntos(57)].nombre + ', 4-5 → ' + RANGOS[rangoDePuntos(77)].nombre + ', 6 o más → sin tope. Un grupo con un solo ejercicio distinto tiene tope de ' + RANGOS[rangoDePuntos(77)].nombre + '.</p>') +
+    paso("6. Cuerpo completo", '<p class="small">El global es la media de los <b>8 músculos principales</b>; los que no tienen datos cuentan 0. Antebrazos, abdominales y gemelos tienen rango propio pero no cuentan en el global. Tope: menos de 5 entrenos válidos → ' + RANGOS[rangoDePuntos(35)].nombre + '; menos de 15 → ' + RANGOS[rangoDePuntos(67)].nombre + '.</p>') +
+    paso("7. Datos fiables", '<p class="small">Un entreno solo cuenta si tiene al menos una serie válida. Los pesos imposibles se bloquean y los raros quedan en revisión hasta que los confirmas.</p>') +
+    '<div class="card"><div class="list">' + filas + '</div></div>' +
+    '<p class="muted small">Factores de dificultad: ' + FACTORES_VERSION + '. Mismos registros = mismo rango, siempre.</p></div>');
+}
+
+// ---------- Crear reto ----------
+function hojaReto() {
+  const hechos = ejerciciosHechos();
+  abrirHoja(cabeceraHoja("Nuevo reto", "Reto personal") + '<div class="stack">' +
+    '<label class="f">Tipo de reto<select id="rTipo">' + Object.keys(TIPOS_RETO).map(function (k) { return '<option value="' + k + '">' + TIPOS_RETO[k].nombre + ' (' + TIPOS_RETO[k].unidad + ')</option>'; }).join("") + '</select></label>' +
+    '<label class="f">Meta<input id="rMeta" type="number" inputmode="decimal" min="1" step="1" value="8"></label>' +
+    '<label class="f">Ejercicio (solo para "Mejora en un ejercicio")<select id="rEj">' + (hechos.length ? hechos.map(function (id) { return '<option value="' + id + '">' + esc(buscarEj(id).nombre) + '</option>'; }).join("") : '<option value="">Sin ejercicios registrados</option>') + '</select></label>' +
+    '<div class="grid2"><label class="f">Empieza<input id="rInicio" type="date" value="' + hoy() + '"></label><label class="f">Termina<input id="rFin" type="date" value="' + fechaTexto(-27) + '"></label></div>' +
+    '<p class="muted small">El progreso se calcula solo con tus sesiones válidas dentro de esas fechas.</p>' +
+    '<p class="err" id="rError"></p><button class="btn" data-act="crear-reto">Crear reto</button></div>');
+}
+
+// ---------- Ajustes ----------
+function hojaAjustes() {
+  const a = estado.ajustes;
+  const n = a.notif;
+  function chk(id, valor, texto) { return '<label class="check"><input type="checkbox" id="' + id + '"' + (valor ? " checked" : "") + '>' + texto + '</label>'; }
+  abrirHoja(cabeceraHoja("Perfil y ajustes", estado.modo === "demo" ? "Modo demo" : "Cuenta en este dispositivo") + '<div class="stack">' +
+    '<div class="card stack">' + formPerfil(estado.perfil) + '</div>' +
+    '<div class="card stack"><h3>Entrenamiento</h3>' +
+      '<div class="grid2"><label class="f">Descanso por defecto<select id="aDescanso">' + opciones([[60, "60 s"], [90, "90 s"], [120, "2 min"], [180, "3 min"]], a.descanso) + '</select></label>' +
+      '<label class="f">Incremento barra y máquina<select id="aIncremento">' + opciones([[1, "1 kg"], [1.25, "1,25 kg"], [2.5, "2,5 kg"], [5, "5 kg"]], a.incremento) + '</select></label></div>' +
+      '<label class="f">Incremento de mancuernas<select id="aIncMancuernas">' + opciones([[1, "1 kg"], [2, "2 kg"], [2.5, "2,5 kg"]], a.incrementoMancuernas) + '</select></label>' +
+      '<label class="f">Unidades<select disabled><option>Kilogramos (kg)</option></select></label><p class="muted small">Las libras llegarán en una próxima versión.</p></div>' +
+    '<div class="card stack"><h3>Apariencia</h3><div class="seg">' + [["oscuro", "Oscuro"], ["claro", "Claro"], ["sistema", "Sistema"]].map(function (o) { return '<button data-act="tema" data-a="' + o[0] + '" class="' + (a.tema === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div></div>' +
+    '<div class="card stack"><h3>Privacidad</h3><label class="f">Quién ve tu perfil<select id="aPrivacidad">' + opciones([["publico", "Todo el mundo"], ["amigos", "Solo amigos"], ["privado", "Solo yo"]], a.privacidad) + '</select></label>' +
+      chk("aCompartir", a.compartir, "Mostrar mis entrenos a mis amigos") + '</div>' +
+    '<div class="card stack tight"><h3>Instalar en el móvil</h3>' + textoInstalar() + '</div>' +
+    '<div class="card stack tight"><h3>Kilo, la mascota</h3>' + chk("aMascota", a.mascota !== false, "Mostrar a Kilo en Inicio") +
+      '<p class="muted small">Te anima los días de entreno, se enfada si pierdes la racha y celebra tus récords.</p></div>' +
+    '<div class="card stack tight"><h3>Notificaciones</h3>' +
+      chk("nRec", n.recordatorios, "Recordatorios de entreno") + chk("nRecords", n.records, "Récords personales") + chk("nRangos", n.rangos, "Ascensos de rango") +
+      chk("nAmigos", n.amigos, "Solicitudes y retos de amigos") + chk("nSemanal", n.semanal, "Resumen semanal") +
+      '<p class="muted small">Se guardan tus preferencias. El envío real necesita la app instalada y tu permiso.</p></div>' +
+    '<button class="btn" data-act="guardar-ajustes">Guardar cambios</button><p class="muted small" id="aOk"></p>' +
+    '<div class="card stack tight"><h3>Tus datos</h3>' +
+      '<button class="btn-sec full" data-act="exportar">Exportar mis datos</button>' +
+      '<button class="btn-sec full" data-act="abrir-importar">Importar una copia</button>' +
+      '<button class="btn-sec full" data-act="pruebas">Ejecutar pruebas de calidad</button>' +
+      '<button class="btn-sec full" data-act="abrir-piloto">Prueba piloto e informar de problemas</button>' +
+      '<button class="btn-sec full" data-act="abrir-gimnasio">Mi gimnasio (máquinas disponibles)</button>' +
+      '<button class="btn-sec full" data-act="cerrar-sesion">Cerrar sesión</button>' +
+      '<button class="btn-sec full btn-danger" data-act="borrar-todo">' + (confirmar === "borrar-todo" ? "Pulsa otra vez: se borrará todo" : "Eliminar cuenta y datos") + '</button></div></div>');
+}
+
+function hojaPruebas() {
+  const r = ejecutarPruebas();
+  const ok = r.filter(function (x) { return x.ok; }).length;
+  let h = cabeceraHoja("Pruebas de calidad", ok + " de " + r.length + " superadas") + '<div class="stack"><p class="muted small">Se ejecutan sobre datos de ejemplo. Tus datos no se modifican.</p><div class="card"><div class="list">';
+  let grupoActual = "";
+  for (const x of r) {
+    if (x.grupo !== grupoActual) { grupoActual = x.grupo; h += '<p class="label" style="padding-top:10px">' + esc(grupoActual) + '</p>'; }
+    h += '<div class="item"><span style="width:22px;flex:none;color:' + (x.ok ? "var(--good)" : "var(--danger)") + '">' + (x.ok ? I.check : I.cerrar) + '</span><div class="grow"><span class="small" style="font-weight:700">' + esc(x.nombre) + '</span>' + (x.detalle ? '<span class="err small" style="display:block">' + esc(x.detalle) + '</span>' : "") + '</div></div>';
+  }
+  abrirHoja(h + '</div></div><p class="muted small">Pendientes de la versión con servidor: acceso a datos de otros usuarios, sincronización entre dispositivos y uso sin conexión con sincronización.</p></div>');
+}
+
+function hojaExportar() {
+  abrirHoja(cabeceraHoja("Exportar datos", "Copia de seguridad") + '<div class="stack"><p class="muted">Copia este texto y guárdalo en un archivo. Contiene todo tu historial en formato JSON, con la versión del formato para poder importarlo en versiones futuras.</p>' +
+    '<textarea id="exportTxt" readonly style="min-height:220px;font-family:ui-monospace,monospace;font-size:.75rem">' + esc(exportarDatos()) + '</textarea>' +
+    '<button class="btn" data-act="copiar-export">Copiar</button><p class="muted small" id="copiaOk"></p></div>');
+}
+
+// =====================================================
+// CELEBRACIÓN (récord o ascenso)
+// =====================================================
+
+function celebrar(resultado) {
+  const asc = resultado.ascensos[0];
+  const s = resultado.sesion;
+  const rango = asc ? asc.rango : (puntosGlobal() !== null ? rangoDePuntos(puntosGlobal()) : 0);
+  const conKilo = estado.ajustes.mascota !== false && s.prs.length;
+  $("celebraMsg").innerHTML = insignia(rango, "xl") +
+    (conKilo ? '<div class="row" style="gap:8px;text-align:left">' + kiloSVG("celebra", "sm") + '<p class="small"><b>Kilo:</b> ¡Eso antes no lo levantabas! Estoy orgulloso de ti.</p></div>' : "") +
+    '<p class="label" style="color:var(--accent)">' + (asc ? "Subes de rango" : "Entreno completado") + '</p>' +
+    '<h1>' + (asc ? esc(asc.nombre) + ' · ' + RANGOS[asc.rango].nombre : s.prs.length + " récord" + (s.prs.length > 1 ? "s" : "") + " nuevo" + (s.prs.length > 1 ? "s" : "")) + '</h1>' +
+    '<p class="muted">' + (s.prs.length ? s.prs.map(function (id) { return esc(buscarEj(id).nombre); }).join(" · ") : "") + '</p>' +
+    '<button class="btn" data-act="ver-resumen" style="margin-top:8px">Ver resumen</button>';
+  $("celebra").hidden = false;
+  window._resumen = resultado;
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) destello(RANGOS[rango].color);
+}
+
+// Anillos de luz y chispas dibujados en un canvas
+function destello(color) {
+  const c = $("destello"), ctx = c.getContext("2d");
+  c.width = innerWidth; c.height = innerHeight;
+  const cx = c.width / 2, cy = c.height / 2 - 90;
+  const chispas = [];
+  for (let i = 0; i < 60; i++) chispas.push({ a: Math.random() * Math.PI * 2, v: Math.random() * 6 + 3, d: 0, l: Math.random() * 14 + 6 });
+  let f = 0;
+  (function paso() {
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.shadowBlur = 16; ctx.shadowColor = color; ctx.strokeStyle = color;
+    for (let k = 0; k < 3; k++) {
+      const t = f - k * 12;
+      if (t > 0 && t < 70) { ctx.globalAlpha = 1 - t / 70; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(cx, cy, 70 + t * 5, 0, Math.PI * 2); ctx.stroke(); }
+    }
+    ctx.lineWidth = 2;
+    for (const s of chispas) {
+      s.d += s.v; s.v *= 0.96;
+      ctx.globalAlpha = Math.max(0, 1 - f / 90);
+      ctx.beginPath(); ctx.moveTo(cx + Math.cos(s.a) * s.d, cy + Math.sin(s.a) * s.d); ctx.lineTo(cx + Math.cos(s.a) * (s.d + s.l), cy + Math.sin(s.a) * (s.d + s.l)); ctx.stroke();
+    }
+    ctx.globalAlpha = 1; f++;
+    if (f < 100 && !$("celebra").hidden) requestAnimationFrame(paso); else ctx.clearRect(0, 0, c.width, c.height);
+  })();
+}
+
+// =====================================================
+// TEMPORIZADOR DE DESCANSO
+// =====================================================
+
+// La hora de fin se guarda en la sesión: sobrevive a bloquear el móvil y a recargar la página
+let tRest = 0, tTotal = 0, tFin = 0, tIntervalo = null;
+function empezarDescanso(seg, finGuardado) {
+  tTotal = seg; tFin = finGuardado || Date.now() + seg * 1000; $("timer").hidden = false;
+  if (estado.activa && !finGuardado) { estado.activa.descanso = { fin: tFin, total: tTotal }; guardar(); }
+  clearInterval(tIntervalo);
+  tIntervalo = setInterval(function () {
+    tRest = Math.ceil((tFin - Date.now()) / 1000);
+    if (tRest <= 0) { pararDescanso(); avisoFinDescanso(); } else pintarTimer();
+  }, 250);
+  tRest = Math.max(1, Math.ceil((tFin - Date.now()) / 1000)); pintarTimer();
+}
+// Al abrir la app con un descanso en marcha, lo retoma donde iba
+function reanudarDescanso() {
+  if (estado && estado.activa && descansoRestante(estado.activa) > 0) empezarDescanso(estado.activa.descanso.total, estado.activa.descanso.fin);
+}
+function ajustarDescanso(seg) {
+  tFin = Math.max(Date.now() + 1000, tFin + seg * 1000);
+  tRest = Math.ceil((tFin - Date.now()) / 1000);
+  tTotal = Math.max(tTotal, tRest);
+  if (estado.activa) { estado.activa.descanso = { fin: tFin, total: tTotal }; guardar(); }
+  pintarTimer();
+}
+function pintarTimer() {
+  $("timerTxt").textContent = Math.floor(tRest / 60) + ":" + String(tRest % 60).padStart(2, "0");
+  $("timerBar").style.width = (tRest / tTotal * 100) + "%";
+}
+// Pitido corto y vibración (si el dispositivo lo permite)
+function avisoFinDescanso() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator(), vol = ctx.createGain();
+    osc.frequency.value = 880; vol.gain.value = 0.15;
+    osc.connect(vol); vol.connect(ctx.destination);
+    osc.start(); osc.stop(ctx.currentTime + 0.25);
+  } catch (e) { }
+  try { if (navigator.vibrate) navigator.vibrate([200, 100, 200]); } catch (e) { }
+}
+function pararDescanso() {
+  clearInterval(tIntervalo); $("timer").hidden = true;
+  if (estado && estado.activa && estado.activa.descanso) { estado.activa.descanso = null; guardar(); }
+}
+
+// =====================================================
+// NAVEGACIÓN Y PINTADO GENERAL
+// =====================================================
+
+function aplicarTema() {
+  const t = estado ? estado.ajustes.tema : "oscuro";
+  if (t === "oscuro") document.documentElement.dataset.theme = "dark";
+  else if (t === "claro") document.documentElement.dataset.theme = "light";
+  else delete document.documentElement.dataset.theme;
+}
+
+function avisoGuardado() {
+  const el = document.getElementById("avisoGuardado");
+  if (el) el.hidden = !errorGuardado;
+}
+
+function mensaje(titulo, texto) {
+  abrirHoja(cabeceraHoja(esc(titulo), "") + '<div class="stack"><p>' + esc(texto) + '</p><button class="btn" data-act="cerrar-hoja">Entendido</button></div>');
+}
+
+function pintar() {
+  aplicarTema();
+  avisoGuardado();
+  if (!estado) { pintarBienvenida(); return; }
+  $("tabs").hidden = false;
+  for (const b of document.querySelectorAll("nav.tabs button")) b.classList.toggle("on", b.dataset.tab === tab);
+  if (tab === "inicio") pintarInicio();
+  if (tab === "entrenar") pintarEntrenar();
+  if (tab === "rangos") pintarRangos();
+  if (tab === "progreso") pintarProgreso();
+  if (tab === "social") pintarSocial();
+}
+
+function irA(nuevo) { tab = nuevo; confirmar = ""; window.scrollTo(0, 0); pintar(); }
+
+// Para los botones de "pulsa otra vez": el primer toque solo avisa
+function pideConfirmar(clave, repintar) {
+  if (confirmar === clave) { confirmar = ""; return true; }
+  confirmar = clave; repintar(); return false;
+}
+
+function textoSesion(s) {
+  return "Completó " + s.diaNombre + " · " + s.seriesEfectivas + " series efectivas" + (s.prs.length ? " · " + s.prs.length + " récord(s)" : "");
+}
+
+// ---------- Instalar la app (PWA) ----------
+// Texto y botón de la tarjeta "Instalar en el móvil" de Ajustes
+function textoInstalar() {
+  if (appInstalada()) return '<p class="small">✓ Ya estás usando Apex Gym como app instalada.</p>';
+  if (avisoInstalar) return '<button class="btn" data-act="instalar-app">Instalar Apex Gym</button><p class="muted small">Tendrás su icono en el móvil y funcionará sin internet.</p>';
+  return '<p class="muted small">En Android (Chrome): menú ⋮ → «Instalar aplicación». En iPhone (Safari): botón Compartir → «Añadir a pantalla de inicio».</p>';
+}
+function appInstalada() {
+  return window.matchMedia && window.matchMedia("(display-mode: standalone)").matches;
+}

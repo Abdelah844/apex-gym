@@ -1,0 +1,348 @@
+// =====================================================
+// APEX GYM · ACADEMIA (fichas de aprendizaje y animaciones propias)
+// - Cada ejercicio tiene: preparación, errores extra, seguridad y animación.
+// - Las animaciones son dibujos propios hechos con código (sin licencias de terceros).
+//   Muestran el PATRÓN de movimiento, no la máquina exacta de cada gimnasio.
+// - Los vídeos reales están pendientes de producción propia.
+// =====================================================
+
+// ---------- Seguridad común según el material ----------
+const SEGURIDAD_GENERAL = [
+  "Empieza con una carga que puedas mover con buena técnica.",
+  "Para si notas dolor (el esfuerzo muscular es normal; el dolor articular o punzante, no)."
+];
+const SEGURIDAD_EQUIPO = {
+  barra: "Usa los topes de seguridad o pide a alguien que te ayude cuando vayas pesado.",
+  maquina: "Comprueba que el pasador del peso está bien metido antes de empezar.",
+  polea: "Revisa que el cable y el agarre están bien enganchados.",
+  mancuernas: "Coge y deja las mancuernas en el suelo con la espalda recta.",
+  corporal: "Progresa poco a poco: primero más repeticiones y después lastre."
+};
+
+// ---------- Ficha de cada ejercicio ----------
+// anim: animación del patrón · inv: la animación va al revés
+// prep: preparación y ajustes · err: errores además del principal · seg: seguridad específica
+const TUTORIALES = {
+  "press-banca": { anim: "press-horizontal", prep: ["Túmbate con los ojos justo debajo de la barra.", "Agarre algo más abierto que los hombros."], err: ["Levantar la cadera del banco."], seg: ["Con pesos altos, entrena con alguien que te ayude o con topes."] },
+  "press-inclinado-mancuernas": { anim: "press-horizontal", prep: ["Banco a unos 30 grados.", "Sube las mancuernas apoyándolas en los muslos."], err: ["Chocar las mancuernas arriba."], seg: [] },
+  "press-maquina": { anim: "press-horizontal", prep: ["Ajusta el asiento: asas a la altura del pecho."], err: ["Despegar los hombros del respaldo."], seg: [] },
+  "contractora": { anim: "aperturas", prep: ["Ajusta el asiento para que los codos queden a la altura de los hombros."], err: ["Doblar mucho los codos y empujar con los brazos."], seg: [] },
+  "aperturas-polea": { anim: "aperturas", prep: ["Poleas a la altura de los hombros.", "Un pie adelantado para estar estable."], err: ["Encoger los hombros."], seg: [] },
+  "fondos": { anim: "fondos", prep: ["Sujétate con los brazos estirados y los hombros bajos."], err: ["Encoger los hombros hacia las orejas."], seg: ["Si te molesta el hombro, empieza con fondos asistidos."] },
+  "flexiones": { anim: "flexion", prep: ["Manos algo más abiertas que los hombros.", "Cuerpo recto de cabeza a talones."], err: ["Abrir los codos a 90 grados del cuerpo."], seg: [] },
+  "dominadas": { anim: "dominada", prep: ["Agarre algo más abierto que los hombros."], err: ["No estirar los brazos abajo (medio recorrido)."], seg: ["Si aún no haces 5, usa las dominadas asistidas."] },
+  "jalon": { anim: "jalon", prep: ["Ajusta el rodillo para que sujete bien los muslos."], err: ["Llevar la barra por detrás de la nuca."], seg: [] },
+  "remo-barra": { anim: "remo-inclinado", prep: ["Rodillas algo dobladas y espalda recta.", "Tronco inclinado unos 45 grados."], err: ["Levantar el tronco para subir la barra."], seg: ["Si te molesta la espalda baja, usa el remo con pecho apoyado."] },
+  "remo-polea": { anim: "remo", prep: ["Pies en los apoyos y rodillas un poco dobladas."], err: ["Encoger los hombros al tirar."], seg: [] },
+  "remo-mancuerna": { anim: "remo-inclinado", prep: ["Apoya rodilla y mano del mismo lado en el banco."], err: ["Tirar con el bíceps en vez de llevar el codo atrás."], seg: [] },
+  "remo-maquina": { anim: "remo", prep: ["Ajusta el asiento para que las asas queden a la altura del pecho."], err: ["Echar el tronco hacia atrás."], seg: [] },
+  "peso-muerto": { anim: "bisagra", prep: ["Pies a la anchura de la cadera, barra sobre el medio del pie.", "Hombros algo por delante de la barra."], err: ["Tirar con los brazos doblados."], seg: ["Aprende la técnica con poco peso; es el ejercicio con más carga de la biblioteca."] },
+  "press-militar": { anim: "press-vertical", prep: ["Barra a la altura de las clavículas.", "Pies a la anchura de la cadera."], err: ["Empujar la barra hacia delante en vez de hacia arriba."], seg: [] },
+  "press-hombro-mancuernas": { anim: "press-vertical", prep: ["Respaldo casi vertical."], err: ["Arquear la espalda."], seg: [] },
+  "press-hombro-maquina": { anim: "press-vertical", prep: ["Ajusta el asiento: asas a la altura de los hombros."], err: ["Bloquear los codos de golpe arriba."], seg: [] },
+  "elevaciones-laterales": { anim: "elevacion-lateral", prep: ["Codos un poco doblados.", "Peso ligero."], err: ["Encoger los hombros."], seg: [] },
+  "elevaciones-polea": { anim: "elevacion-lateral", prep: ["Polea en la posición más baja, de lado a la máquina."], err: ["Girar el tronco para subir."], seg: [] },
+  "pajaros-maquina": { anim: "aperturas", inv: true, prep: ["Siéntate mirando a la máquina con el pecho apoyado."], err: ["Juntar las escápulas con fuerza en vez de abrir los brazos."], seg: [] },
+  "face-pull": { anim: "remo", prep: ["Polea a la altura de la cara con cuerda."], err: ["Tirar hacia el cuello en vez de hacia la frente."], seg: [] },
+  "curl-barra": { anim: "curl", prep: ["Agarre a la anchura de los hombros."], err: ["Subir los codos hacia delante."], seg: [] },
+  "curl-mancuernas": { anim: "curl", prep: ["Brazos estirados a los lados, palmas hacia dentro."], err: ["Bajar sin control."], seg: [] },
+  "curl-martillo": { anim: "curl", prep: ["Palmas mirándose durante todo el movimiento."], err: ["Balancear el cuerpo."], seg: [] },
+  "curl-polea": { anim: "curl", prep: ["Polea baja y un paso atrás para tener tensión."], err: ["Inclinarse hacia atrás."], seg: [] },
+  "curl-maquina": { anim: "curl", prep: ["Ajusta el asiento: axilas sobre el borde del apoyo."], err: ["No estirar los brazos abajo."], seg: [] },
+  "extension-polea": { anim: "extension-triceps", prep: ["Polea alta y tronco un poco inclinado."], err: ["Usar el peso del cuerpo para empujar."], seg: [] },
+  "press-frances": { anim: "press-frances", prep: ["Barra Z si te molestan las muñecas."], err: ["Bajar la barra hacia la nariz con los codos abiertos."], seg: ["Baja despacio: la barra pasa cerca de la cara."] },
+  "extension-nuca": { anim: "extension-nuca", prep: ["Sujeta la mancuerna por un extremo con las dos manos."], err: ["Abrir los codos hacia los lados."], seg: ["Usa un respaldo para no arquear la espalda."] },
+  "triceps-maquina": { anim: "extension-triceps", prep: ["Ajusta el asiento: codos alineados con el eje de la máquina."], err: ["Levantar los codos del apoyo."], seg: [] },
+  "curl-muneca": { anim: "muneca", prep: ["Antebrazo apoyado en el banco, muñeca fuera."], err: ["Usar demasiado peso y mover el codo."], seg: [] },
+  "curl-inverso": { anim: "curl", prep: ["Agarre con las palmas hacia abajo."], err: ["Dejar caer las muñecas."], seg: [] },
+  "crunch-polea": { anim: "crunch", prep: ["De rodillas, cuerda junto a la cabeza."], err: ["Sentarse sobre los talones en vez de enrollar el tronco."], seg: [] },
+  "elevacion-piernas": { anim: "elevacion-piernas", prep: ["Cuélgate con agarre firme y hombros activos."], err: ["Subir las piernas con impulso."], seg: ["Empieza con las rodillas dobladas."] },
+  "rueda-abdominal": { anim: "rueda", prep: ["De rodillas sobre una esterilla."], err: ["Llegar tan lejos que se hunde la cadera."], seg: ["Empieza con recorridos cortos."] },
+  "sentadilla": { anim: "sentadilla", prep: ["Barra sobre la parte alta de la espalda, no sobre el cuello.", "Pies a la anchura de los hombros, puntas un poco hacia fuera."], err: ["Juntar las rodillas al subir."], seg: ["Coloca los topes del rack a la altura más baja que vayas a bajar."] },
+  "prensa": { anim: "sentadilla", prep: ["Ajusta el respaldo.", "Pies a una anchura cómoda en el centro de la plataforma.", "Comprueba los seguros antes de desbloquear."], err: ["Bajar más de lo que permite tu movilidad.", "Rebotar abajo."], seg: ["No bloquees las rodillas de golpe al estirar."] },
+  "hack": { anim: "sentadilla", prep: ["Hombros bajo los soportes y espalda contra el respaldo."], err: ["Levantar los talones."], seg: ["Pon los seguros antes de bajar."] },
+  "extension-cuadriceps": { anim: "extension-rodilla", prep: ["Rodilla alineada con el eje de la máquina.", "Rodillo sobre los tobillos."], err: ["Levantar la cadera del asiento."], seg: [] },
+  "zancadas": { anim: "zancada", prep: ["Espacio libre delante para dar el paso."], err: ["Dar un paso demasiado corto."], seg: [] },
+  "sentadilla-bulgara": { anim: "zancada", prep: ["Banco detrás a la altura de la rodilla."], err: ["Apoyar el peso en la pierna de atrás."], seg: [] },
+  "sentadilla-goblet": { anim: "sentadilla", prep: ["Mancuerna vertical pegada al pecho."], err: ["Redondear la espalda abajo."], seg: [] },
+  "peso-muerto-rumano": { anim: "bisagra", prep: ["Rodillas un poco dobladas y fijas."], err: ["Doblar las rodillas como en una sentadilla."], seg: [] },
+  "curl-femoral-tumbado": { anim: "curl-femoral", prep: ["Rodilla justo fuera del banco, rodillo en los tobillos."], err: ["Levantar la cadera."], seg: [] },
+  "curl-femoral-sentado": { anim: "extension-rodilla", inv: true, prep: ["Rodilla alineada con el eje y almohadilla sobre los muslos."], err: ["Soltar el peso de golpe al subir."], seg: [] },
+  "hip-thrust": { anim: "puente", prep: ["Espalda alta apoyada en el banco.", "Almohadilla en la barra para la cadera."], err: ["Empujar con las puntas de los pies."], seg: [] },
+  "patada-gluteo": { anim: "patada", prep: ["Tobillera en la polea baja, agárrate a la máquina."], err: ["Girar la cadera hacia fuera."], seg: [] },
+  "abductores": { anim: "abduccion", prep: ["Espalda apoyada y piernas juntas contra las almohadillas."], err: ["Usar impulso."], seg: [] },
+  "gemelos-maquina": { anim: "gemelo", prep: ["Puntas en el borde y hombros bajo los apoyos."], err: ["Doblar las rodillas para subir."], seg: [] },
+  "gemelos-mancuerna": { anim: "gemelo", prep: ["Escalón estable y una mano apoyada en la pared."], err: ["Recorrido corto."], seg: [] },
+  // Ampliación 2.2
+  "aductores": { anim: "abduccion", inv: true, prep: ["Ajusta la apertura inicial a tu flexibilidad.", "Espalda apoyada en el respaldo."], err: ["Juntar las piernas de golpe."], seg: ["Si notas tirón en la ingle, reduce el recorrido."] },
+  "gemelo-sentado": { anim: "gemelo-sentado", prep: ["Almohadilla justo encima de las rodillas.", "Puntas de los pies en el borde."], err: ["Recorrido corto."], seg: [] },
+  "remo-pecho-apoyado": { anim: "remo-inclinado", prep: ["Altura del pecho ajustada al soporte."], err: ["Encoger los hombros al tirar."], seg: [] },
+  "dominadas-asistidas": { anim: "dominada", prep: ["Elige la ayuda en la columna de peso.", "Sube a la plataforma con cuidado, sujetándote a las asas."], err: ["Usar tanta ayuda que no cuesta."], seg: ["Baja de la plataforma despacio al terminar."] },
+  "fondos-asistidos": { anim: "fondos", prep: ["Elige la ayuda en la columna de peso.", "Apoya las rodillas en la plataforma."], err: ["Encoger los hombros."], seg: ["Baja de la plataforma despacio al terminar."] },
+  "hip-thrust-maquina": { anim: "puente", prep: ["Ajusta el respaldo a la altura de las escápulas.", "Coloca el cinturón o la almohadilla sobre la cadera."], err: ["Mirar al techo y arquear el cuello."], seg: [] },
+  "sentadilla-multipower": { anim: "sentadilla", prep: ["Pies un poco por delante de la barra.", "Ajusta los topes de seguridad."], err: ["Dejar caer la barra abajo."], seg: ["Bloquea siempre la barra girándola al terminar."] },
+  "press-inclinado-multipower": { anim: "press-horizontal", prep: ["Banco a 30 grados centrado bajo la barra.", "Topes por encima del pecho."], err: ["Rebotar la barra en el pecho."], seg: ["Bloquea siempre la barra girándola al terminar."] },
+  "hiperextensiones": { anim: "lumbar", prep: ["Apoyo justo por debajo de la cadera.", "Talones bien sujetos."], err: ["Hacerlo rápido y con impulso."], seg: ["Si tienes molestias lumbares, consulta antes con un profesional."] }
+};
+
+// ---------- Animaciones (dibujos propios) ----------
+// Vista "lado" (mira a la derecha) o "frente". a = posición inicial, b = posición final.
+// Articulaciones de lado: H cabeza, S hombro, E codo, W mano, M dedos, Hp cadera, K rodilla, A tobillo, T punta del pie
+// (K2, A2, T2: la otra pierna; si no se indica, es igual que la primera).
+// De frente: S1/S2 hombros, E1/E2 codos, W1/W2 manos, Hp1/Hp2 caderas, K1/K2 rodillas, A1/A2 tobillos.
+const PIE = { A: [100, 150], T: [112, 150] };
+const ANIMACIONES = {
+  "sentadilla": { vista: "lado", carga: "S",
+    a: { H: [100, 16], S: [100, 29], E: [88, 44], W: [98, 30], Hp: [100, 74], K: [100, 112], A: [100, 150], T: [112, 150] },
+    b: { H: [113, 66], S: [107, 79], E: [96, 92], W: [105, 80], Hp: [78, 112], K: [113, 118], A: [100, 150], T: [112, 150] } },
+  "zancada": { vista: "lado", carga: "W",
+    a: { H: [100, 16], S: [100, 29], E: [100, 56], W: [100, 82], Hp: [100, 74], K: [100, 112], A: [100, 150], T: [112, 150], K2: [100, 112], A2: [100, 150], T2: [112, 150] },
+    b: { H: [100, 42], S: [100, 55], E: [100, 82], W: [100, 108], Hp: [100, 100], K: [132, 108], A: [132, 150], T: [144, 150], K2: [86, 138], A2: [60, 146], T2: [52, 150] } },
+  "bisagra": { vista: "lado", carga: "W",
+    a: { H: [100, 16], S: [100, 29], E: [102, 56], W: [104, 82], Hp: [100, 74], K: [100, 112], A: [100, 150], T: [112, 150] },
+    b: { H: [134, 46], S: [122, 52], E: [122, 79], W: [122, 105], Hp: [82, 76], K: [92, 112], A: [100, 150], T: [112, 150] } },
+  "puente": { vista: "lado", carga: "Hp", props: [[30, 106, 70, 106], [36, 106, 36, 150], [64, 106, 64, 150]],
+    a: { H: [46, 96], S: [62, 102], E: [80, 118], W: [96, 124], Hp: [98, 128], K: [126, 108], A: [130, 148], T: [142, 150] },
+    b: { H: [46, 96], S: [62, 102], E: [80, 106], W: [96, 100], Hp: [96, 100], K: [126, 100], A: [130, 148], T: [142, 150] } },
+  "press-horizontal": { vista: "lado", carga: "W", props: [[36, 104, 120, 104], [44, 104, 44, 150], [110, 104, 110, 150]],
+    a: { H: [48, 94], S: [62, 100], E: [62, 72], W: [62, 46], Hp: [108, 100], K: [132, 108], A: [136, 150], T: [148, 150] },
+    b: { H: [48, 94], S: [62, 100], E: [50, 104], W: [64, 86], Hp: [108, 100], K: [132, 108], A: [136, 150], T: [148, 150] } },
+  "press-vertical": { vista: "lado", carga: "W", props: [[80, 106, 112, 106], [96, 106, 96, 150], [84, 106, 84, 48]],
+    a: { H: [96, 46], S: [96, 59], E: [104, 84], W: [104, 58], Hp: [96, 104], K: [128, 106], A: [130, 150], T: [142, 150] },
+    b: { H: [96, 46], S: [96, 59], E: [98, 31], W: [100, 5], Hp: [96, 104], K: [128, 106], A: [130, 150], T: [142, 150] } },
+  "jalon": { vista: "lado", carga: "W", cable: [100, 0], props: [[80, 106, 112, 106], [96, 106, 96, 150]],
+    a: { H: [96, 46], S: [96, 59], E: [98, 31], W: [100, 6], Hp: [96, 104], K: [128, 106], A: [130, 150], T: [142, 150] },
+    b: { H: [94, 46], S: [96, 59], E: [84, 80], W: [100, 60], Hp: [96, 104], K: [128, 106], A: [130, 150], T: [142, 150] } },
+  "remo": { vista: "lado", carga: "W", cable: [170, 66], props: [[70, 106, 110, 106], [90, 106, 90, 150]],
+    a: { H: [98, 47], S: [94, 60], E: [118, 62], W: [144, 64], Hp: [90, 104], K: [122, 92], A: [152, 104], T: [156, 94] },
+    b: { H: [90, 46], S: [92, 59], E: [70, 72], W: [92, 76], Hp: [90, 104], K: [122, 92], A: [152, 104], T: [156, 94] } },
+  "remo-inclinado": { vista: "lado", carga: "W",
+    a: { H: [134, 46], S: [122, 52], E: [122, 78], W: [122, 104], Hp: [82, 76], K: [92, 112], A: [100, 150], T: [112, 150] },
+    b: { H: [134, 46], S: [122, 52], E: [100, 58], W: [104, 84], Hp: [82, 76], K: [92, 112], A: [100, 150], T: [112, 150] } },
+  "curl": { vista: "lado", carga: "W",
+    a: { H: [100, 16], S: [100, 29], E: [100, 57], W: [102, 83], Hp: [100, 74], K: [100, 112], A: [100, 150], T: [112, 150] },
+    b: { H: [100, 16], S: [100, 29], E: [100, 57], W: [118, 38], Hp: [100, 74], K: [100, 112], A: [100, 150], T: [112, 150] } },
+  "extension-triceps": { vista: "lado", carga: "W", cable: [126, 0],
+    a: { H: [104, 17], S: [102, 30], E: [102, 58], W: [124, 44], Hp: [98, 75], K: [100, 112], A: [100, 150], T: [112, 150] },
+    b: { H: [104, 17], S: [102, 30], E: [102, 58], W: [106, 84], Hp: [98, 75], K: [100, 112], A: [100, 150], T: [112, 150] } },
+  "press-frances": { vista: "lado", carga: "W", props: [[36, 104, 120, 104], [44, 104, 44, 150], [110, 104, 110, 150]],
+    a: { H: [48, 94], S: [62, 100], E: [66, 74], W: [66, 48], Hp: [108, 100], K: [132, 108], A: [136, 150], T: [148, 150] },
+    b: { H: [48, 94], S: [62, 100], E: [66, 74], W: [44, 84], Hp: [108, 100], K: [132, 108], A: [136, 150], T: [148, 150] } },
+  "extension-nuca": { vista: "lado", carga: "W", props: [[80, 106, 112, 106], [96, 106, 96, 150]],
+    a: { H: [98, 46], S: [96, 59], E: [96, 31], W: [96, 5], Hp: [96, 104], K: [128, 106], A: [130, 150], T: [142, 150] },
+    b: { H: [100, 46], S: [96, 59], E: [96, 31], W: [80, 52], Hp: [96, 104], K: [128, 106], A: [130, 150], T: [142, 150] } },
+  "muneca": { vista: "lado", carga: "M", props: [[60, 104, 130, 104], [70, 104, 70, 150], [120, 104, 120, 150]],
+    a: { H: [62, 52], S: [64, 66], E: [90, 98], W: [118, 98], M: [128, 106], Hp: [60, 104], K: [40, 110], A: [40, 150], T: [52, 150] },
+    b: { H: [62, 52], S: [64, 66], E: [90, 98], W: [118, 98], M: [126, 88], Hp: [60, 104], K: [40, 110], A: [40, 150], T: [52, 150] } },
+  "extension-rodilla": { vista: "lado", props: [[76, 106, 114, 106], [92, 106, 92, 150], [80, 106, 80, 52]],
+    a: { H: [92, 46], S: [92, 59], E: [98, 84], W: [106, 104], Hp: [92, 104], K: [124, 104], A: [126, 142], T: [136, 148] },
+    b: { H: [92, 46], S: [92, 59], E: [98, 84], W: [106, 104], Hp: [92, 104], K: [124, 104], A: [160, 98], T: [166, 88] } },
+  "curl-femoral": { vista: "lado", props: [[40, 104, 170, 104], [50, 104, 50, 150], [160, 104, 160, 150]],
+    a: { H: [158, 94], S: [144, 98], E: [158, 114], W: [168, 104], Hp: [98, 100], K: [62, 100], A: [26, 100], T: [20, 92] },
+    b: { H: [158, 94], S: [144, 98], E: [158, 114], W: [168, 104], Hp: [98, 100], K: [62, 100], A: [56, 64], T: [66, 58] } },
+  "gemelo": { vista: "lado", carga: "S",
+    a: { H: [100, 16], S: [100, 29], E: [100, 57], W: [100, 83], Hp: [100, 74], K: [100, 112], A: [100, 146], T: [114, 150] },
+    b: { H: [100, 4], S: [100, 17], E: [100, 45], W: [100, 71], Hp: [100, 62], K: [100, 100], A: [101, 134], T: [114, 150] } },
+  "gemelo-sentado": { vista: "lado", props: [[60, 106, 92, 106], [76, 106, 76, 150]],
+    a: { H: [80, 46], S: [80, 59], E: [96, 80], W: [112, 98], Hp: [80, 104], K: [114, 104], A: [114, 142], T: [128, 146] },
+    b: { H: [80, 44], S: [80, 57], E: [96, 74], W: [112, 88], Hp: [80, 102], K: [114, 94], A: [114, 132], T: [128, 146] } },
+  "crunch": { vista: "lado", cable: [100, 0],
+    a: { H: [100, 52], S: [100, 65], E: [112, 52], W: [104, 46], Hp: [100, 110], K: [100, 148], A: [70, 148], T: [62, 150] },
+    b: { H: [150, 108], S: [140, 96], E: [150, 80], W: [146, 94], Hp: [100, 110], K: [100, 148], A: [70, 148], T: [62, 150] } },
+  "dominada": { vista: "lado", props: [[60, 12, 140, 12]],
+    a: { H: [104, 52], S: [100, 64], E: [100, 38], W: [100, 12], Hp: [100, 108], K: [100, 138], A: [90, 158], T: [96, 160] },
+    b: { H: [104, 22], S: [100, 34], E: [86, 24], W: [100, 12], Hp: [100, 78], K: [100, 108], A: [90, 128], T: [96, 130] } },
+  "fondos": { vista: "lado", props: [[70, 84, 130, 84], [76, 84, 76, 150], [124, 84, 124, 150]],
+    a: { H: [102, 18], S: [100, 30], E: [100, 56], W: [100, 82], Hp: [96, 76], K: [92, 110], A: [108, 128], T: [112, 120] },
+    b: { H: [104, 48], S: [98, 62], E: [78, 74], W: [100, 82], Hp: [92, 104], K: [88, 138], A: [104, 152], T: [108, 144] } },
+  "flexion": { vista: "lado",
+    a: { H: [156, 100], S: [142, 106], E: [142, 128], W: [142, 150], Hp: [98, 122], K: [64, 134], A: [30, 146], T: [24, 150] },
+    b: { H: [156, 130], S: [142, 134], E: [124, 142], W: [142, 150], Hp: [98, 140], K: [64, 144], A: [30, 148], T: [24, 150] } },
+  "elevacion-piernas": { vista: "lado", props: [[60, 12, 140, 12]],
+    a: { H: [104, 48], S: [100, 60], E: [100, 36], W: [100, 12], Hp: [100, 104], K: [100, 132], A: [100, 158], T: [108, 158] },
+    b: { H: [104, 48], S: [100, 60], E: [100, 36], W: [100, 12], Hp: [100, 104], K: [132, 100], A: [150, 126], T: [158, 120] } },
+  "rueda": { vista: "lado", carga: "W",
+    a: { H: [122, 94], S: [112, 104], E: [114, 125], W: [116, 146], Hp: [74, 114], K: [60, 146], A: [34, 148], T: [28, 150] },
+    b: { H: [152, 124], S: [140, 128], E: [158, 138], W: [176, 146], Hp: [94, 128], K: [60, 146], A: [34, 148], T: [28, 150] } },
+  "patada": { vista: "lado", cable: [40, 150], cableJ: "A2",
+    a: { H: [108, 20], S: [104, 32], E: [120, 52], W: [134, 60], Hp: [98, 76], K: [100, 112], A: [100, 150], T: [112, 150], K2: [100, 112], A2: [98, 148], T2: [110, 150] },
+    b: { H: [110, 24], S: [106, 36], E: [122, 56], W: [134, 60], Hp: [98, 78], K: [100, 112], A: [100, 150], T: [112, 150], K2: [66, 96], A2: [40, 108], T2: [34, 98] } },
+  "lumbar": { vista: "lado", props: [[90, 106, 110, 96], [100, 101, 100, 150]],
+    a: { H: [120, 152], S: [114, 142], E: [108, 128], W: [116, 122], Hp: [100, 100], K: [66, 118], A: [36, 134], T: [30, 146] },
+    b: { H: [150, 74], S: [138, 80], E: [128, 92], W: [136, 86], Hp: [100, 100], K: [66, 118], A: [36, 134], T: [30, 146] } },
+  "elevacion-lateral": { vista: "frente", carga: "W",
+    a: { H: [100, 22], S1: [86, 40], S2: [114, 40], E1: [82, 64], W1: [82, 88], E2: [118, 64], W2: [118, 88], Hp1: [92, 86], Hp2: [108, 86], K1: [92, 118], K2: [108, 118], A1: [92, 150], A2: [108, 150] },
+    b: { E1: [60, 42], W1: [36, 44], E2: [140, 42], W2: [164, 44] } },
+  "aperturas": { vista: "frente", carga: "W",
+    a: { H: [100, 22], S1: [86, 40], S2: [114, 40], E1: [62, 46], W1: [40, 52], E2: [138, 46], W2: [160, 52], Hp1: [92, 86], Hp2: [108, 86], K1: [92, 118], K2: [108, 118], A1: [92, 150], A2: [108, 150] },
+    b: { E1: [80, 52], W1: [96, 58], E2: [120, 52], W2: [104, 58] } },
+  "abduccion": { vista: "frente", props: [[70, 104, 130, 104]],
+    a: { H: [100, 30], S1: [84, 52], S2: [116, 52], E1: [80, 78], W1: [84, 100], E2: [120, 78], W2: [116, 100], Hp1: [90, 100], Hp2: [110, 100], K1: [94, 118], K2: [106, 118], A1: [94, 150], A2: [106, 150] },
+    b: { K1: [74, 116], K2: [126, 116], A1: [80, 150], A2: [120, 150] } }
+};
+
+// ---------- Fotos reales (dominio público) ----------
+// Origen: Free Exercise DB (github.com/yuhonas/free-exercise-db), licencia Unlicense = dominio público.
+// Solo se incluyen fotos que muestran el mismo ejercicio y la misma máquina. El resto usa la animación.
+// Clave: id del ejercicio en Apex Gym · valor: nombre del ejercicio en Free Exercise DB (para poder rastrear el origen).
+const FOTOS = {
+  "abductores": "Thigh_Abductor",
+  "aductores": "Thigh_Adductor",
+  "aperturas-polea": "Cable_Crossover",
+  "contractora": "Butterfly",
+  "crunch-polea": "Cable_Crunch",
+  "curl-barra": "Barbell_Curl",
+  "curl-femoral-sentado": "Seated_Leg_Curl",
+  "curl-femoral-tumbado": "Lying_Leg_Curls",
+  "curl-inverso": "Reverse_Barbell_Curl",
+  "curl-mancuernas": "Dumbbell_Bicep_Curl",
+  "curl-martillo": "Hammer_Curls",
+  "curl-muneca": "Palms-Up_Dumbbell_Wrist_Curl_Over_A_Bench",
+  "curl-polea": "Standing_Biceps_Cable_Curl",
+  "dominadas": "Pullups",
+  "elevacion-piernas": "Hanging_Leg_Raise",
+  "elevaciones-laterales": "Side_Lateral_Raise",
+  "elevaciones-polea": "Cable_Seated_Lateral_Raise",
+  "extension-cuadriceps": "Leg_Extensions",
+  "extension-nuca": "Standing_Dumbbell_Triceps_Extension",
+  "extension-polea": "Triceps_Pushdown",
+  "face-pull": "Face_Pull",
+  "flexiones": "Pushups",
+  "fondos": "Dips_-_Chest_Version",
+  "gemelo-sentado": "Seated_Calf_Raise",
+  "gemelos-mancuerna": "Standing_Dumbbell_Calf_Raise",
+  "gemelos-maquina": "Standing_Calf_Raises",
+  "hack": "Hack_Squat",
+  "hip-thrust": "Barbell_Hip_Thrust",
+  "hiperextensiones": "Hyperextensions_Back_Extensions",
+  "jalon": "Wide-Grip_Lat_Pulldown",
+  "pajaros-maquina": "Reverse_Machine_Flyes",
+  "peso-muerto": "Barbell_Deadlift",
+  "peso-muerto-rumano": "Romanian_Deadlift",
+  "prensa": "Leg_Press",
+  "press-banca": "Barbell_Bench_Press_-_Medium_Grip",
+  "press-frances": "EZ-Bar_Skullcrusher",
+  "press-hombro-mancuernas": "Seated_Dumbbell_Press",
+  "press-hombro-maquina": "Machine_Shoulder_Military_Press",
+  "press-inclinado-mancuernas": "Incline_Dumbbell_Press",
+  "press-inclinado-multipower": "Smith_Machine_Incline_Bench_Press",
+  "press-maquina": "Machine_Bench_Press",
+  "press-militar": "Standing_Military_Press",
+  "remo-barra": "Bent_Over_Barbell_Row",
+  "remo-mancuerna": "One-Arm_Dumbbell_Row",
+  "remo-pecho-apoyado": "Lying_T-Bar_Row",
+  "remo-polea": "Seated_Cable_Rows",
+  "rueda-abdominal": "Ab_Roller",
+  "sentadilla": "Barbell_Full_Squat",
+  "sentadilla-goblet": "Goblet_Squat",
+  "sentadilla-multipower": "Smith_Machine_Squat",
+  "triceps-maquina": "Machine_Triceps_Extension",
+  "zancadas": "Dumbbell_Lunges"
+};
+
+// Ejercicios sin foto y por qué (se muestra solo la animación)
+const SIN_FOTO = {
+  "dominadas-asistidas": "la foto es con banda elástica, no con máquina",
+  "fondos-asistidos": "la foto es otra máquina (fondos sentado)",
+  "hip-thrust-maquina": "la foto es un puente con barra, no la máquina",
+  "patada-gluteo": "la foto es sin polea",
+  "sentadilla-bulgara": "la foto es una zancada sin el pie trasero elevado",
+  "remo-maquina": "la foto es una máquina de remo alto, con otro ángulo de tirón",
+  "curl-maquina": "la foto es una máquina de curl por encima de la cabeza, distinta a la de banco Scott"
+};
+
+function fotosDe(id) {
+  if (!FOTOS[id]) return null;
+  return ["fotos/" + id + "-inicio.jpg", "fotos/" + id + "-final.jpg"];
+}
+
+// Ficha completa de un ejercicio (datos del ejercicio + tutorial + seguridad común)
+function fichaEjercicio(id) {
+  const e = buscarEj(id);
+  const t = TUTORIALES[id] || { anim: null, prep: [], err: [], seg: [] };
+  const alternativa = e.nivel > 1 ? e.variantes.map(buscarEj).filter(function (v) { return v && v.nivel === 1; })[0] : null;
+  return {
+    ejercicio: e,
+    preparacion: t.prep,
+    ejecucion: e.pasos,
+    errores: [e.error].concat(t.err),
+    seguridad: t.seg.concat([SEGURIDAD_EQUIPO[e.equipo]]).concat(SEGURIDAD_GENERAL),
+    consejo: e.consejo,
+    anim: t.anim, inv: !!t.inv,
+    alternativa: alternativa
+  };
+}
+
+// Dibuja la animación como SVG (texto). Usa animación SVG nativa: no necesita librerías.
+function animacionSVG(id, titulo) {
+  const t = TUTORIALES[id];
+  if (!t || !ANIMACIONES[t.anim]) return "";
+  const def = ANIMACIONES[t.anim];
+  let a = def.a, b = Object.assign({}, def.a, def.b);
+  if (t.inv) { const x = a; a = b; b = x; }
+
+  function valores(p, q) { return p + ";" + q + ";" + p; }
+  const tiempos = 'dur="2.8s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.5;1" keySplines="0.45 0 0.55 1;0.45 0 0.55 1"';
+  function linea(j1, j2, color, grosor) {
+    if (!a[j1] || !a[j2]) return "";
+    const p1 = a[j1], p2 = a[j2], q1 = b[j1], q2 = b[j2];
+    return '<line x1="' + p1[0] + '" y1="' + p1[1] + '" x2="' + p2[0] + '" y2="' + p2[1] + '" stroke="' + color + '" stroke-width="' + grosor + '" stroke-linecap="round">' +
+      '<animate attributeName="x1" values="' + valores(p1[0], q1[0]) + '" ' + tiempos + '/><animate attributeName="y1" values="' + valores(p1[1], q1[1]) + '" ' + tiempos + '/>' +
+      '<animate attributeName="x2" values="' + valores(p2[0], q2[0]) + '" ' + tiempos + '/><animate attributeName="y2" values="' + valores(p2[1], q2[1]) + '" ' + tiempos + '/></line>';
+  }
+  function punto(j, r, color) {
+    if (!a[j]) return "";
+    return '<circle cx="' + a[j][0] + '" cy="' + a[j][1] + '" r="' + r + '" fill="' + color + '">' +
+      '<animate attributeName="cx" values="' + valores(a[j][0], b[j][0]) + '" ' + tiempos + '/><animate attributeName="cy" values="' + valores(a[j][1], b[j][1]) + '" ' + tiempos + '/></circle>';
+  }
+  function cable(anclaje, j) {
+    const p = a[j], q = b[j];
+    return '<line x1="' + anclaje[0] + '" y1="' + anclaje[1] + '" x2="' + p[0] + '" y2="' + p[1] + '" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 3">' +
+      '<animate attributeName="x2" values="' + valores(p[0], q[0]) + '" ' + tiempos + '/><animate attributeName="y2" values="' + valores(p[1], q[1]) + '" ' + tiempos + '/></line>';
+  }
+
+  const cuerpo = "var(--fg)", suave = "var(--muted)", acento = "var(--accent)";
+  let s = '<svg class="anim" viewBox="0 0 200 165" role="img" aria-label="Animación del movimiento: ' + String(titulo || "").replace(/[<>"&]/g, "") + '">' +
+    '<line x1="0" y1="151" x2="200" y2="151" stroke="var(--line)" stroke-width="2"/>';
+  for (const p of def.props || []) s += '<line x1="' + p[0] + '" y1="' + p[1] + '" x2="' + p[2] + '" y2="' + p[3] + '" stroke="var(--surface3)" stroke-width="5" stroke-linecap="round"/>';
+  if (def.vista === "lado") {
+    if (a.K2) { s += linea("Hp", "K2", suave, 6) + linea("K2", "A2", suave, 6) + linea("A2", "T2", suave, 5); }
+    if (def.cable) s += cable(def.cable, def.cableJ || "W");
+    s += linea("S", "Hp", cuerpo, 8) + linea("Hp", "K", cuerpo, 7) + linea("K", "A", cuerpo, 6) + linea("A", "T", cuerpo, 5) +
+      linea("S", "E", cuerpo, 6) + linea("E", "W", cuerpo, 5) + linea("W", "M", cuerpo, 4) + punto("H", 9, cuerpo);
+    if (def.carga) s += punto(def.carga, def.carga === "S" ? 5 : 4.5, acento);
+  } else {
+    s += linea("S1", "S2", cuerpo, 7) + linea("S1", "Hp1", cuerpo, 7) + linea("S2", "Hp2", cuerpo, 7) + linea("Hp1", "Hp2", cuerpo, 7) +
+      linea("Hp1", "K1", cuerpo, 6) + linea("K1", "A1", cuerpo, 6) + linea("Hp2", "K2", cuerpo, 6) + linea("K2", "A2", cuerpo, 6) +
+      linea("S1", "E1", cuerpo, 5) + linea("E1", "W1", cuerpo, 5) + linea("S2", "E2", cuerpo, 5) + linea("E2", "W2", cuerpo, 5) + punto("H", 9, cuerpo);
+    if (def.carga) s += punto("W1", 4.5, acento) + punto("W2", 4.5, acento);
+  }
+  return s + '</svg>';
+}
+
+// Comprueba que todas las fichas y animaciones están completas y bien formadas (lo usan las pruebas)
+function revisarAcademia() {
+  const problemas = [];
+  for (const e of EJERCICIOS) {
+    const t = TUTORIALES[e.id];
+    if (!t) { problemas.push(e.id + ": sin ficha"); continue; }
+    if (!ANIMACIONES[t.anim]) problemas.push(e.id + ": animación inexistente (" + t.anim + ")");
+    if (!t.prep || t.prep.length === 0) problemas.push(e.id + ": sin preparación");
+    if (!e.pasos || e.pasos.length < 2) problemas.push(e.id + ": sin pasos de ejecución");
+    if (!SEGURIDAD_EQUIPO[e.equipo]) problemas.push(e.id + ": sin seguridad para su material");
+  }
+  for (const k in ANIMACIONES) {
+    const def = ANIMACIONES[k];
+    const b = Object.assign({}, def.a, def.b);
+    for (const j in b) {
+      const p = b[j];
+      if (!def.a[j]) problemas.push(k + ": la articulación " + j + " no tiene posición inicial");
+      if (!Array.isArray(p) || p.length !== 2 || p[0] < 0 || p[0] > 200 || p[1] < 0 || p[1] > 165) problemas.push(k + ": " + j + " fuera del dibujo");
+    }
+  }
+  for (const id in TUTORIALES) if (!buscarEj(id)) problemas.push(id + ": ficha de un ejercicio que no existe");
+  for (const id in FOTOS) if (!buscarEj(id)) problemas.push(id + ": fotos de un ejercicio que no existe");
+  for (const id in FOTOS) if (SIN_FOTO[id]) problemas.push(id + ": está a la vez con foto y sin foto");
+  for (const e of EJERCICIOS) if (!FOTOS[e.id] && !SIN_FOTO[e.id]) problemas.push(e.id + ": no consta si tiene foto o por qué no");
+  return problemas;
+}
