@@ -1350,12 +1350,14 @@ function cambioMedida(campo) {
 }
 
 // ---------- Copia de seguridad ----------
-// Pide hacer copia si hay entrenos y han pasado 14 días desde la última (o desde que lo pospusiste)
+// Pide hacer copia si hay entrenos y han pasado los días elegidos (14 por defecto) desde la última o desde que lo pospusiste
 function necesitaCopia() {
   if (estado.modo === "demo" || sesionesValidas().length === 0) return false;
   const ref = [estado.ajustes.ultimaCopia, estado.ajustes.copiaPospuesta].filter(Boolean).sort().pop();
+  const cada = estado.ajustes.copiaDias === undefined ? 14 : estado.ajustes.copiaDias;
+  if (cada === 0) return false;                       // el usuario eligió «Nunca»
   if (!ref) return sesionesValidas().length >= 3;
-  return diasEntre(ref, hoy()) >= 14;
+  return diasEntre(ref, hoy()) >= cada;
 }
 
 // ---------- Rutinas famosas ----------

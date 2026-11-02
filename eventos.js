@@ -386,6 +386,7 @@ const ACCIONES = {
     guardar(); pintarSesion();
     toast(i >= 0 ? "Quitado de favoritos" : "★ Añadido a favoritos", i >= 0 ? "" : "ok");
   },
+  "ir-seccion": function (id) { const el = $(id); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); },
   "abrir-famosas": function () { confirmar = ""; hojaFamosas(); },
   "ver-famosa": function (k) {
     const r = rutinaDesdePlantilla(k);
@@ -401,7 +402,7 @@ const ACCIONES = {
   },
   "cal-ocultar": function (ei) { estado.activa.ejercicios[ei].sinCalentamiento = true; guardar(); pintarSesion(); },
   "hacer-copia": function () { hacerCopia(); },
-  "posponer-copia": function () { estado.ajustes.copiaPospuesta = hoy(); guardar(); pintar(); toast("Vale, te lo recordaré en 2 semanas"); },
+  "posponer-copia": function () { estado.ajustes.copiaPospuesta = hoy(); guardar(); pintar(); toast("Vale, te lo recordaré más adelante. También está en Ajustes (⚙)."); },
   "medida-grafica": function (c) { medidaGrafica = c; pintarProgreso(); },
   "guardar-medidas": function () {
     const v = {};
@@ -613,7 +614,7 @@ const ACCIONES = {
     const a = estado.ajustes;
     a.descanso = parseInt($("aDescanso").value); a.descansoAislamiento = a.descanso; a.descansoCompuesto = parseInt($("aDescComp").value); a.formula1RM = $("aFormula").value; a.incremento = parseFloat($("aIncremento").value); a.incrementoMancuernas = parseFloat($("aIncMancuernas").value);
     a.privacidad = $("aPrivacidad").value; a.compartir = $("aCompartir").checked; a.mascota = $("aMascota").checked;
-    a.sonido = $("aSonido").checked; a.calentamiento = $("aCalentamiento").checked; a.vibracion = $("aVibracion").checked;
+    a.copiaDias = parseInt($("aCopiaDias").value); a.sonido = $("aSonido").checked; a.calentamiento = $("aCalentamiento").checked; a.vibracion = $("aVibracion").checked;
     a.notif = { recordatorios: $("nRec").checked, racha: $("nRacha").checked, retos: $("nReto").checked, hora: parseInt($("nHora").value), records: $("nRecords").checked, rangos: $("nRangos").checked, amigos: a.notif.amigos, semanal: $("nSemanal").checked, ultimoAviso: a.notif.ultimoAviso || "" };
     guardar(); pintar();
     $("aOk").textContent = "Cambios guardados.";

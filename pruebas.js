@@ -1011,6 +1011,18 @@ const PRUEBAS = [
     if (comoApuntar(buscarEj("press-banca-multipower")).corto.indexOf("multipower") < 0 && comoApuntar(buscarEj("press-banca-multipower")).corto.indexOf("guiada") < 0) return "Multipower";
     return EJERCICIOS.every(function (e) { const c = comoApuntar(e); return c.corto && c.largo; }) || "Algún ejercicio sin explicación";
   }]
+  ,
+  ["2.7 Copia", "Se puede elegir cada cuánto avisa (o nunca)", function () {
+    estadoPrueba();
+    for (let i = 0; i < 3; i++) sesionPrueba(fechaTexto(i * 2), [["press-banca", [[50, 10]]]]);
+    estado.ajustes.ultimaCopia = fechaTexto(8);
+    estado.ajustes.copiaDias = 7;
+    if (!necesitaCopia()) return "Semanal: a los 8 días debería avisar";
+    estado.ajustes.copiaDias = 30;
+    if (necesitaCopia()) return "Mensual: a los 8 días no debería avisar";
+    estado.ajustes.copiaDias = 0;
+    return !necesitaCopia() || "Nunca: no debería avisar";
+  }]
 ];
 
 // Ejecuta todas las pruebas y restaura los datos del usuario

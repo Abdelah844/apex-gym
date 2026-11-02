@@ -207,4 +207,10 @@ Fecha: 1 de noviembre de 2026 · Respuesta a la revisión «Nuevos fallos encont
 - **Rutinas famosas:** Fuerza 5×5, PPL, Torso y pierna, Split clásico y Cuerpo completo para empezar. Se adaptan solas si falta una máquina en tu gimnasio.
 - **Arreglos:** los kilos y las medidas aceptan coma («52,5»), como el teclado del iPhone en español. Una copia con un descanso de 75 s ya no da error al restaurarla.
 - **Guía «Cómo registrar»:** la primera vez que entrenas, 7 pasos que resaltan cada parte de la tabla (Kg, Reps, Previa, ajuste rápido, ✓ y añadir serie). Se puede repetir con «¿Cómo se apunta?». Encima de la tabla, una línea dice qué peso apuntar según el material (barra + discos, UNA mancuerna, placa de la máquina, lastre, ayuda…), y la Academia lo explica en cada ejercicio.
-- **Pruebas:** 134 de 134.
+- **Pruebas:** 135 de 135.
+
+## Anexo 2.7.2 · Copia en Ajustes y auditoría
+
+- **Copia de seguridad en Ajustes:** es lo primero que se ve, con la fecha de la última copia, «Hacer copia ahora», «Restaurar» y cada cuánto recordarla (semana, 2 semanas, mes o nunca). Índice de secciones arriba en Ajustes y engranaje ⚙ en el botón de perfil para que se encuentre.
+- **Auditoría (iPhone 360 y 390 px):** 30 pantallas y las 106 fichas recorridas sin errores de JavaScript ni desbordes; 0 fallos de seguridad al meter HTML en notas, nombres, comentarios y tarjetas de amigo; con 400 entrenos (2 años) cada pantalla se pinta en menos de 70 ms y el guardado ocupa unos 530 KB.
+- **Arreglos de la auditoría:** zonas táctiles de al menos 40 px (Previa, me gusta, denunciar, botones −/+ del editor); colores verde, naranja y rosa del tema claro más oscuros para cumplir el contraste mínimo (4,5:1); etiqueta accesible en el texto de exportar; ✓ legible en el tema claro.

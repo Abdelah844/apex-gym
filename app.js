@@ -278,7 +278,7 @@ function pintarInicio() {
 
   let h = '<div class="head"><div class="grow"><p class="label">' + new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }) + '</p>' +
     '<h1>Hola, ' + esc(p.nombre) + '</h1></div>' +
-    '<button class="avatar" data-act="abrir-ajustes" aria-label="Perfil y ajustes">' + esc(p.nombre[0] || "?").toUpperCase() + '</button></div>';
+    '<button class="avatar" data-act="abrir-ajustes" aria-label="Perfil y ajustes">' + esc(p.nombre[0] || "?").toUpperCase() + '<span class="engranaje" aria-hidden="true">⚙</span></button></div>';
 
   if (erroresCarga.length) h += '<div class="card" style="margin-bottom:14px;border-color:var(--warn)"><p class="small"><b>Tus datos tienen algún valor incorrecto</b> (' + esc(erroresCarga[0]) + '). Se han cargado igualmente. Revisa tu perfil en Ajustes y exporta una copia.</p></div>';
   if (recuperadoDeCopia) h += '<div class="card" style="margin-bottom:14px;border-color:var(--warn)"><p class="small"><b>Se recuperaron tus datos de la copia de seguridad</b> porque el archivo principal estaba dañado.</p></div>';
@@ -290,7 +290,7 @@ function pintarInicio() {
   if (necesitaCopia()) {
     const dias = estado.ajustes.ultimaCopia ? diasEntre(estado.ajustes.ultimaCopia, hoy()) : null;
     h += '<div class="card copia-aviso stack tight"><div class="row" style="gap:10px"><span style="font-size:1.6rem">💾</span><div class="grow"><h3>¿Guardamos una copia?</h3>' +
-      '<p class="muted small">' + (dias === null ? "Aún no tienes ninguna copia." : "Tu última copia es de hace " + dias + " días.") + ' Tus entrenos solo están en este móvil.</p></div></div>' +
+      '<p class="muted small">' + (dias === null ? "Aún no tienes ninguna copia." : "Tu última copia es de hace " + dias + " días.") + ' Tus entrenos solo están en este móvil. También puedes hacerla en Ajustes (⚙).</p></div></div>' +
       '<div class="grid2"><button class="btn-sec" data-act="posponer-copia">Ahora no</button><button class="btn" data-act="hacer-copia">Hacer copia</button></div></div>';
   }
 
@@ -420,7 +420,7 @@ function pintarInicio() {
 function pintarEntrenar() {
   if (estado.activa) { pintarSesion(); return; }
   let h = '<div class="head"><div><p class="label">Tu plan</p><h1>Entrenar</h1></div>' +
-    '<button class="avatar" data-act="abrir-ajustes" aria-label="Perfil">' + esc(estado.perfil.nombre[0] || "?").toUpperCase() + '</button></div><div class="stack">';
+    '<button class="avatar" data-act="abrir-ajustes" aria-label="Perfil y ajustes">' + esc(estado.perfil.nombre[0] || "?").toUpperCase() + '<span class="engranaje" aria-hidden="true">⚙</span></button></div><div class="stack">';
 
   h += '<div class="grid2 acciones-entreno"><button class="accion-grande" data-act="abrir-generador"><span class="ico">✨</span><b>' + (estado.rutina ? "Nueva rutina" : "Generar rutina") + '</b><span class="muted small">En 3 pasos, a tu medida</span></button>' +
     '<button class="accion-grande" data-act="empezar-libre"><span class="ico">⚡</span><b>Entreno libre</b><span class="muted small">Eliges sobre la marcha</span></button></div>' +
@@ -1592,9 +1592,19 @@ function hojaAjustes() {
   const a = estado.ajustes;
   const n = a.notif;
   function chk(id, valor, texto) { return '<label class="check"><input type="checkbox" id="' + id + '"' + (valor ? " checked" : "") + '>' + texto + '</label>'; }
+  const diasCopia = a.ultimaCopia ? diasEntre(a.ultimaCopia, hoy()) : null;
   abrirHoja(cabeceraHoja("Perfil y ajustes", estado.modo === "demo" ? "Modo demo" : "Cuenta en este dispositivo") + '<div class="stack">' +
-    '<div class="card stack">' + formPerfil(estado.perfil) + '</div>' +
-    '<div class="card stack"><h3>Entrenamiento</h3>' +
+    '<div class="chips indice-ajustes">' + [["aj-copia", "💾 Copia"], ["aj-perfil", "Perfil"], ["aj-entreno", "Entreno"], ["aj-sonido", "Sonido"], ["aj-avisos", "Avisos"], ["aj-datos", "Datos"]].map(function (x) {
+      return '<button class="chip" data-act="ir-seccion" data-a="' + x[0] + '">' + x[1] + '</button>'; }).join("") + '</div>' +
+    // Copia de seguridad: lo primero, para que se encuentre fácil
+    '<div class="card stack tight copia-ajustes" id="aj-copia"><h3>💾 Copia de seguridad</h3>' +
+      '<p class="small">' + (diasCopia === null ? "<b>Aún no tienes ninguna copia.</b>" : "Última copia: <b>" + fechaBonita(a.ultimaCopia) + "</b> (hace " + diasCopia + " día" + (diasCopia === 1 ? "" : "s") + ").") + ' Tus entrenos solo están en este móvil: si borras la app, se pierden.</p>' +
+      '<button class="btn full" data-act="hacer-copia">Hacer copia ahora</button>' +
+      '<p class="muted small">Se crea un archivo. En el iPhone, elige «Guardar en Archivos», Drive o mándatelo por correo.</p>' +
+      '<button class="btn-sec full" data-act="abrir-importar">Restaurar una copia</button>' +
+      '<label class="f">Recordarme hacer copia<select id="aCopiaDias">' + opciones([[7, "Cada semana"], [14, "Cada 2 semanas"], [30, "Cada mes"], [0, "Nunca"]], a.copiaDias === undefined ? 14 : a.copiaDias) + '</select></label></div>' +
+    '<div class="card stack" id="aj-perfil">' + formPerfil(estado.perfil) + '</div>' +
+    '<div class="card stack" id="aj-entreno"><h3>Entrenamiento</h3>' +
       '<div class="grid2"><label class="f">Descanso en compuestos<select id="aDescComp">' + opciones([[90, "90 s"], [120, "2 min"], [150, "2:30"], [180, "3 min"], [240, "4 min"]], a.descansoCompuesto || 120) + '</select></label>' +
       '<label class="f">Descanso en aislamiento<select id="aDescanso">' + opciones([[45, "45 s"], [60, "60 s"], [75, "75 s"], [90, "90 s"], [120, "2 min"]], a.descansoAislamiento || 75) + '</select></label></div>' +
       '<p class="muted small" style="margin-top:-4px">Para ejercicios añadidos a mano. En la rutina, cada ejercicio guarda su propio descanso.</p>' +
@@ -1609,11 +1619,11 @@ function hojaAjustes() {
     '<div class="card stack tight"><h3>Instalar en el móvil</h3>' + textoInstalar() + '</div>' +
     '<div class="card stack tight"><h3>Calentamiento</h3>' + chk("aCalentamiento", a.calentamiento !== false, "Proponer series de calentamiento") +
       '<p class="muted small">En los ejercicios grandes con peso (sentadilla, press banca, peso muerto…). No cuentan para récords ni rangos.</p></div>' +
-    '<div class="card stack tight"><h3>Sonido y vibración</h3>' + chk("aSonido", a.sonido !== false, "Efectos de sonido") + chk("aVibracion", a.vibracion !== false, "Vibración") +
+    '<div class="card stack tight" id="aj-sonido"><h3>Sonido y vibración</h3>' + chk("aSonido", a.sonido !== false, "Efectos de sonido") + chk("aVibracion", a.vibracion !== false, "Vibración") +
       '<p class="muted small">Prueba los sonidos:</p><div class="chips" style="flex-wrap:wrap">' + [["serie", "Serie"], ["descanso", "Descanso"], ["record", "Récord"], ["rango", "Rango"], ["fin", "Fin"], ["racha", "Racha"], ["enfadado", "Apix enfadado"]].map(function (x) { return '<button class="chip" data-act="probar-sonido" data-a="' + x[0] + '">' + x[1] + '</button>'; }).join("") + '</div></div>' +
     '<div class="card stack tight"><h3>Apix, la mascota</h3>' + chk("aMascota", a.mascota !== false, "Mostrar a Apix en Inicio") +
       '<p class="muted small">Te anima los días de entreno, se enfada si pierdes la racha y celebra tus récords. Tócalo en Inicio y te contestará.</p></div>' +
-    '<div class="card stack tight"><h3>Notificaciones</h3>' +
+    '<div class="card stack tight" id="aj-avisos"><h3>Notificaciones</h3>' +
       chk("nRec", n.recordatorios, "Recordatorio los días de entreno") + chk("nRacha", n.racha !== false, "Aviso si tu racha está en peligro") + chk("nReto", n.retos !== false, "Aviso del último día de un reto") +
       '<label class="f">Hora del recordatorio<select id="nHora">' + opciones([[8, "8:00"], [10, "10:00"], [12, "12:00"], [16, "16:00"], [17, "17:00"], [18, "18:00"], [19, "19:00"], [20, "20:00"]], n.hora || 18) + '</select></label>' +
       '<button class="btn-sec" data-act="activar-avisos">' + (permisoAvisos() === "granted" ? "✓ Avisos activados en este móvil · Probar" : "Activar avisos en este móvil") + '</button>' +
@@ -1621,10 +1631,7 @@ function hojaAjustes() {
       chk("nRecords", n.records, "Récords personales") + chk("nRangos", n.rangos, "Ascensos de rango") + chk("nSemanal", n.semanal, "Resumen semanal") +
       '</div>' +
     '<button class="btn" data-act="guardar-ajustes">Guardar cambios</button><p class="muted small" id="aOk"></p>' +
-    '<div class="card stack tight"><h3>Tus datos</h3>' +
-      '<button class="btn full" data-act="hacer-copia">💾 Hacer copia de seguridad</button>' +
-      '<p class="muted small">' + (estado.ajustes.ultimaCopia ? "Última copia: " + fechaBonita(estado.ajustes.ultimaCopia) + "." : "Aún no has hecho ninguna copia.") + ' Guárdala en Archivos, Drive o mándatela por correo.</p>' +
-      '<button class="btn-sec full" data-act="abrir-importar">Restaurar una copia</button>' +
+    '<div class="card stack tight" id="aj-datos"><h3>Tus datos</h3>' +
       '<button class="btn-sec full" data-act="exportar">Ver los datos como texto</button>' +
       '<button class="btn-sec full" data-act="pruebas">Ejecutar pruebas de calidad</button>' +
       '<button class="btn-sec full" data-act="abrir-piloto">Prueba piloto e informar de problemas</button>' +
@@ -1647,7 +1654,7 @@ function hojaPruebas() {
 
 function hojaExportar() {
   abrirHoja(cabeceraHoja("Exportar datos", "Copia de seguridad") + '<div class="stack"><p class="muted">Copia este texto y guárdalo en un archivo. Contiene todo tu historial en formato JSON, con la versión del formato para poder importarlo en versiones futuras.</p>' +
-    '<textarea id="exportTxt" readonly style="min-height:220px;font-family:ui-monospace,monospace;font-size:.75rem">' + esc(exportarDatos()) + '</textarea>' +
+    '<textarea id="exportTxt" aria-label="Tus datos en texto" readonly style="min-height:220px;font-family:ui-monospace,monospace;font-size:.75rem">' + esc(exportarDatos()) + '</textarea>' +
     '<button class="btn" data-act="copiar-export">Copiar</button><p class="muted small" id="copiaOk"></p></div>');
 }
 
