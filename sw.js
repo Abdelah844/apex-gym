@@ -5,13 +5,14 @@
 // Si cambias algún archivo, sube el número de VERSION para que los móviles descarguen la nueva.
 // =====================================================
 
-const VERSION = "apex-gym-2.7.2";
+const VERSION = "apex-gym-2.7.3";
 
 // Archivos que se guardan nada más instalar la app
 const ARCHIVOS = [
-  "./", "./index.html", "./manifest.json",
+  "./", "./index.html", "./manifest.json", "./privacidad.html",
   "./datos.js", "./logica.js", "./academia.js", "./mascota.js", "./sonidos.js", "./app.js", "./pruebas.js", "./eventos.js",
-  "./iconos/icono-192.png", "./iconos/icono-512.png"
+  "./iconos/icono-192.png", "./iconos/icono-512.png",
+  "./fuentes/manrope.woff", "./fuentes/chakra-petch-medium.woff", "./fuentes/chakra-petch-semibold.woff", "./fuentes/chakra-petch-bold.woff"
 ];
 
 // 1. Instalar: descarga los archivos básicos SIEMPRE del servidor ("reload"),
@@ -38,7 +39,7 @@ self.addEventListener("fetch", function (evento) {
   if (evento.request.method !== "GET") return;
   const url = new URL(evento.request.url);
   if (url.origin !== self.location.origin) return;
-  const esImagen = /\.(jpg|png)$/.test(url.pathname);
+  const esImagen = /\.(jpg|png|woff)$/.test(url.pathname);   // fotos, iconos y letras
   if (esImagen) {
     evento.respondWith(caches.match(evento.request).then(function (guardado) {
       return guardado || fetch(evento.request).then(function (r) { guardarCopia(evento.request, r); return r; });

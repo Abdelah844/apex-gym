@@ -1023,6 +1023,13 @@ const PRUEBAS = [
     estado.ajustes.copiaDias = 0;
     return !necesitaCopia() || "Nunca: no debería avisar";
   }]
+  ,
+  // ---------- 2.7.3: privacidad ----------
+  ["2.7.3 Privacidad", "Un perfil nuevo empieza sin aceptar la política y la versión es un número", function () {
+    const e = estadoVacio({ nombre: "P", usuario: "ppp" });
+    if (e.ajustes.privacidadAceptada !== "") return "Debería empezar vacío";
+    return (typeof VERSION_PRIVACIDAD === "number" && VERSION_PRIVACIDAD >= 1) || "Versión no válida";
+  }]
 ];
 
 // Ejecuta todas las pruebas y restaura los datos del usuario

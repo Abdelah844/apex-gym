@@ -214,3 +214,12 @@ Fecha: 1 de noviembre de 2026 · Respuesta a la revisión «Nuevos fallos encont
 - **Copia de seguridad en Ajustes:** es lo primero que se ve, con la fecha de la última copia, «Hacer copia ahora», «Restaurar» y cada cuánto recordarla (semana, 2 semanas, mes o nunca). Índice de secciones arriba en Ajustes y engranaje ⚙ en el botón de perfil para que se encuentre.
 - **Auditoría (iPhone 360 y 390 px):** 30 pantallas y las 106 fichas recorridas sin errores de JavaScript ni desbordes; 0 fallos de seguridad al meter HTML en notas, nombres, comentarios y tarjetas de amigo; con 400 entrenos (2 años) cada pantalla se pinta en menos de 70 ms y el guardado ocupa unos 530 KB.
 - **Arreglos de la auditoría:** zonas táctiles de al menos 40 px (Previa, me gusta, denunciar, botones −/+ del editor); colores verde, naranja y rosa del tema claro más oscuros para cumplir el contraste mínimo (4,5:1); etiqueta accesible en el texto de exportar; ✓ legible en el tema claro.
+
+## Anexo 2.7.3 · Privacidad y condiciones de uso
+
+- **Página nueva `privacidad.html`:** qué datos usa la app, dónde se guardan (solo en el dispositivo), servicios de terceros (GitHub Pages), qué se comparte, derechos (ver, corregir, borrar, reclamar ante la AEPD), edad mínima de 14 años y condiciones de uso (no es un servicio médico).
+- **Registro:** casilla obligatoria «He leído y acepto…». Se guarda la fecha y la versión aceptada en `ajustes.privacidadAceptada` (`VERSION_PRIVACIDAD = 1`).
+- **Acceso:** enlace en la bienvenida y botón en Ajustes → Tus datos.
+- **Letras dentro de la app (carpeta `fuentes/`):** ya no se piden a Google Fonts, así la app no envía la IP del usuario a Google y las letras funcionan sin internet. Licencia OFL incluida.
+- **Pendiente:** cuando se añada Supabase, actualizar la política (servidor, datos de salud, consentimiento) y subir `VERSION_PRIVACIDAD` para volver a pedir la aceptación.
+- **Pruebas:** 136 de 136; v2 comprueba que sin la casilla no se crea el perfil.

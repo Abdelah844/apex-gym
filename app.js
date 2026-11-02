@@ -183,6 +183,7 @@ function pintarBienvenida() {
       '<button class="btn" data-act="ir-registro">Crear mi perfil</button>' +
       '<button class="btn-sec full" data-act="usar-demo">Probar con datos de ejemplo</button>' +
       '<p class="muted small">Tu perfil se guarda en este dispositivo. El inicio de sesión con cuenta (Google o correo) se activará cuando la app tenga servidor.</p>' +
+      '<a class="muted small" href="privacidad.html">Privacidad y condiciones de uso</a>' +
     '</div>';
 }
 
@@ -261,6 +262,8 @@ function pintarRegistro() {
   $("app").innerHTML = '<div class="stack" style="padding-top:8px">' +
     '<div><p class="label">Paso 1 de 1</p><h1>Tu perfil</h1><p class="muted" style="margin-top:6px">Con estos datos creamos tu primera rutina. Puedes cambiarlos cuando quieras.</p></div>' +
     '<div class="card stack">' + formPerfil(vacio) + '</div>' +
+    '<label class="check priv-ok"><input type="checkbox" id="fPrivacidad"><span>He leído y acepto la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad y las condiciones</a>. Tengo 14 años o más.</span></label>' +
+    '<p class="err" id="fPrivError"></p>' +
     '<button class="btn" data-act="crear-perfil">Crear perfil y rutina</button>' +
     '<button class="btn-txt" data-act="volver-bienvenida">Volver</button></div>';
 }
@@ -1633,6 +1636,7 @@ function hojaAjustes() {
     '<button class="btn" data-act="guardar-ajustes">Guardar cambios</button><p class="muted small" id="aOk"></p>' +
     '<div class="card stack tight" id="aj-datos"><h3>Tus datos</h3>' +
       '<button class="btn-sec full" data-act="exportar">Ver los datos como texto</button>' +
+      '<button class="btn-sec full" data-act="abrir-privacidad">Privacidad y condiciones de uso</button>' +
       '<button class="btn-sec full" data-act="pruebas">Ejecutar pruebas de calidad</button>' +
       '<button class="btn-sec full" data-act="abrir-piloto">Prueba piloto e informar de problemas</button>' +
       '<button class="btn-sec full" data-act="abrir-gimnasio">Mi gimnasio (máquinas disponibles)</button>' +

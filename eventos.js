@@ -35,7 +35,12 @@ const ACCIONES = {
   "crear-perfil": function () {
     const p = leerPerfil();
     if (!p) return;
+    // Sin aceptar la política de privacidad no se crea el perfil
+    const acepta = $("fPrivacidad").checked;
+    $("fPrivError").textContent = acepta ? "" : "Para continuar, marca la casilla de la política de privacidad.";
+    if (!acepta) return;
     estado = estadoVacio(p);
+    estado.ajustes.privacidadAceptada = hoy() + " v" + VERSION_PRIVACIDAD;
     estado.rutina = generarRutina({ objetivo: p.objetivo, nivel: p.experiencia, dias: p.dias, duracion: p.duracion,
       tipo: "auto", equipo: p.equipo, prioridad: "", evitar: p.evitar });
     guardar(); tab = "inicio"; pintar();
@@ -44,6 +49,7 @@ const ACCIONES = {
   "reintentar-guardado": function () { if (!guardar()) mensaje("No se ha podido guardar", "El almacenamiento del navegador está lleno o bloqueado. Exporta tus datos desde Ajustes para no perderlos."); },
 
   // ---------- Hojas ----------
+  "abrir-privacidad": function () { location.href = "privacidad.html"; },
   "cerrar-hoja": function () { cerrarHoja(); confirmar = ""; pintar(); },
   "abrir-ajustes": function () { confirmar = ""; hojaAjustes(); },
   "abrir-generador": function () { confirmar = ""; hojaGenerador(!genOp); },

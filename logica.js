@@ -119,6 +119,9 @@ function metricasVacias() {
   return { propuestas: 0, aceptadas: 0, correcciones: 0, avisos: 0, avisosConfirmados: 0, problemas: [] };
 }
 
+// Versión de la política de privacidad (privacidad.html). Si se cambia la política, se sube este número.
+const VERSION_PRIVACIDAD = 1;
+
 function estadoVacio(perfil) {
   perfil = perfil || {};
   if (!perfil.uid) perfil.uid = nuevoId("u-");
@@ -127,7 +130,7 @@ function estadoVacio(perfil) {
     version: VERSION_DATOS,
     modo: "local",
     perfil: perfil,
-    ajustes: { ultimaCopia: "", tema: "oscuro", descanso: 90, incremento: 2.5, incrementoMancuernas: 2, privacidad: "amigos", compartir: true,
+    ajustes: { ultimaCopia: "", privacidadAceptada: "", tema: "oscuro", descanso: 90, incremento: 2.5, incrementoMancuernas: 2, privacidad: "amigos", compartir: true,
       notif: { recordatorios: true, records: true, rangos: true, amigos: true, semanal: false } },
     rutina: null,
     sesiones: [],
