@@ -18,7 +18,9 @@ let postNuevo = "";            // publicación recién creada (se resalta un mom
 let confirmar = "";             // botón que espera un segundo toque
 let propuesta = null;           // rutina generada que aún no se ha aceptado
 let sesionRecuperada = false;
-let cambioEditor = "";          // ejercicio recién cambiado en el editor de día (se resalta)
+let cambioEditor = "";
+let cambiosFamosa = [];        // ejercicios cambiados al adaptar una rutina famosa
+let medidaGrafica = "brazo";          // ejercicio recién cambiado en el editor de día (se resalta)
 let mensajeSugerencia = "";       // frase con el último cambio aplicado a la rutina    // se abrió la app con un entreno a medias
 
 // ---------- Ayudas ----------
@@ -284,6 +286,14 @@ function pintarInicio() {
 
   h += '<div class="stack">';
 
+  // Aviso de copia de seguridad (cada 14 días)
+  if (necesitaCopia()) {
+    const dias = estado.ajustes.ultimaCopia ? diasEntre(estado.ajustes.ultimaCopia, hoy()) : null;
+    h += '<div class="card copia-aviso stack tight"><div class="row" style="gap:10px"><span style="font-size:1.6rem">💾</span><div class="grow"><h3>¿Guardamos una copia?</h3>' +
+      '<p class="muted small">' + (dias === null ? "Aún no tienes ninguna copia." : "Tu última copia es de hace " + dias + " días.") + ' Tus entrenos solo están en este móvil.</p></div></div>' +
+      '<div class="grid2"><button class="btn-sec" data-act="posponer-copia">Ahora no</button><button class="btn" data-act="hacer-copia">Hacer copia</button></div></div>';
+  }
+
   // Apix, la mascota
   const apix = estadoMascota();
   if (apix) {
@@ -414,6 +424,7 @@ function pintarEntrenar() {
 
   h += '<div class="grid2 acciones-entreno"><button class="accion-grande" data-act="abrir-generador"><span class="ico">✨</span><b>' + (estado.rutina ? "Nueva rutina" : "Generar rutina") + '</b><span class="muted small">En 3 pasos, a tu medida</span></button>' +
     '<button class="accion-grande" data-act="empezar-libre"><span class="ico">⚡</span><b>Entreno libre</b><span class="muted small">Eliges sobre la marcha</span></button></div>' +
+    '<button class="accion-grande fila" data-act="abrir-famosas"><span class="ico">🏆</span><span><b>Rutinas famosas</b><span class="muted small" style="display:block">5×5, PPL, torso-pierna… listas para usar</span></span></button>' +
     '<div class="grid2"><button class="btn-sec small" data-act="abrir-biblioteca">Ejercicios</button><button class="btn-sec small" data-act="abrir-gimnasio">Mi gimnasio</button></div>';
 
   if (!estado.rutina) {
@@ -457,6 +468,37 @@ function numero(n) { return String(n).replace(".", ","); }
 const ETIQUETA_TIPO = { drop: "↓", rp: "⏸" };
 
 // Tiempo desde que empezó el entreno: 12:34 (o 1:05:20 si pasa de una hora)
+// ---------- Guía: cómo registrar tus series ----------
+// Se muestra la primera vez que entrenas (y siempre que pulses «¿Cómo se apunta?»).
+// Cada paso resalta una parte de la pantalla y explica para qué sirve.
+let pasoGuia = -1;
+function pasosGuia() {
+  const a = estado.activa;
+  const ej = buscarEj(a.ejercicios[ejercicioActual()].id);
+  return [
+    { sel: ".tabla-series", titulo: "Tu tabla de series", texto: "Cada fila es una serie. Apuntas lo que haces de verdad, serie a serie." },
+    { sel: ".ts-fila.foco input[data-in='peso']", titulo: "Kg: el peso", texto: comoApuntar(ej).largo },
+    { sel: ".ts-fila.foco input[data-in='reps']", titulo: "Reps: las repeticiones", texto: "Escribe las que has hecho bien, con buena técnica. Si te salen menos de las planeadas, apunta las reales: así la app te propone el peso justo." },
+    { sel: ".ts-fila.foco .previa", titulo: "Previa: la última vez", texto: "Lo que hiciste en esta serie el último día. Tócalo para copiarlo y después intenta superarlo." },
+    { sel: ".ajuste-rapido", titulo: "Ajuste rápido", texto: "Botones grandes para subir o bajar el peso y las reps sin escribir (útil con las manos sudadas)." },
+    { sel: ".ts-fila.foco .tick", titulo: "✓ Completar la serie", texto: "Púlsalo al acabar la serie. Se guarda, empieza el descanso y la app pasa sola a la siguiente." },
+    { sel: ".anadir-serie", titulo: "¿Haces una serie más?", texto: "Añádela aquí. Al terminar todo el entreno, pulsa «Terminar» arriba." }
+  ];
+}
+function mostrarGuia(paso) {
+  document.querySelectorAll(".guia-resalta").forEach(function (x) { x.classList.remove("guia-resalta"); });
+  const pasos = pasosGuia();
+  if (paso < 0 || paso >= pasos.length) { $("guia").hidden = true; pasoGuia = -1; return; }
+  pasoGuia = paso;
+  const p = pasos[paso];
+  const el = document.querySelector(p.sel);
+  if (el) { el.classList.add("guia-resalta"); el.scrollIntoView({ behavior: "smooth", block: "center" }); }
+  $("guia").innerHTML = '<div class="guia-caja"><p class="label">Cómo registrar · ' + (paso + 1) + ' de ' + pasos.length + '</p><h3>' + p.titulo + '</h3><p class="small">' + esc(p.texto) + '</p>' +
+    '<div class="row between" style="margin-top:10px"><button class="btn-txt small" data-act="guia-saltar">Saltar guía</button>' +
+    '<button class="btn auto" data-act="guia-siguiente">' + (paso === pasos.length - 1 ? "¡Entendido!" : "Siguiente →") + '</button></div></div>';
+  $("guia").hidden = false;
+}
+
 // Ventana de confirmación antes de terminar (para no terminar sin querer)
 function hojaTerminar() {
   const a = estado.activa;
@@ -545,10 +587,24 @@ function tarjetaEjercicio(ei) {
   if (frase && estado.ajustes.mascota !== false) h += '<div class="apix-entreno">' + apixSVG(mensajeEntreno.indexOf("récord") >= 0 ? "celebra" : "anima", "xs") + '<p class="small"><b>Apix:</b> ' + esc(frase) + '</p></div>';
   mensajeEntreno = "";
 
+  // Series de calentamiento (no cuentan). Solo antes de empezar las series de trabajo.
+  if (estado.ajustes.calentamiento !== false && !e.sinCalentamiento && hechasEj === 0) {
+    const pesoTrabajo = (e.series.find(function (x) { return !x.tipo; }) || e.series[0]).peso;
+    const cal = seriesCalentamiento(e.id, pesoTrabajo);
+    if (cal.length) {
+      const hechos = e.calHecho || [];
+      h += '<div class="calentamiento"><div class="row between"><p class="label">🔥 Calentamiento · no cuenta</p><button class="btn-txt small" data-act="cal-ocultar" data-a="' + ei + '">Ocultar</button></div><div class="cal-filas">' +
+        cal.map(function (c, k) {
+          return '<button class="cal-fila' + (hechos[k] ? " hecha" : "") + '" data-act="cal-marcar" data-a="' + ei + '" data-b="' + k + '"><span class="cal-check">' + (hechos[k] ? "✓" : "") + '</span><span class="num">' + (ej.equipo === "barra" && c.peso === 20 && k === 0 ? "Barra sola" : numero(c.peso) + " kg") + ' × ' + c.reps + '</span></button>';
+        }).join("") + '</div><p class="muted small">Prepara músculos y articulaciones. Peso ligero y sin llegar al fallo.</p></div>';
+    }
+  }
+
   // Tabla de series: cada fila se edita directamente y se completa con ✓
   const ultima = ultimaVez(e.id);
   const paso = pasoPeso(ej);
   h += (ej.asistido ? '<p class="small" style="color:var(--warn);margin-top:10px">Los kg son ayuda: cuantos menos, más difícil.</p>' : "") +
+    '<div class="ayuda-registro"><span>ⓘ ' + comoApuntar(ej).corto + '</span><button class="btn-txt small" data-act="guia-series">¿Cómo se apunta?</button></div>' +
     '<div class="tabla-series series-lista" role="table" aria-label="Series de ' + esc(ej.nombre) + '">' +
     '<div class="ts-cab" role="row"><span>Serie</span><span>Previa</span><span>' + (ej.asistido ? "Ayuda" : "Kg") + '</span><span>Reps</span><span></span></div>';
   e.series.forEach(function (x, j) {
@@ -557,7 +613,7 @@ function tarjetaEjercicio(ei) {
     h += '<div class="serie-fila ts-fila' + clase + '" role="row">' +
       '<button class="n" data-act="foco-serie" data-a="' + ei + '" data-b="' + j + '" aria-label="Serie ' + (j + 1) + '">' + (ETIQUETA_TIPO[x.tipo] || (j + 1)) + '</button>' +
       (previa === "—" ? '<span class="previa num">—</span>' : '<button class="previa num" data-act="copiar-anterior" data-a="' + ei + '" data-b="' + j + '" title="Copiar la marca anterior">' + previa + '</button>') +
-      '<input type="number" inputmode="decimal" step="0.5" min="0" value="' + x.peso + '" data-in="peso" data-e="' + ei + '" data-s="' + j + '" aria-label="Kilos serie ' + (j + 1) + '"' + (x.hecha ? " readonly" : "") + '>' +
+      '<input type="text" inputmode="decimal" autocomplete="off" value="' + numero(x.peso) + '" data-in="peso" data-e="' + ei + '" data-s="' + j + '" aria-label="Kilos serie ' + (j + 1) + '"' + (x.hecha ? " readonly" : "") + '>' +
       '<input type="number" inputmode="numeric" min="0" value="' + x.reps + '" data-in="reps" data-e="' + ei + '" data-s="' + j + '" aria-label="Repeticiones serie ' + (j + 1) + '"' + (x.hecha ? " readonly" : "") + '>' +
       '<button class="tick" data-act="marcar" data-a="' + ei + '" data-b="' + j + '" aria-label="' + (x.hecha ? "Desmarcar" : "Completar") + ' serie ' + (j + 1) + '">' + I.check + '</button></div>';
     // Debajo de la serie actual: ajuste rápido con botones grandes
@@ -879,10 +935,26 @@ function pintarProgreso() {
   for (const g in GRUPOS) h += '<div class="musculo"><span>' + GRUPOS[g] + '</span><div class="bar"><i style="width:' + (cuenta[g] / maxC * 100) + '%"></i></div><span class="num muted" style="text-align:right">' + String(cuenta[g]).replace(".", ",") + '</span></div>';
   h += '</div>';
 
+  // Medidas corporales
+  const meds = (estado.medidas || []).filter(function (m) { return enPeriodo(m.fecha, periodo) && typeof m[medidaGrafica] === "number"; });
+  const ultimaMed = (estado.medidas || [])[(estado.medidas || []).length - 1] || {};
+  h += '<div class="card stack"><h3>Medidas corporales</h3>' +
+    '<div class="seg">' + CAMPOS_MEDIDAS.map(function (c) { return '<button data-act="medida-grafica" data-a="' + c[0] + '" class="' + (medidaGrafica === c[0] ? "on" : "") + '">' + c[1] + '</button>'; }).join("") + '</div>' +
+    (meds.length ? graficaLinea(meds.map(function (m) { return fechaBonita(m.fecha); }), meds.map(function (m) { return m[medidaGrafica]; }), "cm") : '<p class="muted small">Apunta tus medidas una vez al mes para ver cómo crecen.</p>') +
+    '<div class="row wrap cambios-medidas">' + CAMPOS_MEDIDAS.map(function (c) {
+      const d = cambioMedida(c[0]);
+      return d === null ? "" : '<span class="pill ' + (d > 0 ? "up" : (d < 0 ? "down" : "keep")) + '">' + c[1] + ' ' + (d > 0 ? "+" : "") + String(d).replace(".", ",") + ' cm</span>';
+    }).join("") + '</div>' +
+    '<div class="grid2 medidas-form">' + CAMPOS_MEDIDAS.map(function (c) {
+      return '<label class="f small">' + c[1] + ' (cm)<input id="med-' + c[0] + '" type="text" inputmode="decimal" autocomplete="off" placeholder="' + (ultimaMed[c[0]] ? String(ultimaMed[c[0]]).replace(".", ",") : "—") + '"></label>';
+    }).join("") + '</div>' +
+    '<button class="btn" data-act="guardar-medidas">Guardar medidas de hoy</button><p class="err" id="errMedidas"></p>' +
+    '<p class="muted small">Mide siempre igual: por la mañana, sin bombear, brazo y muslo en su parte más ancha y cintura a la altura del ombligo.</p></div>';
+
   // Peso corporal
   const pc = estado.pesoCorporal.filter(function (x) { return enPeriodo(x.fecha, periodo); });
   h += '<div class="card stack"><h3>Peso corporal</h3>' + graficaLinea(pc.map(function (x) { return fechaBonita(x.fecha); }), pc.map(function (x) { return x.kg; }), "kg") +
-    '<div class="row"><input id="nuevoPeso" type="number" inputmode="decimal" step="0.1" placeholder="Peso de hoy (kg)" aria-label="Peso de hoy"><button class="btn auto" data-act="guardar-peso">Guardar</button></div><p class="err" id="errPeso"></p></div>';
+    '<div class="row"><input id="nuevoPeso" type="text" inputmode="decimal" autocomplete="off" placeholder="Peso de hoy (kg)" aria-label="Peso de hoy"><button class="btn auto" data-act="guardar-peso">Guardar</button></div><p class="err" id="errPeso"></p></div>';
 
   // Historial
   h += '<div class="card"><h3>Historial de sesiones</h3><div class="list">';
@@ -1102,6 +1174,7 @@ function hojaPropuesta() {
   const v = volumenSemanal(r);
   const prob = validarRutina(r);
   let h = cabeceraHoja("Tu nueva rutina", esc(r.nombre)) + '<div class="stack">' +
+    (r.famosa && cambiosFamosa.length ? '<div class="card" style="border-color:var(--warn)"><p class="small"><b>Adaptada a tu gimnasio:</b> ' + cambiosFamosa.map(esc).join(" · ") + '</p></div>' : "") +
     '<div class="card resumen-rutina ' + (prob.length ? "aviso" : "ok") + '"><p class="big-num">' + (prob.length ? "⚠ Casi lista" : "✓ Lista para usar") + '</p>' +
     '<p class="small">' + r.dias.length + ' días · ' + r.dias.reduce(function (t, d) { return t + d.ejercicios.length; }, 0) + ' ejercicios · ~' + Math.round(r.dias.reduce(function (t, d) { return t + duracionDia(d, r.factorDuracion); }, 0) / r.dias.length) + ' min por día</p>' +
     (prob.length ? '<p class="muted small">' + prob.length + ' detalle(s) a revisar abajo. Puedes usarla igual y ajustarla después.</p>' : '<p class="muted small">Pasa todas las comprobaciones de volumen, tiempo y recuperación.</p>') + '</div>';
@@ -1130,8 +1203,19 @@ function hojaPropuesta() {
   h += '<p class="muted small" style="margin-top:6px">Los músculos secundarios cuentan como media serie. Duración estimada: 45 s por serie + descanso + 1,5 min de cambio entre ejercicios + 5 min de calentamiento + 3 min de aproximación por compuesto.</p></div>' +
     (estado.rutina && confirmar === "usar-propuesta" ? '<p class="small" style="color:var(--warn)"><b>Tu rutina actual «' + esc(estado.rutina.nombre) + '» se sustituirá.</b> Tus entrenos guardados no se borran.</p>' : "") +
     '<button class="btn" data-act="usar-propuesta">' + (estado.rutina ? (confirmar === "usar-propuesta" ? "Sí, sustituir mi rutina" : "Usar esta rutina") : "Usar esta rutina") + '</button>' +
-    '<button class="btn-sec full" data-act="abrir-generador">← Cambiar respuestas</button></div>';
+    (r.famosa ? '<button class="btn-sec full" data-act="abrir-famosas">← Ver otras rutinas famosas</button></div>' : '<button class="btn-sec full" data-act="abrir-generador">← Cambiar respuestas</button></div>');
   abrirHoja(h);
+}
+
+// ---------- Rutinas famosas ----------
+function hojaFamosas() {
+  let h = cabeceraHoja("Rutinas famosas", "Listas para usar") + '<div class="stack"><p class="muted small">Rutinas clásicas que usa muchísima gente. Si falta alguna máquina en tu gimnasio, se cambia sola por una parecida.</p>';
+  for (const k in RUTINAS_FAMOSAS) {
+    const r = RUTINAS_FAMOSAS[k];
+    h += '<button class="card famosa" data-act="ver-famosa" data-a="' + k + '"><div class="row between"><h3>' + esc(r.nombre) + '</h3><span class="pill ' + (r.nivel === "principiante" ? "up" : (r.nivel === "avanzado" ? "pr" : "keep")) + '">' + r.nivel + '</span></div>' +
+      '<p class="small">' + esc(r.desc) + '</p><p class="muted small">' + r.dias + ' días · ~' + r.duracion + ' min · ' + r.plantilla.map(function (dd) { return esc(dd.nombre); }).join(" / ") + '</p></button>';
+  }
+  abrirHoja(h + '</div>');
 }
 
 // ---------- Editor de un día ----------
@@ -1241,6 +1325,7 @@ function hojaEjercicio(id) {
   h += '<div class="video-pendiente"><p class="small"><b>Vídeo demostrativo (20-45 s):</b> pendiente de grabación propia. Mientras tanto, ' + (fotos ? "las fotos, la animación" : "la animación") + ' y los pasos escritos explican el movimiento.</p></div>';
 
   // Datos clave
+  h += '<div class="card" style="padding:12px"><p class="label">Cómo apuntar el peso</p><p class="small">' + comoApuntar(e).largo + '</p></div>';
   h += '<div class="row wrap" style="gap:6px"><span class="pill keep">' + EQUIPOS[e.equipo] + '</span><span class="pill keep">Nivel: ' + ["", "básico", "medio", "avanzado"][e.nivel] + '</span><span class="pill keep">' + e.reps[0] + '-' + e.reps[1] + ' reps</span>' +
     (e.asistido ? '<span class="pill up">Asistido</span>' : "") + '</div>' +
     '<p class="small"><b>Músculo principal:</b> ' + GRUPOS[e.grupo] + (e.sec.length ? ' · <b>Secundarios:</b> ' + e.sec.map(function (g) { return GRUPOS[g]; }).join(", ") : "") + '</p>';
@@ -1343,7 +1428,8 @@ function hojaEditarSesion(id) {
 
 // ---------- Importar ----------
 function hojaImportar() {
-  abrirHoja(cabeceraHoja("Importar datos", "Restaurar copia") + '<div class="stack"><p class="muted">Pega aquí el texto que exportaste. Sustituirá todos los datos de este dispositivo.</p>' +
+  abrirHoja(cabeceraHoja("Restaurar copia", "Tus datos") + '<div class="stack"><p class="muted">Elige el archivo de copia (.json) o pega su texto. Sustituirá todos los datos de este móvil.</p>' +
+    '<label class="btn-sec full" style="text-align:center;cursor:pointer">📂 Elegir archivo de copia<input type="file" id="importArchivo" accept=".json,application/json,text/plain" hidden></label>' +
     '<textarea id="importTxt" style="min-height:200px;font-family:ui-monospace,monospace;font-size:.75rem" placeholder="{ ... }"></textarea>' +
     '<p class="err" id="importError"></p><button class="btn" data-act="importar">' + (confirmar === "importar" ? "Pulsa otra vez para sustituir tus datos" : "Importar") + '</button></div>');
 }
@@ -1521,6 +1607,8 @@ function hojaAjustes() {
     '<div class="card stack"><h3>Privacidad</h3><label class="f">Quién ve tu perfil<select id="aPrivacidad">' + opciones([["publico", "Todo el mundo"], ["amigos", "Solo amigos"], ["privado", "Solo yo"]], a.privacidad) + '</select></label>' +
       chk("aCompartir", a.compartir, "Mostrar mis entrenos a mis amigos") + '</div>' +
     '<div class="card stack tight"><h3>Instalar en el móvil</h3>' + textoInstalar() + '</div>' +
+    '<div class="card stack tight"><h3>Calentamiento</h3>' + chk("aCalentamiento", a.calentamiento !== false, "Proponer series de calentamiento") +
+      '<p class="muted small">En los ejercicios grandes con peso (sentadilla, press banca, peso muerto…). No cuentan para récords ni rangos.</p></div>' +
     '<div class="card stack tight"><h3>Sonido y vibración</h3>' + chk("aSonido", a.sonido !== false, "Efectos de sonido") + chk("aVibracion", a.vibracion !== false, "Vibración") +
       '<p class="muted small">Prueba los sonidos:</p><div class="chips" style="flex-wrap:wrap">' + [["serie", "Serie"], ["descanso", "Descanso"], ["record", "Récord"], ["rango", "Rango"], ["fin", "Fin"], ["racha", "Racha"], ["enfadado", "Apix enfadado"]].map(function (x) { return '<button class="chip" data-act="probar-sonido" data-a="' + x[0] + '">' + x[1] + '</button>'; }).join("") + '</div></div>' +
     '<div class="card stack tight"><h3>Apix, la mascota</h3>' + chk("aMascota", a.mascota !== false, "Mostrar a Apix en Inicio") +
@@ -1534,8 +1622,10 @@ function hojaAjustes() {
       '</div>' +
     '<button class="btn" data-act="guardar-ajustes">Guardar cambios</button><p class="muted small" id="aOk"></p>' +
     '<div class="card stack tight"><h3>Tus datos</h3>' +
-      '<button class="btn-sec full" data-act="exportar">Exportar mis datos</button>' +
-      '<button class="btn-sec full" data-act="abrir-importar">Importar una copia</button>' +
+      '<button class="btn full" data-act="hacer-copia">💾 Hacer copia de seguridad</button>' +
+      '<p class="muted small">' + (estado.ajustes.ultimaCopia ? "Última copia: " + fechaBonita(estado.ajustes.ultimaCopia) + "." : "Aún no has hecho ninguna copia.") + ' Guárdala en Archivos, Drive o mándatela por correo.</p>' +
+      '<button class="btn-sec full" data-act="abrir-importar">Restaurar una copia</button>' +
+      '<button class="btn-sec full" data-act="exportar">Ver los datos como texto</button>' +
       '<button class="btn-sec full" data-act="pruebas">Ejecutar pruebas de calidad</button>' +
       '<button class="btn-sec full" data-act="abrir-piloto">Prueba piloto e informar de problemas</button>' +
       '<button class="btn-sec full" data-act="abrir-gimnasio">Mi gimnasio (máquinas disponibles)</button>' +

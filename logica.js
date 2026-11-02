@@ -47,7 +47,7 @@ function fechaBonita(fecha) {
 // - Si falla, se avisa, los cambios siguen en memoria y se puede reintentar.
 
 // Versión del formato de datos. Si cambia, se añade un paso en migrarDatos().
-const VERSION_DATOS = 5;
+const VERSION_DATOS = 6;
 
 function datosValidos(d) {
   return d && typeof d === "object" && d.perfil && typeof d.perfil.nombre === "string" && Array.isArray(d.sesiones);
@@ -127,7 +127,7 @@ function estadoVacio(perfil) {
     version: VERSION_DATOS,
     modo: "local",
     perfil: perfil,
-    ajustes: { tema: "oscuro", descanso: 90, incremento: 2.5, incrementoMancuernas: 2, privacidad: "amigos", compartir: true,
+    ajustes: { ultimaCopia: "", tema: "oscuro", descanso: 90, incremento: 2.5, incrementoMancuernas: 2, privacidad: "amigos", compartir: true,
       notif: { recordatorios: true, records: true, rangos: true, amigos: true, semanal: false } },
     rutina: null,
     sesiones: [],
@@ -139,6 +139,7 @@ function estadoVacio(perfil) {
     ascensos: [],
     social: { amigos: [], bloqueados: [], posts: [], retos: [], amigosReales: [] },
     denuncias: [],
+    medidas: [],
     metricas: metricasVacias()
   };
 }
@@ -188,6 +189,11 @@ function migrarDatos(d) {
     // v4 → v5: amigos reales (añadidos con su tarjeta de amigo)
     if (!Array.isArray(d.social.amigosReales)) d.social.amigosReales = [];
   }
+  if (v < 6) {
+    // v5 → v6: medidas corporales y fecha de la última copia de seguridad
+    if (!Array.isArray(d.medidas)) d.medidas = [];
+    if (d.ajustes.ultimaCopia === undefined) d.ajustes.ultimaCopia = "";
+  }
   d.version = VERSION_DATOS;
   return d;
 }
@@ -226,7 +232,7 @@ function validarEsquema(d) {
   const a = d.ajustes;
   comprobar(a && ["oscuro", "claro", "sistema"].includes(a.tema), "Ajustes: tema no válido.");
   if (a) {
-    comprobar([60, 90, 120, 180].includes(a.descanso), "Ajustes: descanso no válido.");
+    comprobar(entero(a.descanso, 15, 600), "Ajustes: descanso no válido.");
     comprobar([1, 1.25, 2.5, 5].includes(a.incremento) && [1, 2, 2.5].includes(a.incrementoMancuernas), "Ajustes: incrementos no válidos.");
     comprobar(["publico", "amigos", "privado"].includes(a.privacidad) && typeof a.compartir === "boolean", "Ajustes: privacidad no válida.");
   }
@@ -264,6 +270,9 @@ function validarEsquema(d) {
   if (d.social && Array.isArray(d.social.posts)) comprobar(d.social.posts.every(function (x) { return typeof x.autorId === "string"; }), "Hay publicaciones sin autor.");
   comprobar(Array.isArray(d.favoritos) && Array.isArray(d.evitados) && Array.isArray(d.ascensos) && Array.isArray(d.denuncias), "Faltan listas internas.");
   comprobar(Array.isArray(d.noDisponibles) && d.noDisponibles.every(function (id) { return buscarEj(id); }), "La lista de máquinas de tu gimnasio no es válida.");
+  comprobar(Array.isArray(d.medidas) && d.medidas.every(function (m) {
+    return fecha(m.fecha) && CAMPOS_MEDIDAS.every(function (c) { return m[c[0]] === null || numero(m[c[0]], 10, 250); });
+  }), "Las medidas corporales no son válidas.");
   return err;
 }
 
@@ -1280,6 +1289,147 @@ function ejercicioParaSesion(id, objetivo) {
   const series = [];
   for (let i = 0; i < obj.series; i++) series.push({ peso: rec.peso, reps: obj.repMax, rpe: null, hecha: false });
   return { id: id, objetivo: { series: obj.series, repMin: obj.repMin, repMax: obj.repMax, descanso: obj.descanso }, series: series, nota: "", molestias: false, cambio: false };
+}
+
+// ---------- Cómo apuntar el peso ----------
+// Regla corta (para la tabla) y explicación (para la guía) según el material del ejercicio.
+function comoApuntar(e) {
+  if (e.asistido) return { corto: "Kg = la ayuda de la máquina. Menos ayuda = más difícil.", largo: "Apunta los kilos de AYUDA que marques en la máquina. Cuanta menos ayuda pongas, más fuerte eres: el objetivo es ir bajándola." };
+  if (e.equipo === "corporal") return { corto: "Kg = solo el peso extra (0 si no usas).", largo: "Tu peso corporal ya lo cuenta la app. Apunta solo el lastre que añadas (cinturón, disco, mochila). Sin lastre, escribe 0." };
+  if (e.equipo === "mancuernas") return { corto: "Kg = el peso de UNA mancuerna.", largo: "Apunta el peso de una sola mancuerna. Si coges dos de 12 kg, escribe 12, no 24." };
+  if (e.equipo === "barra") return { corto: "Kg = barra + discos (la barra olímpica pesa 20 kg).", largo: "Apunta el total: la barra más todos los discos. Ejemplo: barra de 20 kg + un disco de 10 a cada lado = 40 kg." };
+  if (/multipower/.test(e.id)) return { corto: "Kg = los discos que pongas en la barra guiada.", largo: "En el multipower apunta solo los discos (la barra guiada pesa poco y cambia según la máquina). Así siempre lo medirás igual." };
+  if (e.equipo === "polea") return { corto: "Kg = el número de la placa en la columna de peso.", largo: "Apunta el número que marca la placa donde metes el pasador. Cada máquina es distinta: compárate siempre en la misma." };
+  return { corto: "Kg = el peso que marca la máquina.", largo: "Apunta el número de la placa o los discos que cargues. Cada máquina es distinta: compárate siempre en la misma." };
+}
+
+// ---------- Series de calentamiento ----------
+// Solo en ejercicios compuestos con carga (no en peso corporal ni asistidos). No cuentan para nada.
+// Barra: barra sola × 10, 50 % × 5, 70 % × 3 (y 85 % × 1 si el peso es alto). Máquina y mancuernas: 2 series.
+function seriesCalentamiento(id, pesoTrabajo) {
+  const e = buscarEj(id);
+  if (!e || !e.compuesto || e.equipo === "corporal" || e.asistido || !(pesoTrabajo > 0)) return [];
+  const paso = pasoPeso(e);
+  const red = function (kg) { return Math.round(kg / paso) * paso; };
+  let lista;
+  if (e.equipo === "barra") {
+    if (pesoTrabajo < 30) return [];
+    lista = [{ peso: 20, reps: 10 }, { peso: red(pesoTrabajo * 0.5), reps: 5 }, { peso: red(pesoTrabajo * 0.7), reps: 3 }];
+    if (pesoTrabajo >= 100) lista.push({ peso: red(pesoTrabajo * 0.85), reps: 1 });
+  } else {
+    lista = [{ peso: red(pesoTrabajo * 0.5), reps: 8 }, { peso: red(pesoTrabajo * 0.75), reps: 4 }];
+  }
+  // Quita las que pesan lo mismo que la anterior o igual que la serie de trabajo
+  return lista.filter(function (x, i) { return x.peso > 0 && x.peso < pesoTrabajo && (i === 0 || x.peso > lista[i - 1].peso); });
+}
+
+// ---------- Medidas corporales ----------
+const CAMPOS_MEDIDAS = [["brazo", "Brazo"], ["pecho", "Pecho"], ["cintura", "Cintura"], ["muslo", "Muslo"]];
+// Guarda las medidas de hoy (sustituye las de hoy si ya había). Valores en cm; los vacíos se guardan como null.
+function guardarMedidas(valores) {
+  const m = { fecha: hoy() };
+  let alguna = false;
+  for (const c of CAMPOS_MEDIDAS) {
+    const v = valores[c[0]];
+    if (v === null || v === undefined || v === "" || isNaN(v)) { m[c[0]] = null; continue; }
+    if (v < 10 || v > 250) return { ok: false, msg: c[1] + ": escribe un valor entre 10 y 250 cm." };
+    m[c[0]] = Math.round(v * 10) / 10; alguna = true;
+  }
+  if (!alguna) return { ok: false, msg: "Escribe al menos una medida." };
+  if (!Array.isArray(estado.medidas)) estado.medidas = [];
+  estado.medidas = estado.medidas.filter(function (x) { return x.fecha !== m.fecha; });
+  estado.medidas.push(m);
+  estado.medidas.sort(function (a, b) { return a.fecha < b.fecha ? -1 : 1; });
+  return { ok: true };
+}
+// Cambio de una medida desde la primera vez que la apuntaste
+function cambioMedida(campo) {
+  const con = (estado.medidas || []).filter(function (m) { return typeof m[campo] === "number"; });
+  if (con.length < 2) return null;
+  return Math.round((con[con.length - 1][campo] - con[0][campo]) * 10) / 10;
+}
+
+// ---------- Copia de seguridad ----------
+// Pide hacer copia si hay entrenos y han pasado 14 días desde la última (o desde que lo pospusiste)
+function necesitaCopia() {
+  if (estado.modo === "demo" || sesionesValidas().length === 0) return false;
+  const ref = [estado.ajustes.ultimaCopia, estado.ajustes.copiaPospuesta].filter(Boolean).sort().pop();
+  if (!ref) return sesionesValidas().length >= 3;
+  return diasEntre(ref, hoy()) >= 14;
+}
+
+// ---------- Rutinas famosas ----------
+// Rutinas clásicas listas para usar. Si una máquina no está en tu gimnasio, se cambia por una variante.
+function diaPlantilla(nombre, lista) { return { nombre: nombre, ejercicios: lista.map(function (x) { return { id: x[0], series: x[1], repMin: x[2], repMax: x[3], descanso: x[4] }; }) }; }
+const RUTINAS_FAMOSAS = {
+  "fuerza-5x5": { nombre: "Fuerza 5×5", nivel: "principiante", objetivo: "fuerza", dias: 3, duracion: 60,
+    desc: "Pocos ejercicios básicos con mucho peso. Alternas A y B. Ideal para ganar fuerza desde cero.",
+    plantilla: [
+      diaPlantilla("Día A", [["sentadilla", 5, 5, 5, 180], ["press-banca", 5, 5, 5, 180], ["remo-barra", 5, 5, 5, 150]]),
+      diaPlantilla("Día B", [["sentadilla", 5, 5, 5, 180], ["press-militar", 5, 5, 5, 150], ["peso-muerto", 1, 5, 5, 180]]),
+      diaPlantilla("Día A (2)", [["sentadilla", 5, 5, 5, 180], ["press-banca", 5, 5, 5, 180], ["remo-barra", 5, 5, 5, 150]])
+    ] },
+  "ppl": { nombre: "Empuje, tirón y pierna (PPL)", nivel: "intermedio", objetivo: "masa", dias: 3, duracion: 60,
+    desc: "Cada día un tipo de movimiento: empujar, tirar y pierna. Si tienes 6 días, haz la vuelta dos veces.",
+    plantilla: [
+      diaPlantilla("Empuje", [["press-banca", 4, 6, 10, 150], ["press-inclinado-mancuernas", 3, 8, 12, 120], ["press-militar", 3, 6, 10, 120], ["elevaciones-laterales", 3, 12, 15, 60], ["extension-cuerda", 3, 10, 15, 60]]),
+      diaPlantilla("Tirón", [["dominadas", 4, 5, 10, 150], ["remo-barra", 3, 6, 10, 120], ["jalon", 3, 8, 12, 90], ["face-pull", 3, 12, 15, 60], ["curl-barra", 3, 8, 12, 60]]),
+      diaPlantilla("Pierna", [["sentadilla", 4, 5, 8, 180], ["peso-muerto-rumano", 3, 8, 10, 150], ["prensa", 3, 10, 12, 120], ["curl-femoral-tumbado", 3, 10, 12, 90], ["gemelos-maquina", 4, 10, 15, 60]])
+    ] },
+  "torso-pierna": { nombre: "Torso y pierna", nivel: "intermedio", objetivo: "masa", dias: 4, duracion: 60,
+    desc: "4 días: dos de torso y dos de pierna. Cada músculo se entrena dos veces por semana.",
+    plantilla: [
+      diaPlantilla("Torso A", [["press-banca", 4, 6, 8, 150], ["remo-barra", 4, 6, 10, 120], ["press-militar", 3, 8, 10, 120], ["jalon", 3, 10, 12, 90], ["curl-barra", 2, 10, 12, 60], ["extension-polea", 2, 10, 12, 60]]),
+      diaPlantilla("Pierna A", [["sentadilla", 4, 5, 8, 180], ["peso-muerto-rumano", 3, 8, 10, 150], ["extension-cuadriceps", 3, 12, 15, 75], ["curl-femoral-sentado", 3, 10, 12, 75], ["gemelos-maquina", 4, 10, 15, 60]]),
+      diaPlantilla("Torso B", [["press-inclinado-mancuernas", 4, 8, 12, 120], ["dominadas", 4, 6, 10, 150], ["press-hombro-mancuernas", 3, 8, 12, 90], ["remo-polea", 3, 10, 12, 90], ["curl-martillo", 2, 10, 12, 60], ["press-frances", 2, 10, 12, 60]]),
+      diaPlantilla("Pierna B", [["peso-muerto", 3, 3, 5, 180], ["prensa", 4, 10, 12, 120], ["zancadas", 3, 10, 12, 90], ["hip-thrust", 3, 8, 12, 90], ["gemelo-sentado", 3, 12, 20, 60]])
+    ] },
+  "split-clasico": { nombre: "Split clásico de culturismo", nivel: "avanzado", objetivo: "masa", dias: 6, duracion: 90,
+    desc: "Pecho y espalda, hombros y brazos, pierna. Dos vueltas a la semana. Mucho volumen: solo si ya tienes experiencia.",
+    plantilla: [
+      diaPlantilla("Pecho y espalda", [["press-banca", 4, 6, 10, 150], ["dominadas", 4, 6, 10, 150], ["press-inclinado-mancuernas", 3, 8, 12, 120], ["remo-barra", 3, 8, 10, 120], ["aperturas-polea", 3, 12, 15, 60], ["pullover-polea", 3, 12, 15, 60]]),
+      diaPlantilla("Hombros y brazos", [["press-militar", 4, 6, 10, 150], ["elevaciones-laterales", 4, 12, 15, 60], ["pajaros-maquina", 3, 12, 15, 60], ["curl-barra", 3, 8, 12, 75], ["press-frances", 3, 8, 12, 75], ["curl-martillo", 3, 10, 12, 60], ["extension-cuerda", 3, 10, 15, 60]]),
+      diaPlantilla("Pierna", [["sentadilla", 4, 6, 10, 180], ["peso-muerto-rumano", 4, 8, 10, 150], ["prensa", 3, 10, 12, 120], ["curl-femoral-tumbado", 3, 10, 12, 75], ["gemelos-maquina", 4, 10, 15, 60]]),
+      diaPlantilla("Pecho y espalda (2)", [["press-inclinado-barra", 4, 6, 10, 150], ["remo-pecho-apoyado", 4, 8, 12, 120], ["press-maquina", 3, 8, 12, 90], ["jalon", 3, 10, 12, 90], ["contractora", 3, 12, 15, 60]]),
+      diaPlantilla("Hombros y brazos (2)", [["press-arnold", 4, 8, 12, 120], ["elevaciones-polea", 3, 12, 15, 60], ["face-pull", 3, 12, 15, 60], ["curl-predicador", 3, 8, 12, 75], ["extension-cuerda-nuca", 3, 10, 15, 60]]),
+      diaPlantilla("Pierna (2)", [["hack", 4, 8, 12, 150], ["hip-thrust", 4, 8, 12, 120], ["extension-cuadriceps", 3, 12, 15, 75], ["curl-femoral-sentado", 3, 10, 12, 75], ["gemelo-sentado", 4, 12, 20, 60]])
+    ] },
+  "cuerpo-completo": { nombre: "Cuerpo completo para empezar", nivel: "principiante", objetivo: "masa", dias: 3, duracion: 45,
+    desc: "Todo el cuerpo en cada sesión, con máquinas fáciles de aprender. Perfecta para tus primeros meses.",
+    plantilla: [
+      diaPlantilla("Día 1", [["prensa", 3, 10, 12, 120], ["press-maquina", 3, 8, 12, 90], ["jalon", 3, 8, 12, 90], ["curl-femoral-sentado", 2, 10, 12, 75], ["elevaciones-laterales", 2, 12, 15, 60]]),
+      diaPlantilla("Día 2", [["sentadilla-goblet", 3, 10, 12, 90], ["press-hombro-maquina", 3, 8, 12, 90], ["remo-maquina", 3, 8, 12, 90], ["hip-thrust-maquina", 2, 10, 12, 75], ["crunch-maquina", 2, 12, 15, 60]]),
+      diaPlantilla("Día 3", [["prensa", 3, 10, 12, 120], ["press-inclinado-mancuernas", 3, 8, 12, 90], ["remo-polea", 3, 8, 12, 90], ["extension-cuadriceps", 2, 12, 15, 60], ["curl-polea", 2, 10, 12, 60]])
+    ] }
+};
+
+// Crea la rutina a partir de una plantilla, cambiando lo que no puedes hacer por una variante disponible
+function rutinaDesdePlantilla(clave) {
+  const p = RUTINAS_FAMOSAS[clave];
+  const noPuede = (estado.evitados || []).concat(estado.noDisponibles || []);
+  const equipo = estado.perfil.equipo || [];
+  const sirve = function (id) { const e = buscarEj(id); return e && !noPuede.includes(id) && equipo.includes(e.equipo); };
+  const cambios = [];
+  const dias = p.plantilla.map(function (dia) {
+    const ejercicios = [];
+    for (const o of dia.ejercicios) {
+      let id = o.id;
+      if (!sirve(id)) {
+        const e = buscarEj(id);
+        const alt = (e.variantes || []).find(sirve) || EJERCICIOS.find(function (x) { return x.grupo === e.grupo && x.compuesto === e.compuesto && sirve(x.id); });
+        if (!alt) continue;
+        cambios.push(e.nombre + " → " + buscarEj(alt.id || alt).nombre);
+        id = alt.id || alt;
+      }
+      if (ejercicios.some(function (x) { return x.id === id; })) continue;
+      ejercicios.push({ id: id, series: o.series, repMin: o.repMin, repMax: o.repMax, descanso: o.descanso });
+    }
+    return { nombre: dia.nombre, tipo: "completo", ejercicios: ejercicios };
+  });
+  const r = { nombre: p.nombre, dias: dias, creada: hoy(), objetivo: p.objetivo, nivel: p.nivel, duracion: p.duracion, diasSemana: p.dias,
+    calendario: calendarioPorDefecto(p.dias), factorDuracion: factorDuracion(), famosa: clave };
+  r.problemas = validarRutina(r);
+  return { rutina: r, cambios: cambios };
 }
 
 // ---------- Flujo del entreno (un ejercicio a la vez) ----------

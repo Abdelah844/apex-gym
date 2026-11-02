@@ -931,6 +931,86 @@ const PRUEBAS = [
     }
     return true;
   }]
+  ,
+  // ---------- 2.7: calentamiento, copia, medidas y rutinas famosas ----------
+  ["2.7 Calentamiento", "Press banca a 80 kg: barra sola, 40 y 55 kg, siempre subiendo y por debajo del peso de trabajo", function () {
+    estadoPrueba();
+    const c = seriesCalentamiento("press-banca", 80);
+    const txt = c.map(function (x) { return x.peso + "x" + x.reps; }).join(" ");
+    return txt === "20x10 40x5 55x3" || txt;
+  }],
+  ["2.7 Calentamiento", "Con pesos altos añade una serie más; en aislamiento y peso corporal no hay calentamiento", function () {
+    estadoPrueba();
+    if (seriesCalentamiento("sentadilla", 140).length !== 4) return "Sentadilla 140: " + seriesCalentamiento("sentadilla", 140).length;
+    if (seriesCalentamiento("curl-barra", 40).length) return "El curl no debería tener";
+    if (seriesCalentamiento("dominadas", 10).length) return "Las dominadas no deberían tener";
+    if (seriesCalentamiento("press-banca", 25).length) return "Con 25 kg en barra no hace falta";
+    return seriesCalentamiento("press-maquina", 60).length === 2 || "La máquina debería tener 2";
+  }],
+  ["2.7 Medidas", "Se guardan, se validan y se calcula el cambio", function () {
+    estadoPrueba();
+    if (guardarMedidas({ brazo: 5 }).ok) return "Aceptó 5 cm";
+    if (guardarMedidas({}).ok) return "Aceptó vacío";
+    estado.medidas.push({ fecha: "2026-01-01", brazo: 33, pecho: 95, cintura: 80, muslo: null });
+    const r = guardarMedidas({ brazo: 34.5, pecho: null, cintura: 79, muslo: null });
+    if (!r.ok) return r.msg;
+    return (cambioMedida("brazo") === 1.5 && cambioMedida("cintura") === -1 && cambioMedida("muslo") === null && validarEsquema(estado).length === 0) || [cambioMedida("brazo"), cambioMedida("cintura"), validarEsquema(estado)].join(" | ");
+  }],
+  ["2.7 Copia", "Pide copia cada 14 días, y nunca en la demo ni sin entrenos", function () {
+    estadoPrueba();
+    if (necesitaCopia()) return "Sin entrenos no debería pedir";
+    for (let i = 0; i < 3; i++) sesionPrueba(fechaTexto(i * 2), [["press-banca", [[50, 10]]]]);
+    if (!necesitaCopia()) return "Con 3 entrenos y sin copia debería pedir";
+    estado.ajustes.ultimaCopia = fechaTexto(3);
+    if (necesitaCopia()) return "Copia de hace 3 días: no debería pedir";
+    estado.ajustes.ultimaCopia = fechaTexto(15);
+    if (!necesitaCopia()) return "Copia de hace 15 días: debería pedir";
+    estado.ajustes.copiaPospuesta = hoy();
+    return !necesitaCopia() || "Pospuesta hoy: no debería pedir";
+  }],
+  ["2.7 Copia", "Una copia exportada se puede restaurar (y el descanso de 75 s ya no la rompe)", function () {
+    estadoPrueba();
+    estado.ajustes.descanso = 75;
+    estado.medidas.push({ fecha: "2026-01-01", brazo: 33, pecho: null, cintura: null, muslo: null });
+    sesionPrueba(fechaTexto(1), [["press-banca", [[50, 10]]]]);
+    const r = validarImport(exportarDatos());
+    return (r.ok && r.datos.medidas.length === 1) || r.msg;
+  }],
+  ["2.7 Rutinas famosas", "Todas las rutinas usan ejercicios que existen y pasan la validación", function () {
+    estadoPrueba();
+    for (const k in RUTINAS_FAMOSAS) {
+      const r = rutinaDesdePlantilla(k).rutina;
+      estado.rutina = r;
+      const err = validarEsquema(estado).filter(function (x) { return x.indexOf("rutina") >= 0; });
+      if (err.length) return k + ": " + err[0];
+      if (r.dias.length !== RUTINAS_FAMOSAS[k].dias) return k + ": días " + r.dias.length;
+      if (r.dias.some(function (dd) { return dd.ejercicios.length < 3; })) return k + ": un día con menos de 3 ejercicios";
+    }
+    return true;
+  }],
+  ["2.7 Rutinas famosas", "Si no hay una máquina en tu gimnasio, la cambia por una parecida", function () {
+    estadoPrueba();
+    estado.noDisponibles = ["prensa"];
+    const r = rutinaDesdePlantilla("ppl");
+    const usa = r.rutina.dias.some(function (dd) { return dd.ejercicios.some(function (o) { return o.id === "prensa"; }); });
+    return (!usa && r.cambios.length === 1 && r.cambios[0].indexOf("Prensa") === 0) || JSON.stringify(r.cambios);
+  }],
+  ["2.7 Datos", "Los datos antiguos se migran con medidas y copia", function () {
+    const viejo = estadoVacio({ nombre: "A", dias: 3 });
+    viejo.version = 5; delete viejo.medidas; delete viejo.ajustes.ultimaCopia;
+    const d = migrarDatos(viejo);
+    return (d.version === VERSION_DATOS && Array.isArray(d.medidas) && d.ajustes.ultimaCopia === "") || "Migración incompleta";
+  }]
+  ,
+  ["2.7 Guía", "Cada ejercicio explica cómo apuntar su peso según el material", function () {
+    estadoPrueba();
+    if (comoApuntar(buscarEj("curl-mancuernas")).corto.indexOf("UNA mancuerna") < 0) return "Mancuernas";
+    if (comoApuntar(buscarEj("press-banca")).corto.indexOf("barra + discos") < 0) return "Barra";
+    if (comoApuntar(buscarEj("dominadas-asistidas")).corto.indexOf("ayuda") < 0) return "Asistido";
+    if (comoApuntar(buscarEj("fondos")).corto.indexOf("0 si no usas") < 0) return "Peso corporal";
+    if (comoApuntar(buscarEj("press-banca-multipower")).corto.indexOf("multipower") < 0 && comoApuntar(buscarEj("press-banca-multipower")).corto.indexOf("guiada") < 0) return "Multipower";
+    return EJERCICIOS.every(function (e) { const c = comoApuntar(e); return c.corto && c.largo; }) || "Algún ejercicio sin explicación";
+  }]
 ];
 
 // Ejecuta todas las pruebas y restaura los datos del usuario

@@ -212,6 +212,7 @@ const ACCIONES = {
   "empezar-dia": function (i) {
     if (estado.activa) { irA("entrenar"); return; }
     pilaDeshacer = []; crearSesion(parseInt(i)); guardar(); irA("entrenar");
+    if (!estado.ajustes.guiaSeriesVista) setTimeout(function () { mostrarGuia(0); }, 400);
   },
   "empezar-libre": function () { pilaDeshacer = []; crearSesionLibre(); guardar(); irA("entrenar"); hojaBiblioteca("sesion"); },
   "anadir-a-sesion": function () { hojaBiblioteca("sesion"); },
@@ -223,7 +224,7 @@ const ACCIONES = {
     if (!s.hecha) {
       for (const campo of ["peso", "reps"]) {
         const inp = document.querySelector('input[data-in="' + campo + '"][data-e="' + ei + '"][data-s="' + si + '"]');
-        const v = inp ? (campo === "peso" ? parseFloat(inp.value) : parseInt(inp.value)) : NaN;
+        const v = inp ? (campo === "peso" ? leerNumero(inp.value) : parseInt(inp.value)) : NaN;
         if (inp && !isNaN(v) && v !== s[campo]) cambiarSerie(e, si, campo, v);
       }
     }
@@ -385,6 +386,36 @@ const ACCIONES = {
     guardar(); pintarSesion();
     toast(i >= 0 ? "Quitado de favoritos" : "★ Añadido a favoritos", i >= 0 ? "" : "ok");
   },
+  "abrir-famosas": function () { confirmar = ""; hojaFamosas(); },
+  "ver-famosa": function (k) {
+    const r = rutinaDesdePlantilla(k);
+    propuesta = r.rutina; cambiosFamosa = r.cambios; confirmar = "";
+    hojaPropuesta();
+  },
+  "cal-marcar": function (ei, k) {
+    const e = estado.activa.ejercicios[ei];
+    if (!Array.isArray(e.calHecho)) e.calHecho = [];
+    e.calHecho[k] = !e.calHecho[k];
+    guardar(); pintarSesion();
+    if (e.calHecho[k]) { sonar("serie"); const pendientes = seriesCalentamiento(e.id, (e.series.find(function (x) { return !x.tipo; }) || e.series[0]).peso).length - e.calHecho.filter(Boolean).length; if (!pendientes) apixDice("anima", "¡Calentamiento hecho!|Ahora, a por las series de verdad."); }
+  },
+  "cal-ocultar": function (ei) { estado.activa.ejercicios[ei].sinCalentamiento = true; guardar(); pintarSesion(); },
+  "hacer-copia": function () { hacerCopia(); },
+  "posponer-copia": function () { estado.ajustes.copiaPospuesta = hoy(); guardar(); pintar(); toast("Vale, te lo recordaré en 2 semanas"); },
+  "medida-grafica": function (c) { medidaGrafica = c; pintarProgreso(); },
+  "guardar-medidas": function () {
+    const v = {};
+    for (const c of CAMPOS_MEDIDAS) { const t = $("med-" + c[0]).value.trim(); v[c[0]] = t === "" ? null : leerNumero(t); }
+    const r = guardarMedidas(v);
+    if (!r.ok) { $("errMedidas").textContent = r.msg; return; }
+    guardar(); pintarProgreso(); toast("✓ Medidas guardadas", "ok");
+  },
+  "guia-series": function () { mostrarGuia(0); },
+  "guia-siguiente": function () {
+    if (pasoGuia >= pasosGuia().length - 1) { estado.ajustes.guiaSeriesVista = true; guardar(); mostrarGuia(-1); toast("¡Listo! Ya sabes registrar tus series 💪", "ok"); return; }
+    mostrarGuia(pasoGuia + 1);
+  },
+  "guia-saltar": function () { estado.ajustes.guiaSeriesVista = true; guardar(); mostrarGuia(-1); },
   "cerrar-apix": function () { $("apixPop").hidden = true; },
   "mover-ej": function (ei, dir) {
     copiaSesion();
@@ -465,7 +496,7 @@ const ACCIONES = {
   "periodo": function (d) { periodo = parseInt(d); pintarProgreso(); },
   "metrica": function (m) { metrica = m; pintarProgreso(); },
   "guardar-peso": function () {
-    const v = parseFloat($("nuevoPeso").value);
+    const v = leerNumero($("nuevoPeso").value);
     if (!(v >= 35 && v <= 250)) { $("errPeso").textContent = "Escribe un peso entre 35 y 250 kg."; return; }
     estado.pesoCorporal = estado.pesoCorporal.filter(function (x) { return x.fecha !== hoy(); });
     estado.pesoCorporal.push({ fecha: hoy(), kg: v });
@@ -582,7 +613,7 @@ const ACCIONES = {
     const a = estado.ajustes;
     a.descanso = parseInt($("aDescanso").value); a.descansoAislamiento = a.descanso; a.descansoCompuesto = parseInt($("aDescComp").value); a.formula1RM = $("aFormula").value; a.incremento = parseFloat($("aIncremento").value); a.incrementoMancuernas = parseFloat($("aIncMancuernas").value);
     a.privacidad = $("aPrivacidad").value; a.compartir = $("aCompartir").checked; a.mascota = $("aMascota").checked;
-    a.sonido = $("aSonido").checked; a.vibracion = $("aVibracion").checked;
+    a.sonido = $("aSonido").checked; a.calentamiento = $("aCalentamiento").checked; a.vibracion = $("aVibracion").checked;
     a.notif = { recordatorios: $("nRec").checked, racha: $("nRacha").checked, retos: $("nReto").checked, hora: parseInt($("nHora").value), records: $("nRecords").checked, rangos: $("nRangos").checked, amigos: a.notif.amigos, semanal: $("nSemanal").checked, ultimoAviso: a.notif.ultimoAviso || "" };
     guardar(); pintar();
     $("aOk").textContent = "Cambios guardados.";
@@ -665,13 +696,13 @@ document.addEventListener("change", function (ev) {
     copiaSesion();
     const e = estado.activa.ejercicios[d.e];
     if (d.in === "rpe") e.series[d.s].rpe = t.value ? parseFloat(t.value) : null;
-    else cambiarSerie(e, parseInt(d.s), d.in, d.in === "peso" ? parseFloat(t.value) : parseInt(t.value));
+    else cambiarSerie(e, parseInt(d.s), d.in, d.in === "peso" ? leerNumero(t.value) : parseInt(t.value));
     guardar();
     // Actualiza solo los números de las series siguientes, sin redibujar la pantalla
     e.series.forEach(function (x, j) {
       for (const campo of ["peso", "reps"]) {
         const inp = document.querySelector('input[data-in="' + campo + '"][data-e="' + d.e + '"][data-s="' + j + '"]');
-        if (inp && inp !== t) inp.value = x[campo];
+        if (inp && inp !== t) inp.value = campo === "peso" ? numero(x[campo]) : x[campo];
       }
     });
   }
@@ -697,6 +728,11 @@ document.addEventListener("change", function (ev) {
     guardar(); hojaEditarDia(parseInt(d.e));
   }
   if (d.cambio === "ej-grafica") { ejGrafica = t.value; pintarProgreso(); }
+  if (t.id === "importArchivo" && t.files && t.files[0]) {
+    const lector = new FileReader();
+    lector.onload = function () { $("importTxt").value = lector.result; toast("Archivo cargado. Pulsa «Importar» para restaurar."); };
+    lector.readAsText(t.files[0]);
+  }
   if (d.cambio === "grupo-volumen") { grupoVolumen = t.value; pintarProgreso(); }
   if (t.id === "gDias") {
     const cal = calendarioPorDefecto(parseInt(t.value));
@@ -786,6 +822,34 @@ function registrarServiceWorker() {
     recargado = true; location.reload();
   });
 }
+
+// Copia de seguridad en un archivo. En el móvil se abre el menú de compartir (Archivos, Drive, correo…);
+// si no se puede, se descarga el archivo.
+function hacerCopia() {
+  const nombre = "apex-gym-copia-" + hoy() + ".json";
+  const texto = exportarDatos();
+  const marcar = function () { estado.ajustes.ultimaCopia = hoy(); estado.ajustes.copiaPospuesta = ""; guardar(); pintar(); };
+  let archivo = null;
+  try { archivo = new File([texto], nombre, { type: "application/json" }); } catch (e) { }
+  if (archivo && navigator.canShare && navigator.canShare({ files: [archivo] })) {
+    navigator.share({ files: [archivo], title: "Copia de Apex Gym" }).then(function () { marcar(); toast("✓ Copia guardada", "ok"); }).catch(function (e) {
+      if (e && e.name === "AbortError") return;
+      descargarCopia(texto, nombre); marcar();
+    });
+    return;
+  }
+  descargarCopia(texto, nombre); marcar();
+  toast("✓ Copia descargada: " + nombre, "ok");
+}
+function descargarCopia(texto, nombre) {
+  const url = URL.createObjectURL(new Blob([texto], { type: "application/json" }));
+  const a = document.createElement("a");
+  a.href = url; a.download = nombre; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function () { URL.revokeObjectURL(url); }, 5000);
+}
+
+// Lee un número escrito con coma o con punto ("52,5" o "52.5")
+function leerNumero(texto) { return parseFloat(String(texto).replace(",", ".")); }
 
 let deshacerEditor = null;      // último ejercicio quitado de un día (para poder recuperarlo)
 // Lee las opciones avanzadas del paso 3 del generador (si están en pantalla)

@@ -198,3 +198,13 @@ Fecha: 1 de noviembre de 2026 · Respuesta a la revisión «Nuevos fallos encont
 - **Tabla de series:** Serie · Previa · Kg · Reps · ✓, editable fila a fila. La fila actual se resalta y debajo tiene botones −/+ kg y −/+ rep. Tocar «Previa» copia la marca anterior. Lo que escribes se guarda aunque pulses ✓ sin salir del campo. Botón grande «+ Añadir serie».
 - **Favoritos** (☆/★) en la cabecera del ejercicio durante el entreno.
 - **Terminar** pide confirmación y avisa de las series que faltan.
+
+## Anexo 2.7 · Calentamiento, copia de seguridad, medidas y rutinas famosas
+
+- **Series de calentamiento:** en los compuestos con carga, antes de la primera serie. Barra: barra sola × 10, 50 % × 5, 70 % × 3 (y 85 % × 1 si pasa de 100 kg). Máquina y mancuernas: 50 % × 8 y 75 % × 4. No cuentan para récords, rangos ni volumen. Se pueden ocultar o desactivar en Ajustes.
+- **Copia de seguridad:** aviso en Inicio cada 14 días («¿Guardamos una copia?»). Crea un archivo .json y abre el menú de compartir del móvil (Archivos, Drive, correo…) o lo descarga. Restaurar acepta el archivo directamente.
+- **Medidas corporales:** brazo, pecho, cintura y muslo, con gráfica y cambio desde la primera medida.
+- **Rutinas famosas:** Fuerza 5×5, PPL, Torso y pierna, Split clásico y Cuerpo completo para empezar. Se adaptan solas si falta una máquina en tu gimnasio.
+- **Arreglos:** los kilos y las medidas aceptan coma («52,5»), como el teclado del iPhone en español. Una copia con un descanso de 75 s ya no da error al restaurarla.
+- **Guía «Cómo registrar»:** la primera vez que entrenas, 7 pasos que resaltan cada parte de la tabla (Kg, Reps, Previa, ajuste rápido, ✓ y añadir serie). Se puede repetir con «¿Cómo se apunta?». Encima de la tabla, una línea dice qué peso apuntar según el material (barra + discos, UNA mancuerna, placa de la máquina, lastre, ayuda…), y la Academia lo explica en cada ejercicio.
+- **Pruebas:** 134 de 134.

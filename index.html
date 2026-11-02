@@ -337,6 +337,28 @@ body.destello-fin::after { content: ""; position: fixed; inset: 0; z-index: 28; 
 .icon-btn.fav { font-size: 1.1rem; color: var(--muted); }
 .icon-btn.fav.on { color: var(--warn); }
 
+/* Calentamiento, copia, medidas, rutinas famosas */
+.calentamiento { margin-top: 12px; padding: 10px 12px; border-radius: 14px; border: 1px dashed var(--fire); display: flex; flex-direction: column; gap: 8px; }
+.cal-filas { display: flex; flex-wrap: wrap; gap: 6px; }
+.cal-fila { display: flex; align-items: center; gap: 8px; background: var(--surface2); border-radius: 10px; padding: 8px 12px; font-weight: 700; font-size: .9rem; }
+.cal-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--muted); display: grid; place-items: center; font-size: .75rem; }
+.cal-fila.hecha { background: color-mix(in srgb, var(--fire) 18%, var(--surface2)); }
+.cal-fila.hecha .cal-check { background: var(--fire); border-color: var(--fire); color: #1b0d00; }
+.copia-aviso { border-color: var(--warn); }
+.cambios-medidas { gap: 6px; }
+.medidas-form { gap: 8px; }
+.accion-grande.fila { flex-direction: row; align-items: center; gap: 12px; width: 100%; }
+.famosa { text-align: left; display: flex; flex-direction: column; gap: 6px; width: 100%; }
+
+/* Guía de registro */
+.ayuda-registro { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: .82rem; color: var(--muted); }
+.ayuda-registro span { flex: 1; }
+#guia { position: fixed; left: 0; right: 0; bottom: calc(70px + env(safe-area-inset-bottom, 0px)); z-index: 31; display: flex; justify-content: center; padding: 0 10px; pointer-events: none; }
+.guia-caja { pointer-events: auto; width: 100%; max-width: 520px; background: var(--surface3); border: 2px solid var(--accent); border-radius: 18px; padding: 14px 16px; box-shadow: 0 16px 40px rgba(0,0,0,.55); animation: apix-entra-abajo .3s ease-out; }
+.guia-caja h3 { margin: 4px 0 6px; }
+.guia-resalta { position: relative; z-index: 30; box-shadow: 0 0 0 3px var(--accent), 0 0 0 9999px rgba(0,0,0,.55) !important; border-radius: 12px; }
+@keyframes apix-entra-abajo { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
 /* Temporizador */
 #toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(80px + env(safe-area-inset-bottom, 0px)); z-index: 30; max-width: min(92vw, 480px);
   background: var(--fg); color: var(--bg); padding: 11px 16px; border-radius: 12px; font-weight: 700; font-size: .9rem; box-shadow: 0 10px 30px rgba(0,0,0,.35); animation: toast-entra .25s ease-out; }
@@ -433,6 +455,7 @@ nav.tabs button.on svg { color: var(--accent); filter: drop-shadow(0 0 6px var(-
 </div></div>
 
 <div id="toast" hidden role="status" aria-live="polite"></div>
+<div id="guia" hidden></div>
 <button id="apixPop" hidden data-act="cerrar-apix" aria-live="polite"></button>
 
 <div id="hoja" hidden><div class="sheet" id="hojaContenido"></div></div>
