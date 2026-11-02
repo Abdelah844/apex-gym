@@ -5,7 +5,7 @@
 // Si cambias algún archivo, sube el número de VERSION para que los móviles descarguen la nueva.
 // =====================================================
 
-const VERSION = "apex-gym-2.6.0";
+const VERSION = "apex-gym-2.6.1";
 
 // Archivos que se guardan nada más instalar la app
 const ARCHIVOS = [
@@ -14,37 +14,50 @@ const ARCHIVOS = [
   "./iconos/icono-192.png", "./iconos/icono-512.png"
 ];
 
-// 1. Instalar: guarda los archivos básicos
+// 1. Instalar: descarga los archivos básicos SIEMPRE del servidor ("reload"),
+//    nunca de la memoria del navegador, para no guardar una versión vieja.
 self.addEventListener("install", function (evento) {
-  evento.waitUntil(caches.open(VERSION).then(function (cache) { return cache.addAll(ARCHIVOS); }));
+  evento.waitUntil(caches.open(VERSION).then(function (cache) {
+    return cache.addAll(ARCHIVOS.map(function (url) { return new Request(url, { cache: "reload" }); }));
+  }));
   self.skipWaiting();
 });
 
-// 2. Activar: borra las cachés de versiones antiguas
+// 2. Activar: borra las copias de versiones antiguas y toma el control enseguida
 self.addEventListener("activate", function (evento) {
   evento.waitUntil(caches.keys().then(function (nombres) {
     return Promise.all(nombres.filter(function (n) { return n !== VERSION; }).map(function (n) { return caches.delete(n); }));
-  }));
-  self.clients.claim();
+  }).then(function () { return self.clients.claim(); }));
 });
 
 // 3. Cada vez que la app pide un archivo:
-//    - Si está guardado, lo da al momento (funciona sin internet).
-//    - Si no, lo descarga y guarda una copia (así las fotos se guardan cuando las ves).
+//    - Fotos e iconos (no cambian): primero la copia guardada, así cargan al instante.
+//    - Todo lo demás (código y página): primero internet, para tener siempre la última versión.
+//      Si no hay internet, se usa la copia guardada.
 self.addEventListener("fetch", function (evento) {
   if (evento.request.method !== "GET") return;
-  if (new URL(evento.request.url).origin !== self.location.origin) return;   // las fuentes de Google, que las gestione el navegador
-  evento.respondWith(caches.match(evento.request, { ignoreSearch: true }).then(function (guardado) {
-    if (guardado) return guardado;
-    return fetch(evento.request).then(function (respuesta) {
-      if (respuesta.ok) {
-        const copia = respuesta.clone();
-        caches.open(VERSION).then(function (cache) { cache.put(evento.request, copia); });
-      }
-      return respuesta;
-    });
+  const url = new URL(evento.request.url);
+  if (url.origin !== self.location.origin) return;
+  const esImagen = /\.(jpg|png)$/.test(url.pathname);
+  if (esImagen) {
+    evento.respondWith(caches.match(evento.request).then(function (guardado) {
+      return guardado || fetch(evento.request).then(function (r) { guardarCopia(evento.request, r); return r; });
+    }));
+    return;
+  }
+  evento.respondWith(fetch(evento.request, { cache: "no-cache" }).then(function (r) {
+    guardarCopia(evento.request, r);
+    return r;
+  }).catch(function () {
+    return caches.match(evento.request, { ignoreSearch: true }).then(function (g) { return g || caches.match("./index.html"); });
   }));
 });
+
+function guardarCopia(peticion, respuesta) {
+  if (!respuesta || !respuesta.ok) return;
+  const copia = respuesta.clone();
+  caches.open(VERSION).then(function (cache) { cache.put(peticion, copia); });
+}
 
 // 4. Al tocar un aviso, abre la app (o la trae al frente si ya estaba abierta)
 self.addEventListener("notificationclick", function (evento) {

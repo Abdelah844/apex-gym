@@ -732,7 +732,16 @@ window.addEventListener("appinstalled", function () { avisoInstalar = null; });
 function registrarServiceWorker() {
   const seguro = location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
   if (!("serviceWorker" in navigator) || !seguro || window.top !== window.self) return;
-  navigator.serviceWorker.register("sw.js").catch(function () { /* si falla, la app sigue funcionando con internet */ });
+  navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then(function (reg) {
+    reg.update();                                                     // busca versión nueva al abrir
+    document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") reg.update(); });
+  }).catch(function () { /* si falla, la app sigue funcionando con internet */ });
+  // Cuando la versión nueva toma el control, recarga una vez (si no estás a mitad de escribir algo)
+  let recargado = false;
+  navigator.serviceWorker.addEventListener("controllerchange", function () {
+    if (recargado || !$("hoja").hidden) return;
+    recargado = true; location.reload();
+  });
 }
 
 let deshacerEditor = null;      // último ejercicio quitado de un día (para poder recuperarlo)
