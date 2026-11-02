@@ -12,69 +12,115 @@
 | Apex Gym | Free Exercise DB |
 |---|---|
 | abductores | Thigh_Abductor |
+| aductor-polea | Cable_Hip_Adduction |
 | aductores | Thigh_Adductor |
+| aperturas-mancuernas | Dumbbell_Flyes |
 | aperturas-polea | Cable_Crossover |
+| aperturas-polea-baja | Low_Cable_Crossover |
+| buenos-dias | Good_Morning |
 | contractora | Butterfly |
+| crunch | Crunches |
+| crunch-maquina | Ab_Crunch_Machine |
 | crunch-polea | Cable_Crunch |
+| crunch-polea-pie | Standing_Rope_Crunch |
 | curl-barra | Barbell_Curl |
+| curl-barra-z | EZ-Bar_Curl |
+| curl-concentrado | Concentration_Curls |
+| curl-femoral-de-pie | Standing_Leg_Curl |
 | curl-femoral-sentado | Seated_Leg_Curl |
 | curl-femoral-tumbado | Lying_Leg_Curls |
 | curl-inverso | Reverse_Barbell_Curl |
 | curl-mancuernas | Dumbbell_Bicep_Curl |
+| curl-maquina | Machine_Preacher_Curls |
 | curl-martillo | Hammer_Curls |
+| curl-martillo-cuerda | Cable_Hammer_Curls_-_Rope_Attachment |
 | curl-muneca | Palms-Up_Dumbbell_Wrist_Curl_Over_A_Bench |
+| curl-muneca-polea | Cable_Wrist_Curl |
 | curl-polea | Standing_Biceps_Cable_Curl |
+| curl-predicador | Preacher_Curl |
 | dominadas | Pullups |
+| dominadas-asistidas | Band_Assisted_Pull-Up (foto de referencia: mismo movimiento con otro material) |
+| dominadas-supinas | Chin-Up |
 | elevacion-piernas | Hanging_Leg_Raise |
+| elevaciones-frontales-polea | Front_Cable_Raise |
 | elevaciones-laterales | Side_Lateral_Raise |
 | elevaciones-polea | Cable_Seated_Lateral_Raise |
+| encogimientos-mancuernas | Dumbbell_Shrug |
+| encogimientos-maquina | Leverage_Shrug |
 | extension-cuadriceps | Leg_Extensions |
+| extension-cuerda | Triceps_Pushdown_-_Rope_Attachment |
+| extension-cuerda-nuca | Cable_Rope_Overhead_Triceps_Extension |
+| extension-inversa-polea | Reverse_Grip_Triceps_Pushdown |
 | extension-nuca | Standing_Dumbbell_Triceps_Extension |
 | extension-polea | Triceps_Pushdown |
+| extension-una-pierna | Single-Leg_Leg_Extension |
 | face-pull | Face_Pull |
 | flexiones | Pushups |
 | fondos | Dips_-_Chest_Version |
+| fondos-asistidos | Dips_-_Chest_Version (foto de referencia: mismo movimiento con otro material) |
+| fondos-banco | Bench_Dips |
 | gemelo-sentado | Seated_Calf_Raise |
 | gemelos-mancuerna | Standing_Dumbbell_Calf_Raise |
 | gemelos-maquina | Standing_Calf_Raises |
+| gemelos-multipower | Smith_Machine_Calf_Raise |
+| gemelos-prensa | Calf_Press_On_The_Leg_Press_Machine |
 | hack | Hack_Squat |
 | hip-thrust | Barbell_Hip_Thrust |
+| hip-thrust-maquina | Barbell_Hip_Thrust (foto de referencia: mismo movimiento con otro material) |
 | hiperextensiones | Hyperextensions_Back_Extensions |
 | jalon | Wide-Grip_Lat_Pulldown |
+| jalon-estrecho | Close-Grip_Front_Lat_Pulldown |
+| jalon-supino | Underhand_Cable_Pulldowns |
+| pajaros-mancuernas | Reverse_Flyes |
 | pajaros-maquina | Reverse_Machine_Flyes |
+| pajaros-polea | Cable_Rear_Delt_Fly |
+| patada-gluteo | One-Legged_Cable_Kickback |
 | peso-muerto | Barbell_Deadlift |
+| peso-muerto-rigidas-multipower | Smith_Machine_Stiff-Legged_Deadlift |
 | peso-muerto-rumano | Romanian_Deadlift |
 | prensa | Leg_Press |
+| press-arnold | Arnold_Dumbbell_Press |
 | press-banca | Barbell_Bench_Press_-_Medium_Grip |
+| press-banca-multipower | Smith_Machine_Bench_Press |
+| press-cerrado-multipower | Smith_Machine_Close-Grip_Bench_Press |
+| press-declinado-maquina | Leverage_Decline_Chest_Press |
 | press-frances | EZ-Bar_Skullcrusher |
 | press-hombro-mancuernas | Seated_Dumbbell_Press |
 | press-hombro-maquina | Machine_Shoulder_Military_Press |
+| press-hombro-multipower | Smith_Machine_Overhead_Shoulder_Press |
+| press-inclinado-barra | Barbell_Incline_Bench_Press_-_Medium_Grip |
 | press-inclinado-mancuernas | Incline_Dumbbell_Press |
+| press-inclinado-maquina | Leverage_Incline_Chest_Press |
 | press-inclinado-multipower | Smith_Machine_Incline_Bench_Press |
 | press-maquina | Machine_Bench_Press |
 | press-militar | Standing_Military_Press |
+| press-pecho-polea | Cable_Chest_Press |
+| puente-gluteo | Barbell_Glute_Bridge |
+| pull-through | Pull_Through |
+| pullover-polea | Straight-Arm_Pulldown |
+| remo-alto-maquina | Leverage_High_Row |
 | remo-barra | Bent_Over_Barbell_Row |
 | remo-mancuerna | One-Arm_Dumbbell_Row |
+| remo-maquina | Leverage_Iso_Row |
+| remo-menton-polea | Upright_Cable_Row |
+| remo-multipower | Smith_Machine_Bent_Over_Row |
 | remo-pecho-apoyado | Lying_T-Bar_Row |
 | remo-polea | Seated_Cable_Rows |
+| remo-polea-una-mano | Seated_One-arm_Cable_Pulley_Rows |
 | rueda-abdominal | Ab_Roller |
 | sentadilla | Barbell_Full_Squat |
+| sentadilla-bulgara | Split_Squat_with_Dumbbells |
 | sentadilla-goblet | Goblet_Squat |
 | sentadilla-multipower | Smith_Machine_Squat |
+| step-up | Dumbbell_Step_Ups |
 | triceps-maquina | Machine_Triceps_Extension |
+| zancada-multipower | Smith_Single-Leg_Split_Squat |
 | zancadas | Dumbbell_Lunges |
+| zancadas-caminando | Barbell_Walking_Lunge |
 
-### Ejercicios sin foto (solo animación) y motivo
+### Ejercicios sin foto
 
-| Apex Gym | Motivo |
-|---|---|
-| curl-maquina | la foto es una máquina de curl por encima de la cabeza, distinta a la de banco Scott |
-| dominadas-asistidas | la foto es con banda elástica, no con máquina |
-| fondos-asistidos | la foto es otra máquina (fondos sentado) |
-| hip-thrust-maquina | la foto es un puente con barra, no la máquina |
-| patada-gluteo | la foto es sin polea |
-| remo-maquina | la foto es una máquina de remo alto, con otro ángulo de tirón |
-| sentadilla-bulgara | la foto es una zancada sin el pie trasero elevado |
+Desde la versión 2.5 todos los ejercicios tienen foto. Tres de ellas son **fotos de referencia**: muestran el mismo movimiento con otro material (banda elástica, fondos libres o barra) y la app lo avisa debajo de la foto.
 
 ## Animaciones
 

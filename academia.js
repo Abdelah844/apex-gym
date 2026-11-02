@@ -82,7 +82,55 @@ const TUTORIALES = {
   "hip-thrust-maquina": { anim: "puente", prep: ["Ajusta el respaldo a la altura de las escápulas.", "Coloca el cinturón o la almohadilla sobre la cadera."], err: ["Mirar al techo y arquear el cuello."], seg: [] },
   "sentadilla-multipower": { anim: "sentadilla", prep: ["Pies un poco por delante de la barra.", "Ajusta los topes de seguridad."], err: ["Dejar caer la barra abajo."], seg: ["Bloquea siempre la barra girándola al terminar."] },
   "press-inclinado-multipower": { anim: "press-horizontal", prep: ["Banco a 30 grados centrado bajo la barra.", "Topes por encima del pecho."], err: ["Rebotar la barra en el pecho."], seg: ["Bloquea siempre la barra girándola al terminar."] },
-  "hiperextensiones": { anim: "lumbar", prep: ["Apoyo justo por debajo de la cadera.", "Talones bien sujetos."], err: ["Hacerlo rápido y con impulso."], seg: ["Si tienes molestias lumbares, consulta antes con un profesional."] }
+  "hiperextensiones": { anim: "lumbar", prep: ["Apoyo justo por debajo de la cadera.", "Talones bien sujetos."], err: ["Hacerlo rápido y con impulso."], seg: ["Si tienes molestias lumbares, consulta antes con un profesional."] },
+  // Ampliación 2.5
+  "press-banca-multipower": { anim: "press-horizontal", prep: ["Centra el banco: la barra baja a la parte baja del pecho.", "Pon los topes por encima del pecho."], err: ["Rebotar la barra en el pecho."], seg: ["Bloquea siempre la barra girándola al terminar."] },
+  "press-inclinado-maquina": { anim: "press-horizontal", prep: ["Ajusta el asiento: asas a la altura de la parte alta del pecho."], err: ["Despegar los hombros del respaldo."], seg: [] },
+  "press-declinado-maquina": { anim: "press-horizontal", prep: ["Ajusta el asiento: asas a la altura de la parte baja del pecho."], err: ["Bloquear los codos de golpe."], seg: [] },
+  "press-inclinado-barra": { anim: "press-horizontal", prep: ["Banco a unos 30 grados.", "Agarre algo más abierto que los hombros."], err: ["Levantar la cadera del banco."], seg: ["Con pesos altos, entrena con alguien que te ayude o con topes."] },
+  "aperturas-mancuernas": { anim: "aperturas", prep: ["Banco plano y mancuernas ligeras.", "Codos un poco doblados y fijos."], err: ["Bajar los brazos por debajo del banco."], seg: ["Si notas tirón en el hombro, reduce el recorrido."] },
+  "aperturas-polea-baja": { anim: "aperturas", prep: ["Poleas en la posición más baja.", "Un pie adelantado para estar estable."], err: ["Encoger los hombros."], seg: [] },
+  "press-pecho-polea": { anim: "press-horizontal", prep: ["Poleas a la altura del pecho.", "Espalda apoyada si hay banco."], err: ["Arquear la espalda."], seg: [] },
+  "jalon-estrecho": { anim: "jalon", prep: ["Agarre estrecho (triángulo o barra corta).", "Ajusta el rodillo sobre los muslos."], err: ["Echarse muy atrás."], seg: [] },
+  "jalon-supino": { anim: "jalon", prep: ["Palmas hacia ti, manos a la anchura de los hombros."], err: ["Tirar solo con los brazos."], seg: [] },
+  "pullover-polea": { anim: "pullover", prep: ["Polea alta con barra recta o cuerda.", "Da un paso atrás e inclina un poco el tronco."], err: ["Doblar los codos."], seg: [] },
+  "remo-alto-maquina": { anim: "jalon", prep: ["Ajusta el asiento y el apoyo de los muslos."], err: ["Encoger los hombros."], seg: [] },
+  "remo-polea-una-mano": { anim: "remo", prep: ["Asa individual en la polea.", "Rodillas un poco dobladas."], err: ["Girar el tronco."], seg: [] },
+  "remo-multipower": { anim: "remo-inclinado", prep: ["Tronco inclinado unos 45 grados y rodillas un poco dobladas."], err: ["Redondear la espalda."], seg: ["Si te molesta la espalda baja, usa el remo con pecho apoyado."] },
+  "dominadas-supinas": { anim: "dominada", prep: ["Palmas hacia ti, manos a la anchura de los hombros."], err: ["No estirar los brazos abajo."], seg: ["Si aún no haces 5, usa las dominadas asistidas."] },
+  "encogimientos-mancuernas": { anim: "encogimiento", prep: ["Mancuernas a los lados del cuerpo."], err: ["Girar los hombros."], seg: [] },
+  "encogimientos-maquina": { anim: "encogimiento", prep: ["Ajusta la altura de las asas: brazos estirados."], err: ["Doblar los codos."], seg: [] },
+  "press-hombro-multipower": { anim: "press-vertical", prep: ["Banco casi vertical y centrado bajo la barra."], err: ["Arquear la espalda."], seg: ["Bloquea siempre la barra girándola al terminar."] },
+  "press-arnold": { anim: "press-vertical", prep: ["Respaldo casi vertical.", "Mancuernas delante de la cara, palmas hacia ti."], err: ["Hacer el giro demasiado rápido."], seg: [] },
+  "elevaciones-frontales-polea": { anim: "elevacion-frontal", prep: ["Polea baja con barra o cuerda."], err: ["Subir por encima de los ojos."], seg: [] },
+  "pajaros-polea": { anim: "aperturas", inv: true, prep: ["Las dos poleas en lo más alto, cables cruzados."], err: ["Mover el tronco."], seg: [] },
+  "pajaros-mancuernas": { anim: "aperturas", inv: true, prep: ["Pecho apoyado en un banco inclinado si te cuesta mantener la espalda recta."], err: ["Encoger los hombros."], seg: [] },
+  "remo-menton-polea": { anim: "remo-menton", prep: ["Polea baja con barra recta.", "Agarre a la anchura de los hombros."], err: ["Subir las manos por encima del pecho."], seg: ["Si notas pinchazos en el hombro, para y cambia de ejercicio."] },
+  "curl-barra-z": { anim: "curl", prep: ["Agarre en la parte inclinada de la barra."], err: ["Subir los codos hacia delante."], seg: [] },
+  "curl-predicador": { anim: "curl", prep: ["Ajusta el asiento: axilas sobre el borde del apoyo."], err: ["Estirar del todo de golpe abajo."], seg: [] },
+  "curl-concentrado": { anim: "curl", prep: ["Siéntate en un banco con las piernas abiertas."], err: ["Balancear el tronco."], seg: [] },
+  "curl-martillo-cuerda": { anim: "curl", prep: ["Polea baja con cuerda."], err: ["Separar los codos del cuerpo."], seg: [] },
+  "extension-cuerda": { anim: "extension-triceps", prep: ["Polea alta con cuerda y tronco un poco inclinado."], err: ["Mover los codos."], seg: [] },
+  "extension-cuerda-nuca": { anim: "extension-nuca", prep: ["Polea a media altura o baja, de espaldas a la máquina.", "Un pie adelantado."], err: ["Abrir los codos."], seg: [] },
+  "extension-inversa-polea": { anim: "extension-triceps", prep: ["Polea alta con barra recta, palmas hacia arriba."], err: ["Doblar las muñecas."], seg: [] },
+  "press-cerrado-multipower": { anim: "press-horizontal", prep: ["Manos a la anchura de los hombros.", "Topes por encima del pecho."], err: ["Abrir los codos."], seg: ["Bloquea siempre la barra girándola al terminar."] },
+  "fondos-banco": { anim: "fondos", prep: ["Banco estable que no se mueva.", "Piernas dobladas para empezar."], err: ["Bajar demasiado."], seg: ["Si te molesta el hombro, reduce el recorrido."] },
+  "curl-muneca-polea": { anim: "muneca", prep: ["Polea baja con barra corta.", "Antebrazos apoyados en los muslos."], err: ["Mover los codos."], seg: [] },
+  "crunch-maquina": { anim: "crunch", prep: ["Ajusta el asiento y los apoyos de los pies."], err: ["Tirar con los brazos."], seg: [] },
+  "crunch-polea-pie": { anim: "crunch", prep: ["Polea alta con cuerda.", "Pies a la anchura de la cadera y rodillas un poco dobladas."], err: ["Bajar con los brazos."], seg: [] },
+  "crunch": { anim: "crunch", prep: ["Túmbate en una esterilla.", "Manos en el pecho o junto a las orejas."], err: ["Tirar del cuello."], seg: [] },
+  "extension-una-pierna": { anim: "extension-rodilla", prep: ["Rodilla alineada con el eje de la máquina."], err: ["Levantar la cadera."], seg: [] },
+  "zancadas-caminando": { anim: "zancada", prep: ["Espacio libre delante.", "Barra bien colocada en la espalda."], err: ["Dar pasos cortos."], seg: ["Empieza con poco peso hasta controlar el equilibrio."] },
+  "step-up": { anim: "zancada", prep: ["Banco estable a la altura de la rodilla o algo menos."], err: ["Impulsarte con la pierna de abajo."], seg: ["Usa un banco que no se mueva."] },
+  "zancada-multipower": { anim: "zancada", prep: ["Un pie adelantado y otro atrasado, separados a la anchura de la cadera."], err: ["Poner los pies en línea."], seg: ["Bloquea siempre la barra girándola al terminar."] },
+  "curl-femoral-de-pie": { anim: "curl-femoral", prep: ["Rodilla alineada con el eje y rodillo detrás del tobillo."], err: ["Mover la cadera."], seg: [] },
+  "peso-muerto-rigidas-multipower": { anim: "bisagra", prep: ["Pies a la anchura de la cadera.", "Rodillas un poco dobladas y fijas."], err: ["Redondear la espalda."], seg: ["Pon los topes a la altura más baja que vayas a bajar."] },
+  "buenos-dias": { anim: "bisagra", prep: ["Barra en la parte alta de la espalda, no en el cuello."], err: ["Redondear la espalda."], seg: ["Si tienes molestias lumbares, cambia a hiperextensiones."] },
+  "pull-through": { anim: "bisagra", prep: ["Polea baja con cuerda.", "Da dos pasos hacia delante para tener tensión."], err: ["Tirar con los brazos."], seg: [] },
+  "puente-gluteo": { anim: "puente", prep: ["Almohadilla en la barra.", "Pies cerca de los glúteos."], err: ["Empujar con las puntas."], seg: [] },
+  "gemelos-prensa": { anim: "gemelo", prep: ["Puntas en el borde inferior de la plataforma.", "Seguros puestos."], err: ["Doblar las rodillas."], seg: ["Nunca quites los seguros mientras haces gemelos."] },
+  "gemelos-multipower": { anim: "gemelo", prep: ["Disco o escalón bajo las puntas."], err: ["Recorrido corto."], seg: ["Bloquea siempre la barra girándola al terminar."] },
+  "aductor-polea": { anim: "abduccion", inv: true, prep: ["Tobillera en la polea baja."], err: ["Girar la cadera."], seg: [] }
 };
 
 // ---------- Animaciones (dibujos propios) ----------
@@ -178,7 +226,20 @@ const ANIMACIONES = {
     b: { E1: [80, 52], W1: [96, 58], E2: [120, 52], W2: [104, 58] } },
   "abduccion": { vista: "frente", props: [[70, 104, 130, 104]],
     a: { H: [100, 30], S1: [84, 52], S2: [116, 52], E1: [80, 78], W1: [84, 100], E2: [120, 78], W2: [116, 100], Hp1: [90, 100], Hp2: [110, 100], K1: [94, 118], K2: [106, 118], A1: [94, 150], A2: [106, 150] },
-    b: { K1: [74, 116], K2: [126, 116], A1: [80, 150], A2: [120, 150] } }
+    b: { K1: [74, 116], K2: [126, 116], A1: [80, 150], A2: [120, 150] } },
+  // Ampliación 2.5
+  "encogimiento": { vista: "frente", carga: "W",
+    a: { H: [100, 22], S1: [86, 40], S2: [114, 40], E1: [84, 64], W1: [84, 90], E2: [116, 64], W2: [116, 90], Hp1: [92, 86], Hp2: [108, 86], K1: [92, 118], K2: [108, 118], A1: [92, 150], A2: [108, 150] },
+    b: { S1: [86, 32], S2: [114, 32], E1: [84, 56], W1: [84, 82], E2: [116, 56], W2: [116, 82] } },
+  "remo-menton": { vista: "frente", carga: "W", cable: [100, 150],
+    a: { H: [100, 22], S1: [86, 40], S2: [114, 40], E1: [86, 64], W1: [97, 88], E2: [114, 64], W2: [103, 88], Hp1: [92, 86], Hp2: [108, 86], K1: [92, 118], K2: [108, 118], A1: [92, 150], A2: [108, 150] },
+    b: { E1: [64, 38], W1: [95, 46], E2: [136, 38], W2: [105, 46] } },
+  "elevacion-frontal": { vista: "lado", carga: "W", cable: [80, 150],
+    a: { H: [100, 16], S: [100, 29], E: [102, 56], W: [104, 82], Hp: [100, 74], K: [100, 112], A: [100, 150], T: [112, 150] },
+    b: { E: [126, 30], W: [152, 26] } },
+  "pullover": { vista: "lado", carga: "W", cable: [168, 0],
+    a: { H: [102, 18], S: [98, 31], E: [120, 18], W: [142, 8], Hp: [92, 76], K: [96, 112], A: [94, 150], T: [106, 150] },
+    b: { E: [108, 58], W: [112, 84] } }
 };
 
 // ---------- Fotos reales (dominio público) ----------
@@ -237,18 +298,73 @@ const FOTOS = {
   "sentadilla-goblet": "Goblet_Squat",
   "sentadilla-multipower": "Smith_Machine_Squat",
   "triceps-maquina": "Machine_Triceps_Extension",
-  "zancadas": "Dumbbell_Lunges"
+  "zancadas": "Dumbbell_Lunges",
+  // Ampliación 2.5
+  "patada-gluteo": "One-Legged_Cable_Kickback",
+  "remo-maquina": "Leverage_Iso_Row",
+  "curl-maquina": "Machine_Preacher_Curls",
+  "sentadilla-bulgara": "Split_Squat_with_Dumbbells",
+  "dominadas-asistidas": "Band_Assisted_Pull-Up",
+  "fondos-asistidos": "Dips_-_Chest_Version",
+  "hip-thrust-maquina": "Barbell_Hip_Thrust",
+  "press-banca-multipower": "Smith_Machine_Bench_Press",
+  "press-inclinado-maquina": "Leverage_Incline_Chest_Press",
+  "press-declinado-maquina": "Leverage_Decline_Chest_Press",
+  "press-inclinado-barra": "Barbell_Incline_Bench_Press_-_Medium_Grip",
+  "aperturas-mancuernas": "Dumbbell_Flyes",
+  "aperturas-polea-baja": "Low_Cable_Crossover",
+  "press-pecho-polea": "Cable_Chest_Press",
+  "jalon-estrecho": "Close-Grip_Front_Lat_Pulldown",
+  "jalon-supino": "Underhand_Cable_Pulldowns",
+  "pullover-polea": "Straight-Arm_Pulldown",
+  "remo-alto-maquina": "Leverage_High_Row",
+  "remo-polea-una-mano": "Seated_One-arm_Cable_Pulley_Rows",
+  "remo-multipower": "Smith_Machine_Bent_Over_Row",
+  "dominadas-supinas": "Chin-Up",
+  "encogimientos-mancuernas": "Dumbbell_Shrug",
+  "encogimientos-maquina": "Leverage_Shrug",
+  "press-hombro-multipower": "Smith_Machine_Overhead_Shoulder_Press",
+  "press-arnold": "Arnold_Dumbbell_Press",
+  "elevaciones-frontales-polea": "Front_Cable_Raise",
+  "pajaros-polea": "Cable_Rear_Delt_Fly",
+  "pajaros-mancuernas": "Reverse_Flyes",
+  "remo-menton-polea": "Upright_Cable_Row",
+  "curl-barra-z": "EZ-Bar_Curl",
+  "curl-predicador": "Preacher_Curl",
+  "curl-concentrado": "Concentration_Curls",
+  "curl-martillo-cuerda": "Cable_Hammer_Curls_-_Rope_Attachment",
+  "extension-cuerda": "Triceps_Pushdown_-_Rope_Attachment",
+  "extension-cuerda-nuca": "Cable_Rope_Overhead_Triceps_Extension",
+  "extension-inversa-polea": "Reverse_Grip_Triceps_Pushdown",
+  "press-cerrado-multipower": "Smith_Machine_Close-Grip_Bench_Press",
+  "fondos-banco": "Bench_Dips",
+  "curl-muneca-polea": "Cable_Wrist_Curl",
+  "crunch-maquina": "Ab_Crunch_Machine",
+  "crunch": "Crunches",
+  "crunch-polea-pie": "Standing_Rope_Crunch",
+  "extension-una-pierna": "Single-Leg_Leg_Extension",
+  "zancadas-caminando": "Barbell_Walking_Lunge",
+  "step-up": "Dumbbell_Step_Ups",
+  "zancada-multipower": "Smith_Single-Leg_Split_Squat",
+  "curl-femoral-de-pie": "Standing_Leg_Curl",
+  "peso-muerto-rigidas-multipower": "Smith_Machine_Stiff-Legged_Deadlift",
+  "buenos-dias": "Good_Morning",
+  "pull-through": "Pull_Through",
+  "puente-gluteo": "Barbell_Glute_Bridge",
+  "gemelos-prensa": "Calf_Press_On_The_Leg_Press_Machine",
+  "gemelos-multipower": "Smith_Machine_Calf_Raise",
+  "aductor-polea": "Cable_Hip_Adduction"
 };
 
 // Ejercicios sin foto y por qué (se muestra solo la animación)
-const SIN_FOTO = {
-  "dominadas-asistidas": "la foto es con banda elástica, no con máquina",
-  "fondos-asistidos": "la foto es otra máquina (fondos sentado)",
-  "hip-thrust-maquina": "la foto es un puente con barra, no la máquina",
-  "patada-gluteo": "la foto es sin polea",
-  "sentadilla-bulgara": "la foto es una zancada sin el pie trasero elevado",
-  "remo-maquina": "la foto es una máquina de remo alto, con otro ángulo de tirón",
-  "curl-maquina": "la foto es una máquina de curl por encima de la cabeza, distinta a la de banco Scott"
+const SIN_FOTO = {};
+
+// Fotos de referencia: muestran el MISMO movimiento hecho con otro material.
+// Se avisa debajo de la foto para que nadie se confunda de máquina.
+const FOTO_REFERENCIA = {
+  "dominadas-asistidas": "La foto usa una banda elástica en vez de la máquina: el movimiento es el mismo.",
+  "fondos-asistidos": "La foto son fondos libres: en la máquina haces lo mismo con las rodillas apoyadas.",
+  "hip-thrust-maquina": "La foto es con barra: en la máquina el movimiento de cadera es el mismo."
 };
 
 function fotosDe(id) {
