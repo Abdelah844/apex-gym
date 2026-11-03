@@ -177,7 +177,7 @@ function graficaBarras(etiquetas, valores, unidad) {
 function pintarBienvenida() {
   $("tabs").hidden = true;
   $("app").innerHTML =
-    '<div class="welcome">' + selectorIdioma() +
+    '<div class="welcome">' +
       insignia(8, "logo") +
       '<div><h1>Apex Gym</h1><p class="muted" style="font-size:1rem;margin-top:6px">Registra tus entrenos, sigue tu progreso y sube de rango con datos reales.</p></div>' +
       '<button class="btn" data-act="ir-registro">Crear mi perfil</button>' +
@@ -270,6 +270,9 @@ function pintarRegistro() {
     dias: 3, duracion: 60, lugar: "gimnasio", equipo: ["barra", "mancuernas", "maquina", "polea", "corporal"], evitar: "", lesiones: "" };
   $("app").innerHTML = '<div class="stack" style="padding-top:8px">' +
     '<div><p class="label">Paso 1 de 1</p><h1>Tu perfil</h1><p class="muted" style="margin-top:6px">Con estos datos creamos tu primera rutina. Puedes cambiarlos cuando quieras.</p></div>' +
+    '<div class="card stack tight"><label class="f">🌐 Idioma · Language · Langue<select id="fIdioma" data-no-traducir>' +
+      Object.keys(IDIOMAS).map(function (k) { return '<option value="' + k + '"' + (k === IDIOMA_ACTUAL ? " selected" : "") + '>' + IDIOMAS[k] + '</option>'; }).join("") +
+      '</select></label><p class="muted small">Puedes cambiarlo cuando quieras en Ajustes.</p></div>' +
     '<div class="card stack">' + formPerfil(vacio) + '</div>' +
     '<label class="check priv-ok"><input type="checkbox" id="fPrivacidad"><span>He leído y acepto la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad y las condiciones</a>. Tengo 14 años o más.</span></label>' +
     '<p class="err" id="fPrivError"></p>' +

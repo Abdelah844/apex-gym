@@ -8526,5 +8526,9 @@ const TRADUCCIONES = {
 "o": [
 "or",
 "ou"
+],
+"Puedes cambiarlo cuando quieras en Ajustes.": [
+"You can change it whenever you like in Settings.",
+"Tu peux le changer quand tu veux dans Réglages."
 ]
 };

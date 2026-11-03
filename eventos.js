@@ -873,6 +873,11 @@ document.addEventListener("input", function (ev) {
 });
 
 document.addEventListener("change", function (ev) {
+  if (ev.target.id === "fIdioma") {
+    try { sessionStorage.setItem("apex-abrir-registro", "1"); } catch (e) { }
+    cambiarIdioma(ev.target.value);
+    return;
+  }
   const t = ev.target, d = t.dataset;
   if (d.in === "peso" || d.in === "reps" || d.in === "rpe") {
     copiaSesion();
@@ -1077,6 +1082,8 @@ iniciarTraductor();       // idiomas: traduce la pantalla si no es español (tra
 cargar();
 if (estado && estado.activa) { sesionRecuperada = true; tab = "entrenar"; }
 pintar();
+// Si se acaba de cambiar el idioma desde el registro, se vuelve a abrir el registro
+try { if (!estado && sessionStorage.getItem("apex-abrir-registro")) { sessionStorage.removeItem("apex-abrir-registro"); pintarRegistro(); } } catch (e) { }
 reanudarDescanso();
 registrarServiceWorker();
 abrirEnlaceAmigo();
