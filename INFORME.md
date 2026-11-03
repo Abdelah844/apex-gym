@@ -254,3 +254,9 @@ Fecha: 1 de noviembre de 2026 · Respuesta a la revisión «Nuevos fallos encont
 - **Arreglos:** la ficha de rango de un ejercicio sin series ya no da error; los botones de ejercicios del entreno muestran el nombre completo (con «…» si no cabe); las iniciales de los días cambian según el idioma.
 - **Comprobado:** recorrido de más de 250 pantallas y fichas en inglés y francés sin textos en español sin traducir (salvo nombres propios como Apex, Apix o Hip thrust), auditoría sin errores ni desbordes en los dos idiomas, 143 pruebas en Node.
 - **Pendiente:** si se añade un texto nuevo a la app, hay que añadir su traducción en `i18n/` (si no, sale en español).
+
+## Anexo 2.9.2 · Mensajes de Apix y frases con variables
+
+- **Problema:** los mensajes de Apix y otras frases que la app monta con variables («Llevas 4 días sin entrenar…», «¡62,5 kg en press banca!», avisos de peso, rangos…) seguían en español.
+- **Solución:** `traductor.js` tiene ahora unas 130 plantillas con huecos ({x}) que se rellenan con el valor traducido, traduce frase a frase los textos con varias frases y prueba con mayúscula los nombres que van en minúscula dentro de una frase.
+- **Revisión a fondo:** `i18n/analizar.js` lee todo el código con un analizador de JavaScript (acorn) y saca cada texto y cada frase montada con «+»; `i18n/comprobar.js` lista lo que aún no se traduce. Se añadieron unos 200 textos que el primer recorrido no había encontrado (`i18n/extra_*.tsv`). Lo que queda son identificadores internos y trozos de frases que ya cubren las plantillas.
