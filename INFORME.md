@@ -234,3 +234,12 @@ Fecha: 1 de noviembre de 2026 · Respuesta a la revisión «Nuevos fallos encont
 - **Privacidad v2:** Supabase como encargado, servidor en la UE, consentimiento explícito (también para lesiones y molestias) al crear la cuenta; «Eliminar cuenta y datos» borra también la nube.
 - **Pendiente:** el correo de confirmación usa el servidor de Supabase, que solo permite unos pocos correos por hora; antes del lanzamiento conviene configurar un SMTP propio.
 - **Pruebas:** 141 de 141 en Node; `test/nube.py` simula Supabase y comprueba 18 casos (entrar, error de contraseña, recuperar datos, subida automática, conflicto, borrar cuenta, crear cuenta, nueva contraseña, sin internet).
+
+## Anexo 2.8.1 · Arreglos tras probar la cuenta en el iPhone
+
+- **Confirmar el correo:** en el iPhone, la app instalada y el navegador guardan las sesiones por separado, así que el enlace del correo dejaba la sesión en el navegador. Ahora el enlace solo confirma el correo (la página dice «Correo confirmado, vuelve a la app») y en la app se pulsa «Ya lo he confirmado» para entrar. La contraseña solo se guarda en memoria mientras tanto. Lo mismo al cambiar la contraseña: se cambia en el navegador y se entra en la app con la nueva.
+- **Códigos de 6 cifras:** Supabase solo deja cambiar los correos (para poner un código) con un servidor de correo propio (SMTP). Queda pendiente.
+- **Nombre de usuario único:** tabla `perfiles` con `nombre_usuario` único (3-20 caracteres: a-z, 0-9, punto y guion bajo), función `usuario_libre()` y disparador que lo guarda al crear la cuenta. Las cuentas antiguas sin usuario lo eligen al iniciar sesión. Cambiarlo en Ajustes se comprueba en la nube.
+- **Sin zoom:** `touch-action: manipulation` (sin zoom al tocar dos veces; con dos dedos sigue funcionando) y campos de texto a 16 px (el iPhone acercaba la pantalla al escribir).
+- **Google y Apple:** Google necesita crear un proyecto en Google Cloud (gratis). Apple necesita la cuenta de desarrollador de Apple (99 $/año): pospuesto.
+- **Pruebas:** `test/nube.py` pasa 29 casos (usuario repetido, confirmación de correo, enlace abierto en el navegador, cuenta antigua sin usuario…).

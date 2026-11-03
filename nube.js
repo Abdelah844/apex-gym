@@ -95,8 +95,20 @@ async function tokenAlDia() {
 }
 
 // ---------- Cuenta ----------
-async function crearCuentaNube(email, contrasena) {
-  const r = await pedirNube("/auth/v1/signup?redirect_to=" + encodeURIComponent(URL_APP), "POST", { email: email, password: contrasena }, null, true);
+// El nombre de usuario se guarda en la tabla "perfiles". Es único: la base de datos no deja repetirlo.
+const FORMATO_USUARIO = /^[a-z0-9._]{3,20}$/;
+
+async function usuarioLibreNube(nombre) {
+  const r = await pedirNube("/rest/v1/rpc/usuario_libre", "POST", { nombre: nombre }, null, true);
+  if (!r.ok) return { ok: false, msg: mensajeErrorNube(r.datos, r.status) };
+  return { ok: true, libre: r.datos === true };
+}
+
+async function crearCuentaNube(email, contrasena, usuario) {
+  const r = await pedirNube("/auth/v1/signup?redirect_to=" + encodeURIComponent(URL_APP), "POST",
+    { email: email, password: contrasena, data: { usuario: usuario } }, null, true);
+  // Si justo otra persona ha cogido el nombre, la base de datos rechaza la cuenta
+  if (!r.ok && r.status === 500) return { ok: false, msg: "Ese nombre de usuario ya está cogido. Prueba con otro." };
   if (!r.ok) return { ok: false, msg: mensajeErrorNube(r.datos, r.status) };
   if (r.datos && r.datos.access_token) { guardarSesionNube(r.datos); return { ok: true }; }
   return { ok: true, confirmar: true };                // Supabase pide confirmar el correo antes de entrar
@@ -107,6 +119,37 @@ async function entrarNube(email, contrasena) {
   if (!r.ok || !r.datos || !r.datos.access_token) return { ok: false, msg: mensajeErrorNube(r.datos, r.status) };
   guardarSesionNube(r.datos);
   return { ok: true };
+}
+
+// Vuelve a mandar el correo para confirmar la cuenta
+async function reenviarNube(email) {
+  const r = await pedirNube("/auth/v1/resend?redirect_to=" + encodeURIComponent(URL_APP), "POST", { type: "signup", email: email }, null, true);
+  return r.ok ? { ok: true } : { ok: false, msg: mensajeErrorNube(r.datos, r.status) };
+}
+
+// Lee el nombre de usuario de la cuenta ("" si aún no tiene)
+async function leerUsuarioNube() {
+  if (!(await tokenAlDia())) return { ok: false };
+  const r = await pedirNube("/rest/v1/perfiles?select=nombre_usuario", "GET");
+  if (!r.ok) return { ok: false };
+  return { ok: true, usuario: (r.datos && r.datos[0] && r.datos[0].nombre_usuario) || "" };
+}
+
+// Pone o cambia el nombre de usuario de la cuenta
+async function ponerUsuarioNube(nombre) {
+  if (!FORMATO_USUARIO.test(nombre)) return { ok: false, msg: "El usuario debe tener de 3 a 20 letras minúsculas, números, puntos o guiones bajos." };
+  if (!(await tokenAlDia())) return { ok: false, msg: "Vuelve a iniciar sesión en la nube." };
+  const r = await pedirNube("/rest/v1/perfiles?on_conflict=usuario", "POST", { usuario: nube.id, nombre_usuario: nombre },
+    { "Prefer": "resolution=merge-duplicates,return=minimal" });
+  if (r.ok) return { ok: true };
+  if (r.status === 409 || (r.datos && r.datos.code === "23505")) return { ok: false, msg: "Ese nombre de usuario ya está cogido. Prueba con otro." };
+  return { ok: false, msg: mensajeErrorNube(r.datos, r.status) };
+}
+
+// ¿Se está usando la app instalada (icono en la pantalla de inicio) o el navegador?
+// En el iPhone, cada uno guarda sus datos por separado.
+function enAppInstalada() {
+  try { return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true; } catch (e) { return false; }
 }
 
 async function olvidoNube(email) {

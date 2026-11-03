@@ -364,6 +364,9 @@ body.destello-fin::after { content: ""; position: fixed; inset: 0; z-index: 28; 
 
 .avatar { position: relative; }
 .priv-ok a { color: var(--accent); font-weight: 700; }
+/* Sin zoom al tocar dos veces (el zoom con dos dedos sigue funcionando) y sin zoom al escribir en el iPhone */
+html, body, button, a, label, input, select, textarea, [data-act] { touch-action: manipulation; }
+input, select, textarea { font-size: 16px; }
 .avatar .engranaje { position: absolute; right: -3px; bottom: -3px; width: 18px; height: 18px; border-radius: 50%; background: var(--surface3); color: var(--fg); font-size: .7rem; display: grid; place-items: center; border: 2px solid var(--bg); }
 .indice-ajustes { position: sticky; top: -1px; z-index: 2; background: var(--surface); padding: 6px 0; }
 .copia-ajustes { border-color: var(--warn); }

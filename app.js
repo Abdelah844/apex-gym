@@ -247,6 +247,7 @@ function leerPerfil() {
   let error = "";
   if (!p.nombre) error = "Escribe tu nombre.";
   else if (!p.usuario || p.usuario.length < 3) error = "El usuario necesita al menos 3 letras o números.";
+  else if (p.usuario.length > 20) error = "El usuario puede tener como máximo 20 caracteres.";
   else if (!p.sexo) error = "Elige una opción en Sexo (puedes elegir «Prefiero no decirlo»).";
   else if (!(p.edad >= 14 && p.edad <= 90)) error = "La edad debe estar entre 14 y 90 años.";
   else if (!(p.altura >= 120 && p.altura <= 230)) error = "La altura debe estar entre 120 y 230 cm.";
@@ -1667,6 +1668,7 @@ function hojaCuenta(modo, aviso) {
   const titulos = { crear: "Crear cuenta", entrar: "Iniciar sesión", olvido: "Recuperar contraseña", nueva: "Nueva contraseña" };
   let h = cabeceraHoja(titulos[modo], "Cuenta en la nube") + '<div class="stack">';
   if (aviso) h += '<p class="small">' + esc(aviso) + '</p>';
+  if (modo === "crear") h += '<label class="f">Nombre de usuario (único, lo verán tus amigos)<input id="cUsuario" autocapitalize="off" autocomplete="username" maxlength="20" placeholder="p. ej. abde.fit" value="' + esc(estado && estado.perfil ? estado.perfil.usuario : "") + '"></label>';
   if (modo !== "nueva") h += '<label class="f">Correo electrónico<input id="cEmail" type="email" inputmode="email" autocomplete="email" autocapitalize="off" placeholder="tucorreo@gmail.com"></label>';
   if (modo !== "olvido") h += '<label class="f">' + (modo === "entrar" ? "Contraseña" : "Contraseña (mínimo 8 caracteres)") +
     '<input id="cPass" type="password" autocomplete="' + (modo === "entrar" ? "current-password" : "new-password") + '"></label>';
@@ -1678,6 +1680,32 @@ function hojaCuenta(modo, aviso) {
     (estado ? '<button class="btn-txt" data-act="abrir-cuenta" data-a="crear">No tengo cuenta: crear una</button>' : "");
   if (modo === "crear") h += '<button class="btn-txt" data-act="abrir-cuenta" data-a="entrar">Ya tengo cuenta: iniciar sesión</button>';
   abrirHoja(h + '</div>');
+}
+
+// Después de crear la cuenta: hay que pulsar el enlace del correo y volver
+function hojaConfirmarCorreo(email) {
+  abrirHoja(cabeceraHoja("Confirma tu correo", "Cuenta en la nube") + '<div class="stack">' +
+    '<p class="small">Te hemos enviado un email a <b>' + esc(email) + '</b> (mira también en «Spam»).</p>' +
+    '<div class="card stack tight"><p class="small"><b>1.</b> Abre el correo y pulsa <b>«Confirm your mail»</b>. Se abrirá una página del navegador que dice «Correo confirmado»: ciérrala.</p>' +
+    '<p class="small"><b>2.</b> Vuelve aquí y pulsa este botón:</p></div>' +
+    '<p class="err" id="cError"></p>' +
+    '<button class="btn" id="cBoton" data-act="cuenta-ya-confirmada">Ya lo he confirmado</button>' +
+    '<button class="btn-txt" data-act="cuenta-reenviar">No me ha llegado: enviar otra vez</button></div>');
+}
+
+function hojaElegirUsuario() {
+  abrirHoja(cabeceraHoja("Elige tu nombre de usuario", "Cuenta en la nube") + '<div class="stack">' +
+    '<p class="small">Tu cuenta aún no tiene nombre de usuario. Es único: nadie más podrá usarlo.</p>' +
+    '<label class="f">Nombre de usuario<input id="cUsuario" autocapitalize="off" maxlength="20" value="' + esc(estado && estado.perfil ? estado.perfil.usuario : "") + '"></label>' +
+    '<p class="muted small">De 3 a 20 letras minúsculas, números, puntos o guiones bajos.</p>' +
+    '<p class="err" id="cError"></p><button class="btn" id="cBoton" data-act="cuenta-usuario">Guardar usuario</button></div>');
+}
+
+// Página sencilla cuando el enlace del correo se abre en el navegador y no en la app
+function pantallaVueltaCorreo(titulo, texto) {
+  cerrarHoja();
+  $("tabs").hidden = true;
+  $("app").innerHTML = '<div class="welcome">' + insignia(8, "logo") + '<h1>' + esc(titulo) + '</h1><p class="muted">' + esc(texto) + '</p></div>';
 }
 
 // Los datos han cambiado en la nube Y en este móvil: el usuario elige cuáles se quedan

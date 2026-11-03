@@ -607,9 +607,14 @@ const ACCIONES = {
 
   // ---------- Ajustes ----------
   "tema": function (t) { estado.ajustes.tema = t; guardar(); aplicarTema(); hojaAjustes(); },
-  "guardar-ajustes": function () {
+  "guardar-ajustes": async function () {
     const p = leerPerfil();
     if (!p) { $("fError").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    // Con cuenta en la nube, el usuario es único: se comprueba antes de cambiarlo
+    if (conectado() && p.usuario !== estado.perfil.usuario) {
+      const u = await ponerUsuarioNube(p.usuario);
+      if (!u.ok) { $("fError").textContent = u.msg; $("fError").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    }
     if (p.peso !== estado.perfil.peso) {
       estado.pesoCorporal = estado.pesoCorporal.filter(function (x) { return x.fecha !== hoy(); });
       estado.pesoCorporal.push({ fecha: hoy(), kg: p.peso });
@@ -695,17 +700,47 @@ const ACCIONES = {
   "abrir-cuenta": function (modo) { hojaCuenta(modo); },
   "cuenta-crear": async function () {
     const email = $("cEmail").value.trim().toLowerCase(), pass = $("cPass").value;
-    const fallo = revisarCuenta(email, pass, true);
-    if (!fallo && !$("cAcepto").checked) return errorCuenta("Para crear la cuenta, marca la casilla de la política de privacidad.");
+    const usuario = $("cUsuario").value.trim().toLowerCase();
+    let fallo = revisarCuenta(email, pass, true);
+    if (!fallo && !FORMATO_USUARIO.test(usuario)) fallo = "El usuario debe tener de 3 a 20 letras minúsculas, números, puntos o guiones bajos (sin espacios).";
+    if (!fallo && !$("cAcepto").checked) fallo = "Para crear la cuenta, marca la casilla de la política de privacidad.";
     if (fallo) return errorCuenta(fallo);
+    ocupado(true, "Comprobando el usuario…");
+    const libre = await usuarioLibreNube(usuario);
+    if (libre.ok && !libre.libre) { ocupado(false, "Crear cuenta"); return errorCuenta("El usuario «" + usuario + "» ya está cogido. Prueba con otro."); }
     ocupado(true, "Creando cuenta…");
-    const r = await crearCuentaNube(email, pass);
+    const r = await crearCuentaNube(email, pass, usuario);
     ocupado(false, "Crear cuenta");
     if (!r.ok) return errorCuenta(r.msg);
-    if (estado) { estado.ajustes.privacidadAceptada = hoy() + " v" + VERSION_PRIVACIDAD + " nube"; guardar(); }
-    if (r.confirmar) { mensaje("Revisa tu correo", "Te hemos enviado un email a " + email + ". Ábrelo y pulsa el enlace para activar la cuenta. Después, inicia sesión."); return; }
+    if (estado) { estado.perfil.usuario = usuario; estado.ajustes.privacidadAceptada = hoy() + " v" + VERSION_PRIVACIDAD + " nube"; guardar(); }
+    if (r.confirmar) { cuentaEnEspera = { email: email, pass: pass }; hojaConfirmarCorreo(email); return; }
     cerrarHoja(); toast("✓ Cuenta creada", "ok");
     await sincronizarYAvisar(true);
+  },
+  // Después de pulsar el enlace del correo, la persona vuelve a la app y pulsa este botón: entramos con su correo y contraseña
+  "cuenta-ya-confirmada": async function () {
+    if (!cuentaEnEspera) { hojaCuenta("entrar"); return; }
+    ocupado(true, "Entrando…");
+    const r = await entrarNube(cuentaEnEspera.email, cuentaEnEspera.pass);
+    ocupado(false, "Ya lo he confirmado");
+    if (!r.ok) return errorCuenta(r.msg);
+    cuentaEnEspera = null;
+    cerrarHoja(); toast("✓ Cuenta activada", "ok");
+    await sincronizarYAvisar(true);
+  },
+  "cuenta-reenviar": async function () {
+    if (!cuentaEnEspera) return;
+    const r = await reenviarNube(cuentaEnEspera.email);
+    if (r.ok) toast("✓ Correo enviado otra vez", "ok"); else errorCuenta(r.msg);
+  },
+  "cuenta-usuario": async function () {
+    const usuario = $("cUsuario").value.trim().toLowerCase();
+    ocupado(true, "Guardando…");
+    const r = await ponerUsuarioNube(usuario);
+    ocupado(false, "Guardar usuario");
+    if (!r.ok) return errorCuenta(r.msg);
+    if (estado) { estado.perfil.usuario = usuario; guardar(); }
+    cerrarHoja(); toast("✓ Usuario guardado", "ok");
   },
   "cuenta-entrar": async function () {
     const email = $("cEmail").value.trim().toLowerCase(), pass = $("cPass").value;
@@ -714,7 +749,11 @@ const ACCIONES = {
     ocupado(true, "Entrando…");
     const r = await entrarNube(email, pass);
     ocupado(false, "Iniciar sesión");
-    if (!r.ok) return errorCuenta(r.msg);
+    if (!r.ok) {
+      // Si aún no ha confirmado el correo, le explicamos qué hacer
+      if (r.msg.indexOf("confirmar tu correo") >= 0) { cuentaEnEspera = { email: email, pass: pass }; hojaConfirmarCorreo(email); return; }
+      return errorCuenta(r.msg);
+    }
     cerrarHoja(); toast("✓ Sesión iniciada", "ok");
     await sincronizarYAvisar(true);
   },
@@ -734,6 +773,12 @@ const ACCIONES = {
     const r = await cambiarContrasenaNube(pass);
     ocupado(false, "Guardar contraseña");
     if (!r.ok) return errorCuenta(r.msg);
+    if (!enAppInstalada() && !estado) {
+      // Estamos en el navegador (enlace del correo): la sesión no sirve en la app instalada
+      await salirNube();
+      pantallaVueltaCorreo("✓ Contraseña cambiada", "Ahora abre la app Apex Gym e inicia sesión con tu nueva contraseña. Ya puedes cerrar esta pestaña.");
+      return;
+    }
     cerrarHoja(); toast("✓ Contraseña cambiada", "ok");
     await sincronizarYAvisar(false);
   },
@@ -759,6 +804,7 @@ const ACCIONES = {
 };
 
 // ---------- Ayudas para la cuenta ----------
+let cuentaEnEspera = null;     // correo y contraseña mientras se confirma el correo (solo en memoria, nunca se guardan)
 function correoValido(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
 function revisarCuenta(email, pass, nueva) {
   if (!correoValido(email)) return "Escribe un correo electrónico válido.";
@@ -777,12 +823,21 @@ async function sincronizarYAvisar(manual) {
   const e = $("nubeEstado"); if (e) e.textContent = textoEstadoNube();
   if (!r.ok) { if (manual) mensaje("Nube", r.msg); return; }
   if (r.hecho === "elegir") { hojaConflictoNube(r.copia); return; }
-  if (r.hecho === "bajar") { cerrarHoja(); tab = "inicio"; pintar(); toast("✓ Datos cargados desde la nube", "ok"); return; }
+  if (r.hecho === "bajar") { cerrarHoja(); tab = "inicio"; pintar(); toast("✓ Datos cargados desde la nube", "ok"); if (manual) await comprobarUsuarioNube(); return; }
   if (r.hecho === "nada" && !estado) {
     mensaje("Tu cuenta está vacía", "Todavía no hay datos guardados en esta cuenta. Crea tu perfil y se guardarán solos en la nube.");
     return;
   }
   if (manual) toast("✓ Todo guardado en la nube", "ok");
+  if (manual) await comprobarUsuarioNube();
+}
+
+// Las cuentas creadas antes de la versión 2.8.1 no tienen nombre de usuario: se pide una vez
+async function comprobarUsuarioNube() {
+  const u = await leerUsuarioNube();
+  if (!u.ok) return;
+  if (u.usuario) { if (estado && estado.perfil.usuario !== u.usuario) { estado.perfil.usuario = u.usuario; guardar(); } return; }
+  hojaElegirUsuario();
 }
 
 // Al volver del enlace del correo (activar cuenta o cambiar contraseña)
@@ -791,6 +846,11 @@ async function procesarVueltaCorreo() {
   if (!v) return false;
   try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { }
   if (v.error) { mensaje("Enlace no válido", "El enlace ha caducado o ya se usó. Vuelve a pedirlo. (" + v.error + ")"); return true; }
+  // Confirmar la cuenta desde el navegador: el correo ya queda confirmado; se entra desde la app
+  if (v.tipo !== "recovery" && !enAppInstalada() && !estado) {
+    pantallaVueltaCorreo("✓ Correo confirmado", "Tu cuenta ya está activada. Vuelve a la app Apex Gym y pulsa «Ya lo he confirmado» (o inicia sesión con tu correo y contraseña). Ya puedes cerrar esta pestaña.");
+    return true;
+  }
   guardarSesionNube({ access_token: v.access_token, refresh_token: v.refresh_token, expires_in: v.expires_in });
   const u = await datosUsuarioNube();
   if (u) { nube.email = u.email; nube.id = u.id; guardarNube(); }
