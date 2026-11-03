@@ -9370,5 +9370,149 @@ const TRADUCCIONES = {
 "Idiomas": [
 "Languages",
 "Langues"
+],
+"Actualizar": [
+"Refresh",
+"Actualiser"
+],
+"Aún no tienes amigos. Añade a alguien por su usuario para competir en el ranking.": [
+"You don’t have friends yet. Add someone by their username to compete in the ranking.",
+"Tu n’as pas encore d’amis. Ajoute quelqu’un avec son nom d’utilisateur pour entrer dans le classement."
+],
+"Cargando…": [
+"Loading…",
+"Chargement…"
+],
+"Con una cuenta gratis puedes añadir a tus amigos por su nombre de usuario, ver su rango, su racha y sus entrenos, y competir en un ranking.": [
+"With a free account you can add your friends by username, see their rank, streak and workouts, and compete in a ranking.",
+"Avec un compte gratuit, tu peux ajouter tes amis avec leur nom d’utilisateur, voir leur rang, leur série et leurs séances, et t’affronter dans un classement."
+],
+"Cuando termines un entreno, tus amigos lo verán aquí.": [
+"When you finish a workout, your friends will see it here.",
+"Quand tu termines une séance, tes amis la verront ici."
+],
+"Enviar fuera…": [
+"Send elsewhere…",
+"Envoyer ailleurs…"
+],
+"Escribe su nombre de usuario ({n} a {n} letras minúsculas, números, puntos o guiones bajos).": [
+"Enter their username ({n} to {n} lowercase letters, numbers, dots or underscores).",
+"Écris son nom d’utilisateur ({n} à {n} lettres minuscules, chiffres, points ou tirets bas)."
+],
+"Ese es tu propio usuario.": [
+"That’s your own username.",
+"C’est ton propre nom d’utilisateur."
+],
+"Esperando a que acepte": [
+"Waiting for them to accept",
+"En attente d’acceptation"
+],
+"La publicación se ocultará para ti y la denuncia llegará al equipo de Apex Gym para revisarla.": [
+"The post will be hidden for you and the report will reach the Apex Gym team for review.",
+"La publication sera masquée pour toi et le signalement sera envoyé à l’équipe d’Apex Gym pour examen."
+],
+"No hay ningún usuario con ese nombre (o tiene el perfil privado).": [
+"There’s no user with that name (or their profile is private).",
+"Aucun utilisateur avec ce nom (ou son profil est privé)."
+],
+"No se ha podido enviar la solicitud.": [
+"The request couldn’t be sent.",
+"La demande n’a pas pu être envoyée."
+],
+"Quiere ser tu amigo": [
+"Wants to be your friend",
+"Veut être ton ami"
+],
+"Ranking de amigos": [
+"Friends ranking",
+"Classement des amis"
+],
+"Todavía no hay actividad. Cuando tus amigos entrenen, lo verás aquí.": [
+"No activity yet. When your friends train, you’ll see it here.",
+"Pas encore d’activité. Quand tes amis s’entraînent, tu le verras ici."
+],
+"Tu perfil es privado: nadie puede encontrarte ni ver tus datos. Cámbialo en Ajustes.": [
+"Your profile is private: nobody can find you or see your data. Change it in Settings.",
+"Ton profil est privé : personne ne peut te trouver ni voir tes données. Change-le dans Réglages."
+],
+"Tu usuario es": [
+"Your username is",
+"Ton nom d’utilisateur est"
+],
+"Ya le habías enviado una solicitud. Falta que la acepte.": [
+"You’d already sent them a request. They still need to accept it.",
+"Tu lui avais déjà envoyé une demande. Il doit encore l’accepter."
+],
+"☁️ Crea tu cuenta para tener amigos": [
+"☁️ Create your account to have friends",
+"☁️ Crée ton compte pour avoir des amis"
+],
+"✓ Ahora sois amigos": [
+"✓ You’re now friends",
+"✓ Vous êtes maintenant amis"
+],
+"✓ Compartido": [
+"✓ Shared",
+"✓ Partagé"
+],
+"✓ Compartido con tus amigos": [
+"✓ Shared with your friends",
+"✓ Partagé avec tes amis"
+],
+"✓ Solicitud enviada. Cuando la acepte, aparecerá en tus amigos.": [
+"✓ Request sent. When they accept it, they’ll appear in your friends.",
+"✓ Demande envoyée. Quand il l’acceptera, il apparaîtra dans tes amis."
+],
+"✓ Ya sois amigos: esa persona ya te había enviado una solicitud.": [
+"✓ You’re now friends: that person had already sent you a request.",
+"✓ Vous êtes amis : cette personne t’avait déjà envoyé une demande."
+],
+"✓ Denuncia enviada. Gracias.": [
+"✓ Report sent. Thank you.",
+"✓ Signalement envoyé. Merci."
+],
+"Solicitudes recibidas": [
+"Requests received",
+"Demandes reçues"
+],
+"Solicitudes recibidas ({n})": [
+"Requests received ({n})",
+"Demandes reçues ({n})"
+],
+"Solicitudes enviadas": [
+"Requests sent",
+"Demandes envoyées"
+],
+"Aceptar": [
+"Accept",
+"Accepter"
+],
+"Rechazar": [
+"Decline",
+"Refuser"
+],
+"Compartir con mis amigos": [
+"Share with my friends",
+"Partager avec mes amis"
+],
+"Su nombre de usuario": [
+"Their username",
+"Son nom d’utilisateur"
+],
+"Nombre de usuario de tu amigo": [
+"Your friend’s username",
+"Nom d’utilisateur de ton ami"
+],
+"No se ha podido aceptar": [
+"Couldn’t accept",
+"Impossible d’accepter"
+],
+"No se ha podido quitar": [
+"Couldn’t remove",
+"Impossible de retirer"
+],
+"Me gusta": [
+"Like",
+"J’aime"
 ]
 };

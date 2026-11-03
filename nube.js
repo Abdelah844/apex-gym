@@ -235,6 +235,7 @@ async function sincronizarNube() {
     if (que === "subir") {
       const s = await subirCopiaNube();
       if (!s.ok) { nube.ultimoError = s.msg; guardarNube(); return { ok: false, msg: s.msg }; }
+      if (typeof actualizarPerfilPublico === "function") await actualizarPerfilPublico();      // rango y racha para tus amigos
     }
     if (que === "bajar") {
       const u = usarCopiaNube(leida.copia);
@@ -286,4 +287,142 @@ function leerVueltaCorreo(hash) {
 async function datosUsuarioNube() {
   const r = await pedirNube("/auth/v1/user", "GET");
   return r.ok ? r.datos : null;
+}
+
+// =====================================================
+// PARTE SOCIAL (amigos, actividad, me gusta y denuncias)
+// Las reglas de la base de datos deciden quién ve qué:
+//  - Solo tus amigos ven tu rango, racha, marcas y publicaciones.
+//  - Un perfil "privado" no aparece al buscar ni muestra nada.
+// =====================================================
+
+// Lo último que se ha leído de la nube (se vuelve a leer al entrar en Social)
+let socialNube = { cargado: false, cargando: false, error: "", amigos: [], recibidas: [], enviadas: [], posts: [] };
+
+// Sube tu rango, racha, entrenos y 3 mejores marcas para que los vean tus amigos
+async function actualizarPerfilPublico() {
+  if (!conectado() || !estado || estado.modo === "demo" || !(await tokenAlDia())) return { ok: false };
+  const t = miTarjeta();
+  const pg = puntosGlobal();
+  const datos = {
+    usuario: nube.id, rango: t.rango, puntos: pg === null ? null : Math.round(pg * 10) / 10,
+    racha: t.racha, entrenos: t.entrenos, marcas: t.records,
+    // Menores de 16: la parte social está desactivada, así que su perfil es siempre privado
+    privacidad: estado.perfil.edad < 16 ? "privado" : (estado.ajustes.privacidad || "amigos"), actualizado: new Date().toISOString()
+  };
+  const r = await pedirNube("/rest/v1/perfiles?on_conflict=usuario", "POST", datos, { "Prefer": "resolution=merge-duplicates,return=minimal" });
+  return { ok: r.ok };
+}
+
+// Respuestas de la función "solicitar_amistad" de la base de datos
+const RESPUESTAS_AMISTAD = {
+  enviada: "✓ Solicitud enviada. Cuando la acepte, aparecerá en tus amigos.",
+  aceptada: "✓ Ya sois amigos: esa persona ya te había enviado una solicitud.",
+  ya_enviada: "Ya le habías enviado una solicitud. Falta que la acepte.",
+  no_existe: "No hay ningún usuario con ese nombre (o tiene el perfil privado).",
+  eres_tu: "Ese es tu propio usuario.",
+  limite: "Has llegado al máximo de 200 amigos.",
+  sin_sesion: "Vuelve a iniciar sesión en la nube."
+};
+
+async function solicitarAmistadNube(nombre) {
+  nombre = String(nombre || "").trim().toLowerCase().replace(/^@/, "");
+  if (!FORMATO_USUARIO.test(nombre)) return { ok: false, msg: "Escribe su nombre de usuario (3 a 20 letras minúsculas, números, puntos o guiones bajos)." };
+  if (!(await tokenAlDia())) return { ok: false, msg: "Vuelve a iniciar sesión en la nube." };
+  const r = await pedirNube("/rest/v1/rpc/solicitar_amistad", "POST", { nombre: nombre });
+  if (!r.ok) return { ok: false, msg: mensajeErrorNube(r.datos, r.status) };
+  const ok = r.datos === "enviada" || r.datos === "aceptada";
+  return { ok: ok, msg: RESPUESTAS_AMISTAD[r.datos] || "No se ha podido enviar la solicitud." };
+}
+
+async function aceptarAmistadNube(otro) {
+  if (!(await tokenAlDia())) return { ok: false, msg: "Vuelve a iniciar sesión en la nube." };
+  const r = await pedirNube("/rest/v1/amistades?de=eq." + encodeURIComponent(otro) + "&a=eq." + nube.id, "PATCH", { aceptada: true }, { "Prefer": "return=minimal" });
+  return r.ok ? { ok: true } : { ok: false, msg: mensajeErrorNube(r.datos, r.status) };
+}
+
+// Sirve para rechazar una solicitud, cancelar la tuya o quitar a un amigo
+async function borrarAmistadNube(otro) {
+  if (!(await tokenAlDia())) return { ok: false, msg: "Vuelve a iniciar sesión en la nube." };
+  const yo = nube.id, o = encodeURIComponent(otro);
+  const r = await pedirNube("/rest/v1/amistades?or=(and(de.eq." + yo + ",a.eq." + o + "),and(de.eq." + o + ",a.eq." + yo + "))", "DELETE", null, { "Prefer": "return=minimal" });
+  return r.ok ? { ok: true } : { ok: false, msg: mensajeErrorNube(r.datos, r.status) };
+}
+
+async function publicarNube(tipo, texto) {
+  if (!conectado() || !(await tokenAlDia())) return { ok: false, msg: "Vuelve a iniciar sesión en la nube." };
+  const r = await pedirNube("/rest/v1/publicaciones", "POST", { tipo: tipo, texto: String(texto).slice(0, 280) }, { "Prefer": "return=minimal" });
+  if (!r.ok && (r.status === 401 || r.status === 403)) return { ok: false, msg: "Has llegado al límite de 20 publicaciones al día." };
+  return r.ok ? { ok: true } : { ok: false, msg: mensajeErrorNube(r.datos, r.status) };
+}
+
+async function borrarPublicacionNube(id) {
+  if (!(await tokenAlDia())) return { ok: false, msg: "Vuelve a iniciar sesión en la nube." };
+  const r = await pedirNube("/rest/v1/publicaciones?id=eq." + encodeURIComponent(id), "DELETE", null, { "Prefer": "return=minimal" });
+  return r.ok ? { ok: true } : { ok: false, msg: mensajeErrorNube(r.datos, r.status) };
+}
+
+async function meGustaNube(id, poner) {
+  if (!(await tokenAlDia())) return { ok: false };
+  const r = poner
+    ? await pedirNube("/rest/v1/me_gusta", "POST", { publicacion: id }, { "Prefer": "return=minimal" })
+    : await pedirNube("/rest/v1/me_gusta?publicacion=eq." + encodeURIComponent(id) + "&usuario=eq." + nube.id, "DELETE", null, { "Prefer": "return=minimal" });
+  return { ok: r.ok };
+}
+
+async function denunciarNube(id, motivo) {
+  if (!(await tokenAlDia())) return { ok: false, msg: "Vuelve a iniciar sesión en la nube." };
+  const r = await pedirNube("/rest/v1/denuncias", "POST", { publicacion: id, motivo: String(motivo).slice(0, 300) }, { "Prefer": "return=minimal" });
+  return r.ok ? { ok: true } : { ok: false, msg: mensajeErrorNube(r.datos, r.status) };
+}
+
+// Lee amistades, perfiles de amigos y publicaciones, y lo deja en socialNube
+async function cargarSocialNube() {
+  if (!conectado() || socialNube.cargando) return;
+  socialNube.cargando = true;
+  try {
+    if (!(await tokenAlDia())) { socialNube.error = "Vuelve a iniciar sesión en la nube."; return; }
+    const yo = nube.id;
+    const am = await pedirNube("/rest/v1/amistades?select=de,a,aceptada,creado", "GET");
+    if (!am.ok) { socialNube.error = mensajeErrorNube(am.datos, am.status); return; }
+    const otros = [];
+    for (const x of am.datos) otros.push(x.de === yo ? x.a : x.de);
+    let perfiles = [];
+    if (otros.length) {
+      const pr = await pedirNube("/rest/v1/perfiles?select=usuario,nombre_usuario,rango,puntos,racha,entrenos,marcas,actualizado&usuario=in.(" + otros.join(",") + ")", "GET");
+      if (pr.ok) perfiles = pr.datos;
+    }
+    const perfilDe = function (id) { return perfiles.find(function (p) { return p.usuario === id; }) || null; };
+    socialNube.amigos = []; socialNube.recibidas = []; socialNube.enviadas = [];
+    for (const x of am.datos) {
+      const otro = x.de === yo ? x.a : x.de;
+      const p = perfilDe(otro);
+      const item = { id: otro, usuario: p ? p.nombre_usuario : null, perfil: p };
+      if (x.aceptada) socialNube.amigos.push(item);
+      else if (x.a === yo) socialNube.recibidas.push(item);
+      else socialNube.enviadas.push(item);
+    }
+    const po = await pedirNube("/rest/v1/publicaciones?select=id,autor,tipo,texto,creado,me_gusta(usuario)&order=creado.desc&limit=50", "GET");
+    socialNube.posts = po.ok ? po.datos.map(function (x) {
+      const p = x.autor === yo ? null : perfilDe(x.autor);
+      return { id: x.id, mio: x.autor === yo, autor: x.autor === yo ? (estado ? estado.perfil.usuario : "") : (p ? p.nombre_usuario : "?"),
+        tipo: x.tipo, texto: x.texto, fecha: String(x.creado).slice(0, 10), likes: (x.me_gusta || []).map(function (l) { return l.usuario; }) };
+    }) : [];
+    socialNube.error = ""; socialNube.cargado = true;
+  } finally {
+    socialNube.cargando = false;
+  }
+}
+
+// Ranking: tú y tus amigos ordenados por rango y puntos
+function rankingAmigos() {
+  const lista = socialNube.amigos.filter(function (a) { return a.perfil; }).map(function (a) {
+    return { usuario: a.usuario, rango: a.perfil.rango, puntos: a.perfil.puntos || 0, racha: a.perfil.racha || 0, entrenos: a.perfil.entrenos || 0, marcas: a.perfil.marcas || [], id: a.id, yo: false };
+  });
+  if (estado && estado.perfil) {
+    const t = miTarjeta(); const pg = puntosGlobal();
+    lista.push({ usuario: estado.perfil.usuario, rango: t.rango, puntos: pg || 0, racha: t.racha, entrenos: t.entrenos, marcas: t.records, id: "yo", yo: true });
+  }
+  lista.sort(function (a, b) { return ((b.rango === null ? -1 : b.rango) - (a.rango === null ? -1 : a.rango)) || (b.puntos - a.puntos); });
+  return lista;
 }

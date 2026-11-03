@@ -999,14 +999,93 @@ function pintarSocial() {
     return;
   }
   const demo = estado.modo === "demo";
-  const vistas = [["feed", demo ? "Actividad" : "Mi diario"], ["amigos", "Amigos"], ["retos", "Retos"]];
+  const vistas = [["feed", "Actividad"], ["amigos", "Amigos"], ["retos", "Retos"]];
   let h = '<div class="head"><div><p class="label">Comunidad</p><h1>Social</h1></div>' + (demo ? '<span class="demo-tag">Demo</span>' : "") + '</div><div class="stack">' +
     (demo ? '<p class="muted small">Los demás usuarios de la demo son ficticios.</p>' : "") +
     '<div class="seg">' + vistas.map(function (o) { return '<button data-act="vista-social" data-a="' + o[0] + '" class="' + (vistaSocial === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div>';
-  if (vistaSocial === "feed") h += feedHtml();
-  if (vistaSocial === "amigos") h += amigosHtml();
   if (vistaSocial === "retos") h += retosHtml();
+  else if (demo) h += vistaSocial === "feed" ? feedHtml() : amigosHtml();
+  else if (!conectado()) h += socialSinCuentaHtml();
+  else h += vistaSocial === "feed" ? actividadNubeHtml() : amigosNubeHtml();
   $("app").innerHTML = h + '</div>';
+  // Con cuenta, se leen los amigos y la actividad de la nube (y se vuelve a pintar al llegar)
+  if (!demo && conectado() && vistaSocial !== "retos" && !socialNube.cargado && !socialNube.cargando && !socialNube.error) {
+    cargarSocialNube().then(function () { if (tab === "social") pintarSocial(); });
+  }
+}
+
+// ---------- Social con cuenta en la nube ----------
+function socialSinCuentaHtml() {
+  return '<div class="card stack tight"><h3>☁️ Crea tu cuenta para tener amigos</h3>' +
+    '<p class="small">Con una cuenta gratis puedes añadir a tus amigos por su nombre de usuario, ver su rango, su racha y sus entrenos, y competir en un ranking.</p>' +
+    '<button class="btn full" data-act="abrir-cuenta" data-a="crear">Crear cuenta</button>' +
+    '<button class="btn-sec full" data-act="abrir-cuenta" data-a="entrar">Ya tengo cuenta: iniciar sesión</button></div>';
+}
+
+function estadoCargaSocial() {
+  if (socialNube.error) return '<div class="card stack tight"><p class="err small">' + esc(socialNube.error) + '</p><button class="btn-sec" data-act="social-recargar">Reintentar</button></div>';
+  if (!socialNube.cargado) return '<div class="card"><p class="muted">Cargando…</p></div>';
+  return "";
+}
+
+function amigosNubeHtml() {
+  const carga = estadoCargaSocial();
+  let h = '<div class="card stack tight"><h3>Añadir amigo</h3><div class="row"><input id="nombreAmigo" placeholder="Su nombre de usuario" autocapitalize="off" maxlength="21" aria-label="Nombre de usuario de tu amigo"><button class="btn-sec" data-act="social-solicitar">Enviar</button></div>' +
+    '<p class="err small" id="amigoError"></p>' +
+    '<p class="muted small">Tu usuario es <b>@' + esc(estado.perfil.usuario) + '</b>. Pásaselo a tus amigos o envíales tu enlace:</p>' +
+    '<button class="btn-sec full" data-act="social-invitar">Invitar a un amigo</button></div>';
+  if (carga) return h + carga;
+  if (socialNube.recibidas.length) {
+    h += '<div class="card"><h3>Solicitudes recibidas (' + socialNube.recibidas.length + ')</h3><div class="list">';
+    for (const s of socialNube.recibidas) h += '<div class="item">' + insignia(s.perfil ? s.perfil.rango : null, "sm") + '<div class="grow"><span class="name">@' + esc(s.usuario || "?") + '</span><span class="muted small">Quiere ser tu amigo</span></div>' +
+      '<button class="btn-sec small" data-act="social-aceptar" data-a="' + esc(s.id) + '">Aceptar</button><button class="btn-txt small" data-act="social-borrar" data-a="' + esc(s.id) + '">Rechazar</button></div>';
+    h += '</div></div>';
+  }
+  const ranking = rankingAmigos();
+  h += '<div class="card"><h3>Ranking de amigos</h3><div class="list">';
+  if (ranking.length <= 1) h += '<p class="muted" style="padding-top:8px">Aún no tienes amigos. Añade a alguien por su usuario para competir en el ranking.</p>';
+  ranking.forEach(function (a, i) {
+    h += '<div class="item" style="align-items:flex-start"><span class="num" style="width:22px;font-weight:700">' + (i + 1) + '</span>' + insignia(a.rango, "sm") + '<div class="grow bloque"><span class="name">@' + esc(a.usuario || "?") + (a.yo ? " (tú)" : "") + '</span>' +
+      '<span class="muted small">' + nombreRango(a.rango) + ' · racha ' + a.racha + ' sem · ' + a.entrenos + ' entrenos</span>' +
+      (a.marcas.length ? '<span class="small">' + a.marcas.map(function (r) { return esc(r.n) + ' ' + String(r.p).replace(".", ",") + '×' + r.r; }).join(" · ") + '</span>' : "") + '</div>' +
+      (a.yo ? "" : '<button class="btn-txt small btn-danger" data-act="social-quitar" data-a="' + esc(a.id) + '">' + (confirmar === "social-quitar" + a.id ? "¿Seguro?" : "Quitar") + '</button>') + '</div>';
+  });
+  h += '</div></div>';
+  if (socialNube.enviadas.length) {
+    h += '<div class="card"><h3>Solicitudes enviadas</h3><div class="list">';
+    for (const s of socialNube.enviadas) h += '<div class="item"><div class="grow"><span class="name">@' + esc(s.usuario || "…") + '</span><span class="muted small">Esperando a que acepte</span></div><button class="btn-txt small" data-act="social-borrar" data-a="' + esc(s.id) + '">Cancelar</button></div>';
+    h += '</div></div>';
+  }
+  if (estado.ajustes.privacidad === "privado") h += '<p class="muted small">Tu perfil es privado: nadie puede encontrarte ni ver tus datos. Cámbialo en Ajustes.</p>';
+  return h;
+}
+
+function actividadNubeHtml() {
+  const ultima = estado.sesiones[estado.sesiones.length - 1];
+  let h = '<div class="card stack tight"><h3>Tu último entreno</h3>';
+  if (!ultima) h += '<p class="muted small">Cuando termines un entreno, tus amigos lo verán aquí.</p>';
+  else {
+    h += '<p class="small">' + esc(textoSesion(ultima)) + '</p><div class="grid2">' +
+      (ultima.publicadaNube ? '<button class="btn-sec" disabled>✓ Compartido</button>' : '<button class="btn-sec" data-act="social-publicar"' + (estado.ajustes.compartir === false ? " disabled" : "") + '>Compartir con mis amigos</button>') +
+      '<button class="btn" data-act="compartir-fuera">Enviar fuera…</button></div>';
+    if (estado.ajustes.compartir === false) h += '<p class="muted small">Tienes desactivado «Mostrar mis entrenos». Actívalo en Ajustes.</p>';
+  }
+  h += '</div>';
+  const carga = estadoCargaSocial();
+  if (carga) return h + carga;
+  h += '<div class="card"><div>';
+  if (socialNube.posts.length === 0) h += '<p class="muted">Todavía no hay actividad. Cuando tus amigos entrenen, lo verás aquí.</p>';
+  for (const x of socialNube.posts) {
+    const gusta = x.likes.indexOf(nube.id) >= 0;
+    h += '<div class="post"><div class="row"><div class="avatar" style="width:34px;height:34px;font-size:.85rem">' + esc((x.autor || "?")[0]).toUpperCase() + '</div>' +
+      '<div class="grow"><span class="name small">@' + esc(x.autor) + (x.mio ? " (tú)" : "") + '</span><span class="muted small">' + fechaBonita(x.fecha) + '</span></div>' +
+      '<span class="pill ' + (x.tipo === "record" ? "pr" : (x.tipo === "rango" ? "up" : "keep")) + '">' + { record: "Récord", rango: "Rango", entreno: "Entreno" }[x.tipo] + '</span></div>' +
+      '<p>' + esc(x.texto) + '</p>' +
+      '<div class="acts"><button class="' + (gusta ? "on" : "") + '" data-act="social-like" data-a="' + esc(x.id) + '" aria-label="Me gusta">' + (gusta ? "♥" : "♡") + ' ' + x.likes.length + '</button>' +
+      (x.mio ? '<button data-act="social-borrar-post" data-a="' + esc(x.id) + '">' + (confirmar === "social-borrar-post" + x.id ? "Pulsa otra vez" : "Eliminar") + '</button>'
+             : '<button data-act="social-denunciar" data-a="' + esc(x.id) + '">Denunciar</button>') + '</div></div>';
+  }
+  return h + '</div></div><button class="btn-txt" data-act="social-recargar">Actualizar</button>';
 }
 
 function feedHtml() {
@@ -1452,6 +1531,15 @@ function hojaImportar() {
 }
 
 // ---------- Denunciar una publicación ----------
+function hojaDenunciaNube(postId) {
+  let ops = "";
+  for (const k in MOTIVOS_DENUNCIA) ops += '<label class="check"><input type="radio" name="motivo" value="' + k + '">' + MOTIVOS_DENUNCIA[k] + '</label>';
+  abrirHoja(cabeceraHoja("Denunciar publicación", "Moderación") + '<div class="stack"><div class="stack tight">' + ops + '</div>' +
+    '<label class="f">Detalles (opcional)<textarea id="denDetalle" maxlength="250"></textarea></label>' +
+    '<p class="muted small">La publicación se ocultará para ti y la denuncia llegará al equipo de Apex Gym para revisarla.</p>' +
+    '<p class="err" id="denError"></p><button class="btn" data-act="social-enviar-denuncia" data-a="' + postId + '">Denunciar</button></div>');
+}
+
 function hojaDenuncia(postId) {
   let ops = "";
   for (const k in MOTIVOS_DENUNCIA) ops += '<label class="check"><input type="radio" name="motivo" value="' + k + '">' + MOTIVOS_DENUNCIA[k] + '</label>';

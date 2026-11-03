@@ -470,6 +470,7 @@ const ACCIONES = {
     if (!rachaAntes && rachaAhora) setTimeout(function () { sonar("racha"); }, duracionSonido(r.ascensos.length ? "rango" : "record") * 1000 + 300);
     if (r.sesion.prs.length || r.ascensos.length) celebrar(r);
     else hojaResumen(r);
+    compartirConAmigosAlTerminar(r.sesion);
   },
   "cancelar-sesion": function () {
     if (!pideConfirmar("cancelar-sesion", pintarSesion)) return;
@@ -526,6 +527,66 @@ const ACCIONES = {
   },
   "vista-carga": function (v) { vistaCarga = v; pintarProgreso(); },
   "vista-social": function (v) { vistaSocial = v; confirmar = ""; pintarSocial(); },
+
+  // ---------- Social con cuenta en la nube ----------
+  "social-recargar": async function () { socialNube.error = ""; socialNube.cargado = false; pintarSocial(); },
+  "social-solicitar": async function () {
+    const r = await solicitarAmistadNube($("nombreAmigo").value);
+    if (!r.ok) { $("amigoError").textContent = r.msg; return; }
+    toast(r.msg, "ok"); await cargarSocialNube(); pintarSocial();
+  },
+  "social-invitar": function () {
+    compartirTexto("Añádeme en Apex Gym", "¡Añádeme como amigo en Apex Gym! Mi usuario es @" + estado.perfil.usuario + ". Abre el enlace:", URL_APP + "#u=" + encodeURIComponent(estado.perfil.usuario));
+  },
+  "social-aceptar": async function (id) {
+    const r = await aceptarAmistadNube(id);
+    if (!r.ok) { mensaje("No se ha podido aceptar", r.msg); return; }
+    toast("✓ Ahora sois amigos", "ok"); await cargarSocialNube(); pintarSocial();
+  },
+  "social-borrar": async function (id) {
+    const r = await borrarAmistadNube(id);
+    if (!r.ok) { mensaje("No se ha podido borrar", r.msg); return; }
+    await cargarSocialNube(); pintarSocial();
+  },
+  "social-quitar": async function (id) {
+    if (!pideConfirmar("social-quitar" + id, pintarSocial)) return;
+    const r = await borrarAmistadNube(id);
+    if (!r.ok) { mensaje("No se ha podido quitar", r.msg); return; }
+    toast("Amigo quitado", "ok"); await cargarSocialNube(); pintarSocial();
+  },
+  "social-publicar": async function () {
+    const s = estado.sesiones[estado.sesiones.length - 1];
+    if (!s) return;
+    const r = await publicarNube("entreno", textoSesion(s));
+    if (!r.ok) { mensaje("No se puede publicar", r.msg); return; }
+    s.publicadaNube = true; guardar(); toast("✓ Compartido con tus amigos", "ok");
+    await cargarSocialNube(); pintarSocial();
+  },
+  "social-like": async function (id) {
+    const p = socialNube.posts.find(function (x) { return x.id === id; });
+    if (!p) return;
+    const i = p.likes.indexOf(nube.id);
+    if (i >= 0) p.likes.splice(i, 1); else p.likes.push(nube.id);      // se pinta al momento y luego se guarda
+    pintarSocial();
+    const r = await meGustaNube(id, i < 0);
+    if (!r.ok) { await cargarSocialNube(); pintarSocial(); }
+  },
+  "social-borrar-post": async function (id) {
+    if (!pideConfirmar("social-borrar-post" + id, pintarSocial)) return;
+    const r = await borrarPublicacionNube(id);
+    if (!r.ok) { mensaje("No se ha podido borrar", r.msg); return; }
+    await cargarSocialNube(); pintarSocial();
+  },
+  "social-denunciar": function (id) { hojaDenunciaNube(id); },
+  "social-enviar-denuncia": async function (id) {
+    const marcado = document.querySelector('input[name="motivo"]:checked');
+    if (!marcado) { $("denError").textContent = "Elige un motivo."; return; }
+    const motivo = MOTIVOS_DENUNCIA[marcado.value] + ($("denDetalle").value.trim() ? ": " + $("denDetalle").value.trim() : "");
+    const r = await denunciarNube(id, motivo);
+    if (!r.ok) { $("denError").textContent = r.msg; return; }
+    socialNube.posts = socialNube.posts.filter(function (x) { return x.id !== id; });    // se oculta para ti
+    cerrarHoja(); toast("✓ Denuncia enviada. Gracias.", "ok"); pintarSocial();
+  },
   "like": function (id) {
     const p = estado.social.posts.find(function (x) { return x.id === id; });
     const i = p.likes.indexOf(miId());
@@ -715,6 +776,7 @@ const ACCIONES = {
     if (!r.ok) return errorCuenta(r.msg);
     if (estado) { estado.perfil.usuario = usuario; estado.ajustes.privacidadAceptada = hoy() + " v" + VERSION_PRIVACIDAD + " nube"; guardar(); }
     if (r.confirmar) { cuentaEnEspera = { email: email, pass: pass }; hojaConfirmarCorreo(email); return; }
+    socialNube = { cargado: false, cargando: false, error: "", amigos: [], recibidas: [], enviadas: [], posts: [] };
     cerrarHoja(); toast("✓ Cuenta creada", "ok");
     await sincronizarYAvisar(true);
   },
@@ -755,6 +817,7 @@ const ACCIONES = {
       if (r.msg.indexOf("confirmar tu correo") >= 0) { cuentaEnEspera = { email: email, pass: pass }; hojaConfirmarCorreo(email); return; }
       return errorCuenta(r.msg);
     }
+    socialNube = { cargado: false, cargando: false, error: "", amigos: [], recibidas: [], enviadas: [], posts: [] };
     cerrarHoja(); toast("✓ Sesión iniciada", "ok");
     await sincronizarYAvisar(true);
   },
@@ -786,6 +849,7 @@ const ACCIONES = {
   "nube-sync": function () { sincronizarYAvisar(true); },
   "nube-salir": async function () {
     await salirNube();
+    socialNube = { cargado: false, cargando: false, error: "", amigos: [], recibidas: [], enviadas: [], posts: [] };
     toast("Sesión de la nube cerrada. Tus datos siguen en este móvil.", "ok");
     if (estado) hojaAjustes();
   },
@@ -803,6 +867,13 @@ const ACCIONES = {
     if (r.ok) toast("✓ Guardado en la nube", "ok"); else mensaje("No se ha podido subir", r.msg);
   }
 };
+
+// Al terminar un entreno: si tienes cuenta y «Mostrar mis entrenos» activado, tus amigos lo ven en Actividad
+async function compartirConAmigosAlTerminar(s) {
+  if (!s || !conectado() || estado.modo === "demo" || estado.ajustes.compartir === false || estado.perfil.edad < 16 || estado.ajustes.privacidad === "privado") return;
+  const r = await publicarNube(s.prs.length ? "record" : "entreno", textoSesion(s));
+  if (r.ok) { s.publicadaNube = true; guardar(); socialNube.cargado = false; }
+}
 
 // ---------- Ayudas para la cuenta ----------
 let cuentaEnEspera = null;     // correo y contraseña mientras se confirma el correo (solo en memoria, nunca se guardan)
@@ -1049,6 +1120,7 @@ function leerOpcionesAvanzadas() {
 
 // Si la app se abre con un enlace de amigo (…#amigo=código), lo añade
 function abrirEnlaceAmigo() {
+  if (location.hash.indexOf("#u=") === 0) { abrirInvitacion(decodeURIComponent(location.hash.slice(3))); return; }
   if (location.hash.indexOf("#amigo=") !== 0) return;
   const codigo = location.hash.slice(1);
   try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { }
@@ -1059,6 +1131,18 @@ function abrirEnlaceAmigo() {
   const r = anadirAmigoReal(codigo);
   if (r.ok) { guardar(); tab = "social"; vistaSocial = "amigos"; pintar(); toast("✓ " + r.msg, "ok"); }
   else mensaje("Enlace de amigo", r.msg);
+}
+
+// Enlace de invitación (Apex Gym/#u=usuario): envía la solicitud de amistad
+async function abrirInvitacion(usuario) {
+  try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { }
+  if (!estado || !estado.perfil || estado.modo === "demo" || !conectado()) {
+    mensaje("Invitación de @" + usuario, "Crea tu perfil y una cuenta en la nube (Ajustes → ☁️ Cuenta). Después, en Social → Amigos, escribe su usuario: @" + usuario);
+    return;
+  }
+  const r = await solicitarAmistadNube(usuario);
+  mensaje("Invitación de @" + usuario, r.msg);
+  socialNube.cargado = false;
 }
 
 // Deslizar a izquierda o derecha durante el entreno cambia de ejercicio

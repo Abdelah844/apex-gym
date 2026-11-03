@@ -164,6 +164,10 @@ const PATRONES = [
   ["({x}). Se han cargado igualmente. Revisa tu perfil en Ajustes y exporta una copia.", "({x}). They were loaded anyway. Check your profile in Settings and export a backup.", "({x}). Elles ont été chargées quand même. Vérifie ton profil dans Réglages et exporte une sauvegarde."],
   ["pendiente de grabación propia. Mientras tanto, la animación y los pasos escritos explican el movimiento.", "our own recording is coming. Meanwhile, the animation and written steps explain the movement.", "notre propre vidéo arrive bientôt. En attendant, l’animation et les étapes écrites expliquent le mouvement."],
   ["+{x} en revisión", "+{x} under review", "+{x} en vérification"],
+  ["Invitación de @{x}", "Invitation from @{x}", "Invitation de @{x}"],
+  ["Crea tu perfil y una cuenta en la nube (Ajustes → ☁️ Cuenta). Después, en Social → Amigos, escribe su usuario: @{x}", "Create your profile and a cloud account (Settings → ☁️ Account). Then, in Social → Friends, type their username: @{x}", "Crée ton profil et un compte cloud (Réglages → ☁️ Compte). Ensuite, dans Social → Amis, écris son nom d’utilisateur : @{x}"],
+  ["¡Añádeme como amigo en Apex Gym! Mi usuario es @{x}. Abre el enlace:", "Add me as a friend on Apex Gym! My username is @{x}. Open the link:", "Ajoute-moi comme ami sur Apex Gym ! Mon nom d’utilisateur est @{x}. Ouvre le lien :"],
+  ["Solicitudes recibidas ({x})", "Requests received ({x})", "Demandes reçues ({x})"],
   // ---- Mensajes de Apix (mascota.js) ----
   ["{x} días parado…", "{x} days without moving…", "{x} jours à l’arrêt…"],
   ["Llevas {x} días sin entrenar y hoy te toca.", "It’s been {x} days without training and today’s the day.", "Ça fait {x} jours sans entraînement et aujourd’hui c’est ton tour."],
