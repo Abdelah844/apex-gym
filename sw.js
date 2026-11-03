@@ -5,14 +5,14 @@
 // Si cambias algún archivo, sube el número de VERSION para que los móviles descarguen la nueva.
 // =====================================================
 
-const VERSION = "apex-gym-2.7.3";
+const VERSION = "apex-gym-2.7.4";
 
 // Archivos que se guardan nada más instalar la app
 const ARCHIVOS = [
   "./", "./index.html", "./manifest.json", "./privacidad.html",
   "./datos.js", "./logica.js", "./academia.js", "./mascota.js", "./sonidos.js", "./app.js", "./pruebas.js", "./eventos.js",
   "./iconos/icono-192.png", "./iconos/icono-512.png",
-  "./fuentes/manrope.woff", "./fuentes/chakra-petch-medium.woff", "./fuentes/chakra-petch-semibold.woff", "./fuentes/chakra-petch-bold.woff"
+  "./manrope.woff", "./chakra-petch-medium.woff", "./chakra-petch-semibold.woff", "./chakra-petch-bold.woff"
 ];
 
 // 1. Instalar: descarga los archivos básicos SIEMPRE del servidor ("reload"),

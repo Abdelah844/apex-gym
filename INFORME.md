@@ -220,6 +220,6 @@ Fecha: 1 de noviembre de 2026 · Respuesta a la revisión «Nuevos fallos encont
 - **Página nueva `privacidad.html`:** qué datos usa la app, dónde se guardan (solo en el dispositivo), servicios de terceros (GitHub Pages), qué se comparte, derechos (ver, corregir, borrar, reclamar ante la AEPD), edad mínima de 14 años y condiciones de uso (no es un servicio médico).
 - **Registro:** casilla obligatoria «He leído y acepto…». Se guarda la fecha y la versión aceptada en `ajustes.privacidadAceptada` (`VERSION_PRIVACIDAD = 1`).
 - **Acceso:** enlace en la bienvenida y botón en Ajustes → Tus datos.
-- **Letras dentro de la app (carpeta `fuentes/`):** ya no se piden a Google Fonts, así la app no envía la IP del usuario a Google y las letras funcionan sin internet. Licencia OFL incluida.
+- **Letras dentro de la app (archivos `.woff` en la raíz, junto a index.html):** ya no se piden a Google Fonts, así la app no envía la IP del usuario a Google y las letras funcionan sin internet. Licencia OFL incluida.
 - **Pendiente:** cuando se añada Supabase, actualizar la política (servidor, datos de salud, consentimiento) y subir `VERSION_PRIVACIDAD` para volver a pedir la aceptación.
 - **Pruebas:** 136 de 136; v2 comprueba que sin la casilla no se crea el perfil.
