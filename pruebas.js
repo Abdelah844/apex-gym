@@ -1030,6 +1030,46 @@ const PRUEBAS = [
     if (e.ajustes.privacidadAceptada !== "") return "Debería empezar vacío";
     return (typeof VERSION_PRIVACIDAD === "number" && VERSION_PRIVACIDAD >= 1) || "Versión no válida";
   }]
+  ,
+  // ---------- 2.8: cuenta en la nube ----------
+  ["2.8 Nube", "Decide bien si subir, bajar o preguntar", function () {
+    const t = "2026-11-03T10:00:00Z";
+    const casos = [
+      [false, null, {}, "nada"], [true, null, {}, "subir"], [false, { actualizado: t }, {}, "bajar"],
+      [true, { actualizado: t }, { ultimaSync: t, pendiente: true }, "subir"],
+      [true, { actualizado: t }, { ultimaSync: t, pendiente: false }, "nada"],
+      [true, { actualizado: t }, { ultimaSync: "2026-11-01T10:00:00Z", pendiente: false }, "bajar"],
+      [true, { actualizado: t }, { ultimaSync: "", pendiente: true }, "elegir"]
+    ];
+    for (const c of casos) { const r = decidirSync(c[0], c[1], c[2]); if (r !== c[3]) return "Esperaba " + c[3] + " y salió " + r; }
+    return true;
+  }],
+  ["2.8 Nube", "Lee el enlace del correo (cambiar contraseña) y no confunde el de amigos", function () {
+    const v = leerVueltaCorreo("#access_token=abc&expires_in=3600&refresh_token=xyz&token_type=bearer&type=recovery");
+    if (!v || v.tipo !== "recovery" || v.access_token !== "abc" || v.refresh_token !== "xyz") return "No lee el enlace de recuperación";
+    if (leerVueltaCorreo("#amigo=eyJ2IjoxfQ") !== null) return "Confunde el enlace de amigo";
+    const e = leerVueltaCorreo("#error=access_denied&error_code=otp_expired&error_description=Email+link+is+invalid+or+has+expired");
+    return (e && e.error === "Email link is invalid or has expired") || "No lee el error";
+  }],
+  ["2.8 Nube", "Los errores de Supabase se explican en español", function () {
+    if (mensajeErrorNube({ error_code: "invalid_credentials", msg: "Invalid login credentials" }, 400).indexOf("incorrectos") < 0) return "Credenciales";
+    if (mensajeErrorNube({ code: "user_already_exists" }, 422).indexOf("Ya existe") < 0) return "Ya existe";
+    if (mensajeErrorNube(null, 0).indexOf("Sin conexión") < 0) return "Sin internet";
+    return mensajeErrorNube({ msg: "email rate limit exceeded" }, 429).indexOf("Espera") >= 0 || "Límite";
+  }],
+  ["2.8 Nube", "Una copia de la nube con datos rotos no sustituye los del móvil", function () {
+    estadoPrueba();
+    const antes = estado.perfil.nombre, guardada = nube;
+    nube = { id: "x", token: "t", ultimaSync: "", pendiente: true };
+    const r = usarCopiaNube({ version: 6, actualizado: "2026-11-03T10:00:00Z", datos: { perfil: null } });
+    nube = guardada;
+    if (r.ok) return "Aceptó datos rotos";
+    return estado.perfil.nombre === antes || "Ha cambiado los datos";
+  }],
+  ["2.8 Nube", "La sesión de la nube no va dentro de las copias de seguridad", function () {
+    estadoPrueba();
+    return JSON.stringify(estado).indexOf("refresco") < 0 || "La copia incluye el token";
+  }]
 ];
 
 // Ejecuta todas las pruebas y restaura los datos del usuario
@@ -1039,6 +1079,9 @@ function ejecutarPruebas() {
   try { copiaPrincipal = localStorage.getItem(CLAVE); copiaSecundaria = localStorage.getItem(CLAVE_COPIA); } catch (e) { }
   const copiaFlags = { errorGuardado: errorGuardado, recuperadoDeCopia: recuperadoDeCopia, erroresCarga: erroresCarga.slice() };
 
+  // Mientras se ejecutan las pruebas, NADA se sube a la nube (son datos de ejemplo)
+  const silencioAntes = typeof nubeSilencio !== "undefined" ? nubeSilencio : false;
+  if (typeof nubeSilencio !== "undefined") nubeSilencio = true;
   const resultados = [];
   for (const p of PRUEBAS) {
     let r;
@@ -1048,6 +1091,7 @@ function ejecutarPruebas() {
   }
 
   estado = JSON.parse(copiaEstado);
+  if (typeof nubeSilencio !== "undefined") nubeSilencio = silencioAntes;
   try {
     if (copiaPrincipal === null) localStorage.removeItem(CLAVE); else localStorage.setItem(CLAVE, copiaPrincipal);
     if (copiaSecundaria === null) localStorage.removeItem(CLAVE_COPIA); else localStorage.setItem(CLAVE_COPIA, copiaSecundaria);

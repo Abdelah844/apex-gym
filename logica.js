@@ -61,6 +61,7 @@ function guardar() {
     localStorage.setItem(CLAVE_COPIA, texto);
     ultimoGuardado = new Date();
     errorGuardado = false;
+    if (typeof nubeCambio === "function") nubeCambio();     // si hay cuenta en la nube, sube la copia (nube.js)
   } catch (e) {
     errorGuardado = true;      // memoria llena o almacenamiento bloqueado: los cambios siguen en memoria
   }
@@ -120,7 +121,7 @@ function metricasVacias() {
 }
 
 // Versión de la política de privacidad (privacidad.html). Si se cambia la política, se sube este número.
-const VERSION_PRIVACIDAD = 1;
+const VERSION_PRIVACIDAD = 2;
 
 function estadoVacio(perfil) {
   perfil = perfil || {};
@@ -1356,6 +1357,7 @@ function cambioMedida(campo) {
 // Pide hacer copia si hay entrenos y han pasado los días elegidos (14 por defecto) desde la última o desde que lo pospusiste
 function necesitaCopia() {
   if (estado.modo === "demo" || sesionesValidas().length === 0) return false;
+  if (typeof conectado === "function" && conectado()) return false;      // con cuenta en la nube ya se guarda solo
   const ref = [estado.ajustes.ultimaCopia, estado.ajustes.copiaPospuesta].filter(Boolean).sort().pop();
   const cada = estado.ajustes.copiaDias === undefined ? 14 : estado.ajustes.copiaDias;
   if (cada === 0) return false;                       // el usuario eligió «Nunca»

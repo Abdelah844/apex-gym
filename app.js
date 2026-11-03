@@ -181,8 +181,9 @@ function pintarBienvenida() {
       insignia(8, "logo") +
       '<div><h1>Apex Gym</h1><p class="muted" style="font-size:1rem;margin-top:6px">Registra tus entrenos, sigue tu progreso y sube de rango con datos reales.</p></div>' +
       '<button class="btn" data-act="ir-registro">Crear mi perfil</button>' +
-      '<button class="btn-sec full" data-act="usar-demo">Probar con datos de ejemplo</button>' +
-      '<p class="muted small">Tu perfil se guarda en este dispositivo. El inicio de sesión con cuenta (Google o correo) se activará cuando la app tenga servidor.</p>' +
+      '<button class="btn-sec full" data-act="abrir-cuenta" data-a="entrar">☁️ Ya tengo cuenta: iniciar sesión</button>' +
+      '<button class="btn-txt" data-act="usar-demo">Probar con datos de ejemplo</button>' +
+      '<p class="muted small">Tu perfil se guarda en este dispositivo. Si quieres, luego puedes crear una cuenta gratis para guardarlo también en la nube.</p>' +
       '<a class="muted small" href="privacidad.html">Privacidad y condiciones de uso</a>' +
     '</div>';
 }
@@ -1597,11 +1598,12 @@ function hojaAjustes() {
   function chk(id, valor, texto) { return '<label class="check"><input type="checkbox" id="' + id + '"' + (valor ? " checked" : "") + '>' + texto + '</label>'; }
   const diasCopia = a.ultimaCopia ? diasEntre(a.ultimaCopia, hoy()) : null;
   abrirHoja(cabeceraHoja("Perfil y ajustes", estado.modo === "demo" ? "Modo demo" : "Cuenta en este dispositivo") + '<div class="stack">' +
-    '<div class="chips indice-ajustes">' + [["aj-copia", "💾 Copia"], ["aj-perfil", "Perfil"], ["aj-entreno", "Entreno"], ["aj-sonido", "Sonido"], ["aj-avisos", "Avisos"], ["aj-datos", "Datos"]].map(function (x) {
+    '<div class="chips indice-ajustes">' + [["aj-nube", "☁️ Cuenta"], ["aj-copia", "💾 Copia"], ["aj-perfil", "Perfil"], ["aj-entreno", "Entreno"], ["aj-sonido", "Sonido"], ["aj-avisos", "Avisos"], ["aj-datos", "Datos"]].map(function (x) {
       return '<button class="chip" data-act="ir-seccion" data-a="' + x[0] + '">' + x[1] + '</button>'; }).join("") + '</div>' +
-    // Copia de seguridad: lo primero, para que se encuentre fácil
+    tarjetaNube() +
+    // Copia de seguridad: arriba, para que se encuentre fácil
     '<div class="card stack tight copia-ajustes" id="aj-copia"><h3>💾 Copia de seguridad</h3>' +
-      '<p class="small">' + (diasCopia === null ? "<b>Aún no tienes ninguna copia.</b>" : "Última copia: <b>" + fechaBonita(a.ultimaCopia) + "</b> (hace " + diasCopia + " día" + (diasCopia === 1 ? "" : "s") + ").") + ' Tus entrenos solo están en este móvil: si borras la app, se pierden.</p>' +
+      '<p class="small">' + (diasCopia === null ? "<b>Aún no tienes ninguna copia.</b>" : "Última copia: <b>" + fechaBonita(a.ultimaCopia) + "</b> (hace " + diasCopia + " día" + (diasCopia === 1 ? "" : "s") + ").") + (conectado() ? ' Tus entrenos ya se guardan en la nube; esta copia es un extra por si acaso.' : ' Tus entrenos solo están en este móvil: si borras la app, se pierden.') + '</p>' +
       '<button class="btn full" data-act="hacer-copia">Hacer copia ahora</button>' +
       '<p class="muted small">Se crea un archivo. En el iPhone, elige «Guardar en Archivos», Drive o mándatelo por correo.</p>' +
       '<button class="btn-sec full" data-act="abrir-importar">Restaurar una copia</button>' +
@@ -1642,6 +1644,55 @@ function hojaAjustes() {
       '<button class="btn-sec full" data-act="abrir-gimnasio">Mi gimnasio (máquinas disponibles)</button>' +
       '<button class="btn-sec full" data-act="cerrar-sesion">Cerrar sesión</button>' +
       '<button class="btn-sec full btn-danger" data-act="borrar-todo">' + (confirmar === "borrar-todo" ? "Pulsa otra vez: se borrará todo" : "Eliminar cuenta y datos") + '</button></div></div>');
+}
+
+// ---------- Cuenta en la nube (la parte de internet está en nube.js) ----------
+function tarjetaNube() {
+  let h = '<div class="card stack tight copia-ajustes" id="aj-nube"><h3>☁️ Cuenta en la nube</h3>';
+  if (estado.modo === "demo") return h + '<p class="muted small">No disponible en el modo demo. Crea tu perfil para usarla.</p></div>';
+  if (!conectado()) {
+    return h + '<p class="small">Crea una cuenta gratis y tus entrenos se guardarán solos en la nube. Si cambias de móvil, inicias sesión y lo recuperas todo.</p>' +
+      (nube && nube.ultimoError ? '<p class="err small">' + esc(nube.ultimoError) + '</p>' : "") +
+      '<button class="btn full" data-act="abrir-cuenta" data-a="crear">Crear cuenta</button>' +
+      '<button class="btn-sec full" data-act="abrir-cuenta" data-a="entrar">Ya tengo cuenta: iniciar sesión</button></div>';
+  }
+  return h + '<p class="small">Conectado como <b>' + esc(nube.email) + '</b></p>' +
+    '<p class="muted small" id="nubeEstado">' + esc(textoEstadoNube()) + '</p>' +
+    '<button class="btn-sec full" data-act="nube-sync">Sincronizar ahora</button>' +
+    '<button class="btn-txt" data-act="nube-salir">Cerrar sesión de la nube</button></div>';
+}
+
+// modo: "crear", "entrar", "olvido" o "nueva" (poner contraseña nueva al volver del correo)
+function hojaCuenta(modo, aviso) {
+  const titulos = { crear: "Crear cuenta", entrar: "Iniciar sesión", olvido: "Recuperar contraseña", nueva: "Nueva contraseña" };
+  let h = cabeceraHoja(titulos[modo], "Cuenta en la nube") + '<div class="stack">';
+  if (aviso) h += '<p class="small">' + esc(aviso) + '</p>';
+  if (modo !== "nueva") h += '<label class="f">Correo electrónico<input id="cEmail" type="email" inputmode="email" autocomplete="email" autocapitalize="off" placeholder="tucorreo@gmail.com"></label>';
+  if (modo !== "olvido") h += '<label class="f">' + (modo === "entrar" ? "Contraseña" : "Contraseña (mínimo 8 caracteres)") +
+    '<input id="cPass" type="password" autocomplete="' + (modo === "entrar" ? "current-password" : "new-password") + '"></label>';
+  if (modo === "crear") h += '<label class="check priv-ok"><input type="checkbox" id="cAcepto"><span>Acepto que mis datos de Apex Gym (perfil, entrenos, medidas y, si las apunto, lesiones o molestias) se guarden en la nube, según la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a>.</span></label>';
+  h += '<p class="err" id="cError"></p>';
+  const botones = { crear: ["cuenta-crear", "Crear cuenta"], entrar: ["cuenta-entrar", "Iniciar sesión"], olvido: ["cuenta-olvido", "Enviarme un correo"], nueva: ["cuenta-nueva", "Guardar contraseña"] };
+  h += '<button class="btn" id="cBoton" data-act="' + botones[modo][0] + '">' + botones[modo][1] + '</button>';
+  if (modo === "entrar") h += '<button class="btn-txt" data-act="abrir-cuenta" data-a="olvido">¿Has olvidado la contraseña?</button>' +
+    (estado ? '<button class="btn-txt" data-act="abrir-cuenta" data-a="crear">No tengo cuenta: crear una</button>' : "");
+  if (modo === "crear") h += '<button class="btn-txt" data-act="abrir-cuenta" data-a="entrar">Ya tengo cuenta: iniciar sesión</button>';
+  abrirHoja(h + '</div>');
+}
+
+// Los datos han cambiado en la nube Y en este móvil: el usuario elige cuáles se quedan
+let copiaEnEspera = null;
+function hojaConflictoNube(copia) {
+  copiaEnEspera = copia;
+  const enNube = (copia.datos && copia.datos.sesiones ? copia.datos.sesiones.length : 0);
+  const fecha = new Date(copia.actualizado).toLocaleString("es-ES", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  abrirHoja(cabeceraHoja("¿Qué datos usamos?", "Cuenta en la nube") + '<div class="stack">' +
+    '<p class="small">Hay datos distintos en la nube y en este móvil. Elige cuáles quieres conservar: <b>los otros se sustituyen</b>.</p>' +
+    '<div class="card stack tight"><h3>☁️ En la nube</h3><p class="small">' + enNube + ' entrenos · guardado el ' + esc(fecha) + '</p>' +
+      '<button class="btn full" data-act="nube-usar-nube">Usar los de la nube</button></div>' +
+    '<div class="card stack tight"><h3>📱 En este móvil</h3><p class="small">' + estado.sesiones.length + ' entrenos</p>' +
+      '<button class="btn-sec full" data-act="nube-usar-movil">Usar los de este móvil</button></div>' +
+    '<p class="muted small">Consejo: si no estás seguro, antes haz una copia en Ajustes → «Hacer copia ahora».</p></div>');
 }
 
 function hojaPruebas() {

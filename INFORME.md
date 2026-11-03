@@ -223,3 +223,14 @@ Fecha: 1 de noviembre de 2026 · Respuesta a la revisión «Nuevos fallos encont
 - **Letras dentro de la app (archivos `.woff` en la raíz, junto a index.html):** ya no se piden a Google Fonts, así la app no envía la IP del usuario a Google y las letras funcionan sin internet. Licencia OFL incluida.
 - **Pendiente:** cuando se añada Supabase, actualizar la política (servidor, datos de salud, consentimiento) y subir `VERSION_PRIVACIDAD` para volver a pedir la aceptación.
 - **Pruebas:** 136 de 136; v2 comprueba que sin la casilla no se crea el perfil.
+
+## Anexo 2.8 · Cuenta en la nube (Supabase)
+
+- **Proyecto Supabase** `apex-gym`, región West EU (Irlanda), plan gratuito.
+- **Base de datos:** tabla `copias` (una fila por usuario con todos sus datos en JSON). Seguridad por filas (RLS): cada usuario solo ve, cambia y borra su fila; los visitantes sin sesión no tienen permisos. Límite de 3 MB por copia. Función `borrar_mi_cuenta()` para el derecho de supresión.
+- **nube.js:** habla con Supabase con `fetch` (sin librerías): crear cuenta, iniciar sesión, recuperar contraseña, renovar el token, subir/bajar la copia y borrar la cuenta. La sesión se guarda aparte (`apex-nube`), nunca dentro de las copias de seguridad.
+- **Sincronización:** local primero. Cada `guardar()` sube la copia 4 s después. Al abrir la app, al volver a ella o al recuperar internet, se comprueba la nube: si cambió en otro móvil y aquí no, se baja; si cambiaron los dos, se pregunta cuáles conservar. Nunca se cambian los datos en mitad de un entreno.
+- **Pantallas:** «Ya tengo cuenta» en la bienvenida, tarjeta «☁️ Cuenta en la nube» en Ajustes, hoja de conflicto, nueva contraseña al volver del correo. Con cuenta, ya no se pide hacer copias manuales.
+- **Privacidad v2:** Supabase como encargado, servidor en la UE, consentimiento explícito (también para lesiones y molestias) al crear la cuenta; «Eliminar cuenta y datos» borra también la nube.
+- **Pendiente:** el correo de confirmación usa el servidor de Supabase, que solo permite unos pocos correos por hora; antes del lanzamiento conviene configurar un SMTP propio.
+- **Pruebas:** 141 de 141 en Node; `test/nube.py` simula Supabase y comprueba 18 casos (entrar, error de contraseña, recuperar datos, subida automática, conflicto, borrar cuenta, crear cuenta, nueva contraseña, sin internet).

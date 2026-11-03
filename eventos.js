@@ -679,12 +679,126 @@ const ACCIONES = {
     $("app").innerHTML = '<div class="welcome">' + insignia(8, "logo") + '<h1>Sesión cerrada</h1><p class="muted">Tus datos siguen guardados en este dispositivo.</p><button class="btn" data-act="volver-a-entrar">Volver a entrar</button></div>';
   },
   "volver-a-entrar": function () { pintar(); },
-  "borrar-todo": function () {
+  "borrar-todo": async function () {
     if (!pideConfirmar("borrar-todo", hojaAjustes)) return;
+    // Si hay cuenta en la nube, se borra primero allí. Si falla, no se borra nada (así se puede reintentar).
+    if (conectado()) {
+      toast("Borrando tu cuenta de la nube…");
+      const r = await borrarCuentaNube();
+      if (!r.ok) { mensaje("No se ha podido borrar", r.msg + " No se ha borrado nada."); return; }
+    }
     estado = null; borrarAlmacenamiento();
     cerrarHoja(); pararDescanso(); pintar();
+  },
+
+  // ---------- Cuenta en la nube ----------
+  "abrir-cuenta": function (modo) { hojaCuenta(modo); },
+  "cuenta-crear": async function () {
+    const email = $("cEmail").value.trim().toLowerCase(), pass = $("cPass").value;
+    const fallo = revisarCuenta(email, pass, true);
+    if (!fallo && !$("cAcepto").checked) return errorCuenta("Para crear la cuenta, marca la casilla de la política de privacidad.");
+    if (fallo) return errorCuenta(fallo);
+    ocupado(true, "Creando cuenta…");
+    const r = await crearCuentaNube(email, pass);
+    ocupado(false, "Crear cuenta");
+    if (!r.ok) return errorCuenta(r.msg);
+    if (estado) { estado.ajustes.privacidadAceptada = hoy() + " v" + VERSION_PRIVACIDAD + " nube"; guardar(); }
+    if (r.confirmar) { mensaje("Revisa tu correo", "Te hemos enviado un email a " + email + ". Ábrelo y pulsa el enlace para activar la cuenta. Después, inicia sesión."); return; }
+    cerrarHoja(); toast("✓ Cuenta creada", "ok");
+    await sincronizarYAvisar(true);
+  },
+  "cuenta-entrar": async function () {
+    const email = $("cEmail").value.trim().toLowerCase(), pass = $("cPass").value;
+    const fallo = revisarCuenta(email, pass, false);
+    if (fallo) return errorCuenta(fallo);
+    ocupado(true, "Entrando…");
+    const r = await entrarNube(email, pass);
+    ocupado(false, "Iniciar sesión");
+    if (!r.ok) return errorCuenta(r.msg);
+    cerrarHoja(); toast("✓ Sesión iniciada", "ok");
+    await sincronizarYAvisar(true);
+  },
+  "cuenta-olvido": async function () {
+    const email = $("cEmail").value.trim().toLowerCase();
+    if (!correoValido(email)) return errorCuenta("Escribe tu correo electrónico.");
+    ocupado(true, "Enviando…");
+    const r = await olvidoNube(email);
+    ocupado(false, "Enviarme un correo");
+    if (!r.ok) return errorCuenta(r.msg);
+    mensaje("Revisa tu correo", "Si existe una cuenta con " + email + ", te llegará un email. Pulsa el enlace y elige una contraseña nueva.");
+  },
+  "cuenta-nueva": async function () {
+    const pass = $("cPass").value;
+    if (pass.length < 8) return errorCuenta("La contraseña necesita al menos 8 caracteres.");
+    ocupado(true, "Guardando…");
+    const r = await cambiarContrasenaNube(pass);
+    ocupado(false, "Guardar contraseña");
+    if (!r.ok) return errorCuenta(r.msg);
+    cerrarHoja(); toast("✓ Contraseña cambiada", "ok");
+    await sincronizarYAvisar(false);
+  },
+  "nube-sync": function () { sincronizarYAvisar(true); },
+  "nube-salir": async function () {
+    await salirNube();
+    toast("Sesión de la nube cerrada. Tus datos siguen en este móvil.", "ok");
+    if (estado) hojaAjustes();
+  },
+  "nube-usar-nube": function () {
+    if (!copiaEnEspera) return;
+    const r = usarCopiaNube(copiaEnEspera);
+    copiaEnEspera = null; cerrarHoja();
+    if (!r.ok) { mensaje("No se ha podido cargar", r.msg); return; }
+    tab = "inicio"; pintar(); toast("✓ Datos cargados desde la nube", "ok");
+  },
+  "nube-usar-movil": async function () {
+    copiaEnEspera = null; cerrarHoja();
+    toast("Subiendo los datos de este móvil…");
+    const r = await subirCopiaNube();
+    if (r.ok) toast("✓ Guardado en la nube", "ok"); else mensaje("No se ha podido subir", r.msg);
   }
 };
+
+// ---------- Ayudas para la cuenta ----------
+function correoValido(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+function revisarCuenta(email, pass, nueva) {
+  if (!correoValido(email)) return "Escribe un correo electrónico válido.";
+  if (nueva && pass.length < 8) return "La contraseña necesita al menos 8 caracteres.";
+  if (!pass) return "Escribe tu contraseña.";
+  return "";
+}
+function errorCuenta(texto) { const e = $("cError"); if (e) e.textContent = texto; }
+// Mientras se espera a internet, el botón se desactiva para no pulsarlo dos veces
+function ocupado(si, texto) { const b = $("cBoton"); if (b) { b.disabled = si; b.textContent = texto; } }
+
+// Sincroniza y cuenta al usuario lo que ha pasado. manual = true si ha pulsado un botón.
+async function sincronizarYAvisar(manual) {
+  if (!conectado()) return;
+  const r = await sincronizarNube();
+  const e = $("nubeEstado"); if (e) e.textContent = textoEstadoNube();
+  if (!r.ok) { if (manual) mensaje("Nube", r.msg); return; }
+  if (r.hecho === "elegir") { hojaConflictoNube(r.copia); return; }
+  if (r.hecho === "bajar") { cerrarHoja(); tab = "inicio"; pintar(); toast("✓ Datos cargados desde la nube", "ok"); return; }
+  if (r.hecho === "nada" && !estado) {
+    mensaje("Tu cuenta está vacía", "Todavía no hay datos guardados en esta cuenta. Crea tu perfil y se guardarán solos en la nube.");
+    return;
+  }
+  if (manual) toast("✓ Todo guardado en la nube", "ok");
+}
+
+// Al volver del enlace del correo (activar cuenta o cambiar contraseña)
+async function procesarVueltaCorreo() {
+  const v = leerVueltaCorreo(location.hash);
+  if (!v) return false;
+  try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { }
+  if (v.error) { mensaje("Enlace no válido", "El enlace ha caducado o ya se usó. Vuelve a pedirlo. (" + v.error + ")"); return true; }
+  guardarSesionNube({ access_token: v.access_token, refresh_token: v.refresh_token, expires_in: v.expires_in });
+  const u = await datosUsuarioNube();
+  if (u) { nube.email = u.email; nube.id = u.id; guardarNube(); }
+  if (v.tipo === "recovery") { hojaCuenta("nueva", "Escribe tu nueva contraseña."); return true; }
+  toast("✓ Cuenta activada", "ok");
+  await sincronizarYAvisar(true);
+  return true;
+}
 
 function refrescarBib() { hojaBiblioteca(modoBib, bibBase); }
 
@@ -904,6 +1018,15 @@ pintar();
 reanudarDescanso();
 registrarServiceWorker();
 abrirEnlaceAmigo();
+// Cuenta en la nube: al abrir la app, al recuperar internet y al volver a la app
+procesarVueltaCorreo().then(function (hecho) { if (!hecho && conectado()) sincronizarYAvisar(false); });
+window.addEventListener("online", function () { if (conectado()) sincronizarYAvisar(false); });
+let ultimaVueltaNube = 0;
+document.addEventListener("visibilitychange", function () {
+  if (document.visibilityState !== "visible" || !conectado() || Date.now() - ultimaVueltaNube < 60000) return;
+  ultimaVueltaNube = Date.now();
+  sincronizarYAvisar(false);
+});
 comprobarRecordatorios();
 setInterval(comprobarRecordatorios, 5 * 60 * 1000);
 document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") comprobarRecordatorios(); });
