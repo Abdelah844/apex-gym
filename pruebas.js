@@ -1070,6 +1070,33 @@ const PRUEBAS = [
     estadoPrueba();
     return JSON.stringify(estado).indexOf("refresco") < 0 || "La copia incluye el token";
   }]
+  ,
+  // ---------- 2.9: idiomas ----------
+  ["2.9 Idiomas", "Traduce textos con números, con nombres y deja igual lo desconocido", function () {
+    if (typeof tr !== "function") return true;          // sin traductor (no debería pasar)
+    const antes = IDIOMA_ACTUAL;
+    function probar(idioma) { IDIOMA_ACTUAL = idioma; traductorDicc = null; traductorCache.clear(); }
+    try {
+      probar("en");
+      if (tr("Serie 3") !== "Set 3") return "Inglés con número: " + tr("Serie 3");
+      if (tr("Hola, Abde") !== "Hi, Abde") return "Inglés con nombre: " + tr("Hola, Abde");
+      if (tr("  Guardar  ") !== "  Save  ") return "No respeta los espacios";
+      if (tr("Texto que no existe 123") !== "Texto que no existe 123") return "Cambia lo desconocido";
+      if (tr("Pecho · Mancuernas · Básico") !== "Chest · Dumbbells · Basic") return "Partes con ·";
+      probar("fr");
+      if (tr("Serie 3") !== "Série 3") return "Francés: " + tr("Serie 3");
+      probar("es");
+      return tr("Serie 3") === "Serie 3" || "En español no debe cambiar nada";
+    } finally { probar(antes); }
+  }],
+  ["2.9 Idiomas", "Cada traducción conserva los mismos números que el español", function () {
+    if (typeof TRADUCCIONES === "undefined") return true;
+    for (const k in TRADUCCIONES) {
+      const n = (k.match(/\{n\}/g) || []).length;
+      for (const t of TRADUCCIONES[k]) if ((t.match(/\{n\}/g) || []).length !== n) return "Números distintos en: " + k;
+    }
+    return true;
+  }]
 ];
 
 // Ejecuta todas las pruebas y restaura los datos del usuario

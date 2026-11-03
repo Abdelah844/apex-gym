@@ -1,0 +1,160 @@
+1120	Look straight ahead, not at the ceiling.	Regarde devant toi, pas le plafond.
+1121	Looking at the ceiling and arching your neck.	Regarder le plafond et cambrer la nuque.
+1122	The same logs always give the same rank	Les mêmes données donnent toujours le même rang
+1123	Wednesday	Mercredi
+1124	Demo mode	Mode démo
+1125	Discomfort	Gêne
+1126	Show Apix on Home	Afficher Apix sur l’Accueil
+1127	Show my workouts to my friends	Montrer mes séances à mes amis
+1128	Move earlier	Déplacer avant
+1129	Move later	Déplacer après
+1130	Moving your forearm.	Bouger l’avant-bras.
+1131	Moving your shoulder to help.	Bouger l’épaule pour t’aider.
+1132	Moving your torso.	Bouger le buste.
+1133	Moving your hips.	Bouger les hanches.
+1134	Moving your elbows forwards.	Avancer les coudes.
+1135	Moving your elbows.	Bouger les coudes.
+1136	Woman	Femme
+1137	Thigh	Cuisse
+1138	Thigh (cm)	Cuisse (cm)
+1139	Machine	Machine
+1140	Available machines	Machines disponibles
+1141	More	Plus
+1142	More stable than the free military press.	Plus stable que le développé militaire libre.
+1143	More strength	Plus de force
+1144	More options	Plus d’options
+1145	Maximum {n} characters.	Maximum {n} caractères.
+1146	Main muscle:	Muscle principal :
+1147	Priority muscle	Muscle prioritaire
+1148	You need at least {n}-{n} weeks of workouts to calculate it.	Il te faut au moins {n}-{n} semaines de séances pour la calculer.
+1149	You need clear space in front.	Il te faut de l’espace libre devant.
+1150	You need to have logged some exercise.	Tu dois avoir noté au moins un exercice.
+1151	No routine goes over the available time ({n} combinations)	Aucun programme ne dépasse le temps disponible ({n} combinaisons)
+1152	None	Aucun
+1153	No identifier is repeated and all variants exist	Aucun identifiant n’est répété et toutes les variantes existent
+1154	Level: advanced	Niveau : avancé
+1155	Level: basic	Niveau : débutant
+1156	Level: intermediate	Niveau : intermédiaire
+1157	Doesn’t notify if you already trained today or have recent discomfort	Ne prévient pas si tu t’es déjà entraîné aujourd’hui ou si tu as une gêne récente
+1158	Don’t snap your knees locked when straightening.	Ne verrouille pas les genoux d’un coup en tendant.
+1159	Don’t lock your elbows at the top.	Ne verrouille pas les coudes en haut.
+1160	They don’t count for ranks until you confirm them in the history.	Elles ne comptent pas pour les rangs tant que tu ne les confirmes pas dans l’historique.
+1161	Not available	Non disponible
+1162	Not available in demo mode. Create your profile to use it.	Non disponible en mode démo. Crée ton profil pour l’utiliser.
+1163	Not straightening your arms at the bottom (half reps).	Ne pas tendre les bras en bas (demi-amplitude).
+1164	Not straightening your arms at the bottom.	Ne pas tendre les bras en bas.
+1165	It doesn’t have to be your best workout, it just has to happen.	Pas besoin que ce soit ta meilleure séance, juste que tu la fasses.
+1166	You’re not logged in.	Tu n’es pas connecté.
+1167	Not in my gym	Pas dans ma salle
+1168	No set was completed, so it wasn’t saved.	Aucune série n’a été terminée, elle n’a donc pas été enregistrée.
+1169	You didn’t reach	Tu n’as pas atteint
+1170	It didn’t arrive: send it again	Je ne l’ai pas reçu : renvoyer
+1171	Doesn’t suggest increases above {n} %	Ne propose pas de hausse de plus de {n} %
+1172	You can’t comment on this post.	Tu ne peux pas commenter cette publication.
+1173	You can’t report your own post.	Tu ne peux pas signaler ta propre publication.
+1174	I can’t do it	Je ne peux pas le faire
+1175	Don’t remove the leg press safeties.	N’enlève pas les sécurités de la presse.
+1176	Nothing was deleted.	Rien n’a été supprimé.
+1177	Couldn’t delete	Impossible de supprimer
+1178	Couldn’t load	Impossible de charger
+1179	Couldn’t connect to the cloud (	Impossible de se connecter au cloud (
+1180	Couldn’t save	Impossible d’enregistrer
+1181	Couldn’t upload	Impossible d’envoyer
+1182	Notifications weren’t turned on	Les notifications n’ont pas été activées
+1183	The changes couldn’t be saved. They’re still on this screen.	Les modifications n’ont pas pu être enregistrées. Elles sont toujours sur cet écran.
+1184	You can’t comment on a post you can’t see	On ne peut pas commenter une publication qu’on ne voit pas
+1185	Can’t share	Impossible de partager
+1186	Can’t post	Impossible de publier
+1187	Name	Nom
+1188	Username	Nom d’utilisateur
+1189	Username (unique, your friends will see it)	Nom d’utilisateur (unique, tes amis le verront)
+1190	Day name	Nom du jour
+1191	Notes (optional)	Notes (facultatif)
+1192	Notifications	Notifications
+1193	Cloud	Cloud
+1194	New password	Nouveau mot de passe
+1195	New routine	Nouveau programme
+1196	New challenge	Nouveau défi
+1197	New record in	Nouveau record en
+1198	New record in Barbell squat: {n} kg × {n}	Nouveau record en Squat à la barre : {n} kg × {n}
+1199	Never	Jamais
+1200	Never remove the safeties while doing calf raises.	N’enlève jamais les sécurités pendant les mollets.
+1201	O'Conner	O'Conner
+1202	Main goal	Objectif principal
+1203	Hide	Masquer
+1204	Advanced options (optional)	Options avancées (facultatif)
+1205	Gold	Or
+1206	Gold · {n} kg {n}RM	Or · {n} kg {n}RM
+1207	Dark	Sombre
+1208	Another machine or technique	Autre machine ou technique
+1209	Other	Autre
+1210	Another reason	Autre motif
+1211	POST	POST
+1212	Palms facing you, hands shoulder-width apart.	Paumes vers toi, mains à largeur d’épaules.
+1213	Palms facing each other throughout the movement.	Paumes face à face pendant tout le mouvement.
+1214	For Diamond you need an estimated {n}RM of {n} kg. For example: {n} kg × {n}.	Pour Diamant il te faut un {n}RM estimé de {n} kg. Par exemple : {n} kg × {n}.
+1215	For Emerald you need an estimated {n}RM of {n} kg. For example: {n} kg of extra weight × {n}.	Pour Émeraude il te faut un {n}RM estimé de {n} kg. Par exemple : {n} kg de lest × {n}.
+1216	For Emerald you need an estimated {n}RM of {n} kg. For example: {n} kg × {n}.	Pour Émeraude il te faut un {n}RM estimé de {n} kg. Par exemple : {n} kg × {n}.
+1217	For Platinum you need an estimated {n}RM of {n} kg. For example: {n} kg of assistance × {n}.	Pour Platine il te faut un {n}RM estimé de {n} kg. Par exemple : {n} kg d’aide × {n}.
+1218	Stop at chest height and lower slowly.	Arrête à hauteur de poitrine et descends lentement.
+1219	To delete your cloud account, log in again.	Pour supprimer ton compte cloud, reconnecte-toi.
+1220	To continue, tick the privacy policy box.	Pour continuer, coche la case de la politique de confidentialité.
+1221	To create the account, tick the privacy policy box.	Pour créer le compte, coche la case de la politique de confidentialité.
+1222	For exercises added by hand. In the routine, each exercise keeps its own rest time.	Pour les exercices ajoutés à la main. Dans le programme, chaque exercice garde son propre repos.
+1223	Stop if you feel pain (muscle effort is normal; joint or sharp pain is not).	Arrête si tu ressens une douleur (l’effort musculaire est normal ; la douleur articulaire ou aiguë, non).
+1224	To move up, improve your weakest muscles: Back and Glutes.	Pour monter, améliore tes muscles les plus faibles : Dos et Fessiers.
+1225	To get more data in this group you can add: Dumbbell curl, Hammer curl, Cable curl.	Pour avoir plus de données dans ce groupe, tu peux ajouter : Curl aux haltères, Curl marteau, Curl à la poulie.
+1226	To get more data in this group you can add: Wrist curl, Reverse barbell curl, Cable wrist curl.	Pour avoir plus de données dans ce groupe, tu peux ajouter : Curl des poignets, Curl inversé à la barre, Curl des poignets à la poulie.
+1227	To get more data in this group you can add: Pull-ups, Lat pulldown, Barbell row.	Pour avoir plus de données dans ce groupe, tu peux ajouter : Tractions, Tirage vertical, Rowing à la barre.
+1228	To get more data in this group you can add: Cable triceps pushdown, Overhead dumbbell extension, Machine triceps.	Pour avoir plus de données dans ce groupe, tu peux ajouter : Extension triceps à la poulie, Extension nuque à l’haltère, Triceps à la machine.
+1229	To get more data in this group you can add: Machine calf raise, Leg press calf raise, Smith machine calf raise.	Pour avoir plus de données dans ce groupe, tu peux ajouter : Mollets à la machine, Mollets à la presse, Mollets à la Smith machine.
+1230	To get more data in this group you can add: Cable glute kickback, Machine hip abduction, Cable pull-through.	Pour avoir plus de données dans ce groupe, tu peux ajouter : Kickback fessier à la poulie, Abducteurs à la machine, Pull-through à la poulie.
+1231	To get more data in this group you can add: Dumbbell shoulder press, Machine shoulder press, Lateral raises.	Pour avoir plus de données dans ce groupe, tu peux ajouter : Développé épaules aux haltères, Développé épaules à la machine, Élévations latérales.
+1232	To get more data in this group you can add: Incline dumbbell press, Machine chest press, Pec deck.	Pour avoir plus de données dans ce groupe, tu peux ajouter : Développé incliné aux haltères, Développé pectoraux à la machine, Pec deck.
+1233	Step {n} of {n}	Étape {n} sur {n}
+1234	Cable glute kickback	Kickback fessier à la poulie
+1235	Pause for a second at the bottom.	Pause d’une seconde en bas.
+1236	Pause for a second at the top.	Pause d’une seconde en haut.
+1237	Pause at the top and bottom.	Pause en haut et en bas.
+1238	One-second pause at the top and bottom.	Pause d’une seconde en haut et en bas.
+1239	Chest	Poitrine
+1240	Chest (cm)	Poitrine (cm)
+1241	Chest supported on an incline bench if you struggle to keep your back straight.	Poitrine appuyée sur un banc incliné si tu as du mal à garder le dos droit.
+1242	Chest up throughout the movement.	Poitrine haute pendant tout le mouvement.
+1243	Chest and back	Poitrine et dos
+1244	Chest and back ({n})	Poitrine et dos ({n})
+1245	Chest and back / Shoulders and arms / Legs / Chest and back ({n}) / Shoulders and arms ({n}) / Legs ({n})	Poitrine et dos / Épaules et bras / Jambes / Poitrine et dos ({n}) / Épaules et bras ({n}) / Jambes ({n})
+1246	Chest and back, shoulders and arms, legs. Twice a week. Lots of volume: only if you already have experience.	Poitrine et dos, épaules et bras, jambes. Deux cycles par semaine. Beaucoup de volume : seulement si tu as déjà de l’expérience.
+1247	Chest ·	Poitrine ·
+1248	Chest · Barbell · Intermediate	Poitrine · Barre · Intermédiaire
+1249	Chest · Dumbbells · Basic	Poitrine · Haltères · Débutant
+1250	Chest · Dumbbells · Intermediate	Poitrine · Haltères · Intermédiaire
+1251	Chest · Machine · Basic	Poitrine · Machine · Débutant
+1252	Chest · Bodyweight · Basic	Poitrine · Poids du corps · Débutant
+1253	Chest · Bodyweight · Intermediate	Poitrine · Poids du corps · Intermédiaire
+1254	Chest · Cable · Intermediate	Poitrine · Poulie · Intermédiaire
+1255	Chest → Platinum	Poitrine → Platine
+1256	Chest, Shoulders	Poitrine, Épaules
+1257	Chest: {n} sets/week, too much volume ({n}).	Poitrine : {n} séries/semaine, trop de volume ({n}).
+1258	Chest: {n} sets/week, below the recommended amount ({n}).	Poitrine : {n} séries/semaine, en dessous du recommandé ({n}).
+1259	Paste the link or code your friend sent you.	Colle le lien ou le code que ton ami t’a envoyé.
+1260	Paste their link or code	Colle son lien ou son code
+1261	Waiting for the server version: access to other users’ data, sync between devices and offline use with sync.	En attente de la version serveur : accès aux données des autres utilisateurs, synchronisation entre appareils et utilisation hors ligne avec synchronisation.
+1262	Profile	Profil
+1263	Profile and settings	Profil et réglages
+1264	Profile: height out of range ({n}-{n} cm).	Profil : taille hors limites ({n}-{n} cm).
+1265	Profile: invalid calendar.	Profil : calendrier non valide.
+1266	Profile: invalid text fields.	Profil : champs de texte non valides.
+1267	Profile: invalid duration.	Profil : durée non valide.
+1268	Profile: days per week out of range ({n}-{n}).	Profil : jours par semaine hors limites ({n}-{n}).
+1269	Profile: age out of range ({n}-{n}).	Profil : âge hors limites ({n}-{n}).
+1270	Profile: invalid or empty equipment.	Profil : matériel non valide ou vide.
+1271	Profile: invalid experience.	Profil : expérience non valide.
+1272	Profile: identifier missing.	Profil : identifiant manquant.
+1273	Profile: invalid place.	Profil : lieu non valide.
+1274	Profile: invalid name.	Profil : nom non valide.
+1275	Profile: invalid goal.	Profil : objectif non valide.
+1276	Profile: weight out of range ({n}-{n} kg).	Profil : poids hors limites ({n}-{n} kg).
+1277	Profile: invalid sex.	Profil : sexe non valide.
+1278	Profile: invalid username.	Profil : nom d’utilisateur non valide.
+1279	Weight	Poids

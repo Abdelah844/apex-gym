@@ -36,8 +36,10 @@ function lunesDe(fecha) {
   d.setDate(d.getDate() - (d.getDay() + 6) % 7);
   return aTexto(d);
 }
+// Formato de fechas y números según el idioma (traductor.js). Sin traductor (pruebas en Node), español.
+function localeApp() { return (typeof IDIOMA_ACTUAL !== "undefined" && typeof LOCALES_APP !== "undefined" && LOCALES_APP[IDIOMA_ACTUAL]) || "es-ES"; }
 function fechaBonita(fecha) {
-  return new Date(fecha + "T12:00:00").toLocaleDateString("es-ES", { day: "numeric", month: "short" });
+  return new Date(fecha + "T12:00:00").toLocaleDateString(localeApp(), { day: "numeric", month: "short" });
 }
 
 // =====================================================

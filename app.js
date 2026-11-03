@@ -33,8 +33,8 @@ function esc(t) {
   });
 }
 
-function kg(n) { return (Math.round(n * 10) / 10).toLocaleString("es-ES") + " kg"; }
-function miles(n) { return Math.round(n).toLocaleString("es-ES"); }
+function kg(n) { return (Math.round(n * 10) / 10).toLocaleString(localeApp()) + " kg"; }
+function miles(n) { return Math.round(n).toLocaleString(localeApp()); }
 
 const I = {
   check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5 9-10"/></svg>',
@@ -177,7 +177,7 @@ function graficaBarras(etiquetas, valores, unidad) {
 function pintarBienvenida() {
   $("tabs").hidden = true;
   $("app").innerHTML =
-    '<div class="welcome">' +
+    '<div class="welcome">' + selectorIdioma() +
       insignia(8, "logo") +
       '<div><h1>Apex Gym</h1><p class="muted" style="font-size:1rem;margin-top:6px">Registra tus entrenos, sigue tu progreso y sube de rango con datos reales.</p></div>' +
       '<button class="btn" data-act="ir-registro">Crear mi perfil</button>' +
@@ -186,6 +186,13 @@ function pintarBienvenida() {
       '<p class="muted small">Tu perfil se guarda en este dispositivo. Si quieres, luego puedes crear una cuenta gratis para guardarlo también en la nube.</p>' +
       '<a class="muted small" href="privacidad.html">Privacidad y condiciones de uso</a>' +
     '</div>';
+}
+
+// Botones para elegir idioma (los nombres van en su propio idioma, sin traducir)
+function selectorIdioma() {
+  let h = '<div class="chips idiomas" data-no-traducir role="group" aria-label="Idioma / Language">';
+  for (const k in IDIOMAS) h += '<button class="chip' + (k === IDIOMA_ACTUAL ? " on" : "") + '" data-act="idioma" data-a="' + k + '" lang="' + k + '">' + IDIOMAS[k] + '</button>';
+  return h + '</div>';
 }
 
 function opciones(lista, actual) {
@@ -281,7 +288,7 @@ function pintarInicio() {
   const rg = pg === null ? null : rangoDePuntos(pg);
   const ultima = estado.sesiones[estado.sesiones.length - 1];
 
-  let h = '<div class="head"><div class="grow"><p class="label">' + new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" }) + '</p>' +
+  let h = '<div class="head"><div class="grow"><p class="label">' + new Date().toLocaleDateString(localeApp(), { weekday: "long", day: "numeric", month: "long" }) + '</p>' +
     '<h1>Hola, ' + esc(p.nombre) + '</h1></div>' +
     '<button class="avatar" data-act="abrir-ajustes" aria-label="Perfil y ajustes">' + esc(p.nombre[0] || "?").toUpperCase() + '<span class="engranaje" aria-hidden="true">⚙</span></button></div>';
 
@@ -341,7 +348,9 @@ function pintarInicio() {
   let semanaHtml = "";
   const hoyNum = (new Date().getDay() + 6) % 7;
   const fechas = estado.sesiones.map(function (s) { return s.fecha; });
-  ["L", "M", "X", "J", "V", "S", "D"].forEach(function (l, i) {
+  // Iniciales de los días según el idioma (lunes primero)
+  const iniciales = { es: "LMXJVSD", en: "MTWTFSS", fr: "LMMJVSD" }[typeof IDIOMA_ACTUAL !== "undefined" ? IDIOMA_ACTUAL : "es"] || "LMXJVSD";
+  iniciales.split("").forEach(function (l, i) {
     const f = fechaTexto(hoyNum - i);
     const on = fechas.includes(f);
     semanaHtml += '<div>' + l + '<i class="' + (on ? "on" : "") + (i === hoyNum ? " today" : "") + '">' + (on ? '<span style="color:var(--on-accent)">' + I.check + '</span>' : "") + '</i></div>';
@@ -530,7 +539,7 @@ function pintarSesion() {
   let hechas = 0, total = 0;
   for (const e of a.ejercicios) for (const s of e.series) { total++; if (s.hecha) hechas++; }
   const ei = ejercicioActual();
-  const hora = ultimoGuardado ? ultimoGuardado.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }) : "";
+  const hora = ultimoGuardado ? ultimoGuardado.toLocaleTimeString(localeApp(), { hour: "2-digit", minute: "2-digit" }) : "";
 
   let h = (sesionAntigua() ? '<div class="card stack tight" style="margin-bottom:12px;border-color:var(--warn)"><p class="small"><b>Empezó hace más de 12 horas.</b> Termínalo o descártalo.</p></div>' : "") +
     (sesionRecuperada && !sesionAntigua() ? '<div class="card" style="margin-bottom:12px;border-color:var(--good)"><p class="small"><b>Entreno recuperado.</b> Seguía guardado.</p></div>' : "") +
@@ -546,7 +555,7 @@ function pintarSesion() {
     '<div class="chips saltos">' + a.ejercicios.map(function (e, i) {
       const n = e.series.filter(function (s) { return s.hecha; }).length;
       const lleno = n === e.series.length && n > 0;
-      return '<button class="chip' + (i === ei ? " on" : "") + (lleno ? " hecho" : "") + '" data-act="ir-ej" data-a="' + i + '">' + (lleno ? "✓ " : (i + 1) + ". ") + esc(buscarEj(e.id).nombre.split(" ").slice(0, 2).join(" ")) + (e.superserie ? " ⇄" : "") + '</button>';
+      return '<button class="chip chip-ej' + (i === ei ? " on" : "") + (lleno ? " hecho" : "") + '" data-act="ir-ej" data-a="' + i + '">' + (lleno ? "✓ " : (i + 1) + ". ") + esc(tr(buscarEj(e.id).nombre)) + (e.superserie ? " ⇄" : "") + '</button>';
     }).join("") + '</div></div>';
 
   if (estado.perfil.lesiones) h += '<p class="muted small" style="margin:0 0 10px">Recuerda: ' + esc(estado.perfil.lesiones) + '. Para si notas dolor.</p>';
@@ -1533,6 +1542,11 @@ function hojaGrupo(g) {
 function hojaRangoEj(id) {
   const e = buscarEj(id);
   const p = puntosEjercicio(id);
+  // Sin series registradas (o ejercicio sin rango) todavía no hay puntos que enseñar
+  if (p === null || p === undefined) {
+    abrirHoja(cabeceraHoja(esc(e.nombre), "Rango por ejercicio") + '<div class="stack"><p>Aún no tienes series registradas de este ejercicio. Haz al menos una sesión para ver tu rango.</p><button class="btn-sec" data-act="info-ej" data-a="' + e.id + '">Ver ficha del ejercicio</button></div>');
+    return;
+  }
   const ri = rangoDePuntos(p);
   const n = sesionesCon(id);
   let falta = "";
@@ -1566,7 +1580,7 @@ function hojaComoRangos() {
   const ref = referenciaCorporal(bw);
   const rm = unaRM(60, 8);
   const pts = Math.min(100, 75 * rm / (factorEj(e) * ref));
-  function f(n) { return (Math.round(n * 10) / 10).toLocaleString("es-ES"); }
+  function f(n) { return (Math.round(n * 10) / 10).toLocaleString(localeApp()); }
   function paso(t, txt) { return '<div class="card stack tight"><h3>' + t + '</h3>' + txt + '</div>'; }
   abrirHoja(cabeceraHoja("Reglas de los rangos", "Algoritmo público · v2") + '<div class="stack">' +
     paso("1. Fuerza estimada", '<p class="small"><b>1RM = peso × (1 + reps ÷ 30)</b>. Cada repetición extra suma un 3,3 %, hasta 12 repeticiones.</p>') +
@@ -1599,8 +1613,9 @@ function hojaAjustes() {
   function chk(id, valor, texto) { return '<label class="check"><input type="checkbox" id="' + id + '"' + (valor ? " checked" : "") + '>' + texto + '</label>'; }
   const diasCopia = a.ultimaCopia ? diasEntre(a.ultimaCopia, hoy()) : null;
   abrirHoja(cabeceraHoja("Perfil y ajustes", estado.modo === "demo" ? "Modo demo" : "Cuenta en este dispositivo") + '<div class="stack">' +
-    '<div class="chips indice-ajustes">' + [["aj-nube", "☁️ Cuenta"], ["aj-copia", "💾 Copia"], ["aj-perfil", "Perfil"], ["aj-entreno", "Entreno"], ["aj-sonido", "Sonido"], ["aj-avisos", "Avisos"], ["aj-datos", "Datos"]].map(function (x) {
+    '<div class="chips indice-ajustes">' + [["aj-idioma", "🌐"], ["aj-nube", "☁️ Cuenta"], ["aj-copia", "💾 Copia"], ["aj-perfil", "Perfil"], ["aj-entreno", "Entreno"], ["aj-sonido", "Sonido"], ["aj-avisos", "Avisos"], ["aj-datos", "Datos"]].map(function (x) {
       return '<button class="chip" data-act="ir-seccion" data-a="' + x[0] + '">' + x[1] + '</button>'; }).join("") + '</div>' +
+    '<div class="card stack tight" id="aj-idioma"><h3>🌐 Idioma · Language · Langue</h3>' + selectorIdioma() + '</div>' +
     tarjetaNube() +
     // Copia de seguridad: arriba, para que se encuentre fácil
     '<div class="card stack tight copia-ajustes" id="aj-copia"><h3>💾 Copia de seguridad</h3>' +
@@ -1713,7 +1728,7 @@ let copiaEnEspera = null;
 function hojaConflictoNube(copia) {
   copiaEnEspera = copia;
   const enNube = (copia.datos && copia.datos.sesiones ? copia.datos.sesiones.length : 0);
-  const fecha = new Date(copia.actualizado).toLocaleString("es-ES", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  const fecha = new Date(copia.actualizado).toLocaleString(localeApp(), { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
   abrirHoja(cabeceraHoja("¿Qué datos usamos?", "Cuenta en la nube") + '<div class="stack">' +
     '<p class="small">Hay datos distintos en la nube y en este móvil. Elige cuáles quieres conservar: <b>los otros se sustituyen</b>.</p>' +
     '<div class="card stack tight"><h3>☁️ En la nube</h3><p class="small">' + enNube + ' entrenos · guardado el ' + esc(fecha) + '</p>' +
@@ -1885,6 +1900,7 @@ function toast(texto, tipo) {
 
 // Compartir con otras apps del móvil (WhatsApp, Instagram…). Si no se puede, copia el texto.
 function compartirTexto(titulo, texto, url) {
+  titulo = tr(titulo); texto = tr(texto);
   const completo = texto + (url ? "\n" + url : "");
   if (navigator.share) {
     navigator.share({ title: titulo, text: texto, url: url || undefined }).then(function () { toast("✓ Enviado", "ok"); }).catch(function (e) {
@@ -1939,6 +1955,7 @@ function permisoAvisos() {
 }
 function mostrarAviso(titulo, texto) {
   if (permisoAvisos() !== "granted") return false;
+  titulo = tr(titulo); texto = tr(texto);          // los avisos no pasan por la pantalla: se traducen aquí
   const op = { body: texto, icon: "iconos/icono-192.png", badge: "iconos/icono-192.png", tag: "apex-recordatorio" };
   if (navigator.serviceWorker && navigator.serviceWorker.controller) {
     navigator.serviceWorker.ready.then(function (reg) { reg.showNotification(titulo, op); });

@@ -49,6 +49,7 @@ const ACCIONES = {
   "reintentar-guardado": function () { if (!guardar()) mensaje("No se ha podido guardar", "El almacenamiento del navegador está lleno o bloqueado. Exporta tus datos desde Ajustes para no perderlos."); },
 
   // ---------- Hojas ----------
+  "idioma": function (nuevo) { cambiarIdioma(nuevo); },
   "abrir-privacidad": function () { location.href = "privacidad.html"; },
   "cerrar-hoja": function () { cerrarHoja(); confirmar = ""; pintar(); },
   "abrir-ajustes": function () { confirmar = ""; hojaAjustes(); },
@@ -1072,6 +1073,7 @@ document.addEventListener("touchend", function (ev) {
 }, { passive: true });
 
 // ---------- Arranque ----------
+iniciarTraductor();       // idiomas: traduce la pantalla si no es español (traductor.js)
 cargar();
 if (estado && estado.activa) { sesionRecuperada = true; tab = "entrenar"; }
 pintar();

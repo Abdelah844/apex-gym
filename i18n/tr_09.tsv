@@ -1,0 +1,160 @@
+1440	Emerald rank	Rang Émeraude
+1441	Iron rank	Rang Fer
+1442	Gold rank	Rang Or
+1443	Silver rank	Rang Argent
+1444	Platinum rank	Rang Platine
+1445	Titan rank	Rang Titan
+1446	Overall rank	Rang global
+1447	Overall rank → Silver	Rang global → Argent
+1448	Unfair rank	Rang injuste
+1449	Rank per exercise	Rang par exercice
+1450	Ranks	Rangs
+1451	Bouncing at the bottom without control.	Rebondir en bas sans contrôle.
+1452	Bouncing at the bottom.	Rebondir en bas.
+1453	Bouncing the bar off your chest.	Faire rebondir la barre sur la poitrine.
+1454	Wrong recommendation	Mauvaise recommandation
+1455	Recommended for your goal and level: about {n} per muscle.	Recommandé pour ton objectif et ton niveau : environ {n} par muscle.
+1456	Remind me to back up	Me rappeler de sauvegarder
+1457	Reminder on training days	Rappel les jours d’entraînement
+1458	Full range and slow.	Amplitude complète et lentement.
+1459	Short range of motion.	Amplitude courte.
+1460	Recovery between days	Récupération entre les jours
+1461	Recover password	Récupérer le mot de passe
+1462	Rounding your back at the bottom.	Arrondir le dos en bas.
+1463	Rounding your back as you lift.	Arrondir le dos en soulevant.
+1464	Rounding your lower back.	Arrondir le bas du dos.
+1465	Rounding your back.	Arrondir le dos.
+1466	Reference =	Référence =
+1467	Log your workouts, track your progress and rank up with real data.	Note tes séances, suis ta progression et monte en rang avec des données réelles.
+1468	Log {n} sets without losing any	Enregistrer {n} séries sans perte
+1469	Invalid body weight entry.	Entrée de poids du corps non valide.
+1470	Rank rules	Règles des rangs
+1471	Retry	Réessayer
+1472	Cable upright row	Rowing menton à la poulie
+1473	Machine high row	Rowing haut à la machine
+1474	Barbell row	Rowing à la barre
+1475	Dumbbell row	Rowing à l’haltère
+1476	Chest-supported row	Rowing poitrine appuyée
+1477	Smith machine row	Rowing à la Smith machine
+1478	Machine row	Rowing à la machine
+1479	Single-arm cable row	Rowing unilatéral à la poulie
+1480	Seated cable row	Rowing assis à la poulie basse
+1481	Reps	Répétitions
+1482	Reps per leg.	Répétitions par jambe.
+1483	Reps set {n}	Répétitions série {n}
+1484	Reps	Rép
+1485	Max reps	Rép max
+1486	Min reps	Rép min
+1487	Reps per leg.	Rép par jambe.
+1488	Reps: the repetitions	Rép : les répétitions
+1489	Backrest almost upright.	Dossier presque vertical.
+1490	Restore backup	Restaurer la sauvegarde
+1491	Restore a backup	Restaurer une sauvegarde
+1492	Fake results	Résultats truqués
+1493	Weekly summary	Résumé hebdomadaire
+1494	Personal challenge	Défi personnel
+1495	Challenges	Défis
+1496	Check the cable and handle are properly attached.	Vérifie que le câble et la poignée sont bien accrochés.
+1497	Check your email	Vérifie tes e-mails
+1498	Knee lined up with the machine’s pivot.	Genou aligné avec l’axe de la machine.
+1499	Knee lined up with the pivot and pad over your thighs.	Genou aligné avec l’axe et coussin sur les cuisses.
+1500	Knee lined up with the pivot and roller behind your ankle.	Genou aligné avec l’axe et rouleau derrière la cheville.
+1501	Knee just off the bench, roller on your ankles.	Genou juste au bord du banc, rouleau sur les chevilles.
+1502	Knees slightly bent and back straight.	Genoux légèrement fléchis et dos droit.
+1503	Knees slightly bent and fixed.	Genoux légèrement fléchis et fixes.
+1504	Knees slightly bent.	Genoux légèrement fléchis.
+1505	Roller over your ankles.	Rouleau sur les chevilles.
+1506	Ab wheel	Roue abdominale
+1507	Roll forward with your abs tight.	Roule vers l’avant en gainant les abdos.
+1508	Routine	Programme
+1509	Upper/lower routine	Programme Haut et bas du corps
+1510	Routines	Programmes
+1511	Classic routines used by lots of people. If your gym is missing a machine, it’s swapped automatically for a similar one.	Des programmes classiques utilisés par énormément de gens. S’il manque une machine dans ta salle, elle est remplacée automatiquement par une similaire.
+1512	Famous routines	Programmes célèbres
+1513	Record	Record
+1514	Record: {n} kg × {n}	Record : {n} kg × {n}
+1515	Records	Records
+1516	Personal records	Records personnels
+1517	Personal records (records)	Records personnels (records)
+1518	Recent records	Records récents
+1519	Skip	Passer
+1520	Skip guide	Passer le guide
+1521	Sara	Sara
+1522	Exactly {n} set will be added to	Exactement {n} série sera ajoutée à
+1523	Built with training rules (no AI). You can edit it afterwards.	Créé avec des règles d’entraînement (sans IA). Tu pourras le modifier ensuite.
+1524	A file is created. On iPhone, choose “Save to Files”, Drive or email it to yourself.	Un fichier est créé. Sur iPhone, choisis « Enregistrer dans Fichiers », Drive ou envoie-le-toi par e-mail.
+1525	They run on sample data. Your data isn’t changed.	Ils s’exécutent sur des données d’exemple. Tes données ne sont pas modifiées.
+1526	Gets angry when you lose your streak and says how many weeks you had	Se fâche quand tu perds ta série et dit combien de semaines tu avais
+1527	They’re saved, validated and the change is calculated	Elles sont enregistrées, validées et le changement est calculé
+1528	{n} set was added to	{n} série a été ajoutée à
+1529	Imported	Importées :
+1530	You can choose how often it reminds you (or never)	On peut choisir la fréquence des rappels (ou jamais)
+1531	Your data was recovered from the backup	Tes données ont été récupérées depuis la sauvegarde
+1532	Secondary:	Secondaires :
+1533	Keep training	Continuer l’entraînement
+1534	Safety	Sécurité
+1535	Safeties on.	Sécurités en place.
+1536	It was still saved.	C’était toujours enregistré.
+1537	Weekly	Hebdomadaire
+1538	Consistent weeks	Semaines régulières
+1539	Consistent weeks (weeks)	Semaines régulières (semaines)
+1540	Squat	Squat
+1541	Bulgarian split squat	Squat bulgare
+1542	Barbell squat	Squat à la barre
+1543	Smith machine squat	Squat à la Smith machine
+1544	Goblet squat	Goblet squat
+1545	Seated, dumbbells at ear height.	Assis, haltères à hauteur des oreilles.
+1546	Seated, hold one dumbbell with both hands above your head.	Assis, tiens un haltère à deux mains au-dessus de la tête.
+1547	Sitting back on your heels instead of curling your torso.	S’asseoir sur les talons au lieu d’enrouler le buste.
+1548	Lifting your chest off the pad to move more weight.	Décoller la poitrine de l’appui pour soulever plus.
+1549	Lifting your chest off the pad.	Décoller la poitrine de l’appui.
+1550	Letting your elbows drift away from your body.	Écarter les coudes du corps.
+1551	Set	Série
+1552	Set ' + (i + {n}) + (x.hecha ?	Série ' + (i + {n}) + (x.hecha ?
+1553	Drop set: lower to	Série dégressive : descends à
+1554	Set {n}	Série {n}
+1555	Sets	Séries
+1556	Sets edited after saving	Séries corrigées après l’enregistrement
+1557	Barbell bench press sets	Séries de Développé couché à la barre
+1558	Effective sets	Séries efficaces
+1559	Effective sets per muscle	Séries efficaces par muscle
+1560	Effective sets per week	Séries efficaces par semaine
+1561	Sets per week	Séries par semaine
+1562	Sessions	Séances
+1563	Logged out	Déconnecté
+1564	Logged out.	Déconnecté.
+1565	Logged out of the cloud. Your data is still on this phone.	Déconnecté du cloud. Tes données restent sur ce téléphone.
+1566	Sex	Sexe
+1567	If you open their link on this phone, they’re added automatically.	Si tu ouvres son lien sur ce téléphone, il est ajouté automatiquement.
+1568	If you can’t do {n} yet, use assisted pull-ups.	Si tu n’en fais pas encore {n}, utilise les tractions assistées.
+1569	If you turn sound off in Settings, it doesn’t play	Si tu coupes le son dans Réglages, ça ne sonne pas
+1570	If the main file gets damaged, it’s recovered from the backup	Si le fichier principal est abîmé, il est récupéré depuis la copie
+1571	If there’s an account with	S’il existe un compte avec
+1572	If saving fails, you’re warned, nothing is lost and you can retry	Si l’enregistrement échoue, tu es prévenu, rien n’est perdu et tu peux réessayer
+1573	If the saved data has an error, it loads with a warning and isn’t lost	Si les données enregistrées ont une erreur, elles se chargent avec un avertissement et ne sont pas perdues
+1574	If your gym doesn’t have a machine, it swaps it for a similar one	S’il n’y a pas une machine dans ta salle, il la remplace par une similaire
+1575	If you don’t reach the reps, MORE assistance is suggested	Si tu n’atteins pas les répétitions, on propose PLUS d’aide
+1576	If you feel sharp pains in your shoulder, stop and switch exercise.	Si tu sens des piqûres dans l’épaule, arrête et change d’exercice.
+1577	If you feel a pull in your shoulder, reduce the range.	Si tu sens un tiraillement à l’épaule, réduis l’amplitude.
+1578	If you feel a pull in your groin, reduce the range.	Si tu sens un tiraillement à l’aine, réduis l’amplitude.
+1579	If your shoulder bothers you, switch to lateral raises.	Si ton épaule te gêne, passe aux élévations latérales.
+1580	If your shoulder bothers you, start with assisted dips.	Si ton épaule te gêne, commence par des dips assistés.
+1581	If your shoulder bothers you, reduce the range.	Si ton épaule te gêne, réduis l’amplitude.
+1582	If your lower back bothers you, use the chest-supported row.	Si le bas du dos te gêne, utilise le rowing poitrine appuyée.
+1583	If you have lower-back discomfort, switch to hyperextensions.	Si tu as une gêne lombaire, passe aux hyperextensions.
+1584	If you have lower-back discomfort, check with a professional first.	Si tu as une gêne lombaire, consulte d’abord un professionnel.
+1585	If you already trained today, it congratulates you; and it can be turned off	Si tu t’es déjà entraîné aujourd’hui, il te félicite ; et on peut le désactiver
+1586	Next	Suivant
+1587	Next step	Étape suivante
+1588	Next step · Barbell bench press	Étape suivante · Développé couché à la barre
+1589	Next →	Suivant →
+1590	No internet connection.	Pas de connexion internet.
+1591	No internet connection. Your data is still saved on the phone.	Pas de connexion internet. Tes données restent enregistrées sur le téléphone.
+1592	No data	Pas de données
+1593	No data yet	Pas encore de données
+1594	No excess volume	Pas d’excès de volume
+1595	With no machines at all, the routine uses free weights	Sans aucune machine, le programme se fait avec des poids libres
+1596	No rank	Sans rang
+1597	Without “Show my workouts” nothing is posted	Sans « Montrer mes séances », rien n’est publié
+1598	System	Système
+1599	Sit with the roller behind your ankles.	Assieds-toi avec le rouleau derrière les chevilles.

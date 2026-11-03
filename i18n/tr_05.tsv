@@ -1,0 +1,160 @@
+800	Overhead dumbbell extension	Extension nuque à l’haltère
+801	Face pull	Face pull
+802	Difficulty factors: v{n} (estimates, still to be calibrated with real data). Same logs = same rank, always.	Facteurs de difficulté : v{n} (estimés, à calibrer avec des données réelles). Mêmes données = même rang, toujours.
+803	Session history is missing.	L’historique des séances manque.
+804	Profile is missing.	Le profil manque.
+805	Profile or session history is missing.	Il manque le profil ou l’historique des séances.
+806	Internal lists are missing.	Des listes internes manquent.
+807	Fatigue	Fatigue
+808	Fatigue · low ({n})	Fatigue · faible ({n})
+809	Congratulates you when you beat a weight you couldn’t lift before, naming the exercise and the weight	Te félicite quand tu bats un poids que tu ne pouvais pas soulever avant, en nommant l’exercice et le poids
+810	Fake	Fictif
+811	End	Fin
+812	Push-ups	Pompes
+813	Hip flexion	Flexion de hanche
+814	Elbow flexion	Flexion du coude
+815	Shoulder flexion	Flexion d’épaule
+816	Wrist flexion	Flexion du poignet
+817	Knee flexion	Flexion du genou
+818	Trunk flexion	Flexion du tronc
+819	Plantar flexion	Flexion plantaire
+820	Assisted dips	Dips assistés
+821	Bench dips	Dips sur banc
+822	Parallel bar dips	Dips aux barres parallèles
+823	Format not recognised.	Format non reconnu.
+824	Progress photos: coming in the server version, private by default.	Photos de progression : elles arriveront avec la version serveur, privées par défaut.
+825	Photos: Free Exercise DB	Photos : Free Exercise DB
+826	Photos: Free Exercise DB · public domain.	Photos : Free Exercise DB · domaine public.
+827	Outside the demo there’s no fake data	Hors de la démo, il n’y a pas de données fictives
+828	Strength	Force
+829	Strength {n}×{n}	Force {n}×{n}
+830	Formula	Formule
+831	Estimated {n}RM formula	Formule du {n}RM estimé
+832	Build muscle mass	Prendre de la masse musculaire
+833	Build muscle	Prendre du muscle
+834	Seated machine calf raise	Mollets assis à la machine
+835	Calves	Mollets
+836	Single-leg dumbbell calf raise	Mollets unilatéral à l’haltère
+837	Smith machine calf raise	Mollets à la Smith machine
+838	Machine calf raise	Mollets à la machine
+839	Leg press calf raise	Mollets à la presse
+840	Calves · Dumbbells · Basic	Mollets · Haltères · Débutant
+841	Calves · Machine · Basic	Mollets · Machine · Débutant
+842	Generate routine	Générer un programme
+843	Gym	Salle de sport
+844	Twisting your torso to lift the weight.	Tourner le buste pour monter le poids.
+845	Twisting your torso to lift.	Tourner le buste pour monter.
+846	Twisting your torso to pull.	Tourner le buste pour tirer.
+847	Twisting your torso.	Tourner le buste.
+848	Rotating your hip outwards.	Tourner la hanche vers l’extérieur.
+849	Rotating your hip.	Tourner la hanche.
+850	Rolling your shoulders in circles.	Faire tourner les épaules en cercles.
+851	Rolling your shoulders.	Faire tourner les épaules.
+852	Glutes	Fessiers
+853	Glutes ·	Fessiers ·
+854	Glutes · Barbell · Basic	Fessiers · Barre · Débutant
+855	Glutes · Barbell · Intermediate	Fessiers · Barre · Intermédiaire
+856	Glutes · Machine · Basic	Fessiers · Machine · Débutant
+857	Glutes · Cable · Basic	Fessiers · Poulie · Débutant
+858	Glutes, Back	Fessiers, Dos
+859	Glutes, Hamstrings	Fessiers, Ischio-jambiers
+860	Glutes: {n} sets/week, below the recommended amount ({n}).	Fessiers : {n} séries/semaine, en dessous du recommandé ({n}).
+861	Muscle group	Groupe musculaire
+862	Bar chart of {n} weeks, maximum {n} kg	Graphique en barres de {n} semaines, maximum {n} kg
+863	Bar chart of {n} weeks, maximum {n} sets	Graphique en barres de {n} semaines, maximum {n} séries
+864	Chart of {n} entries, from {n} to {n} kg	Graphique de {n} entrées, de {n} à {n} kg
+865	Chart of {n} entries, from {n} to {n} pts	Graphique de {n} entrées, de {n} à {n} pts
+866	Saved	Enregistré
+867	Saving…	Enregistrement…
+868	Save	Enregistrer
+869	Save changes	Enregistrer les modifications
+870	Save password	Enregistrer le mot de passe
+871	Save to my journal	Enregistrer dans mon journal
+872	Save report	Enregistrer le rapport
+873	Save today’s measurements	Enregistrer les mensurations du jour
+874	Save username	Enregistrer le nom d’utilisateur
+875	Moved up to Gold in Back	Est passé Or en Dos
+876	{n} weeks ago:	Il y a {n} semaines :
+877	Back up now	Sauvegarder maintenant
+878	Twisting too fast.	Tourner trop vite.
+879	Bouncing quickly.	Rebondir rapidement.
+880	Doing it fast and with momentum.	Le faire vite et avec de l’élan.
+881	Hack squat	Hack squat
+882	You’ve reached the limit of {n} posts a day.	Tu as atteint la limite de {n} publications par jour.
+883	You’ve reached the maximum of {n} friends.	Tu as atteint le maximum de {n} amis.
+884	You’ve raised the load a lot all at once. Consider an easier week.	Tu as beaucoup augmenté la charge d’un coup. Envisage une semaine plus légère.
+885	There are changes waiting to be uploaded.	Il y a des modifications en attente d’envoi.
+886	There are more than {n} exercises and all of them have a card, animation and photos	Il y a plus de {n} exercices et tous ont une fiche, une animation et des photos
+887	There are posts without an author.	Il y a des publications sans auteur.
+888	It takes discipline to get what you want.	Il faut de la discipline pour obtenir ce que tu veux.
+889	There’s a session with a wrong date.	Il y a une séance avec une date incorrecte.
+890	There’s a malformed session.	Il y a une séance mal formée.
+891	Pause for a second at the back.	Fais une pause d’une seconde en arrière.
+892	I have read and accept the	J’ai lu et j’accepte la
+893	Iron	Fer
+894	Hip thrust	Hip thrust
+895	Machine hip thrust	Hip thrust à la machine
+896	Hyperextensions (back extension)	Hyperextensions (extension lombaire)
+897	Promotion history	Historique des montées
+898	Session history	Historique des séances
+899	Hi, ' + esc(p.nombre) + '	Salut, ' + esc(p.nombre) + '
+900	Hi, Alex	Salut, Alex
+901	Man	Homme
+902	Shoulders	Épaules
+903	Shoulders slightly in front of the bar.	Épaules légèrement devant la barre.
+904	Shoulders under the pads and back against the backrest.	Épaules sous les appuis et dos contre le dossier.
+905	Shoulders get a heavy load on Thursday (Chest and back ({n})) and Friday (Shoulders and arms ({n})), back-to-back days.	Les épaules ont une forte charge jeudi (Poitrine et dos ({n})) et vendredi (Épaules et bras ({n})), des jours consécutifs.
+906	Shoulders get a heavy load on Monday (Chest and back) and Tuesday (Shoulders and arms), back-to-back days.	Les épaules ont une forte charge lundi (Poitrine et dos) et mardi (Épaules et bras), des jours consécutifs.
+907	Shoulders and arms	Épaules et bras
+908	Shoulders and arms ({n})	Épaules et bras ({n})
+909	Shoulders ·	Épaules ·
+910	Shoulders · Barbell · Intermediate	Épaules · Barre · Intermédiaire
+911	Shoulders · Dumbbells · Basic	Épaules · Haltères · Débutant
+912	Shoulders · Dumbbells · Intermediate	Épaules · Haltères · Intermédiaire
+913	Shoulders · Machine · Basic	Épaules · Machine · Débutant
+914	Shoulders · Cable · Basic	Épaules · Poulie · Débutant
+915	Shoulders · Cable · Intermediate	Épaules · Poulie · Intermédiaire
+916	Shoulders, Triceps	Épaules, Triceps
+917	Shoulders: {n} sets/week, too much volume ({n}).	Épaules : {n} séries/semaine, trop de volume ({n}).
+918	Reminder time	Heure du rappel
+919	Your challenge ends today “	Ton défi se termine aujourd’hui «
+920	Rest day today. Recovering is training too.	Aujourd’hui c’est repos. Récupérer, c’est aussi s’entraîner.
+921	You’ve already trained today. Now eat well and sleep.	Tu t’es déjà entraîné aujourd’hui. Maintenant, mange bien et dors.
+922	Hugo	Hugo
+923	Letting your lower back sag.	Creuser le bas du dos.
+924	INPUT	INPUT
+925	Works the biceps more than the regular pulldown.	Sollicite plus les biceps que le tirage classique.
+926	Import	Importer
+927	Import rejects invalid data and accepts good backups	L’import rejette les données invalides et accepte les bonnes sauvegardes
+928	Import rejects incomplete profiles or disallowed values	L’import rejette les profils incomplets ou avec des valeurs non autorisées
+929	Import rejects sets done with {n} reps	L’import rejette les séries faites avec {n} répétitions
+930	Pushing off with the lower leg.	Prendre de l’élan avec la jambe du bas.
+931	Lean your torso forward with a straight back.	Penche le buste, dos droit.
+932	Lean your torso forward pushing your hips back.	Penche le buste en poussant les hanches vers l’arrière.
+933	Lean your torso about {n} degrees with a straight back.	Penche le buste d’environ {n} degrés, dos droit.
+934	Lean your torso slightly forward.	Penche légèrement le buste vers l’avant.
+935	Inclining the bench too much and only working the shoulder.	Trop incliner le banc et ne travailler que l’épaule.
+936	Leaning your torso forward.	Pencher le buste vers l’avant.
+937	Leaning back.	Se pencher en arrière.
+938	Lean forward with a straight back (or rest your chest on a bench).	Penche-toi en avant, dos droit (ou pose la poitrine sur un banc).
+939	Lean slightly forward.	Penche-toi légèrement en avant.
+940	Barbell and machine increment	Incrément barre et machine
+941	Dumbbell increment	Incrément des haltères
+942	Report a problem	Signaler un problème
+943	Log in	Se connecter
+944	Home	Accueil
+945	Install on your phone	Installer sur le téléphone
+946	Intermediate ({n}-{n} years)	Intermédiaire ({n}-{n} ans)
+947	Invite	Inviter
+948	Invite a friend	Inviter un ami
+949	Hamstrings	Ischio-jambiers
+950	Hamstrings ·	Ischio-jambiers ·
+951	Hamstrings · Barbell · Advanced	Ischio-jambiers · Barre · Avancé
+952	Hamstrings · Barbell · Intermediate	Ischio-jambiers · Barre · Intermédiaire
+953	Hamstrings · Machine · Basic	Ischio-jambiers · Machine · Débutant
+954	Hamstrings: {n} sets/week, too much volume ({n}).	Ischio-jambiers : {n} séries/semaine, trop de volume ({n}).
+955	Hamstrings: {n} sets/week, below the recommended amount ({n}).	Ischio-jambiers : {n} séries/semaine, en dessous du recommandé ({n}).
+956	Lat pulldown	Tirage vertical
+957	Close-grip pulldown	Tirage prise serrée
+958	Underhand-grip pulldown	Tirage prise supination
+959	Th	Je

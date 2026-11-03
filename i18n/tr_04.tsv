@@ -1,0 +1,160 @@
+640	Choose an option	Choisis une option
+641	You choose as you go	Tu choisis au fur et à mesure
+642	Delete	Supprimer
+643	Delete account and data	Supprimer le compte et les données
+644	Delete day	Supprimer le jour
+645	Delete this session	Supprimer cette séance
+646	Delete challenge	Supprimer le défi
+647	Start	Commencer
+648	Start workout	Commencer la séance
+649	Started more than {n} hours ago.	Commencée il y a plus de {n} heures.
+650	Start	Commence
+651	Start with your knees bent.	Commence les genoux fléchis.
+652	Start light until you can control your balance.	Commence léger jusqu’à maîtriser l’équilibre.
+653	Start light: it’s an advanced exercise.	Commence léger : c’est un exercice avancé.
+654	Start with short ranges.	Commence avec de petites amplitudes.
+655	Start with a comfortable range and increase it little by little.	Commence avec une amplitude confortable et augmente-la peu à peu.
+656	Start with a load you can move with good technique.	Commence avec une charge que tu peux bouger avec une bonne technique.
+657	Push through the balls of your feet, extending your ankle.	Pousse avec la pointe des pieds en tendant la cheville.
+658	Push down keeping your elbows tucked.	Pousse vers le bas, coudes collés.
+659	Push down, spreading the ends of the rope.	Pousse vers le bas en écartant les extrémités de la corde.
+660	Press up turning your palms forwards.	Pousse vers le haut en tournant les paumes vers l’avant.
+661	Press up until your arms are straight.	Pousse vers le haut jusqu’à tendre les bras.
+662	Press up bringing them slightly together.	Pousse vers le haut en les rapprochant un peu.
+663	Press up without lifting your back off the bench.	Pousse vers le haut sans décoller le dos du banc.
+664	Press up without lifting your hips.	Pousse vers le haut sans lever les hanches.
+665	Press up.	Pousse vers le haut.
+666	Push forwards and downwards.	Pousse vers l’avant et vers le bas.
+667	Push forwards and upwards.	Pousse vers l’avant et vers le haut.
+668	Press until your arms are almost straight.	Pousse jusqu’à presque tendre les bras.
+669	Press until your arms are straight.	Pousse jusqu’à tendre les bras.
+670	Push the handles forwards until they meet.	Pousse les poignées vers l’avant jusqu’à les réunir.
+671	Push without locking your knees.	Pousse sans verrouiller les genoux.
+672	Push and lock it on the hooks when you finish.	Pousse et verrouille sur les crochets à la fin.
+673	Pushing with the balls of your feet.	Pousser avec la pointe des pieds.
+674	Pushing with your toes.	Pousser avec la pointe des pieds.
+675	Pushing the bar forwards instead of upwards.	Pousser la barre vers l’avant au lieu de vers le haut.
+676	Push	Poussée
+677	Push / Pull / Legs	Poussée / Tirage / Jambes
+678	Push takes about {n} min (you have {n}).	Poussée dure environ {n} min (tu en as {n}).
+679	Horizontal push	Poussée horizontale
+680	Incline push	Poussée inclinée
+681	Vertical push	Poussée verticale
+682	Push, pull and legs	Poussée, tirage et jambes
+683	Push, pull and legs (PPL)	Poussée, tirage et jambes (PPL)
+684	On Android (Chrome): menu ⋮ → “Install app”. On iPhone (Safari): Share button → “Add to Home Screen”.	Sur Android (Chrome) : menu ⋮ → « Installer l’application ». Sur iPhone (Safari) : bouton Partager → « Sur l’écran d’accueil ».
+685	On rest days it doesn’t push you and with discomfort it asks you to take it easy	Les jours de repos il ne te presse pas et avec une gêne il te demande d’y aller doucement
+686	On the Smith machine log only the plates (the guided bar is light and varies by machine). That way you always measure it the same.	Sur la Smith machine, note seulement les disques (la barre guidée pèse peu et varie selon la machine). Ainsi tu mesures toujours pareil.
+687	On this machine the kg you write are	Sur cette machine, les kg que tu écris sont
+688	On big weighted lifts (squat, bench press, deadlift…). They don’t count for records or ranks.	Sur les gros exercices avec charge (squat, développé couché, soulevé de terre…). Ils ne comptent ni pour les records ni pour les rangs.
+689	In {n} steps, tailored to you	En {n} étapes, sur mesure
+690	Shrugging your shoulders as you pull.	Hausser les épaules en tirant.
+691	Shrugging your shoulders up to your ears.	Monter les épaules vers les oreilles.
+692	Shrugging your shoulders.	Hausser les épaules.
+693	Dumbbell shrugs	Shrugs aux haltères
+694	Machine shrugs	Shrugs à la machine
+695	Friend link	Lien d’ami
+696	Invalid link	Lien non valide
+697	Your friend’s link or code	Lien ou code de ton ami
+698	Curl your torso down squeezing your abs.	Enroule le buste vers le bas en contractant les abdos.
+699	Curl your torso forwards squeezing your abs.	Enroule le buste vers l’avant en contractant les abdos.
+700	Got it	Compris
+701	Enter	Enter
+702	Logging in…	Connexion…
+703	Training	Entraînement
+704	Train	Entraîner
+705	Training only one muscle doesn’t give a high overall rank	Entraîner un seul muscle ne donne pas un rang global élevé
+706	Workout	Séance
+707	Today’s workout	Séance du jour
+708	Today’s workout done. That’s how consistency is built.	Séance du jour terminée. C’est comme ça qu’on construit la régularité.
+709	Workout in progress ·	Séance en cours ·
+710	Free workout	Séance libre
+711	Workout restored.	Séance récupérée.
+712	Empty workout	Séance vide
+713	Workouts	Séances
+714	Workouts in the period	Séances sur la période
+715	Workouts in the period (workouts)	Séances sur la période (séances)
+716	Valid workouts	Séances valides
+717	Sending…	Envoi…
+718	Send	Envoyer
+719	Send to friends	Envoyer aux amis
+720	Email me	M’envoyer un e-mail
+721	Epley (default)	Epley (par défaut)
+722	Available equipment	Matériel disponible
+723	Bug or error	Bug ou erreur
+724	Mistakes to avoid	Erreurs à éviter
+725	It’s a	C’est un
+726	That’s a very heavy weight for your body weight on this exercise.	C’est un poids très élevé pour ton poids de corps sur cet exercice.
+727	That’s your own card. Send it to your friends so they can add you.	C’est ta propre carte. Envoie-la à tes amis pour qu’ils t’ajoutent.
+728	A stable step and one hand on the wall.	Une marche stable et une main contre le mur.
+729	Write at least one measurement.	Écris au moins une mensuration.
+730	Write the ones you did well, with good technique. If you do fewer than planned, log the real ones: that way the app suggests the right weight.	Écris celles que tu as bien faites, avec une bonne technique. Si tu en fais moins que prévu, note les vraies : ainsi l’app te propose le bon poids.
+731	Enter your password.	Écris ton mot de passe.
+732	Enter your email.	Écris ton e-mail.
+733	Enter your new password.	Écris ton nouveau mot de passe.
+734	Write a comment	Écris un commentaire
+735	Write a comment.	Écris un commentaire.
+736	Enter a valid email.	Écris un e-mail valide.
+737	Enter a weight between {n} and {n} kg.	Écris un poids entre {n} et {n} kg.
+738	Write {n} kg if you don’t put weight on your legs.	Écris {n} kg si tu ne mets pas de poids sur les jambes.
+739	Write {n} kg if you don’t hold any plate.	Écris {n} kg si tu ne tiens aucun disque.
+740	Write {n} kg if you don’t hold a plate.	Écris {n} kg si tu ne tiens pas de disque.
+741	Write {n} kg if you don’t use extra weight.	Écris {n} kg si tu n’utilises pas de lest.
+742	That email isn’t valid.	Cet e-mail n’est pas valide.
+743	That username is already taken. Try another one.	Ce nom d’utilisateur est déjà pris. Essaie un autre.
+744	Emerald	Émeraude
+745	Emerald ·	Émeraude ·
+746	Emerald · {n} kg {n}RM	Émeraude · {n} kg {n}RM
+747	Clear space in front to take the step.	Espace libre devant pour faire le pas.
+748	Clear space in front.	Espace libre devant.
+749	Back	Dos
+750	Upper back resting on the bench.	Haut du dos appuyé sur le banc.
+751	Back against the backrest.	Dos contre le dossier.
+752	Back against a bench, bar over your hips.	Dos appuyé sur un banc, barre sur les hanches.
+753	Back supported if there’s a bench.	Dos appuyé s’il y a un banc.
+754	Back supported and legs together against the pads.	Dos appuyé et jambes serrées contre les coussins.
+755	Back against the backrest, shoulders under the pads.	Dos contre le dossier, épaules sous les appuis.
+756	Back ·	Dos ·
+757	Back · Barbell · Advanced	Dos · Barre · Avancé
+758	Back · Dumbbells · Basic	Dos · Haltères · Débutant
+759	Back · Machine · Basic	Dos · Machine · Débutant
+760	Back · Machine · Intermediate	Dos · Machine · Intermédiaire
+761	Back · Bodyweight · Advanced	Dos · Poids du corps · Avancé
+762	Back · Bodyweight · Basic	Dos · Poids du corps · Débutant
+763	Back · Cable · Basic	Dos · Poulie · Débutant
+764	Back: {n} sets/week, too much volume ({n}).	Dos : {n} séries/semaine, trop de volume ({n}).
+765	This week	Cette semaine
+766	This week you’re below your usual. If you feel rested, you can push harder.	Cette semaine tu es en dessous de d’habitude. Si tu es reposé, tu peux forcer un peu.
+767	This set is already done. Tap ✓ to untick it and edit it.	Cette série est déjà faite. Touche ✓ pour la décocher et la modifier.
+768	Stats	Statistiques
+769	Real plateau: {n} weeks without improving is detected	Vraie stagnation : {n} semaines sans progrès sont détectées
+770	This workout was identical to the last one you saved today, so it wasn’t duplicated.	Cette séance était identique à la dernière enregistrée aujourd’hui, elle n’a donc pas été dupliquée.
+771	This browser doesn’t allow notifications. On iPhone, first add the app to your Home Screen.	Ce navigateur ne permet pas les notifications. Sur iPhone, ajoute d’abord l’app à l’écran d’accueil.
+772	Straighten your arm slowly without twisting your torso.	Tends le bras lentement sans tourner le buste.
+773	Straighten your legs.	Tends les jambes.
+774	Straighten your arms pushing the handles.	Tends les bras en poussant les poignées.
+775	Straighten your arms downwards.	Tends les bras vers le bas.
+776	Extend your arms forwards and upwards.	Tends les bras vers l’avant et vers le haut.
+777	Straighten your arms without hunching.	Tends les bras sans te voûter.
+778	Straighten your arms.	Tends les bras.
+779	Gives the triceps a big stretch.	Étire beaucoup le triceps.
+780	Extend one leg all the way up.	Tends une jambe jusqu’en haut.
+781	Snapping straight at the bottom.	Tendre d’un coup en bas.
+782	Fully locking the elbows and loading the shoulder.	Tendre complètement les coudes et charger l’épaule.
+783	This data stays on your device. If you take part in the pilot test, export your data and hand it in: it includes these metrics.	Ces données restent sur ton appareil. Si tu participes au test pilote, exporte tes données et remets-les : elles incluent ces métriques.
+784	Avoid cheating with your body.	Évite de tricher avec le corps.
+785	Avoid exercises containing	Éviter les exercices contenant
+786	Progress per exercise	Évolution par exercice
+787	All {n} effects exist and they’re all short (under {n} seconds)	Les {n} effets existent et sont tous courts (moins de {n} secondes)
+788	Experience	Expérience
+789	Export data	Exporter les données
+790	Hip extension	Extension de hanche
+791	Elbow extension	Extension du coude
+792	Leg extension	Leg extension
+793	Single-leg leg extension	Leg extension unilatéral
+794	Knee extension	Extension du genou
+795	Reverse-grip triceps pushdown	Extension triceps prise inversée
+796	Rope triceps pushdown	Extension triceps à la corde
+797	Cable triceps pushdown	Extension triceps à la poulie
+798	Overhead cable triceps extension	Extension triceps nuque à la poulie
+799	Back extension	Extension lombaire

@@ -1,0 +1,160 @@
+960	Thursday	Jeudi
+961	Thursday · ~{n} min (real: {n})	Jeudi · ~{n} min (réel : {n})
+962	Squeeze your shoulder blades at the end of the pull.	Serre les omoplates à la fin du tirage.
+963	Squeeze your shoulder blades before lowering the bar.	Serre les omoplates avant de descendre la barre.
+964	Squeeze your shoulder blades before lowering.	Serre les omoplates avant de descendre.
+965	Bring your legs together in a controlled way.	Rapproche les jambes de façon contrôlée.
+966	Bring your arms together in front of your chest.	Rapproche les bras devant la poitrine.
+967	Pinching your shoulder blades hard instead of opening your arms.	Serrer fort les omoplates au lieu d’ouvrir les bras.
+968	Snapping your legs together.	Refermer les jambes d’un coup.
+969	Knees caving in on the way up.	Rapprocher les genoux en montant.
+970	Kg	Kg
+971	Kilograms (kg)	Kilogrammes (kg)
+972	Kilos	Kilos
+973	Kilos set {n}	Kilos série {n}
+974	The app doesn’t diagnose anything. If you have pain or an injury, see a healthcare professional.	L’app ne fait pas de diagnostic. En cas de douleur ou de blessure, consulte un professionnel de santé.
+975	The assistance (	L’aide (
+976	The starting assistance is less than your weight and higher for beginners	L’aide de départ est inférieure à ton poids et plus élevée pour les débutants
+977	The assistance can’t equal your weight and a sudden drop in assistance gets checked	L’aide ne peut pas égaler ton poids et une baisse brusque de l’aide est vérifiée
+978	The EZ bar is easier on the wrists.	La barre EZ est plus confortable pour les poignets.
+979	The bar should stay close to your legs.	La barre doit rester collée aux jambes.
+980	The weekly load shows every week, empty ones too	La charge hebdomadaire affiche toutes les semaines, même les vides
+981	The password is too weak. Use at least {n} characters.	Le mot de passe est trop faible. Utilise au moins {n} caractères.
+982	The password needs at least {n} characters.	Le mot de passe doit avoir au moins {n} caractères.
+983	The cloud backup isn’t valid:	La sauvegarde du cloud n’est pas valide :
+984	The backup is from a newer version of the app.	La sauvegarde vient d’une version plus récente de l’app.
+985	Duration is calibrated with how long you really take	La durée est calibrée selon ton temps réel
+986	Exports carry a version and backups from future versions aren’t accepted	L’export porte une version et les sauvegardes de versions futures sont refusées
+987	Fatigue goes up if last week tripled your usual load	La fatigue augmente si la dernière semaine triple la charge habituelle
+988	The end date must be after the start date.	La date de fin doit être après la date de début.
+989	The photo uses a barbell: on the machine the hip movement is the same.	La photo est à la barre : à la machine le mouvement de hanche est le même.
+990	The photo shows free dips: on the machine you do the same with your knees supported.	La photo montre des dips libres : à la machine tu fais pareil, genoux en appui.
+991	The photo uses a resistance band instead of the machine: the movement is the same.	La photo utilise un élastique au lieu de la machine : le mouvement est le même.
+992	The guide makes the movement more stable: ideal to start loading.	Le guidage rend le mouvement plus stable : idéal pour commencer à charger.
+993	The guide helps you keep a straight path.	Le guidage t’aide à garder une trajectoire droite.
+994	Your gym’s machine list isn’t valid.	La liste des machines de ta salle n’est pas valide.
+995	The mascot is called Apix	La mascotte s’appelle Apix
+996	A challenge’s improvement is calculated with real data	La progression d’un défi est calculée avec des données réelles
+997	The goal must be a number greater than {n}.	L’objectif doit être un nombre supérieur à {n}.
+998	An exercise’s score is the	La note d’un exercice est la
+999	The social section is turned off for under-{n}s.	La partie sociale est désactivée pour les moins de {n} ans.
+1000	The post doesn’t exist.	La publication n’existe pas.
+1001	Recovery counts indirect load (bench press + triceps the next day)	La récupération compte la charge indirecte (développé couché + triceps le lendemain)
+1002	Recovery is checked against your calendar: Monday, Tuesday, Thursday, Friday. Muscles working as secondary also count.	La récupération est vérifiée avec ton calendrier : lundi, mardi, jeudi, vendredi. Les muscles secondaires comptent aussi.
+1003	Recovery is checked against your calendar: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday. Muscles working as secondary also count.	La récupération est vérifiée avec ton calendrier : lundi, mardi, mercredi, jeudi, vendredi, samedi. Les muscles secondaires comptent aussi.
+1004	Recovery is checked against your calendar: Monday, Wednesday, Friday. Muscles working as secondary also count.	La récupération est vérifiée avec ton calendrier : lundi, mercredi, vendredi. Les muscles secondaires comptent aussi.
+1005	The routine has invalid data.	Le programme contient des données non valides.
+1006	The selection doesn’t depend on the library order	La sélection ne dépend pas de l’ordre de la bibliothèque
+1007	The cloud session isn’t included in backups	La session cloud n’est pas incluse dans les sauvegardes
+1008	The card has no valid date.	La carte n’a pas de date valide.
+1009	The card has invalid data.	La carte contient des données non valides.
+1010	The card has invalid lifts.	La carte contient des marques non valides.
+1011	The card has an invalid rank.	La carte a un rang non valide.
+1012	Last time you marked discomfort. Take it easy today: if it hurts, stop and see a professional.	La dernière fois tu as signalé une gêne. Aujourd’hui, doucement : si ça fait mal, arrête et consulte un professionnel.
+1013	v{n} backups are migrated and a made-up machine is rejected	Les sauvegardes v{n} sont migrées et une machine inventée est rejetée
+1014	Both pulleys at the top, cables crossed.	Les deux poulies tout en haut, câbles croisés.
+1015	Reference photos (other equipment) carry their notice	Les photos de référence (autre matériel) ont leur avertissement
+1016	The {n}RM formulas give sensible values and Epley is still used for ranks	Les formules de {n}RM donnent des valeurs logiques et Epley reste utilisé pour les rangs
+1017	Pounds are coming in a future version.	Les livres arriveront dans une prochaine version.
+1018	Your hands stay still next to your head.	Les mains restent immobiles près de la tête.
+1019	The body measurements aren’t valid.	Les mensurations ne sont pas valides.
+1020	Machines your gym doesn’t have don’t appear in routines	Les machines absentes de ta salle n’apparaissent pas dans les programmes
+1021	Reps must be between {n} and {n}.	Les répétitions doivent être entre {n} et {n}.
+1022	Reps must be a whole number.	Les répétitions doivent être un nombre entier.
+1023	Your knees follow the direction of your feet.	Les genoux suivent la direction des pieds.
+1024	Gym routines meet volume and recovery	Les programmes en salle respectent volume et récupération
+1025	Weeks without workouts appear (as {n}) in the chart	Les semaines sans séance apparaissent (à {n}) dans le graphique
+1026	Weeks without workouts show as {n}.	Les semaines sans séance apparaissent à {n}.
+1027	Sessions with discomfort or in a fatigue week don’t count as a plateau	Les séances avec gêne ou en semaine de fatigue ne comptent pas comme stagnation
+1028	Swap suggestions only offer available machines	Les suggestions de remplacement ne proposent que des machines disponibles
+1029	Laura	Laura
+1030	They get a link with your rank, streak and {n} best lifts. Send it again when you improve.	Il reçoit un lien avec ton rang, ta série et tes {n} meilleures marques. Renvoie-le quand tu progresses.
+1031	Reads the email link (change password) and doesn’t confuse it with the friend link	Lit le lien de l’e-mail (changer de mot de passe) sans le confondre avec celui des amis
+1032	Injuries or limitations (optional)	Blessures ou limitations (facultatif)
+1033	Lift your shoulders off the floor by curling your torso.	Décolle les épaules du sol en enroulant le buste.
+1034	Lifting your torso to raise the bar.	Relever le buste pour monter la barre.
+1035	Lifting your hips off the seat.	Décoller les hanches du siège.
+1036	Lifting your hips off the bench.	Décoller les hanches du banc.
+1037	Lifting your hips.	Lever les hanches.
+1038	Lifting your elbows off the pad.	Décoller les coudes de l’appui.
+1039	Lifting your elbows off the support.	Décoller les coudes du support.
+1040	Lifting your heels.	Lever les talons.
+1041	Ready to use	Prêts à l’emploi
+1042	Done	Prêt
+1043	They arrive if you open the app that day or have it in the background. Maximum {n} a day.	Elles arrivent si tu ouvres l’app ce jour-là ou si elle est en arrière-plan. Maximum {n} par jour.
+1044	Going so far that your hips sag.	Aller si loin que les hanches s’affaissent.
+1045	You reached	Tu as atteint
+1046	You hit the max reps, but your fatigue is high this week. Keep the weight.	Tu as atteint le maximum de rép, mais ta fatigue est élevée cette semaine. Garde le même poids.
+1047	Push your hips back with a straight back.	Pousse les hanches vers l’arrière, dos droit.
+1048	Take your leg backwards.	Emmène la jambe vers l’arrière.
+1049	Bring your leg towards the other one, crossing slightly.	Ramène la jambe vers l’autre en la croisant un peu.
+1050	Drive your elbows down and back.	Tire les coudes vers le bas et l’arrière.
+1051	Taking the bar behind your neck.	Passer la barre derrière la nuque.
+1052	You’ve done	Tu en es à
+1053	What you did in this set last time. Tap it to copy it and then try to beat it.	Ce que tu as fait sur cette série la dernière fois. Touche-le pour le copier puis essaie de faire mieux.
+1054	Lombardi	Lombardi
+1055	Changes save automatically. ~{n} min with {n} exercises.	Les modifications s’enregistrent toutes seules. ~{n} min avec {n} exercices.
+1056	Your elbows stay tucked to your body.	Les coudes restent collés au corps.
+1057	Old data is migrated with an empty friends list	Les anciennes données sont migrées avec une liste d’amis vide
+1058	Old data is migrated with measurements and backup	Les anciennes données sont migrées avec mensurations et sauvegarde
+1059	The sample data uses assistance correctly (less than the weight and going down)	Les données d’exemple utilisent bien l’aide (inférieure au poids et en baisse)
+1060	The other demo users are fictional.	Les autres utilisateurs de la démo sont fictifs.
+1061	Advanced exercises suggest a beginner alternative	Les exercices avancés proposent une alternative pour débutants
+1062	Exercises added by hand rest longer if they’re compound	Les exercices ajoutés à la main ont plus de repos s’ils sont polyarticulaires
+1063	Exercises you can’t do don’t appear	Les exercices que tu ne peux pas faire n’apparaissent pas
+1064	Empty workouts don’t unlock caps	Les séances vides ne débloquent pas de plafond
+1065	Supabase errors are explained in Spanish	Les erreurs de Supabase sont expliquées clairement
+1066	The groups marked on the map and the {n} main ones count towards your overall rank.	Les groupes marqués sur la carte et les {n} principaux comptent pour ton rang global.
+1067	Assistance kg don’t count as tonnage	Les kg d’aide ne comptent pas dans le tonnage
+1068	Secondary muscles count as half a set. Estimated duration: {n} s per set + rest + {n} min to switch between exercises + {n} min warm-up + {n} min of ramp-up sets per compound.	Les muscles secondaires comptent comme une demi-série. Durée estimée : {n} s par série + repos + {n} min de changement entre exercices + {n} min d’échauffement + {n} min d’approche par polyarticulaire.
+1069	Private and blocked profiles don’t appear.	Les profils privés et bloqués n’apparaissent pas.
+1070	Challenges between friends need real accounts on a server, so every result comes from verifiable workouts. Until then, you compete against yourself.	Les défis entre amis nécessitent de vrais comptes sur un serveur, pour que chaque résultat vienne de séances vérifiables. En attendant, tu te mesures à toi-même.
+1071	The {n} new exercises exist, with valid variants and their group	Les {n} nouveaux exercices existent, avec des variantes valides et leur groupe
+1072	The {n} ranks	Les {n} rangs
+1073	Mo	Lu
+1074	Monday	Lundi
+1075	Monday · ~{n} min (real: {n})	Lundi · ~{n} min (réel : {n})
+1076	Limit of {n} comments a day.	Limite de {n} commentaires par jour.
+1077	Limit of {n} posts a day	Limite de {n} publications par jour
+1078	Tu	Ma
+1079	Dumbbell held upright against your chest.	Haltère vertical collé à la poitrine.
+1080	Dumbbells	Haltères
+1081	Dumbbells at your sides.	Haltères le long du corps.
+1082	Dumbbells with palms facing each other.	Haltères paumes face à face.
+1083	Dumbbells in front of your face, palms towards you.	Haltères devant le visage, paumes vers toi.
+1084	Hands shoulder-width apart.	Mains à largeur d’épaules.
+1085	Hands slightly wider than your shoulders.	Mains un peu plus écartées que les épaules.
+1086	Hands on the edge of the bench and legs in front.	Mains sur le bord du banc et jambes devant.
+1087	Hands on your chest or next to your ears.	Mains sur la poitrine ou près des oreilles.
+1088	Hands slightly wider than your shoulders.	Mains un peu plus écartées que les épaules.
+1089	Keep	Garder
+1090	Stay active	Rester actif
+1091	Stay active	Rester actif
+1092	Keep	Garde
+1093	Keep your abs tight.	Garde les abdos serrés.
+1094	Keep your back against the backrest.	Garde le dos collé au dossier.
+1095	Keep {n} kg and try to add one rep with good technique.	Garde {n} kg et essaie d’ajouter une répétition avec une bonne technique.
+1096	Body map	Carte du corps
+1097	Tick at least one type of equipment.	Coche au moins un type de matériel.
+1098	Tick all	Tout cocher
+1099	You marked a very high effort. Better repeat the weight with clean technique.	Tu as indiqué un effort très élevé. Mieux vaut répéter le poids avec une technique propre.
+1100	Marcos	Marcos
+1101	Tuesday	Mardi
+1102	Tuesday · ~{n} min (real: {n})	Mardi · ~{n} min (réel : {n})
+1103	Mascot	Mascotte
+1104	Average of the four	Moyenne des quatre
+1105	Body measurements	Mensurations
+1106	Intermediate	Intermédiaire
+1107	Improve an exercise	Progresser sur un exercice
+1108	Improve an exercise (%)	Progresser sur un exercice (%)
+1109	Improve fitness	Améliorer la condition physique
+1110	Get stronger	Gagner en force
+1111	Under-{n}s can’t post	Les moins de {n} ans ne peuvent pas publier
+1112	Less	Moins
+1113	Monthly	Mensuel
+1114	Goal	Objectif
+1115	We	Me
+1116	My workout	Ma séance
+1117	My gym	Ma salle
+1118	My gym (available machines)	Ma salle (machines disponibles)
+1119	Always measure the same way: in the morning, without a pump, arm and thigh at their widest point and waist at navel height.	Mesure toujours de la même façon : le matin, sans congestion, bras et cuisse à l’endroit le plus large et taille au niveau du nombril.

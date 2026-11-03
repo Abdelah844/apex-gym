@@ -265,7 +265,7 @@ function textoEstadoNube() {
   if (min < 1) return "✓ Guardado en la nube ahora mismo.";
   if (min < 60) return "✓ Guardado en la nube hace " + min + " min.";
   if (min < 1440) return "✓ Guardado en la nube hace " + Math.round(min / 60) + " h.";
-  return "✓ Guardado en la nube el " + new Date(nube.ultimaSync).toLocaleDateString("es-ES") + ".";
+  return "✓ Guardado en la nube el " + new Date(nube.ultimaSync).toLocaleDateString(localeApp()) + ".";
 }
 
 // Al volver del correo (confirmar cuenta o cambiar contraseña), Supabase añade a la dirección:

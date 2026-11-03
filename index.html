@@ -364,6 +364,8 @@ body.destello-fin::after { content: ""; position: fixed; inset: 0; z-index: 28; 
 
 .avatar { position: relative; }
 .priv-ok a { color: var(--accent); font-weight: 700; }
+.chip-ej { max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.welcome .idiomas { justify-content: center; flex-wrap: wrap; }
 /* Sin zoom al tocar dos veces (el zoom con dos dedos sigue funcionando) y sin zoom al escribir en el iPhone */
 html, body, button, a, label, input, select, textarea, [data-act] { touch-action: manipulation; }
 input, select, textarea { font-size: 16px; }
@@ -484,6 +486,8 @@ nav.tabs button.on svg { color: var(--accent); filter: drop-shadow(0 0 6px var(-
   <div class="msg" id="celebraMsg"></div>
 </div>
 
+<script src="idiomas.js"></script>
+<script src="traductor.js"></script>
 <script src="datos.js"></script>
 <script src="logica.js"></script>
 <script src="academia.js"></script>

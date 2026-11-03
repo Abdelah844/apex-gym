@@ -1,0 +1,160 @@
+1760	External tonnage	Tonnage externe
+1761	External tonnage and effective sets are tracked separately	Tonnage externe et séries efficaces sont comptés séparément
+1762	Cap by sessions with the exercise: {n} → Silver, {n}-{n} → Platinum, {n}-{n} → Diamond, {n} or more → no cap. A group with only one different exercise is capped at Diamond.	Plafond selon les séances avec l’exercice : {n} → Argent, {n}-{n} → Platine, {n}-{n} → Diamant, {n} ou plus → sans plafond. Un groupe avec un seul exercice différent est plafonné à Diamant.
+1763	Stops above your chest.	Butées au-dessus de la poitrine.
+1764	Upper body	Haut du corps
+1765	Upper A	Haut A
+1766	Upper A / Lower A / Upper B / Lower B	Haut A / Bas A / Haut B / Bas B
+1767	Upper A takes about {n} min (you have {n}).	Haut A dure environ {n} min (tu en as {n}).
+1768	Upper B	Haut B
+1769	Upper B takes about {n} min (you have {n}).	Haut B dure environ {n} min (tu en as {n}).
+1770	Upper/lower	Haut et bas du corps
+1771	Works the traps.	Travaille les trapèzes.
+1772	Works the front of the shoulder.	Travaille l’avant de l’épaule.
+1773	Works the back of the shoulder.	Travaille l’arrière de l’épaule.
+1774	Works the upper chest more.	Travaille davantage le haut de la poitrine.
+1775	Works the lower chest more.	Travaille davantage le bas de la poitrine.
+1776	Also works the forearm.	Travaille aussi l’avant-bras.
+1777	After changing machine or technique the weight doesn’t go up	Après un changement de machine ou de technique, on n’augmente pas le poids
+1778	Lower body	Bas du corps
+1779	Upper body	Haut du corps
+1780	Three sessions in a few days aren’t enough to call it a plateau	Trois séances en quelques jours ne suffisent pas pour parler de stagnation
+1781	Torso leaning about {n} degrees and knees slightly bent.	Buste penché d’environ {n} degrés et genoux légèrement fléchis.
+1782	Torso leaning about {n} degrees.	Buste penché d’environ {n} degrés.
+1783	Triceps	Triceps
+1784	Machine triceps	Triceps à la machine
+1785	Triceps ·	Triceps ·
+1786	Triceps · Barbell · Intermediate	Triceps · Barre · Intermédiaire
+1787	Triceps · Dumbbells · Basic	Triceps · Haltères · Débutant
+1788	Triceps · Machine · Basic	Triceps · Machine · Débutant
+1789	Triceps · Bodyweight · Basic	Triceps · Poids du corps · Débutant
+1790	Triceps · Cable · Basic	Triceps · Poulie · Débutant
+1791	Triceps, Shoulders	Triceps, Épaules
+1792	Triceps: {n} sets/week, below the recommended amount ({n}).	Triceps : {n} séries/semaine, en dessous du recommandé ({n}).
+1793	Your account doesn’t have a username yet. It’s unique: nobody else can use it.	Ton compte n’a pas encore de nom d’utilisateur. Il est unique : personne d’autre ne pourra l’utiliser.
+1794	Your account is empty	Ton compte est vide
+1795	Your account is now active. Go back to the Apex Gym app and tap “I’ve confirmed it” (or log in with your email and password). You can close this tab.	Ton compte est activé. Retourne dans l’app Apex Gym et appuie sur « Je l’ai confirmé » (ou connecte-toi avec ton e-mail et ton mot de passe). Tu peux fermer cet onglet.
+1796	Your average effort this week is very high (RPE	Ton effort moyen cette semaine est très élevé (RPE
+1797	Your progress (points)	Ton évolution (points)
+1798	Your lift	Ta marque
+1799	Your new routine	Ton nouveau programme
+1800	Your profile	Ton profil
+1801	Your profile is private. Change it in Settings to share your card.	Ton profil est privé. Change-le dans Réglages pour partager ta carte.
+1802	Your profile is private. Change it in Settings to share.	Ton profil est privé. Change-le dans Réglages pour partager.
+1803	Your profile is saved on this device. If you like, you can later create a free account to save it in the cloud too.	Ton profil est enregistré sur cet appareil. Si tu veux, tu pourras ensuite créer un compte gratuit pour l’enregistrer aussi dans le cloud.
+1804	The app already counts your body weight. Log only the extra weight you add (belt, plate, backpack). Without extra weight, write {n}.	L’app compte déjà ton poids du corps. Note seulement le lest que tu ajoutes (ceinture, disque, sac). Sans lest, écris {n}.
+1805	Your plan	Ton plan
+1806	Your ranking by muscle	Ton classement par muscle
+1807	Your performance dropped quite a bit last time. Keep the weight and rest well before going up.	Ta performance a pas mal baissé la dernière fois. Garde le poids et repose-toi bien avant d’augmenter.
+1808	Your current routine “' + esc(estado.rutina.nombre) + '” will be replaced.	Ton programme actuel « ' + esc(estado.rutina.nombre) + ' » sera remplacé.
+1809	Your session has expired. Log in again.	Ta session a expiré. Reconnecte-toi.
+1810	Your session has expired. Request the email again to change your password.	Ta session a expiré. Redemande l’e-mail pour changer de mot de passe.
+1811	Your sets table	Ton tableau de séries
+1812	Your friend card	Ta carte d’ami
+1813	Your last workout	Ta dernière séance
+1814	Your last workout has already been posted.	Ta dernière séance est déjà publiée.
+1815	Lying down, bar over your forehead with arms straight.	Allongé, barre au-dessus du front, bras tendus.
+1816	Your friends	Tes amis
+1817	Your friends' + (reales.length ? ' (' + reales.length + ')' :	Tes amis' + (reales.length ? ' (' + reales.length + ')' :
+1818	Your data	Tes données
+1819	Your data as text	Tes données en texte
+1820	Your data is still saved on this device.	Tes données restent enregistrées sur cet appareil.
+1821	Your data has some incorrect value	Tes données contiennent une valeur incorrecte
+1822	Your saved workouts aren’t deleted.	Tes séances enregistrées ne sont pas supprimées.
+1823	Your workouts are only on this phone: if you delete the app, they’re lost.	Tes séances sont uniquement sur ce téléphone : si tu supprimes l’app, elles sont perdues.
+1824	Your reports (' + m.problemas.length + ')	Tes rapports (' + m.problemas.length + ')
+1825	Your best	Tes meilleures
+1826	You	Toi
+1827	Lie face down with the roller on your ankles.	Allonge-toi sur le ventre, rouleau sur les chevilles.
+1828	Lie on your back with your knees bent.	Allonge-toi sur le dos, genoux fléchis.
+1829	Lie down with the bar over your lower chest.	Allonge-toi avec la barre au-dessus du bas de la poitrine.
+1830	Lie down with the dumbbells up and elbows slightly bent.	Allonge-toi, haltères en haut et coudes légèrement fléchis.
+1831	Lie down with your hands shoulder-width apart.	Allonge-toi, mains à largeur d’épaules.
+1832	Lie down with your eyes under the bar and feet firm on the floor.	Allonge-toi, yeux sous la barre et pieds bien ancrés au sol.
+1833	Lie down with your eyes right under the bar.	Allonge-toi, yeux juste sous la barre.
+1834	Lie on the floor with the bar over your hips.	Allonge-toi au sol avec la barre sur les hanches.
+1835	Lie on a mat.	Allonge-toi sur un tapis.
+1836	A machine change restarts the comparison (no plateau)	Un changement de machine relance la comparaison (pas de stagnation)
+1837	A big change in body weight excludes old sessions	Un grand changement de poids du corps exclut les anciennes séances
+1838	A tampered or made-up code is rejected	Un code manipulé ou inventé est rejeté
+1839	A training day without training cheers you on with the discipline quote	Un jour d’entraînement sans entraînement t’encourage avec la phrase sur la discipline
+1840	One exceptional day doesn’t raise your rank on its own	Un jour exceptionnel ne fait pas monter le rang à lui seul
+1841	A workout started yesterday is saved with its date and {n} h max	Une séance commencée hier est enregistrée avec sa date et {n} h maximum
+1842	A workout with no completed sets isn’t saved	Une séance sans séries faites n’est pas enregistrée
+1843	A workout only counts if it has at least one valid set. Impossible weights are blocked and unusual ones stay under review until you confirm them.	Une séance ne compte que si elle a au moins une série valide. Les poids impossibles sont bloqués et les poids inhabituels restent en vérification jusqu’à ta confirmation.
+1844	A group with a single exercise is capped at the seventh rank (Diamond)	Un groupe avec un seul exercice est plafonné au septième rang (Diamant)
+1845	An unknown sound name doesn’t break the app	Un nom de son inconnu ne casse pas l’app
+1846	A profile created from the form passes strict validation	Un profil créé depuis le formulaire passe la validation stricte
+1847	A new profile starts without accepting the policy and the version is a number	Un nouveau profil commence sans accepter la politique et la version est un nombre
+1848	A private profile doesn’t appear in search	Un profil privé n’apparaît pas dans la recherche
+1849	One foot forward to stay stable.	Un pied en avant pour être stable.
+1850	One foot forward and one back, hip-width apart.	Un pied en avant et l’autre en arrière, écartés à largeur de hanches.
+1851	One foot forward.	Un pied en avant.
+1852	A possible weight in pounds stays under review	Un poids possiblement en livres reste en vérification
+1853	A challenge only counts your valid sessions within its dates	Un défi ne compte que tes séances valides entre ses dates
+1854	A blocked user disappears from the feed and search	Un utilisateur bloqué disparaît du fil et de la recherche
+1855	An old backup (v{n}) is migrated step by step	Une ancienne sauvegarde (v{n}) est migrée étape par étape
+1856	A cloud backup with broken data doesn’t replace the phone’s data	Une sauvegarde cloud avec des données cassées ne remplace pas celles du téléphone
+1857	An exported backup can be restored (and the {n} s rest no longer breaks it)	Une sauvegarde exportée peut être restaurée (et le repos de {n} s ne la casse plus)
+1858	A report stores reason, date and status, and hides the post	Un signalement garde le motif, la date et l’état, et masque la publication
+1859	A wrong recommendation, an unfair rank, something hard to use…	Une mauvaise recommandation, un rang injuste, quelque chose de difficile à utiliser…
+1860	A week counts if you train at least {n} days.	Une semaine compte si tu t’entraînes au moins {n} jours.
+1861	An easier week, with fewer sets and the same weight, helps you recover. You don’t need to reach failure on every set.	Une semaine plus légère, avec moins de séries et le même poids, t’aide à récupérer. Pas besoin d’aller à l’échec à chaque série.
+1862	A set under review doesn’t count until you confirm it	Une série en vérification ne compte pas avant d’être confirmée
+1863	A completed set must have between {n} and {n} reps.	Une série faite doit avoir entre {n} et {n} répétitions.
+1864	A single good session doesn’t raise the weight: it asks you to confirm it	Une seule bonne séance n’augmente pas le poids : il faut la confirmer
+1865	A friend card is encoded and read back the same (with accents)	Une carte d’ami s’encode et se lit pareil (avec accents)
+1866	Units	Unités
+1867	Use an EZ bar if your wrists hurt.	Utilise une barre EZ si tes poignets te gênent.
+1868	Use the safety stops or ask someone to spot you when you go heavy.	Utilise les butées de sécurité ou demande à quelqu’un de t’assurer quand c’est lourd.
+1869	Use less weight than on the regular curl.	Utilise moins de poids que pour le curl classique.
+1870	Use a bench that doesn’t move.	Utilise un banc qui ne bouge pas.
+1871	Use a backrest so you don’t arch your back.	Utilise un dossier pour ne pas cambrer le dos.
+1872	Use a pad on the bar.	Utilise un coussin sur la barre.
+1873	Using too much weight and moving the elbow.	Prendre trop de poids et bouger le coude.
+1874	Using too much weight and moving your torso.	Prendre trop de poids et bouger le buste.
+1875	Using your body weight to push.	Utiliser le poids du corps pour pousser.
+1876	Use this routine	Utiliser ce programme
+1877	Using body momentum.	Prendre de l’élan avec le corps.
+1878	Using momentum instead of controlling the movement.	Prendre de l’élan au lieu de contrôler le mouvement.
+1879	Using momentum.	Prendre de l’élan.
+1880	Using a lot of weight and bending your wrists.	Prendre beaucoup de poids et plier les poignets.
+1881	Always use for this exercise	Toujours utiliser pour cet exercice
+1882	Using so much assistance that the exercise is easy.	Utiliser tellement d’assistance que l’exercice ne coûte rien.
+1883	Using so much assistance that it’s easy.	Utiliser tellement d’aide que ça ne coûte rien.
+1884	User	Utilisateur
+1885	Okay, I’ll remind you later. It’s also in Settings (⚙).	D’accord, je te le rappellerai plus tard. C’est aussi dans Réglages (⚙).
+1886	Equivalent variants	Variantes équivalentes
+1887	View card	Voir la fiche
+1888	View exercise card	Voir la fiche de l’exercice
+1889	View data as text	Voir les données en texte
+1890	See my challenge →	Voir mon défi →
+1891	View my routine	Voir mon programme
+1892	View progress	Voir la progression
+1893	View technique	Voir la technique
+1894	Fr	Ve
+1895	Vibration	Vibration
+1896	Friday	Vendredi
+1897	Friday · ~{n} min (real: {n})	Vendredi · ~{n} min (réel : {n})
+1898	Enough volume per muscle	Volume suffisant par muscle
+1899	Back	Retour
+1900	Log back in	Revenir
+1901	Log in to the cloud again.	Reconnecte-toi au cloud.
+1902	Come back here and tap this button:	Reviens ici et appuie sur ce bouton :
+1903	Return under control.	Reviens de façon contrôlée.
+1904	Return slowly crossing your arms.	Reviens lentement en croisant les bras.
+1905	Return slowly bending your elbows.	Reviens lentement en pliant les coudes.
+1906	Return slowly until you feel the stretch.	Reviens lentement jusqu’à sentir l’étirement.
+1907	Return slowly without dropping the weight.	Reviens lentement sans laisser tomber le poids.
+1908	Return slowly without lifting your chest off.	Reviens lentement sans décoller la poitrine.
+1909	Return slowly without letting go of the weight.	Reviens lentement sans lâcher le poids.
+1910	Return slowly without losing tension.	Reviens lentement sans relâcher la tension.
+1911	Return slowly.	Reviens lentement.
+1912	Return by pushing with your front leg.	Reviens en poussant avec la jambe avant.
+1913	Return without arching your back.	Reviens sans cambrer le dos.
+1914	Return without losing tension.	Reviens sans relâcher la tension.
+1915	Demo video ({n}-{n} s):	Vidéo de démonstration ({n}-{n} s) :
+1916	Already shared	Déjà partagé
+1917	It was already saved	C’était déjà enregistré
+1918	An account with that email already exists. Tap “Log in”.	Un compte existe déjà avec cet e-mail. Appuie sur « Se connecter ».
+1919	You already do it without assistance. Move to the free version or add reps.	Tu le fais déjà sans aide. Passe à la version libre ou ajoute des répétitions.

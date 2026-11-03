@@ -1,0 +1,160 @@
+480	Data to evaluate the app	Données pour évaluer l’app
+481	Invalid social data.	Données sociales non valides.
+482	Back to the low pulley, handle between your legs.	Dos à la poulie basse, poignée entre les jambes.
+483	Back to the low pulley, rope between your legs.	Dos à la poulie basse, corde entre les jambes.
+484	Back to the pulley with the rope behind your head.	Dos à la poulie, corde derrière la tête.
+485	Standing with the bar in your hands and knees slightly bent.	Debout, barre en mains et genoux légèrement fléchis.
+486	Standing with the bar, knees slightly bent.	Debout avec la barre, genoux légèrement fléchis.
+487	Standing with dumbbells.	Debout avec des haltères.
+488	Standing on a step with a dumbbell.	Debout sur une marche avec un haltère.
+489	Standing facing the high pulley, arms almost straight.	Debout face à la poulie haute, bras presque tendus.
+490	Standing facing the high pulley, rope next to your head.	Debout face à la poulie haute, corde près de la tête.
+491	Standing facing the low pulley with the straight bar.	Debout face à la poulie basse avec la barre droite.
+492	Standing, bar at collarbone height.	Debout, barre à hauteur des clavicules.
+493	Standing, shoulder-width grip on the bar.	Debout, prise à largeur d’épaules sur la barre.
+494	Standing, one dumbbell in each hand and arms straight.	Debout, un haltère dans chaque main, bras tendus.
+495	Standing, dumbbells at your sides.	Debout, haltères le long du corps.
+496	From beginner to elite	De débutant à élite
+497	Kneeling in front of the high pulley with a rope.	À genoux face à la poulie haute avec une corde.
+498	Kneeling on a mat.	À genoux sur un tapis.
+499	Kneeling, rope next to your head.	À genoux, corde près de la tête.
+500	Kneeling, hold the wheel.	À genoux, tiens la roue.
+501	{n} to {n} lowercase letters, numbers, dots or underscores.	De {n} à {n} lettres minuscules, chiffres, points ou tirets bas.
+502	Correctly decides whether to upload, download or ask	Décide bien s’il faut envoyer, télécharger ou demander
+503	Letting the bar drop at the bottom.	Laisser tomber la barre en bas.
+504	Letting your hips sag.	Laisser tomber les hanches.
+505	Letting your wrists drop.	Laisser tomber les poignets.
+506	Letting your front knee cave inwards.	Laisser le genou avant rentrer vers l’intérieur.
+507	Too many attempts in a row. Wait a few minutes and try again.	Trop de tentatives d’affilée. Attends quelques minutes et réessaie.
+508	Demo	Démo
+509	Report	Signaler
+510	Reports waiting to be sent	Signalements en attente d’envoi
+511	Unlock by turning the bar and lower by bending knees and hips.	Déverrouille en tournant la barre et descends en pliant genoux et hanches.
+512	Unlock the bar by turning it and lower it under control.	Déverrouille la barre en la tournant et descends-la de façon contrôlée.
+513	Unlock and lower the bar under control to your chest.	Déverrouille et descends la barre de façon contrôlée jusqu’à la poitrine.
+514	Unlock and push upwards.	Déverrouille et pousse vers le haut.
+515	Rest (s)	Repos (s)
+516	Rest	Repos
+517	Rest on isolation	Repos en isolation
+518	Rest on compound lifts	Repos sur les polyarticulaires
+519	Rest · next	Repos · suivant
+520	Rest-pause:	Rest-pause :
+521	Rest-pause: {n} s and do as many as you can with the same weight	Rest-pause : {n} s et fais-en autant que possible avec le même poids
+522	Discard workout	Abandonner la séance
+523	Drop set:	Série dégressive :
+524	Describe the problem in at least {n} characters.	Décris le problème en au moins {n} caractères.
+525	Undo	Annuler
+526	Untick the machines your gym doesn’t have. Routines and suggestions will only use the ones you have.	Décoche les machines absentes de ta salle. Les programmes et suggestions n’utiliseront que celles que tu as.
+527	Untick all	Tout décocher
+528	Lifting your hips off the seat.	Décoller les hanches du siège.
+529	Lifting your back off the backrest.	Décoller le dos du dossier.
+530	Letting your elbows drift away from your body.	Écarter les coudes du corps.
+531	Lifting your shoulders off the backrest.	Décoller les épaules du dossier.
+532	Detects a live record only if it beats your history	Détecte un record en direct seulement s’il bat ton historique
+533	Diamond	Diamant
+534	Hard to use	Difficile à utiliser
+535	Direct sets count {n} and as a secondary muscle {n}.	Les séries directes comptent {n} et comme muscle secondaire {n}.
+536	Plate or step under the balls of your feet.	Disque ou marche sous la pointe des pieds.
+537	Distribution	Répartition
+538	Su	Di
+539	Bend your knee bringing your heel towards your glutes.	Plie le genou en amenant le talon vers les fessiers.
+540	Bend your knees downwards.	Plie les genoux vers le bas.
+541	Bend your knees.	Plie les genoux.
+542	Bend your elbows to lower the bar.	Plie les coudes en descendant la barre.
+543	Bending at the hips instead of curling your back.	Plier les hanches au lieu d’enrouler le dos.
+544	Bending your knee.	Plier le genou.
+545	Bending your wrists.	Plier les poignets.
+546	Bending your knees like a squat.	Plier les genoux comme pour un squat.
+547	Bending your knees to lift.	Plier les genoux pour monter.
+548	Bending your knees.	Plier les genoux.
+549	Bending your elbows to help yourself.	Plier les coudes pour t’aider.
+550	Bending your elbows and turning it into a press.	Plier les coudes et en faire un développé.
+551	Bending your elbows.	Plier les coudes.
+552	Bending your elbows a lot and turning it into a press.	Trop plier les coudes et en faire un développé.
+553	Bending your elbows a lot and pushing with your arms.	Trop plier les coudes et pousser avec les bras.
+554	Pull-ups	Tractions
+555	Assisted pull-ups	Tractions assistées
+556	Chin-ups	Tractions supination (chin-up)
+557	Sunday	Dimanche
+558	Two sessions in a row at the max reps do go up	Deux séances d’affilée au maximum de rép font monter
+559	Two sessions in a row below	Deux séances d’affilée en dessous de
+560	Duplicate day	Dupliquer le jour
+561	Durations adjusted to how long you really take (× {n}).	Durées ajustées à ton temps réel (× {n}).
+562	Duration	Durée
+563	Duration within your time	Durée dans ton temps
+564	Average duration	Durée moyenne
+565	Average duration (min)	Durée moyenne (min)
+566	Day A	Jour A
+567	Day A ({n})	Jour A ({n})
+568	Day A ({n}) takes about {n} min (you have {n}).	Le Jour A ({n}) dure environ {n} min (tu en as {n}).
+569	Day A / Day B / Day A ({n})	Jour A / Jour B / Jour A ({n})
+570	Day A takes about {n} min (you have {n}).	Le Jour A dure environ {n} min (tu en as {n}).
+571	Day B	Jour B
+572	Rest day. Muscle grows while you rest.	Jour de repos. Le muscle grandit pendant que tu te reposes.
+573	Day {n}	Jour {n}
+574	Day {n} / Day {n} / Day {n}	Jour {n} / Jour {n} / Jour {n}
+575	Day {n} takes about {n} min (you have {n}).	Le Jour {n} dure environ {n} min (tu en as {n}).
+576	Routine days completed	Jours de programme terminés
+577	Routine days completed (days)	Jours de programme terminés (jours)
+578	Days per week	Jours par semaine
+579	Where you train	Où tu t’entraînes
+580	Leaning your torso back.	Pencher le buste en arrière.
+581	Leaning back to pull.	Se pencher en arrière pour tirer.
+582	Leaning far back to move more weight.	Se pencher très en arrière pour soulever plus.
+583	Leaning far back.	Se pencher très en arrière.
+584	Age	Âge
+585	Edit	Modifier
+586	Edit day	Modifier le jour
+587	Sound effects	Effets sonores
+588	E.g.: squat	Ex. : squat
+589	Execution	Exécution
+590	Run quality tests	Lancer les tests de qualité
+591	Example with your weight ({n} kg): bench press {n} kg × {n} → {n} points.	Exemple avec ton poids ({n} kg) : développé couché {n} kg × {n} → {n} points.
+592	Exercise	Exercice
+593	Exercise (only for "Improve an exercise")	Exercice (seulement pour « Progresser sur un exercice »)
+594	Compound exercise for triceps.	Exercice polyarticulaire pour les triceps.
+595	Unknown exercise:	Exercice inconnu :
+596	Exercise removed. You can undo it above.	Exercice retiré. Tu peux annuler en haut.
+597	Exercise with no sets in	Exercice sans séries dans
+598	Exercise {n} of {n}	Exercice {n} sur {n}
+599	Exercises	Exercices
+600	Exercises you’d rather avoid (optional)	Exercices que tu préfères éviter (facultatif)
+601	Logged exercises	Exercices enregistrés
+602	The sex adjustment is bigger for the upper body than for the lower body	L’ajustement selon le sexe est plus grand pour le haut du corps que pour le bas
+603	The browser storage is full or blocked. Export your data from Settings so you don’t lose it.	Le stockage du navigateur est plein ou bloqué. Exporte tes données depuis Réglages pour ne pas les perdre.
+604	Audio never clips (no distortion)	L’audio ne sature jamais (sans distorsion)
+605	The cable keeps tension throughout the movement.	Le câble garde la tension sur toute l’amplitude.
+606	The routine calendar doesn’t match its days.	Le calendrier du programme ne correspond pas à ses jours.
+607	The code is too long.	Le code est trop long.
+608	The code isn’t an Apex Gym card.	Le code n’est pas une carte Apex Gym.
+609	The code isn’t valid. Ask your friend to send it again.	Le code n’est pas valide. Demande à ton ami de te le renvoyer.
+610	Sunday and Monday count as consecutive days	Dimanche et lundi comptent comme des jours consécutifs
+611	The link has expired or was already used. Request it again. (	Le lien a expiré ou a déjà été utilisé. Redemande-le. (
+612	The factor is adjusted to your sex: for women, upper body × {n} and lower body × {n}; with “Prefer not to say”, a middle value. That way everyone is compared to a fair level for them.	Le facteur est ajusté selon ton sexe : pour les femmes, haut du corps × {n} et bas du corps × {n} ; avec « Je préfère ne pas le dire », une valeur intermédiaire. Ainsi, chacun est comparé à un niveau juste pour lui.
+613	The generator still creates valid routines with the new exercises	Le générateur crée toujours des programmes valides avec les nouveaux exercices
+614	The overall rank is the average of the	Le rang global est la moyenne des
+615	Session order doesn’t change the rank	L’ordre des séances ne change pas le rang
+616	Weight must be between {n} and {n} kg.	Le poids doit être entre {n} et {n} kg.
+617	The weight you write is the assistance: the less, the harder.	Le poids que tu écris est l’aide : moins il y en a, plus c’est dur.
+618	Progress is calculated only with your valid sessions within those dates.	La progression est calculée uniquement avec tes séances valides entre ces dates.
+619	Your rank reflects what you log when you train, not your genetics.	Le rang reflète ce que tu notes à l’entraînement, pas ta génétique.
+620	The timer survives a reload	Le minuteur résiste à un rechargement
+621	The text isn’t valid JSON.	Le texte n’est pas un JSON valide.
+622	The rest bell is a valid WAV audio longer than {n} second	La sonnerie de repos est un audio WAV valide de plus de {n} seconde
+623	The set type (drop set, rest-pause) is saved when finishing	Le type de série (dégressive, rest-pause) est enregistré à la fin
+624	The username must have {n} to {n} lowercase letters, numbers, dots or underscores (no spaces).	Le nom d’utilisateur doit avoir de {n} à {n} lettres minuscules, chiffres, points ou tirets bas (sans espaces).
+625	The username must have {n} to {n} lowercase letters, numbers, dots or underscores.	Le nom d’utilisateur doit avoir de {n} à {n} lettres minuscules, chiffres, points ou tirets bas.
+626	The username “	Le nom d’utilisateur «
+627	The validator detects a muscle without recovery	Le validateur détecte un muscle sans récupération
+628	Cable front raises	Élévations frontales à la poulie
+629	Lateral raises	Élévations latérales
+630	Cable lateral raises	Élévations latérales à la poulie
+631	Shrugs	Haussements d’épaules
+632	Hanging leg raises	Relevés de jambes suspendu
+633	Choose the backup file (.json) or paste its text. It will replace all the data on this phone.	Choisis le fichier de sauvegarde (.json) ou colle son texte. Il remplacera toutes les données de ce téléphone.
+634	Choose exactly	Choisis exactement
+635	Choose the assistance and rest your knees on the platform.	Choisis l’aide et pose les genoux sur la plateforme.
+636	Choose the assistance and rest your knees or feet on the platform.	Choisis l’aide et pose les genoux ou les pieds sur la plateforme.
+637	Choose the assistance in the weight column.	Choisis l’aide dans la colonne du poids.
+638	Choose your username	Choisis ton nom d’utilisateur
+639	Choose a reason.	Choisis un motif.

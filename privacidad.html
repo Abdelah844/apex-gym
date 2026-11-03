@@ -27,10 +27,14 @@ p, ul { margin: 0 0 10px; } ul { padding-left: 20px; } li { margin-bottom: 4px; 
 a { color: var(--accent); }
 .volver { display: inline-block; font-weight: 700; text-decoration: none; padding: 10px 0; }
 .resumen { border-color: var(--accent); }
+.idiomas { font-size: .9rem; margin-bottom: 4px; }
+[hidden] { display: none !important; }
 </style>
 </head>
 <body>
 <main>
+  <nav class="idiomas" aria-label="Idioma / Language / Langue"><a href="#" data-idioma="es">Español</a> · <a href="#" data-idioma="en">English</a> · <a href="#" data-idioma="fr">Français</a></nav>
+  <div class="idioma" lang="es">
   <a class="volver" href="./">← Volver a la app</a>
   <h1>Privacidad y condiciones</h1>
   <p class="muted">Última actualización: 3 de noviembre de 2026 · Versión 2</p>
@@ -121,6 +125,214 @@ a { color: var(--accent); }
   </section>
 
   <a class="volver" href="./">← Volver a la app</a>
+  </div>
+  <div class="idioma" lang="en" hidden>
+  <a class="volver" href="./">← Back to the app</a>
+  <h1>Privacy and terms</h1>
+  <p class="muted">Last updated: 3 November 2026 · Version 2. This is a translation: if in doubt, the Spanish version prevails.</p>
+
+  <section class="resumen">
+    <h2>In short</h2>
+    <ul>
+      <li>Without an account, your data is stored <strong>only on your phone</strong>.</li>
+      <li>If you create an <strong>account (optional)</strong>, a copy is also stored in the cloud, on a server in the European Union (Ireland).</li>
+      <li><strong>No ads</strong>, no tracking cookies and no selling of data.</li>
+      <li>You can <strong>delete everything</strong> whenever you want from Settings.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>1. Who is responsible</h2>
+    <p>Apex Gym is a personal project by Abde, a computing student.</p>
+    <p>Contact: <a href="mailto:apexgymscx@gmail.com">apexgymscx@gmail.com</a></p>
+  </section>
+
+  <section>
+    <h2>2. What data the app uses</h2>
+    <ul>
+      <li><strong>Your profile:</strong> name, username, sex, age, height, weight, experience, goal and available equipment.</li>
+      <li><strong>Your workouts:</strong> exercises, sets, kilos, reps, notes and records.</li>
+      <li><strong>Body measurements</strong>, if you choose to log them.</li>
+      <li><strong>Injuries or discomfort</strong>, only if you write them. This is health data: it is optional and only serves as a reminder for you.</li>
+    </ul>
+    <p>If you create an account, also: <strong>your email address</strong> and your password (stored encrypted: nobody can read it).</p>
+    <p>We use it only so the app works: to create your routine, calculate your progress, your rank and your streak, and to keep your cloud copy.</p>
+    <p><strong>Legal basis:</strong> your consent. When creating the account you tick a box agreeing that your data (including injuries or discomfort, if you log them) is stored in the cloud. You can withdraw it at any time by deleting the account.</p>
+  </section>
+
+  <section>
+    <h2>3. Where it is stored</h2>
+    <p><strong>Without an account:</strong> only in your browser’s storage, <strong>on your device</strong>. Nobody else can see it.</p>
+    <p><strong>With an account:</strong> also a copy on <strong>Supabase</strong>, on a server located in <strong>Ireland (European Union)</strong>. Each account can only read its own data. The copy is kept while you have the account; when you delete it, it is erased.</p>
+    <p>If you clear your browser data or uninstall the app, it is lost. To avoid that, use <strong>Settings → Backup</strong>: you keep the backup file wherever you want.</p>
+  </section>
+
+  <section>
+    <h2>4. Services from other companies</h2>
+    <p>The website is hosted on <strong>GitHub Pages</strong> (GitHub, Inc.). Like any website, GitHub may log your IP address when you visit it, for security. More information in <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">GitHub’s privacy statement</a>.</p>
+    <p>If you create an account, your data is stored on <strong>Supabase</strong> (Supabase, Inc.), which acts as a data processor: it stores it for us and cannot use it for anything else. More information in <a href="https://supabase.com/privacy" rel="noopener">Supabase’s privacy policy</a>.</p>
+    <p>Fonts, photos and sounds are inside the app itself: nothing is requested from other companies.</p>
+  </section>
+
+  <section>
+    <h2>5. When you share something</h2>
+    <p>Something is only shared if <strong>you tap “Share”</strong>.</p>
+    <ul>
+      <li><strong>Workout summary:</strong> a text you send with the app of your choice (WhatsApp, etc.).</li>
+      <li><strong>Friend card:</strong> a link with your username, rank, streak, number of workouts and your 3 best lifts. Whoever receives the link can see that data.</li>
+    </ul>
+    <p>If you are under 16, the social section is turned off.</p>
+    <p>Notifications (streak, reminders) are created on your own phone. They don’t go through any server.</p>
+  </section>
+
+  <section>
+    <h2>6. Your rights</h2>
+    <ul>
+      <li><strong>See and take your data:</strong> Settings → Backup, or “View data as text”.</li>
+      <li><strong>Correct it:</strong> from your profile, at any time.</li>
+      <li><strong>Delete it:</strong> Settings → “Delete account and data”. If you have an account, it is also deleted from the cloud.</li>
+      <li><strong>Log out</strong> of the cloud without deleting anything: Settings → Cloud account.</li>
+    </ul>
+    <p>For any question, write to the contact email. If you think your data is not being respected, you can complain to the <a href="https://www.aepd.es" rel="noopener">Spanish Data Protection Agency (AEPD)</a> or to the authority in your country.</p>
+  </section>
+
+  <section>
+    <h2>7. Minimum age</h2>
+    <p>To use Apex Gym you must be <strong>14 years old or older</strong>.</p>
+  </section>
+
+  <section>
+    <h2>8. Terms of use</h2>
+    <ul>
+      <li>Apex Gym <strong>is not a medical service</strong>. Routines and tips are for guidance only.</li>
+      <li>If you have pain, an injury or a health problem, see a professional before training.</li>
+      <li>Train with good technique and weights you can control. Each person is responsible for how they use the app.</li>
+      <li>The app is provided as is, with no guarantee that it will always work without errors.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>9. Changes to this policy</h2>
+    <p>If we change anything important, we will update this page and let you know in the app. We will never upload your data to the cloud if you haven’t created an account.</p>
+  </section>
+
+  <a class="volver" href="./">← Back to the app</a>
+  </div>
+  <div class="idioma" lang="fr" hidden>
+  <a class="volver" href="./">← Retour à l’app</a>
+  <h1>Confidentialité et conditions</h1>
+  <p class="muted">Dernière mise à jour : 3 novembre 2026 · Version 2. Ceci est une traduction : en cas de doute, la version espagnole fait foi.</p>
+
+  <section class="resumen">
+    <h2>En bref</h2>
+    <ul>
+      <li>Sans compte, tes données sont enregistrées <strong>uniquement sur ton téléphone</strong>.</li>
+      <li>Si tu crées un <strong>compte (facultatif)</strong>, une copie est aussi enregistrée dans le cloud, sur un serveur de l’Union européenne (Irlande).</li>
+      <li><strong>Pas de publicité</strong>, pas de cookies de suivi et aucune vente de données.</li>
+      <li>Tu peux <strong>tout supprimer</strong> quand tu veux depuis les Réglages.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>1. Qui est responsable</h2>
+    <p>Apex Gym est un projet personnel d’Abde, étudiant en informatique.</p>
+    <p>Contact : <a href="mailto:apexgymscx@gmail.com">apexgymscx@gmail.com</a></p>
+  </section>
+
+  <section>
+    <h2>2. Quelles données l’app utilise</h2>
+    <ul>
+      <li><strong>Ton profil :</strong> nom, nom d’utilisateur, sexe, âge, taille, poids, expérience, objectif et matériel disponible.</li>
+      <li><strong>Tes séances :</strong> exercices, séries, kilos, répétitions, notes et records.</li>
+      <li><strong>Mensurations</strong>, si tu choisis de les noter.</li>
+      <li><strong>Blessures ou gênes</strong>, seulement si tu les écris. Ce sont des données de santé : elles sont facultatives et servent uniquement de rappel pour toi.</li>
+    </ul>
+    <p>Si tu crées un compte, en plus : <strong>ton adresse e-mail</strong> et ton mot de passe (enregistré chiffré : personne ne peut le lire).</p>
+    <p>Nous les utilisons uniquement pour que l’app fonctionne : créer ton programme, calculer ta progression, ton rang et ta série, et garder ta copie dans le cloud.</p>
+    <p><strong>Base légale :</strong> ton consentement. En créant le compte, tu coches une case acceptant que tes données (y compris blessures ou gênes, si tu les notes) soient enregistrées dans le cloud. Tu peux le retirer à tout moment en supprimant le compte.</p>
+  </section>
+
+  <section>
+    <h2>3. Où elles sont enregistrées</h2>
+    <p><strong>Sans compte :</strong> uniquement dans le stockage de ton navigateur, <strong>sur ton appareil</strong>. Personne d’autre ne peut les voir.</p>
+    <p><strong>Avec un compte :</strong> en plus, une copie sur <strong>Supabase</strong>, sur un serveur situé en <strong>Irlande (Union européenne)</strong>. Chaque compte ne peut lire que ses propres données. La copie est conservée tant que tu as le compte ; quand tu le supprimes, elle est effacée.</p>
+    <p>Si tu effaces les données du navigateur ou désinstalles l’app, elles sont perdues. Pour les garder, utilise <strong>Réglages → Sauvegarde</strong> : tu gardes le fichier de sauvegarde où tu veux.</p>
+  </section>
+
+  <section>
+    <h2>4. Services d’autres entreprises</h2>
+    <p>Le site est hébergé sur <strong>GitHub Pages</strong> (GitHub, Inc.). Comme tout site web, GitHub peut enregistrer ton adresse IP lors de ta visite, pour des raisons de sécurité. Plus d’informations dans la <a href="https://docs.github.com/fr/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">déclaration de confidentialité de GitHub</a>.</p>
+    <p>Si tu crées un compte, tes données sont enregistrées chez <strong>Supabase</strong> (Supabase, Inc.), qui agit comme sous-traitant : il les conserve pour nous et ne peut pas les utiliser pour autre chose. Plus d’informations dans la <a href="https://supabase.com/privacy" rel="noopener">politique de confidentialité de Supabase</a>.</p>
+    <p>Les polices, photos et sons sont dans l’app elle-même : rien n’est demandé à d’autres entreprises.</p>
+  </section>
+
+  <section>
+    <h2>5. Quand tu partages quelque chose</h2>
+    <p>Quelque chose n’est partagé que si <strong>tu appuies sur « Partager »</strong>.</p>
+    <ul>
+      <li><strong>Résumé d’une séance :</strong> un texte que tu envoies avec l’app de ton choix (WhatsApp, etc.).</li>
+      <li><strong>Carte d’ami :</strong> un lien avec ton nom d’utilisateur, ton rang, ta série, ton nombre de séances et tes 3 meilleures marques. Quiconque reçoit le lien peut voir ces données.</li>
+    </ul>
+    <p>Si tu as moins de 16 ans, la partie sociale est désactivée.</p>
+    <p>Les notifications (série, rappels) sont créées sur ton propre téléphone. Elles ne passent par aucun serveur.</p>
+  </section>
+
+  <section>
+    <h2>6. Tes droits</h2>
+    <ul>
+      <li><strong>Voir et récupérer tes données :</strong> Réglages → Sauvegarde, ou « Voir les données en texte ».</li>
+      <li><strong>Les corriger :</strong> depuis ton profil, à tout moment.</li>
+      <li><strong>Les supprimer :</strong> Réglages → « Supprimer le compte et les données ». Si tu as un compte, elles sont aussi supprimées du cloud.</li>
+      <li><strong>Te déconnecter</strong> du cloud sans rien supprimer : Réglages → Compte cloud.</li>
+    </ul>
+    <p>Pour toute question, écris à l’e-mail de contact. Si tu penses que tes données ne sont pas respectées, tu peux porter plainte auprès de l’<a href="https://www.aepd.es" rel="noopener">Agence espagnole de protection des données (AEPD)</a> ou de l’autorité de ton pays (en France, la CNIL).</p>
+  </section>
+
+  <section>
+    <h2>7. Âge minimum</h2>
+    <p>Pour utiliser Apex Gym, tu dois avoir <strong>14 ans ou plus</strong>.</p>
+  </section>
+
+  <section>
+    <h2>8. Conditions d’utilisation</h2>
+    <ul>
+      <li>Apex Gym <strong>n’est pas un service médical</strong>. Les programmes et conseils sont indicatifs.</li>
+      <li>En cas de douleur, de blessure ou de problème de santé, consulte un professionnel avant de t’entraîner.</li>
+      <li>Entraîne-toi avec une bonne technique et des charges que tu contrôles. Chacun est responsable de son utilisation de l’app.</li>
+      <li>L’app est fournie telle quelle, sans garantie de fonctionner toujours sans erreur.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>9. Modifications de cette politique</h2>
+    <p>Si nous changeons quelque chose d’important, nous mettrons à jour cette page et te préviendrons dans l’app. Nous n’enverrons jamais tes données dans le cloud si tu n’as pas créé de compte.</p>
+  </section>
+
+  <a class="volver" href="./">← Retour à l’app</a>
+  </div>
 </main>
+<script>
+// Muestra la versión en el idioma elegido en la app (o el del móvil). Los enlaces de arriba cambian de idioma.
+(function () {
+  function elegir() {
+    try { var g = localStorage.getItem("apex-idioma"); if (g === "es" || g === "en" || g === "fr") return g; } catch (e) { }
+    var m = (navigator.language || "es").slice(0, 2).toLowerCase();
+    return m === "fr" ? "fr" : (["es", "ca", "gl", "eu"].indexOf(m) >= 0 ? "es" : "en");
+  }
+  function mostrar(id) {
+    document.documentElement.lang = id;
+    var bloques = document.querySelectorAll(".idioma");
+    for (var i = 0; i < bloques.length; i++) bloques[i].hidden = bloques[i].lang !== id;
+    document.title = { es: "Privacidad · Apex Gym", en: "Privacy · Apex Gym", fr: "Confidentialité · Apex Gym" }[id];
+  }
+  var enlaces = document.querySelectorAll("[data-idioma]");
+  for (var i = 0; i < enlaces.length; i++) enlaces[i].addEventListener("click", function (ev) {
+    ev.preventDefault(); var id = this.getAttribute("data-idioma");
+    try { localStorage.setItem("apex-idioma", id); } catch (e) { }
+    mostrar(id);
+  });
+  mostrar(elegir());
+})();
+</script>
 </body>
 </html>

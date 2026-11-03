@@ -1,0 +1,160 @@
+0	(check your “Spam” folder too).	(vérifie aussi tes « Spams »).
+1	+ Add day	+ Ajouter un jour
+2	+ Add exercise	+ Ajouter un exercice
+3	+ Add set	+ Ajouter une série
+4	+{n} kg	+{n} kg
+5	+{n} rep	+{n} rép
+6	, maximum {n}.	, maximum {n}.
+7	. Each extra rep adds {n} %, up to {n} reps.	. Chaque répétition en plus ajoute {n} %, jusqu’à {n} répétitions.
+8	. A browser page will open saying “Email confirmed”: close it.	. Une page du navigateur s’ouvrira avec « E-mail confirmé » : ferme-la.
+9	. I am {n} years old or older.	. J’ai {n} ans ou plus.
+10	. A {n} kg person needs {n} % more than a {n} kg person, not {n} %. Your body weight on the day of each set is used.	. Une personne de {n} kg a besoin de {n} % de plus qu’une personne de {n} kg, pas {n} %. On utilise ton poids du jour de chaque série.
+11	: the fewer, the harder.	 : moins il y en a, plus c’est difficile.
+12	: {n} kg × {n}	 : {n} kg × {n}
+13	; those without data count {n}. Forearms, abs and calves have their own rank but don’t count towards the overall one. Cap: fewer than {n} valid workouts → Silver; fewer than {n} → Emerald.	 ; ceux sans données comptent {n}. Avant-bras, abdos et mollets ont leur propre rang mais ne comptent pas dans le global. Plafond : moins de {n} séances valides → Argent ; moins de {n} → Émeraude.
+14	To improve	À améliorer
+15	Abs	Abdos
+16	Abs · Machine · Basic	Abdos · Machine · Débutant
+17	Abs · Bodyweight · Basic	Abdos · Poids du corps · Débutant
+18	Abs · Bodyweight · Intermediate	Abdos · Poids du corps · Intermédiaire
+19	Abs · Cable · Basic	Abdos · Poulie · Débutant
+20	Abs · Cable · Intermediate	Abdos · Poulie · Intermédiaire
+21	Abduction	Abduction
+22	Hip abduction	Abduction de hanche
+23	Horizontal abduction	Abduction horizontale
+24	Machine hip abduction	Abducteurs à la machine
+25	Open slowly until you feel the stretch.	Ouvre lentement jusqu’à sentir l’étirement.
+26	Open the email and tap	Ouvre l’e-mail et appuie sur
+27	Spread the rope at the bottom to squeeze harder.	Écarte la corde en bas pour contracter davantage.
+28	Spread your legs.	Écarte les jambes.
+29	Open your arms with elbows slightly bent.	Ouvre les bras, coudes légèrement fléchis.
+30	Open your arms in an arc until you feel the stretch.	Ouvre les bras en arc jusqu’à sentir l’étirement.
+31	Pull your arms back at shoulder height.	Ouvre les bras vers l’arrière à hauteur des épaules.
+32	Pull your arms back.	Ouvre les bras vers l’arrière.
+33	Raise your arms to the sides with elbows slightly bent.	Ouvre les bras sur les côtés, coudes légèrement fléchis.
+34	Flaring your elbows to {n} degrees from your body.	Écarter les coudes à {n} degrés du corps.
+35	Flaring your elbows out.	Écarter les coudes vers l’extérieur.
+36	Flaring your elbows to the sides.	Écarter les coudes sur les côtés.
+37	Flaring your elbows.	Écarter les coudes.
+38	Opening further than your flexibility allows.	Ouvrir plus que ta souplesse ne le permet.
+39	Academy	Académie
+40	I agree that my Apex Gym data (profile, workouts, measurements and, if I log them, injuries or discomfort) is stored in the cloud, according to the	J’accepte que mes données Apex Gym (profil, séances, mensurations et, si je les note, blessures ou gênes) soient enregistrées dans le cloud, selon la
+41	Turn on notifications on this phone	Activer les notifications sur ce téléphone
+42	Activity	Activité
+43	Adapted to your gym:	Adapté à ta salle :
+44	Hip adduction	Adduction de hanche
+45	Horizontal adduction	Adduction horizontale
+46	Cable hip adduction	Adducteurs à la poulie
+47	Adductors	Adducteurs
+48	Machine hip adduction	Adducteurs à la machine
+49	Adductors · Machine · Basic	Adducteurs · Machine · Débutant
+50	Adductors · Cable · Intermediate	Adducteurs · Poulie · Intermédiaire
+51	Grip the EZ bar on the angled part.	Prends la barre EZ sur la partie inclinée.
+52	Grab the bar with a straight back.	Saisis la barre en gardant le dos droit.
+53	Grab the bar palms facing you, shoulder-width apart.	Saisis la barre paumes vers toi, à largeur d’épaules.
+54	Shoulder-width grip.	Prise à largeur d’épaules.
+55	Grip slightly wider than your shoulders.	Prise un peu plus large que les épaules.
+56	Overhand grip (palms down).	Prise en pronation (paumes vers le bas).
+57	Grip on the angled part of the bar.	Prise sur la partie inclinée de la barre.
+58	Close grip (V-handle or short bar).	Prise serrée (triangle ou barre courte).
+59	Hold for a second and lower slowly.	Tiens une seconde et redescends lentement.
+60	Hold on to the machine to stay stable.	Tiens-toi à la machine pour rester stable.
+61	Now	Maintenant
+62	Now open the Apex Gym app and log in with your new password. You can close this tab.	Ouvre maintenant l’app Apex Gym et connecte-toi avec ton nouveau mot de passe. Tu peux fermer cet onglet.
+63	Adjust the pad so it sits just below your hips.	Règle l’appui pour qu’il soit juste sous les hanches.
+64	Adjust the seat so you can grab the handles with straight arms.	Règle le siège pour attraper les poignées bras tendus.
+65	Adjust the seat so the handles are at chest height.	Règle le siège pour que les poignées soient à hauteur de poitrine.
+66	Adjust the seat so your elbows are at shoulder height.	Règle le siège pour que les coudes soient à hauteur d’épaules.
+67	Adjust the seat and grab the handles.	Règle le siège et saisis les poignées.
+68	Adjust the seat and the thigh pad.	Règle le siège et l’appui des cuisses.
+69	Adjust the seat and the footrests.	Règle le siège et les repose-pieds.
+70	Adjust the seat.	Règle le siège.
+71	Adjust the seat: handles at upper-chest height.	Règle le siège : poignées à hauteur du haut de la poitrine.
+72	Adjust the seat: handles at lower-chest height.	Règle le siège : poignées à hauteur du bas de la poitrine.
+73	Adjust the seat: handles at shoulder height.	Règle le siège : poignées à hauteur d’épaules.
+74	Adjust the seat: handles at chest height.	Règle le siège : poignées à hauteur de poitrine.
+75	Adjust the seat: armpits over the edge of the pad.	Règle le siège : aisselles sur le bord de l’appui.
+76	Adjust the seat: elbows lined up with the machine’s pivot.	Règle le siège : coudes alignés avec l’axe de la machine.
+77	Set the backrest at shoulder-blade height.	Règle le dossier à hauteur des omoplates.
+78	Adjust the backrest and the roller over your ankles.	Règle le dossier et le rouleau sur les chevilles.
+79	Adjust the backrest.	Règle le dossier.
+80	Adjust the roller so it holds your thighs firmly.	Règle le rouleau pour bien maintenir les cuisses.
+81	Adjust the roller over your thighs.	Règle le rouleau sur les cuisses.
+82	Set the handle height: arms straight.	Règle la hauteur des poignées : bras tendus.
+83	Set the height so the handles are at chest height.	Règle la hauteur pour que les poignées soient à hauteur de poitrine.
+84	Set the starting width to your flexibility.	Règle l’ouverture de départ selon ta souplesse.
+85	Set up the machine like the regular extension.	Règle la machine comme pour l’extension classique.
+86	Set the safety stops at the lowest height you’ll go down to.	Règle les butées de sécurité à la hauteur la plus basse que tu atteindras.
+87	Set the safety stops.	Règle les butées de sécurité.
+88	Set the stops above your chest in case you can’t push up.	Règle les butées au-dessus de ta poitrine au cas où tu ne pourrais pas remonter.
+89	Quick adjust	Réglage rapide
+90	Settings: invalid rest time.	Réglages : temps de repos non valide.
+91	Settings: invalid increments.	Réglages : incréments non valides.
+92	Settings: invalid privacy.	Réglages : confidentialité non valide.
+93	Settings: invalid theme.	Réglages : thème non valide.
+94	When you finish an exercise, jump to the next one with sets left	En finissant un exercice, passe au suivant qui a encore des séries
+95	At the top, your thumbs point backwards.	À la fin, les pouces pointent vers l’arrière.
+96	Saving recalculates volume, records and ranks.	En enregistrant, le volume, les records et les rangs sont recalculés.
+97	Alex	Alex
+98	Public algorithm	Algorithme public
+99	Public algorithm · v{n}	Algorithme public · v{n}
+100	Pad on the bar for your hips.	Coussin sur la barre pour les hanches.
+101	Pad on the bar.	Coussin sur la barre.
+102	Pad just above your knees.	Coussin juste au-dessus des genoux.
+103	Beginner alternative	Alternative pour débutants
+104	Height (cm)	Taille (cm)
+105	Chest height set to the pad.	Hauteur de poitrine réglée sur l’appui.
+106	Friend removed	Ami retiré
+107	Friends	Amis
+108	Demo friends	Amis de la démo
+109	Movement animation	Animation du mouvement
+110	Forearm resting on the bench, wrist off the edge.	Avant-bras posé sur le banc, poignet dans le vide.
+111	Forearms	Avant-bras
+112	Forearms resting on your thighs.	Avant-bras posés sur les cuisses.
+113	Forearms ·	Avant-bras ·
+114	Forearms · Barbell · Basic	Avant-bras · Barre · Débutant
+115	Forearms · Dumbbells · Basic	Avant-bras · Haltères · Débutant
+116	Forearms · Cable · Basic	Avant-bras · Poulie · Débutant
+117	Forearms, Adductors	Avant-bras, Adducteurs
+118	Before	Avant
+119	First you need to confirm your email: open the email we sent you.	Tu dois d’abord confirmer ton e-mail : ouvre le message que nous t’avons envoyé.
+120	Anti-extension	Anti-extension
+121	Appearance	Apparence
+122	Dumbbell flyes	Écartés aux haltères
+123	Cable flyes	Écartés à la poulie
+124	Low cable flyes	Écartés à la poulie basse
+125	Apex	Apex
+126	Apex Gym	Apex Gym
+127	Apix	Apix
+128	Angry Apix	Apix en colère
+129	Apix reminds you of an ongoing personal challenge	Apix te rappelle un défi personnel en cours
+130	Apix is drawn in all its moods	Apix est dessiné dans toutes ses humeurs
+131	Apix, the mascot	Apix, la mascotte
+132	Apix, the Apex Gym mascot	Apix, la mascotte d’Apex Gym
+133	Apix:	Apix :
+134	Rest your forearm on the bench, palm up.	Pose l’avant-bras sur le banc, paume vers le haut.
+135	Rest your thigh on the pad and the roller behind your ankle.	Pose la cuisse sur le coussin et le rouleau derrière la cheville.
+136	Rest your chest on the pad and grab the handles with straight arms.	Pose la poitrine sur l’appui et saisis les poignées bras tendus.
+137	Rest your chest on the pad.	Pose la poitrine sur l’appui.
+138	Rest your back on the backrest and place the belt or pad over your hips.	Appuie le dos contre le dossier et place la ceinture ou le coussin sur les hanches.
+139	Rest the back of your arms on the preacher bench.	Pose l’arrière des bras sur le pupitre (banc Larry Scott).
+140	Rest your knees on the platform.	Pose les genoux sur la plateforme.
+141	Rest your arms on the pad.	Pose les bras sur l’appui.
+142	Put the knee and hand of the same side on the bench.	Pose le genou et la main du même côté sur le banc.
+143	Put one hand and one knee on the bench.	Pose une main et un genou sur le banc.
+144	Putting your weight on the back leg.	Mettre le poids sur la jambe arrière.
+145	Pad just below your hips.	Appui juste sous les hanches.
+146	Learn the technique with light weight; it’s the heaviest exercise in the library.	Apprends la technique avec peu de poids : c’est l’exercice le plus lourd de la bibliothèque.
+147	Squeeze for a second at the top.	Contracte une seconde en haut.
+148	Brace your abs throughout the movement.	Gaine les abdos pendant tout le mouvement.
+149	Squeeze your glutes and abs.	Serre les fessiers et les abdos.
+150	Squeeze your glutes for a second at the top.	Serre les fessiers une seconde en haut.
+151	Squeeze your glutes at the top.	Serre les fessiers en haut.
+152	Log the number on the stack or the plates you load. Every machine is different: always compare yourself on the same one.	Note le chiffre de la plaque ou les disques que tu charges. Chaque machine est différente : compare-toi toujours sur la même.
+153	Log the number on the plate where you put the pin. Every machine is different: always compare yourself on the same one.	Note le chiffre de la plaque où tu mets la goupille. Chaque machine est différente : compare-toi toujours sur la même.
+154	Log the weight of one dumbbell. If you pick up two {n} kg ones, write {n}, not {n}.	Note le poids d’un seul haltère. Si tu prends deux haltères de {n} kg, écris {n}, pas {n}.
+155	Log the total: the bar plus all the plates. Example: {n} kg bar + one {n} kg plate on each side = {n} kg.	Note le total : la barre plus tous les disques. Exemple : barre de {n} kg + un disque de {n} de chaque côté = {n} kg.
+156	Log the kilos of ASSISTANCE you set on the machine. The less assistance, the stronger you are: the goal is to keep lowering it.	Note les kilos d’AIDE réglés sur la machine. Moins tu as d’aide, plus tu es fort : l’objectif est de la réduire peu à peu.
+157	Log your measurements once a month to see them grow.	Note tes mensurations une fois par mois pour les voir progresser.
+158	File loaded. Tap “Import” to restore.	Fichier chargé. Appuie sur « Importer » pour restaurer.
+159	Arching your back at the top.	Cambrer le dos en haut.

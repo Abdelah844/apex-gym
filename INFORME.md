@@ -243,3 +243,14 @@ Fecha: 1 de noviembre de 2026 · Respuesta a la revisión «Nuevos fallos encont
 - **Sin zoom:** `touch-action: manipulation` (sin zoom al tocar dos veces; con dos dedos sigue funcionando) y campos de texto a 16 px (el iPhone acercaba la pantalla al escribir).
 - **Google y Apple:** Google necesita crear un proyecto en Google Cloud (gratis). Apple necesita la cuenta de desarrollador de Apple (99 $/año): pospuesto.
 - **Pruebas:** `test/nube.py` pasa 29 casos (usuario repetido, confirmación de correo, enlace abierto en el navegador, cuenta antigua sin usuario…).
+
+## Anexo 2.9 · Idiomas: inglés y francés
+
+- **Cómo funciona:** la app sigue escrita en español. `traductor.js` vigila la pantalla (MutationObserver) y cambia cada texto por su traducción de `idiomas.js`. Los números se tratan aparte («Serie 3» se busca como «Serie {n}»), los textos con nombres usan patrones («Hola, {x}») y las listas con « · » se traducen por partes. Lo que escribe el usuario (cuadros de texto) no se toca.
+- **Traducciones:** 2.131 textos en inglés y francés, revisados uno a uno. Fuentes en `i18n/` (`lista.json` con el español y `tr_*.tsv` con inglés y francés); `i18n/construir.py` genera `idiomas.js` y comprueba que cada traducción tenga los mismos números.
+- **Idioma por defecto:** el del móvil (español también para catalán, gallego y euskera; francés; el resto, inglés). Se cambia con los botones de la bienvenida o en Ajustes → 🌐. Fechas y números usan el formato del idioma.
+- **Fuera de la pantalla:** los avisos y los textos para compartir se traducen con `tr()` antes de enviarse.
+- **Privacidad:** la página tiene las tres versiones completas; manda la española.
+- **Arreglos:** la ficha de rango de un ejercicio sin series ya no da error; los botones de ejercicios del entreno muestran el nombre completo (con «…» si no cabe); las iniciales de los días cambian según el idioma.
+- **Comprobado:** recorrido de más de 250 pantallas y fichas en inglés y francés sin textos en español sin traducir (salvo nombres propios como Apex, Apix o Hip thrust), auditoría sin errores ni desbordes en los dos idiomas, 143 pruebas en Node.
+- **Pendiente:** si se añade un texto nuevo a la app, hay que añadir su traducción en `i18n/` (si no, sale en español).
