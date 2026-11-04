@@ -16,10 +16,14 @@ jobs:
       - name: Consultar Supabase
         run: |
           # La clave "publishable" es pública: es la misma que lleva la app.
-          codigo=$(curl -sS -o respuesta.txt -w "%{http_code}" \
-            "https://bwgukadlvyhogwtszlhl.supabase.co/rest/v1/perfiles?select=usuario&limit=1" \
-            -H "apikey: sb_publishable_-rnOK3rj54mx7h4s0-L_yA_rgrhU6SU")
-          echo "Respuesta de Supabase: $codigo"
+          # Pregunta si el nombre de usuario "comprobacion" está libre (la misma consulta
+          # que hace la app al crear una cuenta). Solo devuelve true o false.
+          codigo=$(curl -sS -o respuesta.txt -w "%{http_code}" -X POST \
+            "https://bwgukadlvyhogwtszlhl.supabase.co/rest/v1/rpc/usuario_libre" \
+            -H "apikey: sb_publishable_-rnOK3rj54mx7h4s0-L_yA_rgrhU6SU" \
+            -H "Content-Type: application/json" \
+            -d '{"nombre":"comprobacion"}')
+          echo "Respuesta de Supabase: $codigo $(cat respuesta.txt)"
           if [ "$codigo" != "200" ]; then
             echo "::error::Supabase no responde bien (código $codigo). Entra en supabase.com y mira si el proyecto está pausado."
             exit 1
