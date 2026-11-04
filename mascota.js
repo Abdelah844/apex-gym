@@ -169,9 +169,13 @@ function estadoMascota() {
 function apixSVG(humor, tam) {
   const h = humor || "contento";
   const enfadado = h === "enfadado";
-  const claro = enfadado ? "#FF9A9A" : "#C9B2FF";     // color de arriba
-  const medio = enfadado ? "#FF4D4D" : "#8A5CFF";     // color del centro
-  const borde = enfadado ? "#C81E2E" : "#5B2BE0";     // color de abajo, brazos y patas
+  const feliz = h === "celebra" || h === "orgulloso";
+  // Colores del cuerpo: morado normal, rojo si se enfada y amarillo si está feliz
+  let claro = "#C9B2FF";                              // color de arriba
+  let medio = "#8A5CFF";                              // color del centro
+  let borde = "#5B2BE0";                              // color de abajo, brazos y patas
+  if (enfadado) { claro = "#FF9A9A"; medio = "#FF4D4D"; borde = "#C81E2E"; }
+  if (feliz) { claro = "#FFF4B8"; medio = "#FFD23F"; borde = "#E0A100"; }
   const tinta = "#1F2B2B";                            // ojos, cejas y boca
   const id = "kg-" + h;                               // id del degradado (uno por humor)
 
