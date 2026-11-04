@@ -51,6 +51,11 @@ const ACCIONES = {
   // ---------- Hojas ----------
   "idioma": function (nuevo) { cambiarIdioma(nuevo); },
   "abrir-privacidad": function () { location.href = "privacidad.html"; },
+  "privacidad-vista": function () {
+    const antes = estado.ajustes.privacidadAceptada || "";
+    estado.ajustes.privacidadAceptada = hoy() + " v" + VERSION_PRIVACIDAD + (antes.indexOf("nube") >= 0 ? " nube" : "");
+    guardar(); cerrarHoja(); pintar();
+  },
   "cerrar-hoja": function () { cerrarHoja(); confirmar = ""; pintar(); },
   "abrir-ajustes": function () { confirmar = ""; hojaAjustes(); },
   "abrir-generador": function () { confirmar = ""; hojaGenerador(!genOp); },
@@ -1171,6 +1176,7 @@ try { if (!estado && sessionStorage.getItem("apex-abrir-registro")) { sessionSto
 reanudarDescanso();
 registrarServiceWorker();
 abrirEnlaceAmigo();
+if (hayPoliticaNueva() && $("hoja").hidden) hojaPoliticaNueva();
 // Cuenta en la nube: al abrir la app, al recuperar internet y al volver a la app
 procesarVueltaCorreo().then(function (hecho) { if (!hecho && conectado()) sincronizarYAvisar(false); });
 window.addEventListener("online", function () { if (conectado()) sincronizarYAvisar(false); });

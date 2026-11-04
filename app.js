@@ -1816,6 +1816,30 @@ function pantallaVueltaCorreo(titulo, texto) {
 
 // Los datos han cambiado en la nube Y en este móvil: el usuario elige cuáles se quedan
 let copiaEnEspera = null;
+// ---------- Aviso de política de privacidad actualizada ----------
+// Si el usuario aceptó una versión anterior de la política, se le avisa una vez al abrir la app.
+function versionPrivacidadAceptada() {
+  const texto = (estado && estado.ajustes && estado.ajustes.privacidadAceptada) || "";
+  const m = texto.match(/ v(\d+)/);
+  return m ? Number(m[1]) : 0;
+}
+function hayPoliticaNueva() {
+  if (!estado || !estado.perfil || estado.modo === "demo" || estado.activa) return false;
+  return versionPrivacidadAceptada() < VERSION_PRIVACIDAD;
+}
+function hojaPoliticaNueva() {
+  abrirHoja(cabeceraHoja("Política de privacidad actualizada", "Aviso") + '<div class="stack">' +
+    '<p>Hemos actualizado la política de privacidad. Lo más importante:</p>' +
+    '<ul class="small" style="padding-left:20px;margin:0">' +
+      '<li>Los correos de la cuenta se envían con Gmail (Google).</li>' +
+      '<li>Explicamos mejor cuánto tiempo guardamos los datos y cómo los protegemos.</li>' +
+      '<li>Explicamos mejor tus derechos y las transferencias fuera de la UE.</li>' +
+    '</ul>' +
+    '<p class="muted small">Tus datos se siguen usando igual: solo para que la app funcione.</p>' +
+    '<button class="btn-sec full" data-act="abrir-privacidad">Leer la política</button>' +
+    '<button class="btn full" data-act="privacidad-vista">Entendido</button></div>');
+}
+
 function hojaConflictoNube(copia) {
   copiaEnEspera = copia;
   const enNube = (copia.datos && copia.datos.sesiones ? copia.datos.sesiones.length : 0);

@@ -9514,5 +9514,37 @@ const TRADUCCIONES = {
 "Me gusta": [
 "Like",
 "J’aime"
+],
+"Aviso": [
+"Notice",
+"Avis"
+],
+"Política de privacidad actualizada": [
+"Privacy policy updated",
+"Politique de confidentialité mise à jour"
+],
+"Hemos actualizado la política de privacidad. Lo más importante:": [
+"We have updated the privacy policy. The main points:",
+"Nous avons mis à jour la politique de confidentialité. L’essentiel :"
+],
+"Los correos de la cuenta se envían con Gmail (Google).": [
+"Account emails are sent with Gmail (Google).",
+"Les e-mails du compte sont envoyés avec Gmail (Google)."
+],
+"Explicamos mejor cuánto tiempo guardamos los datos y cómo los protegemos.": [
+"We explain more clearly how long we keep data and how we protect it.",
+"Nous expliquons mieux combien de temps nous gardons les données et comment nous les protégeons."
+],
+"Explicamos mejor tus derechos y las transferencias fuera de la UE.": [
+"We explain your rights and transfers outside the EU more clearly.",
+"Nous expliquons mieux tes droits et les transferts hors de l’UE."
+],
+"Tus datos se siguen usando igual: solo para que la app funcione.": [
+"Your data is still used the same way: only so the app works.",
+"Tes données sont toujours utilisées de la même façon : uniquement pour que l’app fonctionne."
+],
+"Leer la política": [
+"Read the policy",
+"Lire la politique"
 ]
 };

@@ -123,7 +123,7 @@ function metricasVacias() {
 }
 
 // Versión de la política de privacidad (privacidad.html). Si se cambia la política, se sube este número.
-const VERSION_PRIVACIDAD = 2;
+const VERSION_PRIVACIDAD = 4;
 
 function estadoVacio(perfil) {
   perfil = perfil || {};
