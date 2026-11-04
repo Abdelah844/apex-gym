@@ -1577,12 +1577,25 @@ function hojaPiloto() {
 }
 
 // ---------- Resumen al terminar ----------
+// Apix al terminar: amarillo (campeón) solo si hiciste todas las series
+function humorResumen(s) {
+  if (sesionCompleta(s)) return "campeon";
+  if (s.prs.length) return "celebra";
+  return "orgulloso";
+}
+function textoResumenApix(s, totalSeries) {
+  let texto = "";
+  if (s.prs.length) texto = s.prs.length + (s.prs.length > 1 ? " récords nuevos." : " récord nuevo.") + " ";
+  if (sesionCompleta(s)) return texto + "Has hecho todas las series: ¡mira qué color me has puesto!";
+  if (s.prs.length) return texto + "¡Eres una máquina! Si acabas todas las series, me pondré amarillo.";
+  return totalSeries + " series hechas. Si la próxima vez acabas todas, me pondré amarillo.";
+}
 function hojaResumen(r) {
   const s = r.sesion;
   const totalSeries = s.seriesEfectivas;
   let h = cabeceraHoja("Entreno completado", esc(s.diaNombre)) + '<div class="stack">' +
-    (estado.ajustes.mascota !== false ? '<div class="apix-resumen">' + apixSVG(s.prs.length ? "celebra" : "orgulloso") + '<div class="confeti" aria-hidden="true">' + "<i></i>".repeat(14) + '</div>' +
-      '<p><b>¡Entreno completado!</b> ' + (s.prs.length ? s.prs.length + (s.prs.length > 1 ? " récords nuevos." : " récord nuevo.") + " ¡Eres una máquina!" : totalSeries + " series hechas. Estoy orgulloso de ti.") + '</p></div>' : "") +
+    (estado.ajustes.mascota !== false ? '<div class="apix-resumen">' + apixSVG(humorResumen(s)) + '<div class="confeti" aria-hidden="true">' + "<i></i>".repeat(14) + '</div>' +
+      '<p><b>¡Entreno completado!</b> ' + textoResumenApix(s, totalSeries) + '</p></div>' : "") +
     '<div class="grid2">' +
     '<div class="card"><p class="label">Duración</p><div class="big-num num">' + s.duracion + ' min</div></div>' +
     '<div class="card"><p class="label">Ejercicios</p><div class="big-num num">' + s.ejercicios.filter(function (e) { return e.series.some(function (x) { return x.hecha; }); }).length + '</div></div>' +

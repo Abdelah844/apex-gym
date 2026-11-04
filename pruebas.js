@@ -696,12 +696,17 @@ const PRUEBAS = [
   ["Mascota", "Si ya entrenaste hoy, te felicita; y se puede desactivar", function () {
     estadoPrueba();
     sesionPrueba(hoy(), [["press-banca", [[60, 8]]]]);
-    if (estadoMascota().humor !== "orgulloso") return "No reconoció el entreno de hoy";
+    if (estadoMascota().humor !== "campeon") return "No reconoció el entreno completo de hoy";
+    if (apixSVG("campeon").indexOf("#FFD23F") < 0 || apixSVG("celebra").indexOf("#FFD23F") >= 0) return "Solo el entreno completo pone a Apix amarillo";
+    const ult = estado.sesiones[estado.sesiones.length - 1];
+    ult.ejercicios[0].series.push({ peso: 60, reps: 8, hecha: false });
+    if (estadoMascota().humor !== "orgulloso") return "Con series sin hacer no debería ponerse amarillo";
+    ult.ejercicios[0].series.pop();
     estado.ajustes.mascota = false;
     return estadoMascota() === null || "Sigue apareciendo desactivada";
   }],
   ["Mascota", "Apix se dibuja en todos sus humores", function () {
-    for (const h of ["contento", "anima", "enfadado", "celebra", "orgulloso", "descanso", "cuida"]) if (apixSVG(h).indexOf("<svg") !== 0) return "Falla " + h;
+    for (const h of ["contento", "anima", "enfadado", "celebra", "orgulloso", "campeon", "descanso", "cuida"]) if (apixSVG(h).indexOf("<svg") !== 0) return "Falla " + h;
     return true;
   }],
   ["Privacidad", "Fuera de la demo no hay datos ficticios", function () {

@@ -20,7 +20,7 @@ $("hoja").addEventListener("click", function (ev) { if (ev.target.id === "hoja")
 
 const ACCIONES = {
   "tocar-apix": function (humor) {
-    sonar(humor === "enfadado" ? "enfadado" : (humor === "celebra" ? "record" : "racha"));
+    sonar(humor === "enfadado" ? "enfadado" : (humor === "celebra" || humor === "campeon" ? "record" : "racha"));
   },
   "probar-sonido": function (nombre) { sonar(nombre); },
   "instalar-app": function () {

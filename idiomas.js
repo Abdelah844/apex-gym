@@ -9554,5 +9554,33 @@ const TRADUCCIONES = {
 "Escribe la altura en centímetros y sin comas (por ejemplo, {n}).": [
 "Enter your height in centimetres, without commas (for example, {n}).",
 "Écris ta taille en centimètres, sans virgule (par exemple, {n})."
+],
+"Bien por entrenar hoy. Si la próxima vez acabas todas las series, me pondré amarillo.": [
+"Well done for training today. If you finish every set next time, I’ll turn yellow.",
+"Bravo pour la séance d’aujourd’hui. Si tu termines toutes les séries la prochaine fois, je deviendrai jaune."
+],
+"Hoy has entrenado, ¡bien! Termina el entreno completo y verás cómo me pongo.": [
+"You trained today, nice! Finish the full workout and see what happens to me.",
+"Tu t’es entraîné aujourd’hui, top ! Termine la séance complète et tu verras ce qui m’arrive."
+],
+"¡Entreno completo! Mira qué color me has puesto. Ahora toca comer bien y dormir.": [
+"Full workout done! Look what colour you’ve turned me. Now eat well and sleep.",
+"Séance complète ! Regarde quelle couleur tu m’as donnée. Maintenant, mange bien et dors."
+],
+"Todas las series hechas. Así se construye la constancia: ¡estoy que brillo!": [
+"Every set done. That’s how consistency is built: I’m glowing!",
+"Toutes les séries faites. C’est comme ça qu’on devient régulier : je brille !"
+],
+"Has hecho todas las series: ¡mira qué color me has puesto!": [
+"You did every set: look what colour you’ve turned me!",
+"Tu as fait toutes les séries : regarde quelle couleur tu m’as donnée !"
+],
+"¡Eres una máquina! Si acabas todas las series, me pondré amarillo.": [
+"You’re a machine! If you finish every set, I’ll turn yellow.",
+"Tu es une machine ! Si tu termines toutes les séries, je deviendrai jaune."
+],
+"series hechas. Si la próxima vez acabas todas, me pondré amarillo.": [
+"sets done. If you finish them all next time, I’ll turn yellow.",
+"séries faites. Si tu les termines toutes la prochaine fois, je deviendrai jaune."
 ]
 };

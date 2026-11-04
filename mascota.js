@@ -26,8 +26,12 @@ const MENSAJES_APIX = {
     "¡Nuevo récord en {ejercicio}: {peso}! El trabajo de estas semanas se nota."
   ],
   orgulloso: [
-    "Hoy ya has entrenado. Ahora toca comer bien y dormir.",
-    "Entreno de hoy completado. Así se construye la constancia."
+    "Bien por entrenar hoy. Si la próxima vez acabas todas las series, me pondré amarillo.",
+    "Hoy has entrenado, ¡bien! Termina el entreno completo y verás cómo me pongo."
+  ],
+  campeon: [
+    "¡Entreno completo! Mira qué color me has puesto. Ahora toca comer bien y dormir.",
+    "Todas las series hechas. Así se construye la constancia: ¡estoy que brillo!"
   ],
   descanso: [
     "Hoy toca descanso. Recuperar también es entrenar.",
@@ -107,6 +111,18 @@ function datosReto(r) {
   return { reto: TIPOS_RETO[r.tipo].nombre.toLowerCase(), falta: String(falta).replace(".", ","), unidad: TIPOS_RETO[r.tipo].unidad, dias: diasEntre(hoy(), r.fin) + 1 };
 }
 
+// Un entreno está completo si se hicieron TODAS sus series (al menos una)
+function sesionCompleta(s) {
+  let total = 0;
+  for (const e of s.ejercicios) {
+    for (const x of e.series) {
+      total++;
+      if (!x.hecha) return false;
+    }
+  }
+  return total > 0;
+}
+
 // Humor y mensaje de Apix. Devuelve null si el usuario lo ha desactivado.
 // Orden de prioridad: molestias → récord → racha perdida → hoy ya entrenaste → día de entreno → descanso → normal
 function estadoMascota() {
@@ -118,6 +134,10 @@ function estadoMascota() {
   // 1. Molestias recientes: nunca presionar
   if (ultima && diasEntre(ultima.fecha, hoyF) <= 3 && ultima.ejercicios.some(function (e) { return e.molestias; })) {
     return { humor: "cuida", mensaje: mensajeDelDia(MENSAJES_APIX.cuida, hoyF) };
+  }
+  // 1b. Hoy has acabado el entreno completo: Apix se pone amarillo (es el premio)
+  if (ultima && ultima.fecha === hoyF && sesionCompleta(ultima)) {
+    return { humor: "campeon", mensaje: mensajeDelDia(MENSAJES_APIX.campeon, hoyF) };
   }
   // 2. Récord en los últimos 2 días: felicitar con el ejercicio y el peso
   if (ultima && diasEntre(ultima.fecha, hoyF) <= 2 && ultima.prs.length) {
@@ -169,7 +189,7 @@ function estadoMascota() {
 function apixSVG(humor, tam) {
   const h = humor || "contento";
   const enfadado = h === "enfadado";
-  const feliz = h === "celebra" || h === "orgulloso";
+  const feliz = h === "campeon";                      // solo amarillo al acabar el entreno completo
   // Colores del cuerpo: morado normal, rojo si se enfada y amarillo si está feliz
   let claro = "#C9B2FF";                              // color de arriba
   let medio = "#8A5CFF";                              // color del centro
@@ -196,13 +216,13 @@ function apixSVG(humor, tam) {
     '<path d="M60,9 C63,13 66,16 65,20 C64,24 62,26 60,26 C58,26 56,24 55,20 C55,16 58,14 60,9 Z" fill="#FFD84A"/></g>';
   // Complementos
   if (h === "anima") s += '<path d="M22,46 Q60,34 98,46 L97,54 Q60,42 23,54 Z" fill="#FF8A3D"/><path d="M96,48 l13,-5 l-4,11 z" fill="#FF8A3D"/>';   // cinta de deporte
-  if (h === "celebra") s += '<path d="M47,24 L50,12 L56,19 L60,8 L64,19 L70,12 L73,24 Z" fill="#FFD25A" stroke="#C9971A" stroke-width="1.5" stroke-linejoin="round"/>' +
+  if (h === "celebra" || h === "campeon") s += '<path d="M47,24 L50,12 L56,19 L60,8 L64,19 L70,12 L73,24 Z" fill="#FFD25A" stroke="#C9971A" stroke-width="1.5" stroke-linejoin="round"/>' +
                             '<circle cx="18" cy="34" r="2.5" fill="#FFD25A"/><circle cx="104" cy="30" r="2.5" fill="#FF8FB1"/><circle cx="108" cy="50" r="2" fill="#7FB8FF"/>';   // corona y confeti
   // Ojos
   if (h === "descanso") {
     s += '<path d="M39,64 q7,5 14,0 M67,64 q7,5 14,0" fill="none" stroke="' + tinta + '" stroke-width="3" stroke-linecap="round"/>' +
          '<text x="90" y="30" font-family="sans-serif" font-weight="800" font-size="13" fill="#7A4DFF">z</text><text x="100" y="18" font-family="sans-serif" font-weight="800" font-size="10" fill="#7A4DFF">z</text>';
-  } else if (h === "celebra" || h === "orgulloso") {
+  } else if (h === "celebra" || h === "orgulloso" || h === "campeon") {
     s += '<path d="M39,66 q7,-8 14,0 M67,66 q7,-8 14,0" fill="none" stroke="' + tinta + '" stroke-width="3.5" stroke-linecap="round"/>';   // ojos felices ^ ^
   } else {
     const baja = h === "cuida" ? 2 : 0;
@@ -220,7 +240,7 @@ function apixSVG(humor, tam) {
   // Boca
   if (enfadado) s += '<path d="M52,82 Q60,76 68,82" fill="none" stroke="' + tinta + '" stroke-width="3" stroke-linecap="round"/>' +
                      '<path d="M8,40 q4,-7 0,-13 M112,40 q-4,-7 0,-13" fill="none" stroke="#E02B3C" stroke-width="3" stroke-linecap="round"/>';   // vapor
-  else if (h === "celebra") s += '<path d="M52,76 Q60,88 68,76 Z" fill="' + tinta + '"/><path d="M56,81 Q60,85 64,81" fill="#FF7A8F"/>';
+  else if (h === "celebra" || h === "campeon") s += '<path d="M52,76 Q60,88 68,76 Z" fill="' + tinta + '"/><path d="M56,81 Q60,85 64,81" fill="#FF7A8F"/>';
   else if (h === "anima") s += '<path d="M54,79 L66,79" stroke="' + tinta + '" stroke-width="3" stroke-linecap="round"/><path d="M92,58 q4,6 0,9 q-4,-3 0,-9" fill="#7FC8FF"/>';   // gota de sudor
   else if (h === "cuida") s += '<path d="M54,80 Q60,78 66,80" fill="none" stroke="' + tinta + '" stroke-width="2.5" stroke-linecap="round"/>';
   else if (h === "descanso") s += '<ellipse cx="60" cy="79" rx="3" ry="2.5" fill="' + tinta + '"/>';
