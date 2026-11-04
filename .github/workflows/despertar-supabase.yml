@@ -1,0 +1,27 @@
+# Tarea programada: "despierta" la base de datos de Supabase cada 2 días.
+# Supabase gratis pausa el proyecto si pasa unos días sin uso.
+# Esta tarea hace una consulta pequeña (no lee datos de nadie) para que cuente como uso.
+# Si Supabase no responde, la tarea falla y GitHub te avisa por correo.
+name: Despertar Supabase
+
+on:
+  schedule:
+    - cron: "23 7 */2 * *"   # cada 2 días a las 7:23 (hora UTC)
+  workflow_dispatch:          # botón para lanzarla a mano en la pestaña Actions
+
+jobs:
+  despertar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Consultar Supabase
+        run: |
+          # La clave "publishable" es pública: es la misma que lleva la app.
+          codigo=$(curl -sS -o respuesta.txt -w "%{http_code}" \
+            "https://bwgukadlvyhogwtszlhl.supabase.co/rest/v1/perfiles?select=usuario&limit=1" \
+            -H "apikey: sb_publishable_-rnOK3rj54mx7h4s0-L_yA_rgrhU6SU")
+          echo "Respuesta de Supabase: $codigo"
+          if [ "$codigo" != "200" ]; then
+            echo "::error::Supabase no responde bien (código $codigo). Entra en supabase.com y mira si el proyecto está pausado."
+            exit 1
+          fi
+          echo "Supabase está despierto."
