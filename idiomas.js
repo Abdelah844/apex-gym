@@ -9546,5 +9546,13 @@ const TRADUCCIONES = {
 "Leer la política": [
 "Read the policy",
 "Lire la politique"
+],
+"Ej.: {n}": [
+"e.g. {n}",
+"ex. : {n}"
+],
+"Escribe la altura en centímetros y sin comas (por ejemplo, {n}).": [
+"Enter your height in centimetres, without commas (for example, {n}).",
+"Écris ta taille en centimètres, sans virgule (par exemple, {n})."
 ]
 };

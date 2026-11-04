@@ -221,7 +221,7 @@ function formPerfil(p) {
     '<p class="muted small" style="margin-top:-6px">Solo se usa para ajustar los rangos de fuerza. Nunca se muestra a otros usuarios.</p>' +
     '<div class="grid3">' +
       '<label class="f">Edad<input id="fEdad" type="number" inputmode="numeric" value="' + esc(p.edad) + '"></label>' +
-      '<label class="f">Altura (cm)<input id="fAltura" type="number" inputmode="numeric" value="' + esc(p.altura) + '"></label>' +
+      '<label class="f">Altura (cm)<input id="fAltura" type="number" inputmode="numeric" placeholder="Ej.: 175" value="' + esc(p.altura) + '"></label>' +
       '<label class="f">Peso (kg)<input id="fPeso" type="number" inputmode="decimal" step="0.1" value="' + esc(p.peso) + '"></label>' +
     '</div>' +
     '<label class="f">Experiencia<select id="fExperiencia">' + opciones(OP_EXPERIENCIA, p.experiencia) + '</select></label>' +
@@ -257,7 +257,7 @@ function leerPerfil() {
   else if (p.usuario.length > 20) error = "El usuario puede tener como máximo 20 caracteres.";
   else if (!p.sexo) error = "Elige una opción en Sexo (puedes elegir «Prefiero no decirlo»).";
   else if (!(p.edad >= 14 && p.edad <= 90)) error = "La edad debe estar entre 14 y 90 años.";
-  else if (!(p.altura >= 120 && p.altura <= 230)) error = "La altura debe estar entre 120 y 230 cm.";
+  else if (!(p.altura >= 120 && p.altura <= 230)) error = "Escribe la altura en centímetros y sin comas (por ejemplo, 175).";
   else if (!(p.peso >= 35 && p.peso <= 250)) error = "El peso debe estar entre 35 y 250 kg.";
   else if (p.equipo.length === 0) error = "Marca al menos un tipo de equipamiento.";
   $("fError").textContent = error;
