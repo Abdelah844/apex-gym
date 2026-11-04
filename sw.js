@@ -5,11 +5,11 @@
 // Si cambias algún archivo, sube el número de VERSION para que los móviles descarguen la nueva.
 // =====================================================
 
-const VERSION = "apex-gym-2.10.0";
+const VERSION = "apex-gym-2.10.1";
 
 // Archivos que se guardan nada más instalar la app
 const ARCHIVOS = [
-  "./", "./index.html", "./manifest.json", "./privacidad.html",
+  "./", "./index.html", "./manifest.json", "./privacidad.html", "./borrar-cuenta.html",
   "./idiomas.js", "./traductor.js", "./datos.js", "./logica.js", "./academia.js", "./mascota.js", "./sonidos.js", "./app.js", "./nube.js", "./pruebas.js", "./eventos.js",
   "./iconos/icono-192.png", "./iconos/icono-512.png",
   "./manrope.woff", "./chakra-petch-medium.woff", "./chakra-petch-semibold.woff", "./chakra-petch-bold.woff"
