@@ -1418,7 +1418,6 @@ function hojaEjercicio(id) {
       '<div class="row between" style="padding:8px 12px 10px"><span class="muted small">Animación del patrón: ' + esc(e.patron.toLowerCase()) + '</span>' +
       '<button class="btn-txt small" data-act="pausar-anim">' + (animPausada ? "▶ Reproducir" : "❚❚ Pausar") + '</button></div></div>';
   }
-  h += '<div class="video-pendiente"><p class="small"><b>Vídeo demostrativo (20-45 s):</b> pendiente de grabación propia. Mientras tanto, ' + (fotos ? "las fotos, la animación" : "la animación") + ' y los pasos escritos explican el movimiento.</p></div>';
 
   // Datos clave
   h += '<div class="card" style="padding:12px"><p class="label">Cómo apuntar el peso</p><p class="small">' + comoApuntar(e).largo + '</p></div>';

@@ -162,7 +162,6 @@ const PATRONES = [
   ["Te falta {x} entreno esta semana para no perder tu racha.", "You need {x} more workout this week so you don’t lose your streak.", "Il te manque {x} séance cette semaine pour ne pas perdre ta série."],
   ["Te faltan {x} entrenos esta semana para no perder tu racha.", "You need {x} more workouts this week so you don’t lose your streak.", "Il te manque {x} séances cette semaine pour ne pas perdre ta série."],
   ["({x}). Se han cargado igualmente. Revisa tu perfil en Ajustes y exporta una copia.", "({x}). They were loaded anyway. Check your profile in Settings and export a backup.", "({x}). Elles ont été chargées quand même. Vérifie ton profil dans Réglages et exporte une sauvegarde."],
-  ["pendiente de grabación propia. Mientras tanto, la animación y los pasos escritos explican el movimiento.", "our own recording is coming. Meanwhile, the animation and written steps explain the movement.", "notre propre vidéo arrive bientôt. En attendant, l’animation et les étapes écrites expliquent le mouvement."],
   ["+{x} en revisión", "+{x} under review", "+{x} en vérification"],
   ["Invitación de @{x}", "Invitation from @{x}", "Invitation de @{x}"],
   ["Crea tu perfil y una cuenta en la nube (Ajustes → ☁️ Cuenta). Después, en Social → Amigos, escribe su usuario: @{x}", "Create your profile and a cloud account (Settings → ☁️ Account). Then, in Social → Friends, type their username: @{x}", "Crée ton profil et un compte cloud (Réglages → ☁️ Compte). Ensuite, dans Social → Amis, écris son nom d’utilisateur : @{x}"],
