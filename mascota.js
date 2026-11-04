@@ -189,7 +189,7 @@ function estadoMascota() {
 function apixSVG(humor, tam) {
   const h = humor || "contento";
   const enfadado = h === "enfadado";
-  const feliz = h === "campeon";                      // solo amarillo al acabar el entreno completo
+  const feliz = h === "campeon" || h === "celebra";   // amarillo: entreno completo, récord o reto conseguido
   // Colores del cuerpo: morado normal, rojo si se enfada y amarillo si está feliz
   let claro = "#C9B2FF";                              // color de arriba
   let medio = "#8A5CFF";                              // color del centro

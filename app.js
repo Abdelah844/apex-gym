@@ -1587,7 +1587,7 @@ function textoResumenApix(s, totalSeries) {
   let texto = "";
   if (s.prs.length) texto = s.prs.length + (s.prs.length > 1 ? " récords nuevos." : " récord nuevo.") + " ";
   if (sesionCompleta(s)) return texto + "Has hecho todas las series: ¡mira qué color me has puesto!";
-  if (s.prs.length) return texto + "¡Eres una máquina! Si acabas todas las series, me pondré amarillo.";
+  if (s.prs.length) return texto + "¡Eres una máquina!";
   return totalSeries + " series hechas. Si la próxima vez acabas todas, me pondré amarillo.";
 }
 function hojaResumen(r) {

@@ -697,7 +697,7 @@ const PRUEBAS = [
     estadoPrueba();
     sesionPrueba(hoy(), [["press-banca", [[60, 8]]]]);
     if (estadoMascota().humor !== "campeon") return "No reconoció el entreno completo de hoy";
-    if (apixSVG("campeon").indexOf("#FFD23F") < 0 || apixSVG("celebra").indexOf("#FFD23F") >= 0) return "Solo el entreno completo pone a Apix amarillo";
+    if (apixSVG("campeon").indexOf("#FFD23F") < 0 || apixSVG("celebra").indexOf("#FFD23F") < 0 || apixSVG("orgulloso").indexOf("#FFD23F") >= 0) return "Amarillo solo con entreno completo, récord o reto";
     const ult = estado.sesiones[estado.sesiones.length - 1];
     ult.ejercicios[0].series.push({ peso: 60, reps: 8, hecha: false });
     if (estadoMascota().humor !== "orgulloso") return "Con series sin hacer no debería ponerse amarillo";
