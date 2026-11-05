@@ -9582,5 +9582,17 @@ const TRADUCCIONES = {
 "series hechas. Si la próxima vez acabas todas, me pondré amarillo.": [
 "sets done. If you finish them all next time, I’ll turn yellow.",
 "séries faites. Si tu les termines toutes la prochaine fois, je deviendrai jaune."
+],
+"Hay que tener disciplina para el cuerpo que deseas.": [
+"It takes discipline to get the body you want.",
+"Il faut de la discipline pour avoir le corps que tu veux."
+],
+"Llevas {n} días sin entrenar. Hay que tener disciplina para el cuerpo que deseas.": [
+"You haven’t trained for {n} days. It takes discipline to get the body you want.",
+"Ça fait {n} jours que tu ne t’es pas entraîné. Il faut de la discipline pour avoir le corps que tu veux."
+],
+"Llevas {n} días sin entrenar.": [
+"You haven’t trained for {n} days.",
+"Ça fait {n} jours que tu ne t’es pas entraîné."
 ]
 };

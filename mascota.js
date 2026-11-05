@@ -5,17 +5,14 @@
 // Los mensajes se eligen según la fecha (no al azar), así se pueden probar.
 // =====================================================
 
-const FRASE_DISCIPLINA = "Hay que tener disciplina para conseguir aquello que deseas.";
+const FRASE_DISCIPLINA = "Hay que tener disciplina para el cuerpo que deseas.";
 
 const MENSAJES_APIX = {
   anima: [
-    "Ya sé que hoy da pereza. " + FRASE_DISCIPLINA,
-    "Las ganas van y vienen; la disciplina se queda. " + FRASE_DISCIPLINA,
-    "No hace falta que sea tu mejor entreno, solo que lo hagas. " + FRASE_DISCIPLINA
+    FRASE_DISCIPLINA
   ],
   animaFuerte: [
-    "Llevas {dias} días sin entrenar y hoy te toca. " + FRASE_DISCIPLINA,
-    "{dias} días parado… ¡Me oxido de verlo! " + FRASE_DISCIPLINA
+    "Llevas {dias} días sin entrenar. " + FRASE_DISCIPLINA
   ],
   enfadado: [
     "¡¿Cómo que has perdido la racha?! {racha} semanas seguidas… Esta semana la recuperamos, ¿vale?",
@@ -232,7 +229,7 @@ function apixSVG(humor, tam) {
   }
   // Cejas
   if (enfadado) s += '<path d="M37,48 L53,54 M83,48 L67,54" stroke="' + tinta + '" stroke-width="3.5" stroke-linecap="round"/>';
-  else if (h === "anima") s += '<path d="M39,52 L52,50 M68,50 L81,52" stroke="' + tinta + '" stroke-width="3" stroke-linecap="round"/>';
+  else if (h === "anima") s += '<path d="M39,49 L52,53 M81,49 L68,53" stroke="' + tinta + '" stroke-width="3.5" stroke-linecap="round"/>';   // cejas decididas
   else if (h === "cuida") s += '<path d="M40,52 L50,48 M80,52 L70,48" stroke="#3A1A99" stroke-width="3" stroke-linecap="round"/>';
   else if (h !== "descanso") s += '<path d="M41,49 L48,51 M79,49 L72,51" stroke="#3A1A99" stroke-width="3" stroke-linecap="round"/>';
   // Mofletes
@@ -241,7 +238,7 @@ function apixSVG(humor, tam) {
   if (enfadado) s += '<path d="M52,82 Q60,76 68,82" fill="none" stroke="' + tinta + '" stroke-width="3" stroke-linecap="round"/>' +
                      '<path d="M8,40 q4,-7 0,-13 M112,40 q-4,-7 0,-13" fill="none" stroke="#E02B3C" stroke-width="3" stroke-linecap="round"/>';   // vapor
   else if (h === "celebra" || h === "campeon") s += '<path d="M52,76 Q60,88 68,76 Z" fill="' + tinta + '"/><path d="M56,81 Q60,85 64,81" fill="#FF7A8F"/>';
-  else if (h === "anima") s += '<path d="M54,79 L66,79" stroke="' + tinta + '" stroke-width="3" stroke-linecap="round"/><path d="M92,58 q4,6 0,9 q-4,-3 0,-9" fill="#7FC8FF"/>';   // gota de sudor
+  else if (h === "anima") s += '<path d="M50,76 Q60,87 70,76 Z" fill="' + tinta + '"/>';   // sonrisa con ganas
   else if (h === "cuida") s += '<path d="M54,80 Q60,78 66,80" fill="none" stroke="' + tinta + '" stroke-width="2.5" stroke-linecap="round"/>';
   else if (h === "descanso") s += '<ellipse cx="60" cy="79" rx="3" ry="2.5" fill="' + tinta + '"/>';
   else s += '<path d="M54,77 Q60,82 66,77" fill="none" stroke="' + tinta + '" stroke-width="2.5" stroke-linecap="round"/>';
