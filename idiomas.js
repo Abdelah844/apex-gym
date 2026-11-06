@@ -10098,5 +10098,605 @@ const TRADUCCIONES = {
 "Vuelve despacio sin mover los brazos.": [
 "Return slowly without moving your arms.",
 "Reviens lentement sans bouger les bras."
+],
+"🪑 Banco": [
+"🪑 Bench",
+"🪑 Banc"
+],
+"A {n}° trabajas más el pecho alto sin cargar tanto el hombro.": [
+"At {n}° you work your upper chest more without loading your shoulder as much.",
+"À {n}°, tu travailles plus le haut des pectoraux sans trop charger l’épaule."
+],
+"A {n}° trabajas más el pecho alto. Si lo subes a {n}° o más, trabaja más el hombro.": [
+"At {n}° you work your upper chest more. If you raise it to {n}° or more, your shoulder does more of the work.",
+"À {n}°, tu travailles plus le haut des pectoraux. Si tu le montes à {n}° ou plus, l’épaule travaille davantage."
+],
+"Abre los brazos en arco con los codos un poco doblados.": [
+"Open your arms in an arc with your elbows slightly bent.",
+"Ouvre les bras en arc de cercle, coudes légèrement fléchis."
+],
+"Abrir los codos en cruz.": [
+"Flaring your elbows out to the sides.",
+"Écarter les coudes en croix."
+],
+"Agárrate a los bordes del banco por detrás de la cabeza.": [
+"Hold the edges of the bench behind your head.",
+"Agrippe les bords du banc derrière la tête."
+],
+"Al terminar, baja las mancuernas al pecho y siéntate con ellas.": [
+"When you finish, lower the dumbbells to your chest and sit up with them.",
+"À la fin, ramène les haltères sur la poitrine et redresse-toi avec."
+],
+"Aperturas en banco declinado": [
+"Decline dumbbell flyes",
+"Écartés sur banc décliné"
+],
+"Aperturas en banco inclinado": [
+"Incline dumbbell flyes",
+"Écartés sur banc incliné"
+],
+"Apoya solo la parte alta de la espalda y deja la cadera baja.": [
+"Rest only your upper back on it and keep your hips low.",
+"Appuie seulement le haut du dos et garde les hanches basses."
+],
+"Apoya una mano y una rodilla en un banco plano, con el brazo de trabajo pegado al cuerpo.": [
+"Rest one hand and one knee on a flat bench, with your working arm close to your body.",
+"Pose une main et un genou sur un banc plat, bras de travail près du corps."
+],
+"Así el hombro trabaja también en la parte baja del movimiento.": [
+"This way your shoulder also works at the bottom of the movement.",
+"Ainsi, l’épaule travaille aussi en bas du mouvement."
+],
+"Baja despacio hasta delante del cuerpo.": [
+"Lower slowly to the front of your body.",
+"Descends lentement jusque devant le corps."
+],
+"Baja despacio sin apoyar del todo.": [
+"Lower slowly without lying all the way back.",
+"Descends lentement sans te reposer complètement."
+],
+"Baja despacio sin dejar caer las piernas.": [
+"Lower slowly without dropping your legs.",
+"Descends lentement sans laisser tomber les jambes."
+],
+"Baja despacio: las mancuernas pasan cerca de la cabeza.": [
+"Lower slowly: the dumbbells pass close to your head.",
+"Descends lentement : les haltères passent près de la tête."
+],
+"Baja la barra a la parte baja del pecho.": [
+"Lower the bar to your lower chest.",
+"Descends la barre vers le bas de la poitrine."
+],
+"Baja las mancuernas a los lados del pecho con los codos a unos {n} grados.": [
+"Lower the dumbbells to the sides of your chest with your elbows at about {n} degrees.",
+"Descends les haltères sur les côtés de la poitrine, coudes à environ {n} degrés."
+],
+"Balancear la mancuerna.": [
+"Swinging the dumbbell.",
+"Balancer l’haltère."
+],
+"Banco Scott (predicador)": [
+"Preacher bench",
+"Pupitre (banc Larry Scott)"
+],
+"Banco a la altura de la rodilla": [
+"Bench at knee height",
+"Banc à hauteur du genou"
+],
+"Banco con respaldo casi vertical ({n}-{n}°)": [
+"Bench with an almost upright back ({n}-{n}°)",
+"Banc avec dossier presque vertical ({n}-{n}°)"
+],
+"Banco con respaldo vertical": [
+"Bench with an upright back",
+"Banc avec dossier vertical"
+],
+"Banco de hiperextensiones a {n}°": [
+"{n}° hyperextension bench",
+"Banc à lombaires à {n}°"
+],
+"Banco declinado": [
+"Decline bench",
+"Banc décliné"
+],
+"Banco declinado a {n}-{n}°": [
+"Decline bench at {n}-{n}°",
+"Banc décliné à {n}-{n}°"
+],
+"Banco declinado centrado bajo la barra.": [
+"Decline bench centred under the bar.",
+"Banc décliné centré sous la barre."
+],
+"Banco inclinado a {n}-{n}°": [
+"Incline bench at {n}-{n}°",
+"Banc incliné à {n}-{n}°"
+],
+"Banco inclinado a {n}-{n}°, boca abajo": [
+"Incline bench at {n}-{n}°, face down",
+"Banc incliné à {n}-{n}°, sur le ventre"
+],
+"Banco inclinado a {n}-{n}°, tumbado de lado": [
+"Incline bench at {n}-{n}°, lying on your side",
+"Banc incliné à {n}-{n}°, allongé sur le côté"
+],
+"Banco inclinado a {n}°": [
+"Incline bench at {n}°",
+"Banc incliné à {n}°"
+],
+"Banco inclinado y mancuernas ligeras.": [
+"Incline bench and light dumbbells.",
+"Banc incliné et haltères légers."
+],
+"Banco inclinado, brazos apuntando hacia arriba.": [
+"Incline bench, arms pointing up.",
+"Banc incliné, bras pointés vers le haut."
+],
+"Banco plano": [
+"Flat bench",
+"Banc plat"
+],
+"Banco plano (apoyo de espalda)": [
+"Flat bench (back support)",
+"Banc plat (appui du dos)"
+],
+"Banco plano (para apoyarte)": [
+"Flat bench (to lean on)",
+"Banc plat (pour t’appuyer)"
+],
+"Banco plano (pie de atrás)": [
+"Flat bench (rear foot)",
+"Banc plat (pied arrière)"
+],
+"Banco plano o con respaldo vertical": [
+"Flat bench or upright back",
+"Banc plat ou dossier vertical"
+],
+"Banco plano, tumbado de través": [
+"Flat bench, lying across it",
+"Banc plat, allongé en travers"
+],
+"Barra bajando hacia el cuello.": [
+"Bar coming down towards your neck.",
+"Barre qui descend vers le cou."
+],
+"Brazos casi rectos y cadera baja para estirar bien.": [
+"Arms almost straight and hips low for a good stretch.",
+"Bras presque tendus et hanches basses pour bien étirer."
+],
+"Bájalas despacio sin tocar el suelo.": [
+"Lower them slowly without touching the floor.",
+"Redescends-les lentement sans toucher le sol."
+],
+"Cabeza en la parte alta del banco y manos en los rodillos.": [
+"Head at the top of the bench and hands on the rollers.",
+"Tête en haut du banc et mains sur les boudins."
+],
+"Ciérralos despacio sobre el pecho.": [
+"Close them slowly over your chest.",
+"Referme-les lentement au-dessus de la poitrine."
+],
+"Con el respaldo vertical trabajas el hombro delantero. Un poco inclinado ({n}°) es más cómodo para la espalda.": [
+"With an upright back you work your front delts. Slightly reclined ({n}°) is more comfortable for your back.",
+"Avec le dossier vertical, tu travailles l’avant de l’épaule. Un peu incliné ({n}°), c’est plus confortable pour le dos."
+],
+"Con menos inclinación el recorrido es mayor y trabajas más la espalda alta.": [
+"With less incline the range is bigger and you work your upper back more.",
+"Avec moins d’inclinaison, l’amplitude est plus grande et tu travailles plus le haut du dos."
+],
+"Con pesos altos, entrena con alguien que te ayude.": [
+"With heavy weights, train with a spotter.",
+"Avec de lourdes charges, entraîne-toi avec quelqu’un qui t’aide."
+],
+"Crunch en banco declinado": [
+"Decline bench crunch",
+"Crunch sur banc décliné"
+],
+"Crunch inverso en banco declinado": [
+"Decline reverse crunch",
+"Crunch inversé sur banc décliné"
+],
+"Cruzado sobre el banco, solo la parte alta de la espalda apoyada.": [
+"Across the bench, with only your upper back resting on it.",
+"En travers du banc, seulement le haut du dos appuyé."
+],
+"Cuanto más declinado, más difícil. Empieza con poca inclinación.": [
+"The steeper the decline, the harder it is. Start with a small angle.",
+"Plus c’est décliné, plus c’est difficile. Commence avec peu d’inclinaison."
+],
+"Cuanto más tumbado, más estiras el bíceps. Si te molesta el hombro, súbelo un poco.": [
+"The more reclined, the more you stretch your biceps. If your shoulder bothers you, raise it a little.",
+"Plus tu es allongé, plus tu étires les biceps. Si l’épaule te gêne, remonte-le un peu."
+],
+"De pie, mancuernas delante de los muslos con las palmas hacia ti.": [
+"Standing, dumbbells in front of your thighs with palms facing you.",
+"Debout, haltères devant les cuisses, paumes vers toi."
+],
+"Dejar caer las mancuernas al final.": [
+"Dropping the dumbbells at the end.",
+"Laisser tomber les haltères à la fin."
+],
+"Dejar caer las piernas.": [
+"Dropping your legs.",
+"Laisser tomber les jambes."
+],
+"Desbloquea y baja la barra a la parte baja del pecho.": [
+"Unrack and lower the bar to your lower chest.",
+"Débloque et descends la barre vers le bas de la poitrine."
+],
+"Despegar el pecho del banco para tirar.": [
+"Lifting your chest off the bench to pull.",
+"Décoller la poitrine du banc pour tirer."
+],
+"Despegar el pecho del banco.": [
+"Lifting your chest off the bench.",
+"Décoller la poitrine du banc."
+],
+"Despegar la espalda baja del banco.": [
+"Lifting your lower back off the bench.",
+"Décoller le bas du dos du banc."
+],
+"Dobla los codos bajando la barra por detrás de la cabeza.": [
+"Bend your elbows, lowering the bar behind your head.",
+"Plie les coudes en descendant la barre derrière la tête."
+],
+"Dobla los codos bajando las mancuernas junto a la cabeza.": [
+"Bend your elbows, lowering the dumbbells next to your head.",
+"Plie les coudes en descendant les haltères à côté de la tête."
+],
+"Doblar mucho los codos.": [
+"Bending your elbows too much.",
+"Trop plier les coudes."
+],
+"El borde del banco, a la altura de las escápulas.": [
+"The edge of the bench at the height of your shoulder blades.",
+"Le bord du banc à hauteur des omoplates."
+],
+"El declinado trabaja más el pecho bajo. Sujeta bien los pies en los rodillos.": [
+"The decline works your lower chest more. Lock your feet in the rollers.",
+"Le décliné travaille plus le bas des pectoraux. Bloque bien les pieds sous les boudins."
+],
+"El respaldo te ayuda a no arquear la espalda.": [
+"The backrest helps you not to arch your back.",
+"Le dossier t’aide à ne pas cambrer le dos."
+],
+"Elevaciones frontales con mancuernas": [
+"Dumbbell front raises",
+"Élévations frontales aux haltères"
+],
+"Elevaciones laterales sentado": [
+"Seated lateral raises",
+"Élévations latérales assis"
+],
+"Elevación de piernas en banco plano": [
+"Flat bench leg raise",
+"Relevé de jambes sur banc plat"
+],
+"Elevación lateral tumbado de lado en banco inclinado": [
+"Side-lying incline lateral raise",
+"Élévation latérale allongé sur le côté sur banc incliné"
+],
+"Empieza con poco peso: la barra pasa por detrás de la cabeza.": [
+"Start light: the bar passes behind your head.",
+"Commence léger : la barre passe derrière la tête."
+],
+"Empieza con poco peso: la mancuerna pasa sobre tu cara.": [
+"Start light: the dumbbell passes over your face.",
+"Commence léger : l’haltère passe au-dessus de ton visage."
+],
+"Empuja hacia arriba sin despegar la espalda.": [
+"Press up without lifting your back.",
+"Pousse vers le haut sans décoller le dos."
+],
+"Empuja y bloquea la barra girándola al terminar.": [
+"Press and lock the bar by turning it when you finish.",
+"Pousse et verrouille la barre en la tournant à la fin."
+],
+"Encoger los hombros al subir.": [
+"Shrugging your shoulders as you lift.",
+"Hausser les épaules en montant."
+],
+"Escribe {n} kg o el disco que sujetas sobre el pecho.": [
+"Enter {n} kg or the plate you hold on your chest.",
+"Écris {n} kg ou le disque que tu tiens sur la poitrine."
+],
+"Escribe {n} kg si no usas lastre. Trabaja más el abdomen bajo.": [
+"Enter {n} kg if you don’t use extra weight. Works your lower abs more.",
+"Écris {n} kg si tu n’utilises pas de lest. Travaille plus le bas des abdos."
+],
+"Estira el codo llevando la mancuerna hacia atrás.": [
+"Straighten your elbow, taking the dumbbell back.",
+"Tends le coude en amenant l’haltère vers l’arrière."
+],
+"Estira los brazos sin abrir los codos.": [
+"Straighten your arms without flaring your elbows.",
+"Tends les bras sans écarter les coudes."
+],
+"Estira los brazos sin mover los codos.": [
+"Straighten your arms without moving your elbows.",
+"Tends les bras sans bouger les coudes."
+],
+"Inclinado estira más la cabeza larga del tríceps que en plano.": [
+"Inclined, it stretches the long head of the triceps more than flat.",
+"Incliné, ça étire plus la longue portion du triceps qu’à plat."
+],
+"Inclinado estira más la cabeza larga del tríceps.": [
+"Inclined, it stretches the long head of the triceps more.",
+"Incliné, ça étire plus la longue portion du triceps."
+],
+"La guía hace el movimiento más estable.": [
+"The guide makes the movement more stable.",
+"Le guidage rend le mouvement plus stable."
+],
+"Las axilas, justo sobre el borde del apoyo.": [
+"Armpits right over the edge of the pad.",
+"Les aisselles juste sur le bord de l’appui."
+],
+"Los brazos cuelgan en vertical: el bíceps trabaja más arriba del todo.": [
+"Your arms hang straight down: the biceps works hardest at the top.",
+"Les bras pendent à la verticale : les biceps travaillent le plus tout en haut."
+],
+"Mancuernas ligeras.": [
+"Light dumbbells.",
+"Haltères légers."
+],
+"Mejor un banco a la altura de la rodilla.": [
+"A bench at knee height is best.",
+"Idéalement, un banc à hauteur du genou."
+],
+"Mover el codo arriba y abajo.": [
+"Moving your elbow up and down.",
+"Bouger le coude de haut en bas."
+],
+"Mover los codos hacia la cabeza.": [
+"Moving your elbows towards your head.",
+"Ramener les coudes vers la tête."
+],
+"Palmas hacia los muslos y codos casi rectos.": [
+"Palms towards your thighs and elbows almost straight.",
+"Paumes vers les cuisses et coudes presque tendus."
+],
+"Palmas mirándose y brazos verticales.": [
+"Palms facing each other and arms vertical.",
+"Paumes face à face et bras verticaux."
+],
+"Patada de tríceps con mancuerna": [
+"Dumbbell triceps kickback",
+"Kickback triceps à l’haltère"
+],
+"Pecho apoyado en el banco inclinado y pies firmes.": [
+"Chest on the incline bench and feet planted.",
+"Poitrine appuyée sur le banc incliné et pieds bien ancrés."
+],
+"Pecho apoyado en el banco inclinado, brazos colgando.": [
+"Chest on the incline bench, arms hanging.",
+"Poitrine appuyée sur le banc incliné, bras pendants."
+],
+"Peso indicado por mancuerna. Bajas más que con barra: más estiramiento.": [
+"Weight per dumbbell. You go lower than with a bar: more stretch.",
+"Poids par haltère. Tu descends plus bas qu’à la barre : plus d’étirement."
+],
+"Peso indicado por mancuerna. Con el pecho apoyado no puedes hacer trampa.": [
+"Weight per dumbbell. With your chest supported you can’t cheat.",
+"Poids par haltère. Poitrine appuyée, impossible de tricher."
+],
+"Peso indicado por mancuerna. Sin carga para la zona lumbar.": [
+"Weight per dumbbell. No load on your lower back.",
+"Poids par haltère. Aucune charge sur le bas du dos."
+],
+"Peso indicado por mancuerna. Suele molestar menos en las muñecas que con barra.": [
+"Weight per dumbbell. Usually easier on the wrists than with a bar.",
+"Poids par haltère. Gêne souvent moins les poignets qu’à la barre."
+],
+"Peso indicado por mancuerna. Trabaja el hombro delantero.": [
+"Weight per dumbbell. Works your front delts.",
+"Poids par haltère. Travaille l’avant de l’épaule."
+],
+"Peso indicado por mancuerna. Trabaja más el pecho alto.": [
+"Weight per dumbbell. Works your upper chest more.",
+"Poids par haltère. Travaille plus le haut des pectoraux."
+],
+"Peso indicado por mancuerna. Trabaja más el pecho bajo.": [
+"Weight per dumbbell. Works your lower chest more.",
+"Poids par haltère. Travaille plus le bas des pectoraux."
+],
+"Peso para un brazo. Aprieta un segundo con el brazo estirado.": [
+"Weight for one arm. Squeeze for a second with your arm straight.",
+"Poids pour un bras. Serre une seconde bras tendu."
+],
+"Peso para un brazo. Trabaja el hombro lateral desde muy abajo.": [
+"Weight for one arm. Works your side delt from very low.",
+"Poids pour un bras. Travaille l’épaule latérale depuis très bas."
+],
+"Pide ayuda para colocar las mancuernas si pesan mucho.": [
+"Ask for help getting the dumbbells into position if they are heavy.",
+"Demande de l’aide pour placer les haltères s’ils sont lourds."
+],
+"Pies bien sujetos en los rodillos.": [
+"Feet locked in the rollers.",
+"Pieds bien bloqués sous les boudins."
+],
+"Pies sujetos en los rodillos antes de tumbarte.": [
+"Lock your feet in the rollers before lying down.",
+"Bloque les pieds sous les boudins avant de t’allonger."
+],
+"Pies sujetos en los rodillos.": [
+"Feet locked in the rollers.",
+"Pieds bloqués sous les boudins."
+],
+"Pon el banco declinado bajo la barra y sujeta los pies en los rodillos.": [
+"Put the decline bench under the bar and lock your feet in the rollers.",
+"Place le banc décliné sous la barre et bloque les pieds sous les boudins."
+],
+"Press declinado con barra": [
+"Decline barbell bench press",
+"Développé décliné à la barre"
+],
+"Press declinado con mancuernas": [
+"Decline dumbbell press",
+"Développé décliné aux haltères"
+],
+"Press declinado en multipower": [
+"Smith machine decline press",
+"Développé décliné à la Smith machine"
+],
+"Press francés con mancuernas": [
+"Dumbbell skull crusher",
+"Barre au front aux haltères"
+],
+"Press francés en banco inclinado": [
+"Incline skull crusher",
+"Barre au front sur banc incliné"
+],
+"Press plano con mancuernas": [
+"Flat dumbbell bench press",
+"Développé couché aux haltères"
+],
+"Pullover con mancuerna en banco": [
+"Dumbbell pullover on a bench",
+"Pull-over à l’haltère sur banc"
+],
+"Pájaros en banco inclinado": [
+"Incline bench reverse flyes",
+"Oiseau sur banc incliné"
+],
+"Remo con mancuernas en banco inclinado": [
+"Incline bench dumbbell row",
+"Rowing aux haltères sur banc incliné"
+],
+"Sentado en el extremo del banco, espalda recta.": [
+"Sitting at the end of the bench, back straight.",
+"Assis au bout du banc, dos droit."
+],
+"Sentado no puedes ayudarte con las piernas: más estricto.": [
+"Seated you can’t use your legs: stricter.",
+"Assis, tu ne peux pas t’aider des jambes : plus strict."
+],
+"Si te molesta la espalda, baja la inclinación.": [
+"If your back bothers you, reduce the angle.",
+"Si le dos te gêne, réduis l’inclinaison."
+],
+"Si te molesta la espalda, dobla un poco las rodillas.": [
+"If your back bothers you, bend your knees a little.",
+"Si le dos te gêne, plie un peu les genoux."
+],
+"Siéntate con las mancuernas sobre los muslos y túmbate llevándolas al pecho.": [
+"Sit with the dumbbells on your thighs and lie back bringing them to your chest.",
+"Assieds-toi haltères sur les cuisses et allonge-toi en les amenant à la poitrine."
+],
+"Siéntate en el extremo de un banco con la espalda recta y las mancuernas a los lados.": [
+"Sit at the end of a bench with your back straight and the dumbbells at your sides.",
+"Assieds-toi au bout d’un banc, dos droit, haltères le long du corps."
+],
+"Siéntate en un banco inclinado con la barra sobre la cabeza y los brazos estirados.": [
+"Sit on an incline bench with the bar overhead and arms straight.",
+"Assieds-toi sur un banc incliné, barre au-dessus de la tête, bras tendus."
+],
+"Sube el brazo hacia arriba con el codo un poco doblado.": [
+"Raise your arm up with your elbow slightly bent.",
+"Monte le bras vers le haut, coude légèrement fléchi."
+],
+"Sube el tronco enrollando la espalda hasta mitad de camino.": [
+"Curl your torso up halfway.",
+"Enroule le buste jusqu’à mi-chemin."
+],
+"Sube las piernas estiradas hasta la vertical.": [
+"Raise your straight legs to vertical.",
+"Monte les jambes tendues jusqu’à la verticale."
+],
+"Sube las piernas y despega la cadera del banco.": [
+"Raise your legs and lift your hips off the bench.",
+"Monte les jambes et décolle les hanches du banc."
+],
+"Sube los brazos hacia los lados hasta la altura de los hombros.": [
+"Raise your arms out to the sides to shoulder height.",
+"Monte les bras sur les côtés jusqu’à hauteur des épaules."
+],
+"Sube un brazo estirado hasta la altura de los ojos.": [
+"Raise one straight arm to eye level.",
+"Monte un bras tendu jusqu’à hauteur des yeux."
+],
+"Subir más allá de la vertical.": [
+"Going past vertical.",
+"Monter au-delà de la verticale."
+],
+"Sujeta la mancuerna por un disco con las dos manos.": [
+"Hold the dumbbell by one plate with both hands.",
+"Tiens l’haltère par un disque à deux mains."
+],
+"Sujeta los pies en el banco declinado con las mancuernas arriba.": [
+"Lock your feet on the decline bench with the dumbbells up.",
+"Bloque les pieds sur le banc décliné, haltères en haut."
+],
+"Sujeta los pies en los rodillos del banco declinado con las mancuernas sobre el pecho.": [
+"Lock your feet in the decline bench rollers with the dumbbells over your chest.",
+"Bloque les pieds sous les boudins du banc décliné, haltères au-dessus de la poitrine."
+],
+"Sujeta los pies en los rodillos del banco declinado y túmbate con los ojos bajo la barra.": [
+"Lock your feet in the decline bench rollers and lie down with your eyes under the bar.",
+"Bloque les pieds sous les boudins du banc décliné et allonge-toi les yeux sous la barre."
+],
+"Sujeta los pies en los rodillos del banco declinado y túmbate.": [
+"Lock your feet in the decline bench rollers and lie down.",
+"Bloque les pieds sous les boudins du banc décliné et allonge-toi."
+],
+"Sujeta una mancuerna con las dos manos sobre el pecho y bájala por detrás de la cabeza.": [
+"Hold a dumbbell with both hands over your chest and lower it behind your head.",
+"Tiens un haltère à deux mains au-dessus de la poitrine et descends-le derrière la tête."
+],
+"Súbela en arco hasta encima del pecho.": [
+"Bring it back up in an arc to above your chest.",
+"Remonte-le en arc de cercle au-dessus de la poitrine."
+],
+"Tira de las mancuernas llevando los codos hacia atrás.": [
+"Pull the dumbbells, driving your elbows back.",
+"Tire les haltères en ramenant les coudes en arrière."
+],
+"Trabaja más el pecho bajo. Con pesos altos, entrena con ayuda.": [
+"Works your lower chest more. With heavy weights, train with a spotter.",
+"Travaille plus le bas des pectoraux. Avec de lourdes charges, entraîne-toi avec de l’aide."
+],
+"Tronco casi horizontal y brazo pegado al cuerpo.": [
+"Torso almost horizontal and arm close to your body.",
+"Buste presque horizontal et bras près du corps."
+],
+"Túmbate boca abajo en un banco inclinado con una mancuerna en cada mano.": [
+"Lie face down on an incline bench with a dumbbell in each hand.",
+"Allonge-toi sur le ventre sur un banc incliné, un haltère dans chaque main."
+],
+"Túmbate cruzado sobre un banco plano, apoyando solo la parte alta de la espalda.": [
+"Lie across a flat bench, resting only your upper back on it.",
+"Allonge-toi en travers d’un banc plat, seul le haut du dos appuyé."
+],
+"Túmbate de lado sobre el respaldo inclinado.": [
+"Lie on your side on the inclined backrest.",
+"Allonge-toi sur le côté sur le dossier incliné."
+],
+"Túmbate de lado sobre un banco inclinado, con la mancuerna en la mano de arriba.": [
+"Lie on your side on an incline bench, with the dumbbell in your top hand.",
+"Allonge-toi sur le côté sur un banc incliné, l’haltère dans la main du dessus."
+],
+"Túmbate en el banco declinado con la cabeza arriba y agárrate a los rodillos.": [
+"Lie on the decline bench with your head at the top and hold the rollers.",
+"Allonge-toi sur le banc décliné, tête en haut, et agrippe les boudins."
+],
+"Túmbate en un banco inclinado con las mancuernas arriba y los codos un poco doblados.": [
+"Lie on an incline bench with the dumbbells up and your elbows slightly bent.",
+"Allonge-toi sur un banc incliné, haltères en haut, coudes légèrement fléchis."
+],
+"Túmbate en un banco plano con las mancuernas arriba y las palmas mirándose.": [
+"Lie on a flat bench with the dumbbells up and palms facing each other.",
+"Allonge-toi sur un banc plat, haltères en haut, paumes face à face."
+],
+"Túmbate en un banco plano con una mancuerna en cada mano sobre el pecho.": [
+"Lie on a flat bench with a dumbbell in each hand over your chest.",
+"Allonge-toi sur un banc plat, un haltère dans chaque main au-dessus de la poitrine."
+],
+"Túmbate en un banco plano y agárrate a sus bordes por detrás de la cabeza.": [
+"Lie on a flat bench and hold its edges behind your head.",
+"Allonge-toi sur un banc plat et agrippe ses bords derrière la tête."
+],
+"Vuelve despacio sin mover el brazo.": [
+"Return slowly without moving your arm.",
+"Reviens lentement sans bouger le bras."
 ]
 };

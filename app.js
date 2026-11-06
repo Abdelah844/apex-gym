@@ -601,6 +601,7 @@ function tarjetaEjercicio(ei) {
     '<div class="ex-head">' + (fotosEj ? '<button class="foto-mini" data-act="info-ej" data-a="' + e.id + '" aria-label="Ver técnica"><img src="' + fotosEj[0] + '" alt="" decoding="async"></button>' : insignia(pr === null ? null : rangoDePuntos(pr), "sm")) +
     '<div class="grow"><p class="label">Ejercicio ' + (ei + 1) + ' de ' + a.ejercicios.length + (e.superserie ? ' · superserie con el siguiente' : (ei > 0 && a.ejercicios[ei - 1].superserie ? ' · superserie con el anterior' : "")) + '</p><h3>' + esc(ej.nombre) + '</h3>' +
     '<p class="muted small num">' + e.objetivo.series + ' × ' + e.objetivo.repMin + '-' + e.objetivo.repMax + ' · descanso ' + e.objetivo.descanso + ' s</p>' +
+    (BANCO[e.id] ? '<p class="small banco-linea">🪑 <span>' + BANCO[e.id][0] + '</span></p>' : "") +
     (record ? '<p class="small" style="color:var(--pr);font-weight:700">Récord: ' + numero(record.peso) + ' kg × ' + record.reps + '</p>' : "") + '</div>' +
     '<div class="stack tight" style="gap:6px"><button class="icon-btn sm fav' + (estado.favoritos.includes(e.id) ? " on" : "") + '" data-act="fav-sesion" data-a="' + e.id + '" aria-label="' + (estado.favoritos.includes(e.id) ? "Quitar de favoritos" : "Añadir a favoritos") + '">' + (estado.favoritos.includes(e.id) ? "★" : "☆") + '</button>' +
     '<button class="icon-btn sm" data-act="info-ej" data-a="' + e.id + '" aria-label="Cómo se hace">' + I.info + '</button></div></div>';
@@ -1435,6 +1436,9 @@ function hojaEjercicio(id) {
     (e.asistido ? '<span class="pill up">Asistido</span>' : "") + '</div>' +
     '<p class="small"><b>Músculo principal:</b> ' + GRUPOS[e.grupo] + (e.sec.length ? ' · <b>Secundarios:</b> ' + e.sec.map(function (g) { return GRUPOS[g]; }).join(", ") : "") + '</p>';
   if (e.asistido) h += '<p class="small" style="color:var(--warn)">En esta máquina los kg que escribes son <b>ayuda</b>: cuantos menos, más difícil.</p>';
+  // Banco y su inclinación (cambia qué parte del músculo trabaja)
+  if (BANCO[id]) h += '<div class="card" style="padding:12px"><p class="label">🪑 Banco</p><p class="small"><b>' + BANCO[id][0] + '</b></p>' +
+    (BANCO[id][1] ? '<p class="small muted">' + BANCO[id][1] + '</p>' : "") + '</div>';
 
   // Las cuatro partes de la ficha
   h += bloque("01", maquina ? "Preparación y ajuste de la máquina" : "Preparación", "var(--accent)", lista(f.preparacion));
