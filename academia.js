@@ -354,7 +354,7 @@ const FOTOS = {
   "remo-polea-una-mano": "Seated_One-arm_Cable_Pulley_Rows",
   "remo-multipower": "Smith_Machine_Bent_Over_Row",
   "dominadas-supinas": "Chin-Up",
-  "dominadas-neutras": "Pullups",
+  "dominadas-neutras": "V-Bar_Pullup",
   "remo-barra-supino": "Bent_Over_Barbell_Row",
   "remo-polea-barra-ancha": "Seated_Cable_Rows",
   "remo-maquina-abierto": "Leverage_Iso_Row",
@@ -432,7 +432,6 @@ const FOTO_REFERENCIA = {
   "fondos-asistidos": "La foto son fondos libres: en la máquina haces lo mismo con las rodillas apoyadas.",
   "hip-thrust-maquina": "La foto es con barra: en la máquina el movimiento de cadera es el mismo.",
   "remo-barra-supino": "La foto es con agarre prono: aquí coge la barra con las palmas hacia arriba.",
-  "dominadas-neutras": "La foto es con agarre prono: en las neutras coge las asas paralelas, con las palmas mirándose.",
   "remo-polea-barra-ancha": "La foto es con triángulo: aquí usa una barra larga con las manos más abiertas que los hombros.",
   "remo-maquina-abierto": "La foto es con agarre neutro: aquí coge las asas horizontales y lleva los codos abiertos."
 };
@@ -484,6 +483,67 @@ const BANCO = {
   "step-up": ["Banco a la altura de la rodilla", "Más alto trabaja más el glúteo; más bajo es más fácil."],
   "hiperextensiones": ["Banco de hiperextensiones a 45°", ""]
 };
+
+// Agarre de cada ejercicio, dibujado de frente (desde los ojos de quien entrena).
+// Las líneas discontinuas marcan la anchura de los hombros.
+const TIPOS_AGARRE = {
+  "abierto":   { nombre: "Agarre abierto", texto: "Coges la barra por encima (ves tus nudillos), con las manos bastante más abiertas que los hombros.", forma: "barra", manos: 118, palma: false },
+  "prono":     { nombre: "Agarre prono", texto: "Coges la barra por encima (ves tus nudillos), con las manos un poco más abiertas que los hombros.", forma: "barra", manos: 84, palma: false },
+  "cerrado":   { nombre: "Agarre cerrado", texto: "Coges la barra por encima (ves tus nudillos), con las manos a la anchura de los hombros o algo menos.", forma: "barra", manos: 52, palma: false },
+  "supino":    { nombre: "Agarre supino", texto: "Coges la barra por debajo (ves tus palmas), con las manos a la anchura de los hombros.", forma: "barra", manos: 68, palma: true },
+  "barra-z":   { nombre: "Barra Z", texto: "Coges la barra por debajo, en la parte inclinada: la muñeca queda más cómoda.", forma: "z", manos: 60, palma: true },
+  "neutro":    { nombre: "Agarre neutro", texto: "Las palmas se miran entre sí, a la anchura de los hombros.", forma: "asas", manos: 68, palma: null },
+  "triangulo": { nombre: "Triángulo", texto: "Las palmas se miran entre sí y las manos van casi juntas.", forma: "triangulo", manos: 16, palma: null },
+  "cuerda":    { nombre: "Cuerda", texto: "Las palmas se miran entre sí, una mano a cada lado de la cuerda.", forma: "cuerda", manos: 22, palma: null }
+};
+const AGARRE = {
+  "jalon": "abierto", "jalon-estrecho": "triangulo", "jalon-supino": "supino",
+  "dominadas": "abierto", "dominadas-supinas": "supino", "dominadas-neutras": "neutro", "dominadas-asistidas": "prono",
+  "remo-barra": "prono", "remo-barra-supino": "supino", "remo-multipower": "prono",
+  "remo-polea": "triangulo", "remo-polea-barra-ancha": "abierto",
+  "remo-maquina": "neutro", "remo-maquina-abierto": "abierto", "remo-pecho-apoyado": "neutro",
+  "press-banca": "prono", "press-banca-multipower": "prono", "press-inclinado-barra": "prono", "press-inclinado-multipower": "prono",
+  "press-declinado-barra": "prono", "press-declinado-multipower": "prono",
+  "press-banca-cerrado": "cerrado", "press-cerrado-multipower": "cerrado", "press-militar": "prono",
+  "curl-barra": "supino", "curl-predicador": "supino", "curl-inverso": "cerrado", "curl-barra-z": "barra-z",
+  "curl-martillo": "neutro", "curl-martillo-inclinado": "neutro", "curl-martillo-cruzado": "neutro", "curl-martillo-cuerda": "cuerda",
+  "extension-polea": "cerrado", "extension-cuerda": "cuerda", "extension-cuerda-nuca": "cuerda", "extension-inversa-polea": "supino",
+  "remo-menton-polea": "cerrado", "press-frances": "cerrado"
+};
+
+// Dibujo SVG del agarre (texto). Mano por encima = se ven los nudillos; por debajo = se ve la palma.
+function agarreSVG(id) {
+  const t = TIPOS_AGARRE[AGARRE[id]];
+  if (!t) return "";
+  const cx = 160, y = 46, d = t.manos;
+  let s = '<svg viewBox="0 0 320 100" width="100%" role="img" aria-label="' + t.nombre + '" style="max-width:340px;display:block;margin:4px auto">';
+  // Anchura de los hombros
+  s += '<line x1="' + (cx - 66) + '" y1="8" x2="' + (cx - 66) + '" y2="84" stroke="currentColor" stroke-opacity=".35" stroke-dasharray="4 4"/>' +
+       '<line x1="' + (cx + 66) + '" y1="8" x2="' + (cx + 66) + '" y2="84" stroke="currentColor" stroke-opacity=".35" stroke-dasharray="4 4"/>';
+  // La barra o el asa
+  const gris = 'stroke="#9aa0b4" stroke-linecap="round"';
+  if (t.forma === "barra") s += '<line x1="20" y1="' + y + '" x2="300" y2="' + y + '" ' + gris + ' stroke-width="7"/>';
+  if (t.forma === "z") s += '<polyline points="40,' + y + ' ' + (cx - d - 28) + ',' + y + ' ' + (cx - d) + ',' + (y - 18) + ' ' + (cx - d + 28) + ',' + y + ' ' + (cx + d - 28) + ',' + y + ' ' + (cx + d) + ',' + (y - 18) + ' ' + (cx + d + 28) + ',' + y + ' 280,' + y + '" fill="none" ' + gris + ' stroke-width="7" stroke-linejoin="round"/>';
+  if (t.forma === "asas") s += '<line x1="' + (cx - d) + '" y1="' + (y - 26) + '" x2="' + (cx - d) + '" y2="' + (y + 26) + '" ' + gris + ' stroke-width="7"/>' +
+       '<line x1="' + (cx + d) + '" y1="' + (y - 26) + '" x2="' + (cx + d) + '" y2="' + (y + 26) + '" ' + gris + ' stroke-width="7"/>';
+  if (t.forma === "triangulo") s += '<polygon points="' + cx + ',6 ' + (cx - 30) + ',' + (y + 26) + ' ' + (cx + 30) + ',' + (y + 26) + '" fill="none" ' + gris + ' stroke-width="6" stroke-linejoin="round"/>';
+  if (t.forma === "cuerda") s += '<path d="M' + cx + ' 6 L' + (cx - d) + ' ' + (y + 30) + ' M' + cx + ' 6 L' + (cx + d) + ' ' + (y + 30) + '" stroke="#c8a46a" stroke-width="7" stroke-linecap="round" fill="none"/>';
+  // Las dos manos
+  [-1, 1].forEach(function (lado) {
+    const x = cx + lado * d;
+    if (t.palma === null) {
+      // Palmas mirándose: la mano se ve de canto, con el pulgar arriba
+      s += '<rect x="' + (x - 9 - lado * 8) + '" y="' + (y - 18) + '" width="18" height="36" rx="8" fill="#e8b48f" stroke="#a8704b" stroke-width="2"/>' +
+           '<rect x="' + (x - 4 - lado * 8) + '" y="' + (y - 27) + '" width="8" height="14" rx="4" fill="#e8b48f" stroke="#a8704b" stroke-width="2"/>';
+    } else {
+      s += '<rect x="' + (x - 17) + '" y="' + (y - 15) + '" width="34" height="30" rx="9" fill="' + (t.palma ? "#f3c9a6" : "#d99a72") + '" stroke="#a8704b" stroke-width="2"/>';
+      if (t.palma) s += '<path d="M' + (x - 10) + ' ' + (y + 2) + ' q10 6 20 0" stroke="#a8704b" stroke-width="1.5" fill="none"/>';
+      else for (let k = 0; k < 4; k++) s += '<circle cx="' + (x - 11 + k * 7.3) + '" cy="' + (y - 6) + '" r="2.2" fill="#a8704b"/>';
+    }
+  });
+  s += '<text x="' + cx + '" y="97" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity=".6">- - anchura de tus hombros - -</text>';
+  return s + '</svg>';
+}
 
 function fotosDe(id) {
   if (!FOTOS[id]) return null;

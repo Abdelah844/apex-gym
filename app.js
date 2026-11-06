@@ -602,6 +602,7 @@ function tarjetaEjercicio(ei) {
     '<div class="grow"><p class="label">Ejercicio ' + (ei + 1) + ' de ' + a.ejercicios.length + (e.superserie ? ' · superserie con el siguiente' : (ei > 0 && a.ejercicios[ei - 1].superserie ? ' · superserie con el anterior' : "")) + '</p><h3>' + esc(ej.nombre) + '</h3>' +
     '<p class="muted small num">' + e.objetivo.series + ' × ' + e.objetivo.repMin + '-' + e.objetivo.repMax + ' · descanso ' + e.objetivo.descanso + ' s</p>' +
     (BANCO[e.id] ? '<p class="small banco-linea">🪑 <span>' + BANCO[e.id][0] + '</span></p>' : "") +
+    (AGARRE[e.id] ? '<p class="small banco-linea">✋ <span>' + TIPOS_AGARRE[AGARRE[e.id]].nombre + '</span></p>' : "") +
     (record ? '<p class="small" style="color:var(--pr);font-weight:700">Récord: ' + numero(record.peso) + ' kg × ' + record.reps + '</p>' : "") + '</div>' +
     '<div class="stack tight" style="gap:6px"><button class="icon-btn sm fav' + (estado.favoritos.includes(e.id) ? " on" : "") + '" data-act="fav-sesion" data-a="' + e.id + '" aria-label="' + (estado.favoritos.includes(e.id) ? "Quitar de favoritos" : "Añadir a favoritos") + '">' + (estado.favoritos.includes(e.id) ? "★" : "☆") + '</button>' +
     '<button class="icon-btn sm" data-act="info-ej" data-a="' + e.id + '" aria-label="Cómo se hace">' + I.info + '</button></div></div>';
@@ -1441,6 +1442,9 @@ function hojaEjercicio(id) {
   if (BANCO[id]) h += '<div class="card" style="padding:12px"><p class="label">🪑 Banco</p><p class="small"><b>' + BANCO[id][0] + '</b></p>' +
     (BANCO[id][1] ? '<p class="small muted">' + BANCO[id][1] + '</p>' : "") + '</div>';
 
+  // Agarre (dibujo de frente: cambia qué músculo trabaja más)
+  if (AGARRE[id]) { const ag = TIPOS_AGARRE[AGARRE[id]];
+    h += '<div class="card" style="padding:12px"><p class="label">✋ Agarre</p><p class="small"><b>' + ag.nombre + '</b></p>' + agarreSVG(id) + '<p class="small muted">' + ag.texto + '</p></div>'; }
   // Las cuatro partes de la ficha
   h += bloque("01", maquina ? "Preparación y ajuste de la máquina" : "Preparación", "var(--accent)", lista(f.preparacion));
   h += bloque("02", "Ejecución", "var(--accent)", '<ol class="pasos">' + f.ejecucion.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ol><p class="small" style="color:var(--good)"><b>Consejo:</b> ' + esc(f.consejo) + '</p>');

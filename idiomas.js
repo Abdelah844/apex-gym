@@ -10710,5 +10710,77 @@ const TRADUCCIONES = {
 "Esta serie ya está hecha. Toca ✓ para desmarcarla y así editarla o borrarla.": [
 "This set is already done. Tap ✓ to untick it so you can edit or delete it.",
 "Cette série est déjà faite. Touche ✓ pour la décocher et pouvoir la modifier ou la supprimer."
+],
+"✋ Agarre": [
+"✋ Grip",
+"✋ Prise"
+],
+"Agarre abierto": [
+"Wide grip",
+"Prise large"
+],
+"Agarre prono": [
+"Overhand grip",
+"Prise en pronation"
+],
+"Agarre cerrado": [
+"Close grip",
+"Prise serrée"
+],
+"Agarre supino": [
+"Underhand grip",
+"Prise en supination"
+],
+"Barra Z": [
+"EZ bar",
+"Barre EZ"
+],
+"Agarre neutro": [
+"Neutral grip",
+"Prise neutre"
+],
+"Triángulo": [
+"V-handle",
+"Poignée triangle"
+],
+"Cuerda": [
+"Rope",
+"Corde"
+],
+"Coges la barra por encima (ves tus nudillos), con las manos bastante más abiertas que los hombros.": [
+"You hold the bar from above (you see your knuckles), with your hands much wider than your shoulders.",
+"Tu prends la barre par-dessus (tu vois tes jointures), les mains bien plus écartées que les épaules."
+],
+"Coges la barra por encima (ves tus nudillos), con las manos un poco más abiertas que los hombros.": [
+"You hold the bar from above (you see your knuckles), with your hands slightly wider than your shoulders.",
+"Tu prends la barre par-dessus (tu vois tes jointures), les mains un peu plus écartées que les épaules."
+],
+"Coges la barra por encima (ves tus nudillos), con las manos a la anchura de los hombros o algo menos.": [
+"You hold the bar from above (you see your knuckles), with your hands shoulder-width apart or a bit closer.",
+"Tu prends la barre par-dessus (tu vois tes jointures), les mains à largeur d’épaules ou un peu moins."
+],
+"Coges la barra por debajo (ves tus palmas), con las manos a la anchura de los hombros.": [
+"You hold the bar from below (you see your palms), with your hands shoulder-width apart.",
+"Tu prends la barre par-dessous (tu vois tes paumes), les mains à largeur d’épaules."
+],
+"Coges la barra por debajo, en la parte inclinada: la muñeca queda más cómoda.": [
+"You hold the bar from below, on the angled part: easier on your wrists.",
+"Tu prends la barre par-dessous, sur la partie inclinée : plus confortable pour les poignets."
+],
+"Las palmas se miran entre sí, a la anchura de los hombros.": [
+"Your palms face each other, shoulder-width apart.",
+"Les paumes se font face, à largeur d’épaules."
+],
+"Las palmas se miran entre sí y las manos van casi juntas.": [
+"Your palms face each other and your hands are almost together.",
+"Les paumes se font face et les mains sont presque jointes."
+],
+"Las palmas se miran entre sí, una mano a cada lado de la cuerda.": [
+"Your palms face each other, one hand on each side of the rope.",
+"Les paumes se font face, une main de chaque côté de la corde."
+],
+"- - anchura de tus hombros - -": [
+"- - your shoulder width - -",
+"- - largeur de tes épaules - -"
 ]
 };
