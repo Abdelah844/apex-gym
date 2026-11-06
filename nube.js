@@ -531,3 +531,34 @@ async function probarAvisoPush(titulo, texto) {
     return !!d.ok;
   } catch (e) { return false; }
 }
+
+// ---------- Aviso de fin de descanso con la app cerrada ----------
+// Si sales de la app durante un descanso, se pide al servidor un aviso para cuando acabe.
+// Si vuelves antes, se cancela (suena la alarma normal de la app).
+let descansoEnServidor = false;
+function pedirRapido(funcion, cuerpo) {
+  // keepalive: la petición termina aunque el móvil congele la app justo después
+  try {
+    fetch(NUBE_URL + "/rest/v1/rpc/" + funcion, {
+      method: "POST", keepalive: true,
+      headers: { "apikey": NUBE_CLAVE, "Content-Type": "application/json" },
+      body: JSON.stringify(cuerpo)
+    }).catch(function () { });
+  } catch (e) { }
+}
+function programarDescansoPush(finMs, siguiente) {
+  const segundos = Math.round((finMs - Date.now()) / 1000);
+  if (segundos < 5 || !pushActivo()) return false;
+  pedirRapido("programar_descanso", {
+    disp: idDispositivoPush(), segundos: segundos,
+    titulo: tr("⏰ Descanso terminado"),
+    texto: siguiente ? tr("Siguiente:") + " " + siguiente : tr("A por la siguiente serie.")
+  });
+  descansoEnServidor = true;
+  return true;
+}
+function cancelarDescansoPush() {
+  if (!descansoEnServidor) return;
+  descansoEnServidor = false;
+  pedirRapido("cancelar_descanso", { disp: idDispositivoPush() });
+}
