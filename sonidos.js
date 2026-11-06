@@ -122,12 +122,25 @@ function wavDe(muestras) {
 let reproductor = null;           // elemento <audio> "desbloqueado" con el primer toque
 const urlsSonido = {};            // cada sonido se fabrica una sola vez
 
+// Le dice al móvil que son sonidos CORTOS de aviso: suenan por encima de tu música
+// (como mucho la bajan un momento) en vez de pararla. Funciona en iPhone con iOS 17 o más.
+function sesionAudioCorta() {
+  try {
+    if (typeof navigator !== "undefined" && navigator.audioSession) navigator.audioSession.type = "transient";
+  } catch (e) { }
+}
+
 // Los navegadores solo dejan sonar después de un toque. En el primer toque se reproduce
 // un silencio cortito para que el reproductor quede permitido para siempre.
 function prepararAudio() {
   if (typeof window === "undefined" || typeof Audio === "undefined" || reproductor) return reproductor;
+  const aj = (typeof estado !== "undefined" && estado && estado.ajustes) ? estado.ajustes : {};
+  if (aj.sonido === false) return null;             // sin sonidos: no se toca el audio del móvil
+  sesionAudioCorta();
   try {
     reproductor = new Audio();
+    // Al acabar cada sonido se suelta el audio, para que el móvil no lo trate como música
+    reproductor.addEventListener("ended", function () { reproductor.pause(); });
     reproductor.setAttribute("playsinline", "");
     reproductor.src = urlDe([{ f: 440, t: 0, d: 0.02, tipo: "sine", v: 0.0001 }]);
     const p = reproductor.play(); if (p && p.catch) p.catch(function () { });
@@ -147,6 +160,7 @@ function sonar(nombre) {
     try { navigator.vibrate(VIBRACIONES[nombre] || [50]); } catch (e) { }
   }
   if (aj.sonido === false) return false;
+  sesionAudioCorta();
   const r = prepararAudio();
   if (!r) return true;
   try {
