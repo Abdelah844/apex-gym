@@ -16,6 +16,16 @@
 | remo-barra-supino | Bent_Over_Barbell_Row (foto de referencia: agarre prono) |
 | remo-maquina-abierto | Leverage_Iso_Row (foto de referencia: agarre neutro) |
 | remo-polea-barra-ancha | Seated_Cable_Rows (foto de referencia: triángulo) |
+| curl-arana | Dumbbell_Prone_Incline_Curl |
+| curl-inclinado | Incline_Dumbbell_Curl |
+| curl-martillo-cruzado | Cross_Body_Hammer_Curl |
+| curl-martillo-inclinado | Incline_Hammer_Curls |
+| curl-tumbado-polea | Lying_Close-Grip_Bar_Curl_On_High_Pulley |
+| curl-predicador-mancuerna | One_Arm_Dumbbell_Preacher_Curl |
+| curl-predicador-maquina | Machine_Preacher_Curls |
+| curl-predicador-polea | Cable_Preacher_Curl |
+| curl-sentado-mancuernas | Seated_Dumbbell_Curl |
+| curl-zottman | Zottman_Curl |
 | abductores | Thigh_Abductor |
 | aductor-polea | Cable_Hip_Adduction |
 | aductores | Thigh_Adductor |

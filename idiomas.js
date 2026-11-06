@@ -9830,5 +9830,273 @@ const TRADUCCIONES = {
 "Si te molesta la espalda baja, usa el remo en barra T.": [
 "If your lower back bothers you, use the T-bar row.",
 "Si le bas du dos te gêne, fais le rowing T-bar."
+],
+"Siguiente:": [
+"Next:",
+"Suivant :"
+],
+"Adelantar los codos al subir.": [
+"Moving your elbows forward as you lift.",
+"Avancer les coudes en montant."
+],
+"Adelantar los codos.": [
+"Moving your elbows forward.",
+"Avancer les coudes."
+],
+"Apoya un brazo sobre el banco Scott con la mancuerna en la mano.": [
+"Rest one arm on the preacher bench with the dumbbell in your hand.",
+"Pose un bras sur le pupitre (banc Larry Scott), haltère en main."
+],
+"Arriba, gira las muñecas hasta que las palmas miren hacia abajo.": [
+"At the top, turn your wrists until your palms face down.",
+"En haut, tourne les poignets jusqu’à ce que les paumes regardent vers le bas."
+],
+"Axila sobre el borde del banco Scott.": [
+"Armpit over the edge of the preacher bench.",
+"Aisselle sur le bord du pupitre."
+],
+"Baja despacio así y vuelve a girar abajo.": [
+"Lower slowly like that and turn back at the bottom.",
+"Descends lentement ainsi et retourne les poignets en bas."
+],
+"Baja despacio hasta casi estirar.": [
+"Lower slowly until almost straight.",
+"Descends lentement jusqu’à presque tendre le bras."
+],
+"Baja despacio hasta estirar del todo.": [
+"Lower slowly until fully straight.",
+"Descends lentement jusqu’à tendre complètement."
+],
+"Baja despacio hasta estirar los brazos.": [
+"Lower slowly until your arms are straight.",
+"Descends lentement jusqu’à tendre les bras."
+],
+"Baja despacio sin soltar la tensión.": [
+"Lower slowly without losing tension.",
+"Descends lentement sans relâcher la tension."
+],
+"Baja despacio y cambia de brazo.": [
+"Lower slowly and switch arms.",
+"Descends lentement et change de bras."
+],
+"Bajar demasiado rápido.": [
+"Lowering too fast.",
+"Descendre trop vite."
+],
+"Balancear los brazos.": [
+"Swinging your arms.",
+"Balancer les bras."
+],
+"Banco Scott delante de la polea baja.": [
+"Preacher bench in front of the low pulley.",
+"Pupitre devant la poulie basse."
+],
+"Banco inclinado a unos {n} grados.": [
+"Incline bench at about {n} degrees.",
+"Banc incliné à environ {n} degrés."
+],
+"Banco inclinado y palmas mirándose.": [
+"Incline bench and palms facing each other.",
+"Banc incliné et paumes face à face."
+],
+"Banco plano bajo la polea alta, barra recta.": [
+"Flat bench under the high pulley, straight bar.",
+"Banc plat sous la poulie haute, barre droite."
+],
+"Brazos colgando en vertical.": [
+"Arms hanging straight down.",
+"Bras pendants à la verticale."
+],
+"Brazos colgando por detrás del cuerpo.": [
+"Arms hanging behind your body.",
+"Bras pendants derrière le corps."
+],
+"Coge las asas y sube doblando los codos.": [
+"Grab the handles and curl up by bending your elbows.",
+"Prends les poignées et monte en pliant les coudes."
+],
+"Con los brazos apuntando a la polea, dobla los codos y lleva la barra hacia la frente.": [
+"With your arms pointing at the pulley, bend your elbows and bring the bar to your forehead.",
+"Bras pointés vers la poulie, plie les coudes et amène la barre vers le front."
+],
+"Curl Zottman": [
+"Zottman curl",
+"Curl Zottman"
+],
+"Curl araña (spider curl)": [
+"Spider curl",
+"Curl araignée (spider curl)"
+],
+"Curl en banco inclinado con mancuernas": [
+"Incline dumbbell curl",
+"Curl incliné aux haltères"
+],
+"Curl martillo cruzado": [
+"Cross-body hammer curl",
+"Curl marteau croisé"
+],
+"Curl martillo en banco inclinado": [
+"Incline hammer curl",
+"Curl marteau sur banc incliné"
+],
+"Curl predicador con mancuerna (a una mano)": [
+"One-arm dumbbell preacher curl",
+"Curl au pupitre à un bras avec haltère"
+],
+"Curl predicador en máquina": [
+"Machine preacher curl",
+"Curl au pupitre à la machine"
+],
+"Curl predicador en polea": [
+"Cable preacher curl",
+"Curl au pupitre à la poulie"
+],
+"Curl sentado con mancuernas": [
+"Seated dumbbell curl",
+"Curl assis aux haltères"
+],
+"Curl tumbado en polea alta": [
+"Lying high-pulley curl",
+"Curl allongé à la poulie haute"
+],
+"De pie, mancuernas a los lados con las palmas hacia el cuerpo.": [
+"Standing, dumbbells at your sides with palms facing your body.",
+"Debout, haltères le long du corps, paumes vers le corps."
+],
+"Echar el tronco atrás para subir.": [
+"Leaning back to lift.",
+"Se pencher en arrière pour monter."
+],
+"Echar el tronco atrás.": [
+"Leaning back.",
+"Se pencher en arrière."
+],
+"Estira los brazos despacio sin encorvarte.": [
+"Straighten your arms slowly without hunching.",
+"Tends les bras lentement sans te voûter."
+],
+"Gira las palmas arriba del todo y abajo del todo.": [
+"Turn your palms at the very top and the very bottom.",
+"Tourne les paumes tout en haut et tout en bas."
+],
+"La máquina guía el movimiento: ideal para empezar.": [
+"The machine guides the movement: ideal for beginners.",
+"La machine guide le mouvement : idéal pour débuter."
+],
+"La polea mantiene el bíceps en tensión todo el recorrido.": [
+"The pulley keeps your biceps under tension the whole way.",
+"La poulie garde les biceps sous tension sur toute l’amplitude."
+],
+"La polea mantiene la tensión también abajo.": [
+"The pulley keeps the tension at the bottom too.",
+"La poulie garde la tension même en bas."
+],
+"Levantar el codo del apoyo.": [
+"Lifting your elbow off the pad.",
+"Décoller le coude de l’appui."
+],
+"Los brazos quedan por detrás del cuerpo: estira más el bíceps.": [
+"Your arms stay behind your body: it stretches the biceps more.",
+"Les bras restent derrière le corps : ça étire davantage les biceps."
+],
+"Mover los brazos en vez de solo los codos.": [
+"Moving your arms instead of only your elbows.",
+"Bouger les bras au lieu de seulement les coudes."
+],
+"Mover los brazos.": [
+"Moving your arms.",
+"Bouger les bras."
+],
+"Muy estricto: el bíceps trabaja más arriba del todo.": [
+"Very strict: the biceps works hardest at the top.",
+"Très strict : les biceps travaillent le plus tout en haut."
+],
+"Palmas hacia el cuerpo durante todo el movimiento.": [
+"Palms towards your body throughout the movement.",
+"Paumes vers le corps pendant tout le mouvement."
+],
+"Pecho apoyado en un banco inclinado.": [
+"Chest resting on an incline bench.",
+"Poitrine appuyée sur un banc incliné."
+],
+"Pon el banco Scott delante de la polea baja y coge la barra.": [
+"Place the preacher bench in front of the low pulley and grab the bar.",
+"Place le pupitre devant la poulie basse et prends la barre."
+],
+"Sentado en el extremo de un banco plano, espalda recta.": [
+"Sitting at the end of a flat bench, back straight.",
+"Assis au bout d’un banc plat, dos droit."
+],
+"Sentado es más difícil hacer trampa con el cuerpo.": [
+"Sitting makes it harder to cheat with your body.",
+"Assis, il est plus difficile de tricher avec le corps."
+],
+"Siéntate en el extremo de un banco plano con las mancuernas a los lados.": [
+"Sit at the end of a flat bench with the dumbbells at your sides.",
+"Assieds-toi au bout d’un banc plat, haltères le long du corps."
+],
+"Siéntate en un banco inclinado a unos {n} grados con los brazos colgando.": [
+"Sit on an incline bench at about {n} degrees with your arms hanging.",
+"Assieds-toi sur un banc incliné à environ {n} degrés, bras pendants."
+],
+"Siéntate en un banco inclinado con las palmas mirándose.": [
+"Sit on an incline bench with your palms facing each other.",
+"Assieds-toi sur un banc incliné, paumes face à face."
+],
+"Sube doblando el codo.": [
+"Curl up by bending your elbow.",
+"Monte en pliant le coude."
+],
+"Sube doblando los codos sin despegarlos del apoyo.": [
+"Curl up by bending your elbows without lifting them off the pad.",
+"Monte en pliant les coudes sans les décoller de l’appui."
+],
+"Sube girando las palmas hacia arriba.": [
+"Curl up turning your palms upwards.",
+"Monte en tournant les paumes vers le haut."
+],
+"Sube las mancuernas con las palmas hacia arriba.": [
+"Curl the dumbbells up with your palms up.",
+"Monte les haltères paumes vers le haut."
+],
+"Sube las mancuernas doblando solo los codos.": [
+"Curl the dumbbells up bending only your elbows.",
+"Monte les haltères en pliant seulement les coudes."
+],
+"Sube las mancuernas girando las palmas hacia arriba, sin mover los codos.": [
+"Curl the dumbbells up turning your palms up, without moving your elbows.",
+"Monte les haltères en tournant les paumes vers le haut, sans bouger les coudes."
+],
+"Sube las mancuernas sin girar la muñeca.": [
+"Curl the dumbbells up without turning your wrists.",
+"Monte les haltères sans tourner les poignets."
+],
+"Sube una mancuerna cruzando hacia el hombro contrario.": [
+"Curl one dumbbell across towards the opposite shoulder.",
+"Monte un haltère en croisant vers l’épaule opposée."
+],
+"Trabaja bíceps al subir y antebrazo al bajar.": [
+"Works the biceps on the way up and the forearm on the way down.",
+"Travaille les biceps à la montée et l’avant-bras à la descente."
+],
+"Trabaja bíceps, braquial y antebrazo.": [
+"Works the biceps, brachialis and forearm.",
+"Travaille biceps, brachial et avant-bras."
+],
+"Trabaja mucho el braquial, que da grosor al brazo.": [
+"Works the brachialis a lot, which makes your arm thicker.",
+"Travaille beaucoup le brachial, qui donne de l’épaisseur au bras."
+],
+"Túmbate boca abajo en un banco inclinado con los brazos colgando.": [
+"Lie face down on an incline bench with your arms hanging.",
+"Allonge-toi sur le ventre sur un banc incliné, bras pendants."
+],
+"Túmbate boca arriba en un banco plano bajo la polea alta y coge la barra con las palmas hacia ti.": [
+"Lie on your back on a flat bench under the high pulley and grab the bar with your palms facing you.",
+"Allonge-toi sur le dos sur un banc plat sous la poulie haute et prends la barre paumes vers toi."
+],
+"Vuelve despacio sin mover los brazos.": [
+"Return slowly without moving your arms.",
+"Reviens lentement sans bouger les bras."
 ]
 };
