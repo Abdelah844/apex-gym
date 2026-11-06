@@ -573,6 +573,16 @@ function pintarSesion() {
     '<button class="btn-txt btn-danger" data-act="cancelar-sesion" style="margin-top:6px">' + (confirmar === "cancelar-sesion" ? "Pulsa otra vez para descartar" : "Descartar entreno") + '</button>';
   $("app").innerHTML = h;
   serieMarcada = "";
+  centrarChipActual();
+}
+
+// Mueve la fila de ejercicios de arriba para que se vea el ejercicio en el que estás
+function centrarChipActual() {
+  const fila = document.querySelector(".chips.saltos");
+  const actual = fila ? fila.querySelector(".chip-ej.on") : null;
+  if (!actual) return;
+  const desde = actual.getBoundingClientRect().left - fila.getBoundingClientRect().left;
+  fila.scrollLeft += desde - (fila.clientWidth - actual.offsetWidth) / 2;
 }
 
 function tarjetaEjercicio(ei) {
@@ -1971,7 +1981,8 @@ function avisoFinDescanso() {
   apixDice("anima", "¡Descanso terminado! A por ella." + (textoSiguiente() ? "|Siguiente: " + textoSiguiente() : ""), 3500);
   document.body.classList.remove("destello-fin"); void document.body.offsetWidth; document.body.classList.add("destello-fin");
   // Si la app está en segundo plano y tienes los avisos activados, llega también una notificación
-  if (document.visibilityState === "hidden" && typeof mostrarAviso === "function") mostrarAviso("⏰ Descanso terminado", textoSiguiente() || "A por la siguiente serie.");
+  // (si ya lo va a mandar el servidor por push, no se repite aquí)
+  if (document.visibilityState === "hidden" && !descansoEnServidor && typeof mostrarAviso === "function") mostrarAviso("⏰ Descanso terminado", textoSiguiente() || "A por la siguiente serie.");
 }
 function pararDescanso() {
   clearInterval(tIntervalo); $("timer").hidden = true; document.body.classList.remove("con-timer");
