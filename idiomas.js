@@ -9790,5 +9790,33 @@ const TRADUCCIONES = {
 "ⓘ La foto es con triángulo: aquí usa una barra larga con las manos más abiertas que los hombros.": [
 "ⓘ The photo uses a V-bar: here, use a long bar with your hands wider than your shoulders.",
 "ⓘ La photo est avec un triangle : ici, utilise une barre longue, mains plus écartées que les épaules."
+],
+"Remo en T con pecho apoyado": [
+"Chest-supported T-bar row",
+"Rowing T-bar buste appuyé"
+],
+"Túmbate boca abajo en el banco de la máquina de remo en T, con el pecho apoyado.": [
+"Lie face down on the T-bar row machine bench, with your chest on the pad.",
+"Allonge-toi sur le ventre sur le banc de la machine de rowing T-bar, buste appuyé."
+],
+"Coge las asas con los brazos estirados y tira llevando los codos hacia atrás.": [
+"Grab the handles with your arms straight and pull, driving your elbows back.",
+"Prends les poignées bras tendus et tire en ramenant les coudes en arrière."
+],
+"Asas abiertas (palmas hacia abajo): más espalda alta. Asas cerradas (palmas mirándose): más dorsal.": [
+"Wide handles (palms down): more upper back. Close handles (palms facing each other): more lats.",
+"Poignées larges (paumes vers le bas) : plus le haut du dos. Poignées serrées (paumes face à face) : plus les dorsaux."
+],
+"Ajusta el banco para llegar a las asas con los brazos estirados.": [
+"Adjust the bench so you can reach the handles with straight arms.",
+"Règle le banc pour atteindre les poignées bras tendus."
+],
+"Elige el agarre: abierto o cerrado.": [
+"Choose your grip: wide or close.",
+"Choisis ta prise : large ou serrée."
+],
+"Si te molesta la espalda baja, usa el remo en T con pecho apoyado.": [
+"If your lower back bothers you, use the chest-supported T-bar row.",
+"Si le bas du dos te gêne, fais le rowing T-bar buste appuyé."
 ]
 };
