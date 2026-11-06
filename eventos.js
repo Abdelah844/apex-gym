@@ -296,7 +296,7 @@ const ACCIONES = {
   },
   "foco-serie": function (ei, si) {
     const e = estado.activa.ejercicios[ei];
-    if (e.series[si].hecha) { toast("Esta serie ya está hecha. Toca ✓ para desmarcarla y editarla."); return; }
+    if (e.series[si].hecha) { toast("Esta serie ya está hecha. Toca ✓ para desmarcarla y así editarla o borrarla."); return; }
     e.foco = parseInt(si); pintarSesion();
   },
   "ir-ej": function (i) {
@@ -389,6 +389,14 @@ const ACCIONES = {
     series.push({ peso: ult ? ult.peso : 0, reps: ult ? ult.reps : 10, rpe: null, hecha: false });
     estado.activa.actual = parseInt(ei);
     guardar(); pintarSesion(); toast("+1 serie (ahora " + series.length + ")");
+  },
+  "borrar-serie": function (ei, si) {
+    const e = estado.activa.ejercicios[ei];
+    if (e.series.length <= 1) { toast("El ejercicio necesita al menos una serie"); return; }
+    copiaSesion();
+    e.series.splice(parseInt(si), 1);
+    e.foco = null;
+    guardar(); pintarSesion(); toast("Serie borrada. Puedes deshacerlo con ↩ arriba.");
   },
   "serie-menos": function (ei) {
     const series = estado.activa.ejercicios[ei].series;

@@ -10698,5 +10698,17 @@ const TRADUCCIONES = {
 "Vuelve despacio sin mover el brazo.": [
 "Return slowly without moving your arm.",
 "Reviens lentement sans bouger le bras."
+],
+"El ejercicio necesita al menos una serie": [
+"The exercise needs at least one set",
+"L’exercice a besoin d’au moins une série"
+],
+"Serie borrada. Puedes deshacerlo con ↩ arriba.": [
+"Set deleted. You can undo it with ↩ at the top.",
+"Série supprimée. Tu peux annuler avec ↩ en haut."
+],
+"Esta serie ya está hecha. Toca ✓ para desmarcarla y así editarla o borrarla.": [
+"This set is already done. Tap ✓ to untick it so you can edit or delete it.",
+"Cette série est déjà faite. Touche ✓ pour la décocher et pouvoir la modifier ou la supprimer."
 ]
 };

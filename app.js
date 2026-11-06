@@ -650,7 +650,8 @@ function tarjetaEjercicio(ei) {
         '<button data-act="paso" data-a="' + ei + '" data-b="' + j + '" data-c="peso:-' + paso + '">−' + numero(paso) + ' kg</button>' +
         '<button data-act="paso" data-a="' + ei + '" data-b="' + j + '" data-c="peso:' + paso + '">+' + numero(paso) + ' kg</button>' +
         '<button data-act="paso" data-a="' + ei + '" data-b="' + j + '" data-c="reps:-1">−1 rep</button>' +
-        '<button data-act="paso" data-a="' + ei + '" data-b="' + j + '" data-c="reps:1">+1 rep</button></div>';
+        '<button data-act="paso" data-a="' + ei + '" data-b="' + j + '" data-c="reps:1">+1 rep</button></div>' +
+        (e.series.length > 1 ? '<button class="btn-txt small btn-danger borrar-serie" data-act="borrar-serie" data-a="' + ei + '" data-b="' + j + '">🗑 Borrar serie ' + (j + 1) + '</button>' : '');
       if (x.tipo) h += '<p class="muted small ts-nota">' + (x.tipo === "drop" ? "Serie descendente: menos peso y sin descanso." : "Descanso-pausa: 15 s y las reps que puedas.") + '</p>';
     }
     if (x.error) h += '<p class="err small ts-nota">' + esc(x.error) + '</p>';

@@ -127,6 +127,7 @@ const PATRONES = [
   ["✓ {x} kg en las series pendientes", "✓ {x} kg on the remaining sets", "✓ {x} kg sur les séries restantes"],
   ["+{x} serie (ahora {x})", "+{x} set (now {x})", "+{x} série (maintenant {x})"],
   ["−{x} serie (ahora {x})", "−{x} set (now {x})", "−{x} série (maintenant {x})"],
+  ["🗑 Borrar serie {x}", "🗑 Delete set {x}", "🗑 Supprimer la série {x}"],
   ["Añadir {x} serie a {x}", "Add {x} set to {x}", "Ajouter {x} série à {x}"],
   ["Se ha añadido {x} serie a {x} ({x}): ahora tiene {x}.", "{x} set was added to {x} ({x}): it now has {x}.", "{x} série a été ajoutée à {x} ({x}) : il en a maintenant {x}."],
   ["Completaste todas las series en {x}", "You completed every set in {x}", "Tu as terminé toutes les séries de {x}"],
