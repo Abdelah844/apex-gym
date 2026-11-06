@@ -1971,7 +1971,8 @@ function avisoFinDescanso() {
   apixDice("anima", "¡Descanso terminado! A por ella." + (textoSiguiente() ? "|Siguiente: " + textoSiguiente() : ""), 3500);
   document.body.classList.remove("destello-fin"); void document.body.offsetWidth; document.body.classList.add("destello-fin");
   // Si la app está en segundo plano y tienes los avisos activados, llega también una notificación
-  if (document.visibilityState === "hidden" && typeof mostrarAviso === "function") mostrarAviso("⏰ Descanso terminado", textoSiguiente() || "A por la siguiente serie.");
+  // (si ya lo va a mandar el servidor por push, no se repite aquí)
+  if (document.visibilityState === "hidden" && !descansoEnServidor && typeof mostrarAviso === "function") mostrarAviso("⏰ Descanso terminado", textoSiguiente() || "A por la siguiente serie.");
 }
 function pararDescanso() {
   clearInterval(tIntervalo); $("timer").hidden = true; document.body.classList.remove("con-timer");

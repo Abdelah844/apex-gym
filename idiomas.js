@@ -9830,5 +9830,9 @@ const TRADUCCIONES = {
 "Si te molesta la espalda baja, usa el remo en barra T.": [
 "If your lower back bothers you, use the T-bar row.",
 "Si le bas du dos te gêne, fais le rowing T-bar."
+],
+"Siguiente:": [
+"Next:",
+"Suivant :"
 ]
 };

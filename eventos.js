@@ -1198,6 +1198,12 @@ document.addEventListener("visibilitychange", function () {
 // Avisos push: al abrir la app y al volver a ella (como mucho una vez cada 10 minutos)
 sincronizarAvisosPush();
 let ultimaSyncPush = Date.now();
+// Descanso en marcha: al salir de la app se programa el aviso de fin en el servidor; al volver, se cancela
+document.addEventListener("visibilitychange", function () {
+  const hayDescanso = estado && estado.activa && tFin > Date.now() && !$("timer").hidden;
+  if (document.visibilityState === "hidden" && hayDescanso) programarDescansoPush(tFin, textoSiguiente());
+  if (document.visibilityState === "visible") cancelarDescansoPush();
+});
 document.addEventListener("visibilitychange", function () {
   if (document.visibilityState !== "visible" || Date.now() - ultimaSyncPush < 10 * 60 * 1000) return;
   ultimaSyncPush = Date.now();
