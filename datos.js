@@ -201,9 +201,9 @@ const EJERCICIOS = [
   ej("gemelo-sentado", "Gemelo sentado en máquina", "gemelos", [], "maquina", "Flexión plantar", 1, false, [12, 20], 1.0,
     ["Siéntate con las rodillas bajo la almohadilla y las puntas en el borde.", "Sube los talones todo lo que puedas.", "Baja despacio hasta notar el estiramiento."],
     "Rebotar abajo sin control.", "Pausa de un segundo arriba y abajo.", ["gemelos-maquina", "gemelos-mancuerna"]),
-  // Remo en T con pecho apoyado: espalda sin carga para la zona lumbar
-  ej("remo-pecho-apoyado", "Remo en T con pecho apoyado", "espalda", ["biceps", "hombros"], "maquina", "Tirón horizontal", 1, true, [8, 12], 1.0,
-    ["Túmbate boca abajo en el banco de la máquina de remo en T, con el pecho apoyado.", "Coge las asas con los brazos estirados y tira llevando los codos hacia atrás.", "Vuelve despacio sin despegar el pecho."],
+  // Remo en barra T (con pecho apoyado): espalda sin carga para la zona lumbar
+  ej("remo-pecho-apoyado", "Remo en barra T", "espalda", ["biceps", "hombros"], "maquina", "Tirón horizontal", 1, true, [8, 12], 1.0,
+    ["Túmbate boca abajo en el banco de la máquina de remo en barra T, con el pecho apoyado.", "Coge las asas con los brazos estirados y tira llevando los codos hacia atrás.", "Vuelve despacio sin despegar el pecho."],
     "Separar el pecho del soporte para mover más peso.", "Asas abiertas (palmas hacia abajo): más espalda alta. Asas cerradas (palmas mirándose): más dorsal.", ["remo-maquina", "remo-barra", "remo-mancuerna"]),
   // Dominadas asistidas: el paso intermedio entre el jalón y la dominada libre
   ej("dominadas-asistidas", "Dominadas asistidas", "espalda", ["biceps"], "maquina", "Tirón vertical", 1, true, [6, 12], 1.6,

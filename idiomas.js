@@ -9818,5 +9818,17 @@ const TRADUCCIONES = {
 "Si te molesta la espalda baja, usa el remo en T con pecho apoyado.": [
 "If your lower back bothers you, use the chest-supported T-bar row.",
 "Si le bas du dos te gêne, fais le rowing T-bar buste appuyé."
+],
+"Remo en barra T": [
+"T-bar row",
+"Rowing T-bar"
+],
+"Túmbate boca abajo en el banco de la máquina de remo en barra T, con el pecho apoyado.": [
+"Lie face down on the T-bar row machine bench, with your chest on the pad.",
+"Allonge-toi sur le ventre sur le banc de la machine de rowing T-bar, buste appuyé."
+],
+"Si te molesta la espalda baja, usa el remo en barra T.": [
+"If your lower back bothers you, use the T-bar row.",
+"Si le bas du dos te gêne, fais le rowing T-bar."
 ]
 };
