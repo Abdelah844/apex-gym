@@ -1843,9 +1843,8 @@ function hojaPoliticaNueva() {
   abrirHoja(cabeceraHoja("Política de privacidad actualizada", "Aviso") + '<div class="stack">' +
     '<p>Hemos actualizado la política de privacidad. Lo más importante:</p>' +
     '<ul class="small" style="padding-left:20px;margin:0">' +
+      '<li>Los recordatorios ahora llegan aunque la app esté cerrada. Para eso guardamos tus próximos avisos en el servidor, sin tu nombre ni tu correo.</li>' +
       '<li>Los correos de la cuenta se envían con Gmail (Google).</li>' +
-      '<li>Explicamos mejor cuánto tiempo guardamos los datos y cómo los protegemos.</li>' +
-      '<li>Explicamos mejor tus derechos y las transferencias fuera de la UE.</li>' +
     '</ul>' +
     '<p class="muted small">Tus datos se siguen usando igual: solo para que la app funcione.</p>' +
     '<button class="btn-sec full" data-act="abrir-privacidad">Leer la política</button>' +
@@ -2094,6 +2093,7 @@ function mostrarAviso(titulo, texto) {
 // Se llama al abrir la app, al volver a ella y cada 5 minutos mientras está abierta
 function comprobarRecordatorios() {
   if (!estado || !estado.perfil || estado.modo === "demo") return;
+  if (pushActivo()) return;                         // ya llegan por push (aunque la app esté cerrada)
   const aviso = recordatorioPendiente(new Date());
   if (!aviso) return;
   if (mostrarAviso(aviso.titulo, aviso.texto)) { estado.ajustes.notif.ultimoAviso = hoy(); guardar(); }

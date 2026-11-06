@@ -426,3 +426,108 @@ function rankingAmigos() {
   lista.sort(function (a, b) { return ((b.rango === null ? -1 : b.rango) - (a.rango === null ? -1 : a.rango)) || (b.puntos - a.puntos); });
   return lista;
 }
+
+// =====================================================
+// AVISOS PUSH: recordatorios que llegan aunque la app esté cerrada
+// La app calcula los avisos de los próximos 21 días y los guarda en Supabase.
+// Una tarea de Supabase los envía a su hora. No hace falta tener cuenta:
+// cada móvil se identifica con un código aleatorio que se guarda en el propio móvil.
+// =====================================================
+const PUSH_FUNCION = NUBE_URL + "/functions/v1/enviar-avisos";
+// Clave pública "anon" de Supabase (como la publicable): solo sirve para llamar a la función de avisos
+const NUBE_ANON_JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3Z3VrYWRsdnlob2d3dHN6bGhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3MTkzOTcsImV4cCI6MjEwOTI5NTM5N30.d01Bb5U-P9twSVV3aPYNjmZcjRpGDMAlR-OuMaa1fsk";
+const CLAVE_PUSH_ID = "apex-push-id";
+const CLAVE_PUSH_OK = "apex-push-ok";
+let pushOcupado = false;
+
+// ¿Este navegador puede recibir avisos push?
+function pushDisponible() {
+  if (typeof navigator === "undefined" || typeof window === "undefined") return false;
+  return "serviceWorker" in navigator && "PushManager" in window && typeof Notification !== "undefined";
+}
+// Código aleatorio de este móvil (se crea una vez)
+function idDispositivoPush() {
+  try {
+    let id = localStorage.getItem(CLAVE_PUSH_ID);
+    if (!id) {
+      const bytes = crypto.getRandomValues(new Uint8Array(16));
+      id = Array.from(bytes, function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+      localStorage.setItem(CLAVE_PUSH_ID, id);
+    }
+    return id;
+  } catch (e) { return ""; }
+}
+// ¿Hay algún tipo de recordatorio activado en Ajustes?
+function avisosActivados() {
+  const n = estado.ajustes.notif || {};
+  return n.recordatorios !== false || n.racha !== false || n.retos !== false;
+}
+// Los avisos push están funcionando si se guardaron bien hace 3 días o menos
+function pushActivo() {
+  try {
+    const f = localStorage.getItem(CLAVE_PUSH_OK);
+    return !!f && diasEntre(f, hoy()) <= 3;
+  } catch (e) { return false; }
+}
+function marcarPush(fecha) { try { localStorage.setItem(CLAVE_PUSH_OK, fecha); } catch (e) { } }
+// La clave pública viene en "base64 de URL" y el navegador la quiere en bytes
+function base64aBytes(texto) {
+  const relleno = "=".repeat((4 - texto.length % 4) % 4);
+  const normal = (texto + relleno).replace(/-/g, "+").replace(/_/g, "/");
+  const bin = atob(normal);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return bytes;
+}
+// Apunta el móvil a los avisos push y sube los avisos de los próximos 21 días
+async function sincronizarAvisosPush() {
+  if (!pushDisponible() || !estado || !estado.perfil || estado.modo === "demo") return false;
+  if (Notification.permission !== "granted") return false;
+  const disp = idDispositivoPush();
+  if (!disp || pushOcupado) return false;
+  pushOcupado = true;
+  try {
+    if (!avisosActivados()) {                       // todo desactivado: se borra del servidor
+      await pedirNube("/rest/v1/rpc/borrar_avisos", "POST", { disp: disp }, null, true);
+      marcarPush("");
+      return false;
+    }
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) {
+      const r = await pedirNube("/rest/v1/rpc/clave_publica_push", "POST", {}, null, true);
+      if (!r.ok || !r.datos) return false;
+      sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: base64aBytes(r.datos) });
+    }
+    const lista = planAvisos(new Date(), 21).map(function (a) {
+      return { cuando: a.cuando, titulo: tr(a.titulo), texto: tr(a.texto) };   // se guardan ya traducidos
+    });
+    const g = await pedirNube("/rest/v1/rpc/guardar_avisos", "POST", { disp: disp, sub: sub.toJSON(), lista: lista }, null, true);
+    if (g.ok) marcarPush(hoy());
+    return g.ok;
+  } catch (e) {
+    return false;
+  } finally {
+    pushOcupado = false;
+  }
+}
+// Borra este móvil del servidor de avisos (al borrar todos los datos)
+async function borrarAvisosPush() {
+  const disp = idDispositivoPush();
+  if (disp) await pedirNube("/rest/v1/rpc/borrar_avisos", "POST", { disp: disp }, null, true);
+  marcarPush("");
+}
+// Envía un aviso de prueba por push: así se comprueba que llegan con la app cerrada
+async function probarAvisoPush(titulo, texto) {
+  const ok = await sincronizarAvisosPush();
+  if (!ok) return false;
+  try {
+    const r = await fetch(PUSH_FUNCION, {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + NUBE_ANON_JWT, "Content-Type": "application/json" },
+      body: JSON.stringify({ probar: idDispositivoPush(), titulo: tr(titulo), texto: tr(texto) })
+    });
+    const d = await r.json();
+    return !!d.ok;
+  } catch (e) { return false; }
+}

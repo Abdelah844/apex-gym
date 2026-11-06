@@ -9594,5 +9594,13 @@ const TRADUCCIONES = {
 "Llevas {n} días sin entrenar.": [
 "You haven’t trained for {n} days.",
 "Ça fait {n} jours que tu ne t’es pas entraîné."
+],
+"Así te llegarán los recordatorios, aunque la app esté cerrada. 💪": [
+"This is how reminders will reach you, even when the app is closed. 💪",
+"C’est ainsi que tu recevras les rappels, même quand l’app est fermée. 💪"
+],
+"Los recordatorios ahora llegan aunque la app esté cerrada. Para eso guardamos tus próximos avisos en el servidor, sin tu nombre ni tu correo.": [
+"Reminders now arrive even when the app is closed. To do this we store your upcoming reminders on the server, without your name or email.",
+"Les rappels arrivent désormais même quand l’app est fermée. Pour cela, nous enregistrons tes prochains rappels sur le serveur, sans ton nom ni ton e-mail."
 ]
 };

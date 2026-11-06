@@ -123,7 +123,7 @@ function metricasVacias() {
 }
 
 // Versión de la política de privacidad (privacidad.html). Si se cambia la política, se sube este número.
-const VERSION_PRIVACIDAD = 4;
+const VERSION_PRIVACIDAD = 5;
 
 function estadoVacio(perfil) {
   perfil = perfil || {};
@@ -1817,11 +1817,12 @@ function indiceFatiga() {
 
 // ---------- Recordatorios ----------
 // Decide si toca avisar ahora (máximo 1 aviso al día). Prioridad: racha en peligro → reto → día de entreno.
-function recordatorioPendiente(ahora) {
+// paraPlan = true: se usa para calcular los avisos de los próximos días (avisos push)
+function recordatorioPendiente(ahora, paraPlan) {
   const n = estado.ajustes.notif || {};
   const hoyF = aTexto(ahora);
-  if (n.ultimoAviso === hoyF) return null;
-  if (ahora.getHours() < (n.hora || 18)) return null;
+  if (!paraPlan && n.ultimoAviso === hoyF) return null;
+  if (!paraPlan && ahora.getHours() < (n.hora || 18)) return null;
   const validas = sesionesValidas();
   if (validas.some(function (s) { return s.fecha === hoyF; })) return null;          // hoy ya entrenaste
   if (validas.length && estado.sesiones.length && molestiasRecientes()) return null; // con molestias no se presiona
@@ -1844,9 +1845,22 @@ function recordatorioPendiente(ahora) {
   // Día de entreno según tu calendario
   if (n.recordatorios !== false) {
     const cal = estado.rutina && Array.isArray(estado.rutina.calendario) ? estado.rutina.calendario : (estado.perfil.diasSemana || []);
-    if (cal.includes(diaSemana)) return { tipo: "entreno", titulo: "💪 Hoy toca entrenar", texto: "Hay que tener disciplina para conseguir aquello que deseas." };
+    if (cal.includes(diaSemana)) return { tipo: "entreno", titulo: "💪 Hoy toca entrenar", texto: "Hay que tener disciplina para el cuerpo que deseas." };
   }
   return null;
+}
+// Avisos de los próximos días, a la hora elegida en Ajustes. Se suben al servidor para que
+// lleguen aunque la app esté cerrada. Se vuelven a calcular cada vez que abres la app o entrenas.
+function planAvisos(ahora, dias) {
+  const lista = [];
+  const hora = (estado.ajustes.notif || {}).hora || 18;
+  for (let i = 0; i < dias; i++) {
+    const dia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + i, hora, 0, 0);
+    if (dia <= ahora) continue;                       // hoy, si la hora ya ha pasado
+    const aviso = recordatorioPendiente(dia, true);
+    if (aviso) lista.push({ cuando: dia.toISOString(), titulo: aviso.titulo, texto: aviso.texto });
+  }
+  return lista;
 }
 function molestiasRecientes() {
   const v = sesionesValidas();

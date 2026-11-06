@@ -677,6 +677,22 @@ const PRUEBAS = [
     for (let s = 4; s >= 1; s--) for (const d of [0, 2]) sesionPrueba(sumarDias(esta, -s * 7 + d), [["press-banca", [[60, 8]]]]);
     return estadoMascota().humor !== "enfadado" || "Se enfadó con la racha viva";
   }],
+  ["Avisos", "El plan de avisos push solo incluye días de entreno y quita el de hoy si ya entrenaste", function () {
+    estadoPrueba();
+    estado.ajustes.notif = { recordatorios: true, racha: false, retos: false, hora: 18 };
+    estado.rutina = generarRutina({ objetivo: "masa", nivel: "principiante", dias: 3, duracion: 60, tipo: "auto", equipo: TODO_EQUIPO, prioridad: "", evitar: "" });
+    estado.rutina.calendario = [0, 2, 4];                       // lunes, miércoles y viernes
+    const lunes = new Date(2026, 10, 9, 10, 0, 0);              // lunes 9 de noviembre de 2026, 10:00
+    const plan = planAvisos(lunes, 7);
+    if (plan.length !== 3) return "Esperaba 3 avisos en una semana y salen " + plan.length;
+    if (new Date(plan[0].cuando).getHours() !== 18) return "El aviso no sale a la hora elegida";
+    if (plan[0].titulo.indexOf("entrenar") < 0) return "Texto del aviso incorrecto";
+    const tarde = new Date(2026, 10, 9, 19, 0, 0);              // a las 19:00 el aviso de hoy ya pasó
+    if (planAvisos(tarde, 7).length !== 2) return "Incluye un aviso de hoy que ya ha pasado";
+    sesionPrueba(aTexto(lunes), [["press-banca", [[60, 10]]]]);
+    if (planAvisos(lunes, 7).length !== 2) return "No quita el aviso de hoy después de entrenar";
+    return true;
+  }],
   ["Mascota", "Un día de entreno sin entrenar te anima con la frase de la disciplina", function () {
     estadoPrueba();
     estado.rutina = generarRutina({ objetivo: "masa", nivel: "intermedio", dias: 6, duracion: 60, tipo: "auto", equipo: TODO_EQUIPO, prioridad: "", evitar: "",

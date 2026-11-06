@@ -465,6 +465,7 @@ const ACCIONES = {
     const semana = lunesDe(hoy());
     const rachaAntes = (sesionesPorSemana()[semana] || 0) >= minimoSemanal();
     const r = terminarSesion();
+    sincronizarAvisosPush();                         // hoy ya has entrenado: se quita el aviso de hoy
     const rachaAhora = (sesionesPorSemana()[semana] || 0) >= minimoSemanal();
     pilaDeshacer = []; sesionRecuperada = false;
     tab = "inicio"; pintar();
@@ -523,9 +524,15 @@ const ACCIONES = {
   "ir-retos": function () { vistaSocial = "retos"; irA("social"); },
   "activar-avisos": function () {
     if (permisoAvisos() === "no") { mensaje("Avisos", "Este navegador no permite avisos. En iPhone, primero añade la app a la pantalla de inicio."); return; }
-    if (permisoAvisos() === "granted") { mostrarAviso("Apex Gym", "Así te llegarán los recordatorios. 💪"); return; }
+    if (permisoAvisos() === "granted") {
+      // Prueba por push (llega aunque cierres la app). Si no se puede, aviso normal.
+      probarAvisoPush("Apex Gym", "Así te llegarán los recordatorios, aunque la app esté cerrada. 💪").then(function (ok) {
+        if (!ok) mostrarAviso("Apex Gym", "Así te llegarán los recordatorios. 💪");
+      });
+      return;
+    }
     Notification.requestPermission().then(function (p) {
-      if (p === "granted") { toast("✓ Avisos activados", "ok"); mostrarAviso("Apex Gym", "Avisos activados. Te recordaré tus entrenos. 💪"); }
+      if (p === "granted") { toast("✓ Avisos activados", "ok"); mostrarAviso("Apex Gym", "Avisos activados. Te recordaré tus entrenos. 💪"); sincronizarAvisosPush(); }
       else toast("No se han activado los avisos", "error");
       hojaAjustes();
     });
@@ -695,6 +702,7 @@ const ACCIONES = {
     a.copiaDias = parseInt($("aCopiaDias").value); a.sonido = $("aSonido").checked; a.calentamiento = $("aCalentamiento").checked; a.vibracion = $("aVibracion").checked;
     a.notif = { recordatorios: $("nRec").checked, racha: $("nRacha").checked, retos: $("nReto").checked, hora: parseInt($("nHora").value), records: $("nRecords").checked, rangos: $("nRangos").checked, amigos: a.notif.amigos, semanal: $("nSemanal").checked, ultimoAviso: a.notif.ultimoAviso || "" };
     guardar(); pintar();
+    sincronizarAvisosPush();                         // la hora o los avisos pueden haber cambiado
     $("aOk").textContent = "Cambios guardados.";
   },
   "exportar": function () { hojaExportar(); },
@@ -759,6 +767,7 @@ const ACCIONES = {
       const r = await borrarCuentaNube();
       if (!r.ok) { mensaje("No se ha podido borrar", r.msg + " No se ha borrado nada."); return; }
     }
+    await borrarAvisosPush();
     estado = null; borrarAlmacenamiento();
     cerrarHoja(); pararDescanso(); pintar();
   },
@@ -1185,6 +1194,14 @@ document.addEventListener("visibilitychange", function () {
   if (document.visibilityState !== "visible" || !conectado() || Date.now() - ultimaVueltaNube < 60000) return;
   ultimaVueltaNube = Date.now();
   sincronizarYAvisar(false);
+});
+// Avisos push: al abrir la app y al volver a ella (como mucho una vez cada 10 minutos)
+sincronizarAvisosPush();
+let ultimaSyncPush = Date.now();
+document.addEventListener("visibilitychange", function () {
+  if (document.visibilityState !== "visible" || Date.now() - ultimaSyncPush < 10 * 60 * 1000) return;
+  ultimaSyncPush = Date.now();
+  sincronizarAvisosPush();
 });
 comprobarRecordatorios();
 setInterval(comprobarRecordatorios, 5 * 60 * 1000);

@@ -5,7 +5,7 @@
 // Si cambias algún archivo, sube el número de VERSION para que los móviles descarguen la nueva.
 // =====================================================
 
-const VERSION = "apex-gym-2.12.2";
+const VERSION = "apex-gym-2.13.0";
 
 // Archivos que se guardan nada más instalar la app
 const ARCHIVOS = [
@@ -60,7 +60,16 @@ function guardarCopia(peticion, respuesta) {
   caches.open(VERSION).then(function (cache) { cache.put(peticion, copia); });
 }
 
-// 4. Al tocar un aviso, abre la app (o la trae al frente si ya estaba abierta)
+// 4. Llega un aviso push (aunque la app esté cerrada): se muestra la notificación
+self.addEventListener("push", function (evento) {
+  let datos = {};
+  try { datos = evento.data ? evento.data.json() : {}; } catch (e) { datos = { texto: evento.data ? evento.data.text() : "" }; }
+  evento.waitUntil(self.registration.showNotification(datos.titulo || "Apex Gym", {
+    body: datos.texto || "", icon: "iconos/icono-192.png", badge: "iconos/icono-192.png", tag: "apex-recordatorio"
+  }));
+});
+
+// 5. Al tocar un aviso, abre la app (o la trae al frente si ya estaba abierta)
 self.addEventListener("notificationclick", function (evento) {
   evento.notification.close();
   evento.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (ventanas) {
