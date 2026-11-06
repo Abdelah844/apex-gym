@@ -761,7 +761,7 @@ const PRUEBAS = [
       if (!buscarEj(id)) return id + " no existe";
       if (!FOTOS[id]) return id + " no tiene foto";
     }
-    return Object.keys(FOTO_REFERENCIA).length === 3 || "Se esperaban 3 avisos";
+    return Object.keys(FOTO_REFERENCIA).length === 7 || "Se esperaban 7 avisos";
   }],
   ["2.5 Máquinas", "El generador sigue creando rutinas válidas con los ejercicios nuevos", function () {
     estadoPrueba();

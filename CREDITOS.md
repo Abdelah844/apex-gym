@@ -11,6 +11,11 @@
 
 | Apex Gym | Free Exercise DB |
 |---|---|
+| dominadas-neutras | Pullups (foto de referencia: agarre prono) |
+| press-banca-cerrado | Close-Grip_Barbell_Bench_Press |
+| remo-barra-supino | Bent_Over_Barbell_Row (foto de referencia: agarre prono) |
+| remo-maquina-abierto | Leverage_Iso_Row (foto de referencia: agarre neutro) |
+| remo-polea-barra-ancha | Seated_Cable_Rows (foto de referencia: triángulo) |
 | abductores | Thigh_Abductor |
 | aductor-polea | Cable_Hip_Adduction |
 | aductores | Thigh_Adductor |

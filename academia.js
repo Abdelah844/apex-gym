@@ -97,6 +97,11 @@ const TUTORIALES = {
   "remo-alto-maquina": { anim: "jalon", prep: ["Ajusta el asiento y el apoyo de los muslos."], err: ["Encoger los hombros."], seg: [] },
   "remo-polea-una-mano": { anim: "remo", prep: ["Asa individual en la polea.", "Rodillas un poco dobladas."], err: ["Girar el tronco."], seg: [] },
   "remo-multipower": { anim: "remo-inclinado", prep: ["Tronco inclinado unos 45 grados y rodillas un poco dobladas."], err: ["Redondear la espalda."], seg: ["Si te molesta la espalda baja, usa el remo con pecho apoyado."] },
+  "dominadas-neutras": { anim: "dominada", prep: ["Asas paralelas, palmas mirándose."], err: ["No estirar los brazos abajo."], seg: ["Si aún no haces 5, usa las dominadas asistidas."] },
+  "remo-barra-supino": { anim: "remo-inclinado", prep: ["Palmas hacia arriba, manos a la anchura de los hombros.", "Tronco inclinado unos 45 grados."], err: ["Levantar el tronco para subir la barra."], seg: ["Si te molesta la espalda baja, usa el remo con pecho apoyado."] },
+  "remo-polea-barra-ancha": { anim: "remo", prep: ["Barra larga, manos más abiertas que los hombros."], err: ["Encoger los hombros al tirar."], seg: [] },
+  "remo-maquina-abierto": { anim: "remo", prep: ["Asas horizontales y codos abiertos."], err: ["Echar el tronco hacia atrás."], seg: [] },
+  "press-banca-cerrado": { anim: "press-horizontal", prep: ["Manos a la anchura de los hombros.", "Codos pegados al cuerpo."], err: ["Abrir los codos al bajar."], seg: ["Con pesos altos, entrena con alguien que te ayude o con topes."] },
   "dominadas-supinas": { anim: "dominada", prep: ["Palmas hacia ti, manos a la anchura de los hombros."], err: ["No estirar los brazos abajo."], seg: ["Si aún no haces 5, usa las dominadas asistidas."] },
   "encogimientos-mancuernas": { anim: "encogimiento", prep: ["Mancuernas a los lados del cuerpo."], err: ["Girar los hombros."], seg: [] },
   "encogimientos-maquina": { anim: "encogimiento", prep: ["Ajusta la altura de las asas: brazos estirados."], err: ["Doblar los codos."], seg: [] },
@@ -321,6 +326,11 @@ const FOTOS = {
   "remo-polea-una-mano": "Seated_One-arm_Cable_Pulley_Rows",
   "remo-multipower": "Smith_Machine_Bent_Over_Row",
   "dominadas-supinas": "Chin-Up",
+  "dominadas-neutras": "Pullups",
+  "remo-barra-supino": "Bent_Over_Barbell_Row",
+  "remo-polea-barra-ancha": "Seated_Cable_Rows",
+  "remo-maquina-abierto": "Leverage_Iso_Row",
+  "press-banca-cerrado": "Close-Grip_Barbell_Bench_Press",
   "encogimientos-mancuernas": "Dumbbell_Shrug",
   "encogimientos-maquina": "Leverage_Shrug",
   "press-hombro-multipower": "Smith_Machine_Overhead_Shoulder_Press",
@@ -364,7 +374,11 @@ const SIN_FOTO = {};
 const FOTO_REFERENCIA = {
   "dominadas-asistidas": "La foto usa una banda elástica en vez de la máquina: el movimiento es el mismo.",
   "fondos-asistidos": "La foto son fondos libres: en la máquina haces lo mismo con las rodillas apoyadas.",
-  "hip-thrust-maquina": "La foto es con barra: en la máquina el movimiento de cadera es el mismo."
+  "hip-thrust-maquina": "La foto es con barra: en la máquina el movimiento de cadera es el mismo.",
+  "remo-barra-supino": "La foto es con agarre prono: aquí coge la barra con las palmas hacia arriba.",
+  "dominadas-neutras": "La foto es con agarre prono: en las neutras coge las asas paralelas, con las palmas mirándose.",
+  "remo-polea-barra-ancha": "La foto es con triángulo: aquí usa una barra larga con las manos más abiertas que los hombros.",
+  "remo-maquina-abierto": "La foto es con agarre neutro: aquí coge las asas horizontales y lleva los codos abiertos."
 };
 
 function fotosDe(id) {

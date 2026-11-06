@@ -1376,8 +1376,8 @@ const TRADUCCIONES = {
 "Coudes entre les genoux en descendant."
 ],
 "Codos pegados al cuerpo.": [
-"Elbows tucked in to your body.",
-"Coudes collés au corps."
+"Elbows tucked in.",
+"Coudes près du corps."
 ],
 "Codos un poco doblados y fijos.": [
 "Elbows slightly bent and fixed.",
@@ -9602,5 +9602,193 @@ const TRADUCCIONES = {
 "Los recordatorios ahora llegan aunque la app esté cerrada. Para eso guardamos tus próximos avisos en el servidor, sin tu nombre ni tu correo.": [
 "Reminders now arrive even when the app is closed. To do this we store your upcoming reminders on the server, without your name or email.",
 "Les rappels arrivent désormais même quand l’app est fermée. Pour cela, nous enregistrons tes prochains rappels sur le serveur, sans ton nom ni ton e-mail."
+],
+"Abrir los codos al bajar.": [
+"Flaring your elbows on the way down.",
+"Écarter les coudes à la descente."
+],
+"Apoya el pecho en el soporte y coge las asas horizontales (palmas hacia abajo).": [
+"Rest your chest on the pad and take the horizontal handles (palms down).",
+"Appuie la poitrine sur le support et prends les poignées horizontales (paumes vers le bas)."
+],
+"Apoya el pecho en el soporte y coge las asas verticales (palmas mirándose).": [
+"Rest your chest on the pad and take the vertical handles (palms facing each other).",
+"Appuie la poitrine sur le support et prends les poignées verticales (paumes face à face)."
+],
+"Asas horizontales y codos abiertos.": [
+"Horizontal handles and elbows out.",
+"Poignées horizontales et coudes écartés."
+],
+"Asas paralelas, palmas mirándose.": [
+"Parallel handles, palms facing each other.",
+"Poignées parallèles, paumes face à face."
+],
+"Baja la barra a la parte baja del pecho con los codos pegados al cuerpo.": [
+"Lower the bar to your lower chest with your elbows tucked in.",
+"Descends la barre vers le bas de la poitrine, coudes près du corps."
+],
+"Coge la barra con las palmas hacia abajo e inclina el tronco con la espalda recta.": [
+"Grip the bar palms down and lean your torso forward with a straight back.",
+"Prends la barre paumes vers le bas et penche le buste, dos droit."
+],
+"Coge la barra con las palmas hacia arriba, a la anchura de los hombros.": [
+"Grip the bar palms up, shoulder-width apart.",
+"Prends la barre paumes vers le haut, à la largeur des épaules."
+],
+"Con el agarre cerrado trabajas más el tríceps que en el press normal.": [
+"With a close grip you work your triceps more than in the regular press.",
+"Avec une prise serrée, tu travailles plus les triceps qu’au développé normal."
+],
+"Con las manos abiertas trabajas más la espalda alta y el hombro posterior.": [
+"With a wide grip you work your upper back and rear delts more.",
+"Avec les mains écartées, tu travailles plus le haut du dos et l’arrière de l’épaule."
+],
+"Con las palmas hacia arriba trabajas más el dorsal bajo y el bíceps.": [
+"With your palms up you work your lower lats and biceps more.",
+"Paumes vers le haut, tu travailles plus le bas des dorsaux et les biceps."
+],
+"Con los codos abiertos trabajas más la espalda alta y el hombro posterior.": [
+"With your elbows out you work your upper back and rear delts more.",
+"Coudes écartés, tu travailles plus le haut du dos et l’arrière de l’épaule."
+],
+"Cuélgate de las asas paralelas con las palmas mirándose.": [
+"Hang from the parallel handles with your palms facing each other.",
+"Suspends-toi aux poignées parallèles, paumes face à face."
+],
+"Dominadas (agarre prono)": [
+"Pull-ups (overhand grip)",
+"Tractions (prise pronation)"
+],
+"Dominadas con agarre neutro": [
+"Neutral-grip pull-ups",
+"Tractions prise neutre"
+],
+"Extensión de tríceps en polea (barra recta)": [
+"Cable triceps pushdown (straight bar)",
+"Extension des triceps à la poulie (barre droite)"
+],
+"Inclina el tronco con la espalda recta y tira de la barra hacia el ombligo.": [
+"Lean forward with a straight back and pull the bar towards your belly button.",
+"Penche le buste, dos droit, et tire la barre vers le nombril."
+],
+"Jalón al pecho (agarre abierto)": [
+"Lat pulldown (wide grip)",
+"Tirage vertical (prise large)"
+],
+"Jalón con agarre estrecho (triángulo)": [
+"Close-grip pulldown (V-bar)",
+"Tirage vertical prise serrée (triangle)"
+],
+"La foto es con agarre neutro: aquí coge las asas horizontales y lleva los codos abiertos.": [
+"The photo shows a neutral grip: here, take the horizontal handles and keep your elbows out.",
+"La photo montre une prise neutre : ici, prends les poignées horizontales et écarte les coudes."
+],
+"La foto es con agarre prono: aquí coge la barra con las palmas hacia arriba.": [
+"The photo shows an overhand grip: here, grip the bar palms up.",
+"La photo montre une prise pronation : ici, prends la barre paumes vers le haut."
+],
+"La foto es con agarre prono: en las neutras coge las asas paralelas, con las palmas mirándose.": [
+"The photo shows an overhand grip: for neutral-grip, take the parallel handles with your palms facing each other.",
+"La photo montre une prise pronation : en prise neutre, prends les poignées parallèles, paumes face à face."
+],
+"La foto es con triángulo: aquí usa una barra larga con las manos más abiertas que los hombros.": [
+"The photo uses a V-bar: here, use a long bar with your hands wider than your shoulders.",
+"La photo est avec un triangle : ici, utilise une barre longue, mains plus écartées que les épaules."
+],
+"Polea alta con barra recta, palmas hacia abajo.": [
+"High pulley with a straight bar, palms down.",
+"Poulie haute avec barre droite, paumes vers le bas."
+],
+"Press banca con agarre cerrado": [
+"Close-grip bench press",
+"Développé couché prise serrée"
+],
+"Remo con barra (agarre prono)": [
+"Barbell row (overhand grip)",
+"Rowing barre (prise pronation)"
+],
+"Remo con barra (agarre supino)": [
+"Barbell row (underhand grip)",
+"Rowing barre (prise supination)"
+],
+"Remo en máquina (agarre abierto)": [
+"Machine row (wide grip)",
+"Rowing à la machine (prise large)"
+],
+"Remo en máquina (agarre neutro)": [
+"Machine row (neutral grip)",
+"Rowing à la machine (prise neutre)"
+],
+"Remo en polea baja (barra ancha)": [
+"Seated cable row (wide bar)",
+"Tirage horizontal à la poulie (barre large)"
+],
+"Remo en polea baja (triángulo)": [
+"Seated cable row (V-bar)",
+"Tirage horizontal à la poulie (triangle)"
+],
+"Siéntate con las rodillas un poco dobladas y coge el triángulo (palmas mirándose).": [
+"Sit with your knees slightly bent and take the V-bar (palms facing each other).",
+"Assieds-toi, genoux légèrement fléchis, et prends le triangle (paumes face à face)."
+],
+"Siéntate y coge una barra larga con las palmas hacia abajo, más abierta que los hombros.": [
+"Sit down and take a long bar palms down, wider than your shoulders.",
+"Assieds-toi et prends une barre longue paumes vers le bas, plus large que les épaules."
+],
+"Tira con los codos abiertos, a la altura de los hombros.": [
+"Pull with your elbows out, at shoulder height.",
+"Tire avec les coudes écartés, à hauteur des épaules."
+],
+"Tira de las asas llevando los codos atrás, pegados al cuerpo.": [
+"Pull the handles, driving your elbows back close to your body.",
+"Tire les poignées en ramenant les coudes en arrière, près du corps."
+],
+"Tira hacia la parte baja del pecho con los codos abiertos.": [
+"Pull towards your lower chest with your elbows out.",
+"Tire vers le bas de la poitrine, coudes écartés."
+],
+"Tira hasta pasar la barbilla por encima de las asas.": [
+"Pull until your chin passes over the handles.",
+"Tire jusqu’à passer le menton au-dessus des poignées."
+],
+"Trabaja más bíceps y braquial, y suele molestar menos en los hombros.": [
+"Works the biceps and brachialis more, and is usually easier on the shoulders.",
+"Travaille plus les biceps et le brachial, et gêne souvent moins les épaules."
+],
+"Túmbate y coge la barra con las manos a la anchura de los hombros.": [
+"Lie down and grip the bar with your hands shoulder-width apart.",
+"Allonge-toi et prends la barre, mains à la largeur des épaules."
+],
+"Echar el tronco atrás para tirar.": [
+"Leaning back to pull.",
+"Se pencher en arrière pour tirer."
+],
+"Juntar demasiado las manos y forzar las muñecas.": [
+"Bringing your hands too close and straining your wrists.",
+"Trop rapprocher les mains et forcer sur les poignets."
+],
+"Barra larga, manos más abiertas que los hombros.": [
+"Long bar, hands wider than your shoulders.",
+"Barre longue, mains plus écartées que les épaules."
+],
+"Palmas hacia arriba, manos a la anchura de los hombros.": [
+"Palms up, hands shoulder-width apart.",
+"Paumes vers le haut, mains à la largeur des épaules."
+],
+"ⓘ La foto es con agarre neutro: aquí coge las asas horizontales y lleva los codos abiertos.": [
+"ⓘ The photo shows a neutral grip: here, take the horizontal handles and keep your elbows out.",
+"ⓘ La photo montre une prise neutre : ici, prends les poignées horizontales et écarte les coudes."
+],
+"ⓘ La foto es con agarre prono: aquí coge la barra con las palmas hacia arriba.": [
+"ⓘ The photo shows an overhand grip: here, grip the bar palms up.",
+"ⓘ La photo montre une prise pronation : ici, prends la barre paumes vers le haut."
+],
+"ⓘ La foto es con agarre prono: en las neutras coge las asas paralelas, con las palmas mirándose.": [
+"ⓘ The photo shows an overhand grip: for neutral-grip, take the parallel handles with your palms facing each other.",
+"ⓘ La photo montre une prise pronation : en prise neutre, prends les poignées parallèles, paumes face à face."
+],
+"ⓘ La foto es con triángulo: aquí usa una barra larga con las manos más abiertas que los hombros.": [
+"ⓘ The photo uses a V-bar: here, use a long bar with your hands wider than your shoulders.",
+"ⓘ La photo est avec un triangle : ici, utilise une barre longue, mains plus écartées que les épaules."
 ]
 };
