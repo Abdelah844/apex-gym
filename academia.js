@@ -539,7 +539,7 @@ const FOTOS = {
   "pullover-mancuerna": "Straight-Arm_Dumbbell_Pullover",
   "elevaciones-frontales": "Front_Dumbbell_Raise",
   "elevaciones-laterales-sentado": "Seated_Side_Lateral_Raise",
-  "elevaciones-maquina": "Seated_Side_Lateral_Raise",
+  "elevaciones-maquina": "IA",   // imágenes generadas por IA (no son de Free Exercise DB)
   "elevacion-lateral-inclinada": "One-Arm_Incline_Lateral_Raise",
   "pajaros-banco-inclinado": "Dumbbell_Lying_Rear_Lateral_Raise",
   "patada-triceps": "Tricep_Dumbbell_Kickback",
@@ -594,8 +594,7 @@ const FOTO_REFERENCIA = {
   "hip-thrust-maquina": "La foto es con barra: en la máquina el movimiento de cadera es el mismo.",
   "remo-barra-supino": "La foto es con agarre prono: aquí coge la barra con las palmas hacia arriba.",
   "remo-polea-barra-ancha": "La foto es con triángulo: aquí usa una barra larga con las manos más abiertas que los hombros.",
-  "remo-maquina-abierto": "La foto es con agarre neutro: aquí coge las asas horizontales y lleva los codos abiertos.",
-  "elevaciones-maquina": "La foto es con mancuernas: en la máquina el movimiento es el mismo, pero empujas los cojines con los brazos."
+  "remo-maquina-abierto": "La foto es con agarre neutro: aquí coge las asas horizontales y lleva los codos abiertos."
 };
 
 // Banco que usa cada ejercicio y su inclinación (cambia mucho qué parte del músculo trabaja).

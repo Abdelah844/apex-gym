@@ -11006,5 +11006,9 @@ const TRADUCCIONES = {
 "La foto es con mancuernas: en la máquina el movimiento es el mismo, pero empujas los cojines con los brazos.": [
 "The photo uses dumbbells: on the machine the movement is the same, but you push the pads with your arms.",
 "La photo est aux haltères : à la machine, le mouvement est le même, mais tu pousses les coussins avec les bras."
+],
+"Imágenes generadas por IA.": [
+"AI-generated images.",
+"Images générées par IA."
 ]
 };

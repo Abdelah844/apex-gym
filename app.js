@@ -1559,7 +1559,7 @@ function hojaEjercicio(id) {
   if (fotos) {
     h += '<div class="fotos">' + fotos.map(function (src, i) {
       return '<figure><img src="' + src + '" alt="' + esc(e.nombre) + ', posición ' + (i + 1) + ' de 2" loading="lazy" decoding="async"><figcaption>Posición ' + (i + 1) + '</figcaption></figure>';
-    }).join("") + '</div><p class="muted small" style="margin-top:-6px">Fotos: Free Exercise DB · dominio público.</p>' +
+    }).join("") + '</div><p class="muted small" style="margin-top:-6px">' + (FOTOS[id] === "IA" ? "Imágenes generadas por IA." : "Fotos: Free Exercise DB · dominio público.") + '</p>' +
       (FOTO_REFERENCIA[id] ? '<p class="small aviso-foto">ⓘ ' + FOTO_REFERENCIA[id] + '</p>' : "");
   }
 
