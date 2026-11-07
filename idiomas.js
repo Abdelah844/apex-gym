@@ -10874,5 +10874,77 @@ const TRADUCCIONES = {
 "Detalle de las manos": [
 "Close-up of the hands",
 "Détail des mains"
+],
+"Extensión de tríceps en polea con barra en V": [
+"V-bar triceps pushdown",
+"Extension triceps à la poulie avec barre en V"
+],
+"Extensión de tríceps a una mano en polea": [
+"One-arm cable triceps extension",
+"Extension triceps à un bras à la poulie"
+],
+"Polea alta con la barra en V, manos juntas y palmas hacia abajo.": [
+"High pulley with the V-bar, hands together and palms down.",
+"Poulie haute avec la barre en V, mains jointes et paumes vers le bas."
+],
+"Estira los brazos hacia abajo hasta bloquear los codos.": [
+"Straighten your arms down until your elbows lock.",
+"Tends les bras vers le bas jusqu’à verrouiller les coudes."
+],
+"Sube despacio hasta que los codos queden a {n} grados.": [
+"Come up slowly until your elbows are at {n} degrees.",
+"Remonte lentement jusqu’à ce que les coudes soient à {n} degrés."
+],
+"Las muñecas quedan más cómodas que con la barra recta.": [
+"Easier on the wrists than the straight bar.",
+"Plus confortable pour les poignets que la barre droite."
+],
+"Polea alta con un asa; cógela con una mano.": [
+"High pulley with a single handle; hold it with one hand.",
+"Poulie haute avec une poignée ; tiens-la d’une main."
+],
+"Estira el brazo hacia abajo con el codo pegado al cuerpo.": [
+"Straighten your arm down with your elbow close to your body.",
+"Tends le bras vers le bas, coude collé au corps."
+],
+"Sube despacio hasta que el codo quede a {n} grados.": [
+"Come up slowly until your elbow is at {n} degrees.",
+"Remonte lentement jusqu’à ce que le coude soit à {n} degrés."
+],
+"Girar el tronco para ayudarte.": [
+"Twisting your torso to help.",
+"Tourner le buste pour t’aider."
+],
+"Peso para un brazo. Sirve para igualar si un brazo es más fuerte que el otro.": [
+"Weight for one arm. Helps even out a stronger and a weaker arm.",
+"Poids pour un bras. Utile si un bras est plus fort que l’autre."
+],
+"Engancha la barra en V a la polea alta.": [
+"Attach the V-bar to the high pulley.",
+"Accroche la barre en V à la poulie haute."
+],
+"Tronco un poco inclinado hacia delante.": [
+"Torso leaning slightly forward.",
+"Buste légèrement penché en avant."
+],
+"Engancha un asa a la polea alta.": [
+"Attach a single handle to the high pulley.",
+"Accroche une poignée à la poulie haute."
+],
+"Ponte de lado o de frente, como te sea más cómodo.": [
+"Stand sideways or facing the machine, whichever is more comfortable.",
+"Mets-toi de côté ou de face, comme c’est le plus confortable."
+],
+"Mover el hombro en vez del codo.": [
+"Moving your shoulder instead of your elbow.",
+"Bouger l’épaule au lieu du coude."
+],
+"Barra en V": [
+"V-bar",
+"Barre en V"
+],
+"Coges la barra en V por encima, con las manos juntas y las palmas mirando un poco hacia abajo.": [
+"You hold the V-bar from above, hands together and palms facing slightly down.",
+"Tu prends la barre en V par-dessus, mains jointes et paumes légèrement vers le bas."
 ]
 };

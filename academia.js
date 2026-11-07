@@ -50,6 +50,8 @@ const TUTORIALES = {
   "curl-polea": { anim: "curl", prep: ["Polea baja y un paso atrás para tener tensión."], err: ["Inclinarse hacia atrás."], seg: [] },
   "curl-maquina": { anim: "curl", prep: ["Ajusta el asiento: axilas sobre el borde del apoyo."], err: ["No estirar los brazos abajo."], seg: [] },
   "extension-polea": { anim: "extension-triceps", prep: ["Polea alta y tronco un poco inclinado."], err: ["Usar el peso del cuerpo para empujar."], seg: [] },
+  "extension-polea-v": { anim: "extension-triceps", prep: ["Engancha la barra en V a la polea alta.", "Tronco un poco inclinado hacia delante."], err: ["Usar el peso del cuerpo para empujar."], seg: [] },
+  "extension-una-mano-polea": { anim: "extension-triceps", prep: ["Engancha un asa a la polea alta.", "Ponte de lado o de frente, como te sea más cómodo."], err: ["Mover el hombro en vez del codo."], seg: [] },
   "press-frances": { anim: "press-frances", prep: ["Barra Z si te molestan las muñecas."], err: ["Bajar la barra hacia la nariz con los codos abiertos."], seg: ["Baja despacio: la barra pasa cerca de la cara."] },
   "extension-nuca": { anim: "extension-nuca", prep: ["Sujeta la mancuerna por un extremo con las dos manos."], err: ["Abrir los codos hacia los lados."], seg: ["Usa un respaldo para no arquear la espalda."] },
   "triceps-maquina": { anim: "extension-triceps", prep: ["Ajusta el asiento: codos alineados con el eje de la máquina."], err: ["Levantar los codos del apoyo."], seg: [] },
@@ -301,6 +303,8 @@ const FOTOS = {
   "extension-cuadriceps": "Leg_Extensions",
   "extension-nuca": "Standing_Dumbbell_Triceps_Extension",
   "extension-polea": "Triceps_Pushdown",
+  "extension-polea-v": "Triceps_Pushdown_-_V-Bar_Attachment",
+  "extension-una-mano-polea": "Cable_One_Arm_Tricep_Extension",
   "face-pull": "Face_Pull",
   "flexiones": "Pushups",
   "fondos": "Dips_-_Chest_Version",
@@ -496,6 +500,7 @@ const TIPOS_AGARRE = {
   "barra-z":   { nombre: "Barra Z", texto: "Coges la barra por debajo, en la parte inclinada: la muñeca queda más cómoda.", forma: "z", manos: 60, palma: true },
   "neutro":    { nombre: "Agarre neutro", texto: "Las palmas se miran entre sí, a la anchura de los hombros.", forma: "asas", manos: 68, palma: null },
   "triangulo": { nombre: "Triángulo", texto: "Las palmas se miran entre sí y las manos van casi juntas.", forma: "triangulo", manos: 16, palma: null },
+  "barra-v":   { nombre: "Barra en V", texto: "Coges la barra en V por encima, con las manos juntas y las palmas mirando un poco hacia abajo.", forma: "v", manos: 34, palma: false },
   "cuerda":    { nombre: "Cuerda", texto: "Las palmas se miran entre sí, una mano a cada lado de la cuerda.", forma: "cuerda", manos: 22, palma: null }
 };
 const AGARRE = {
@@ -509,7 +514,7 @@ const AGARRE = {
   "press-banca-cerrado": "cerrado", "press-cerrado-multipower": "cerrado", "press-militar": "prono",
   "curl-barra": "supino", "curl-predicador": "supino", "curl-inverso": "cerrado", "curl-barra-z": "barra-z",
   "curl-martillo": "neutro", "curl-martillo-inclinado": "neutro", "curl-martillo-cruzado": "neutro", "curl-martillo-cuerda": "cuerda",
-  "extension-polea": "cerrado", "extension-cuerda": "cuerda", "extension-cuerda-nuca": "cuerda", "extension-inversa-polea": "supino",
+  "extension-polea": "cerrado", "extension-polea-v": "barra-v", "extension-cuerda": "cuerda", "extension-cuerda-nuca": "cuerda", "extension-inversa-polea": "supino",
   "remo-menton-polea": "cerrado", "press-frances": "cerrado"
 };
 
@@ -529,6 +534,7 @@ function agarreSVG(id) {
   if (t.forma === "asas") s += '<line x1="' + (cx - d) + '" y1="' + (y - 26) + '" x2="' + (cx - d) + '" y2="' + (y + 26) + '" ' + gris + ' stroke-width="7"/>' +
        '<line x1="' + (cx + d) + '" y1="' + (y - 26) + '" x2="' + (cx + d) + '" y2="' + (y + 26) + '" ' + gris + ' stroke-width="7"/>';
   if (t.forma === "triangulo") s += '<polygon points="' + cx + ',6 ' + (cx - 30) + ',' + (y + 26) + ' ' + (cx + 30) + ',' + (y + 26) + '" fill="none" ' + gris + ' stroke-width="6" stroke-linejoin="round"/>';
+  if (t.forma === "v") s += '<polyline points="' + (cx - 70) + ',' + (y + 18) + ' ' + cx + ',' + (y - 16) + ' ' + (cx + 70) + ',' + (y + 18) + '" fill="none" ' + gris + ' stroke-width="7" stroke-linejoin="round"/>';
   if (t.forma === "cuerda") s += '<path d="M' + cx + ' 6 L' + (cx - d) + ' ' + (y + 30) + ' M' + cx + ' 6 L' + (cx + d) + ' ' + (y + 30) + '" stroke="#c8a46a" stroke-width="7" stroke-linecap="round" fill="none"/>';
   // Las dos manos
   [-1, 1].forEach(function (lado) {
@@ -548,7 +554,8 @@ function agarreSVG(id) {
 }
 
 // Foto ampliada de las manos (fotos/<id>-agarre.jpg) para ver bien la diferencia entre agarres
-const FOTO_AGARRE = { "jalon": true, "jalon-estrecho": true, "jalon-cerrado": true, "jalon-supino": true };
+const FOTO_AGARRE = { "jalon": true, "jalon-estrecho": true, "jalon-cerrado": true, "jalon-supino": true,
+  "extension-polea": true, "extension-polea-v": true, "extension-cuerda": true, "extension-inversa-polea": true };
 
 function fotosDe(id) {
   if (!FOTOS[id]) return null;
