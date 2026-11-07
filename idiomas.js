@@ -10842,5 +10842,37 @@ const TRADUCCIONES = {
 "No se pudo guardar la reacción": [
 "The reaction couldn’t be saved",
 "La réaction n’a pas pu être enregistrée"
+],
+"Jalón con agarre cerrado (barra recta)": [
+"Close-grip lat pulldown (straight bar)",
+"Tirage vertical prise serrée (barre droite)"
+],
+"Coge la barra recta por encima con las manos a la anchura de los hombros.": [
+"Hold the straight bar from above with your hands shoulder-width apart.",
+"Prends la barre droite par-dessus, mains à largeur d’épaules."
+],
+"Tira de la barra hasta la parte alta del pecho, con los codos hacia abajo.": [
+"Pull the bar to your upper chest, driving your elbows down.",
+"Tire la barre jusqu’au haut de la poitrine, coudes vers le bas."
+],
+"Trabaja más la parte baja del dorsal que el agarre abierto.": [
+"Works the lower lats more than the wide grip.",
+"Travaille plus le bas du grand dorsal que la prise large."
+],
+"Engancha el triángulo (asa en V) a la polea.": [
+"Attach the V-handle to the cable.",
+"Accroche la poignée triangle à la poulie."
+],
+"Usa la barra recta larga.": [
+"Use the long straight bar.",
+"Utilise la longue barre droite."
+],
+"Abrir las manos más que los hombros.": [
+"Placing your hands wider than your shoulders.",
+"Écarter les mains plus que les épaules."
+],
+"Detalle de las manos": [
+"Close-up of the hands",
+"Détail des mains"
 ]
 };

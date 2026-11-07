@@ -91,7 +91,8 @@ const TUTORIALES = {
   "aperturas-mancuernas": { anim: "aperturas", prep: ["Banco plano y mancuernas ligeras.", "Codos un poco doblados y fijos."], err: ["Bajar los brazos por debajo del banco."], seg: ["Si notas tirón en el hombro, reduce el recorrido."] },
   "aperturas-polea-baja": { anim: "aperturas", prep: ["Poleas en la posición más baja.", "Un pie adelantado para estar estable."], err: ["Encoger los hombros."], seg: [] },
   "press-pecho-polea": { anim: "press-horizontal", prep: ["Poleas a la altura del pecho.", "Espalda apoyada si hay banco."], err: ["Arquear la espalda."], seg: [] },
-  "jalon-estrecho": { anim: "jalon", prep: ["Agarre estrecho (triángulo o barra corta).", "Ajusta el rodillo sobre los muslos."], err: ["Echarse muy atrás."], seg: [] },
+  "jalon-estrecho": { anim: "jalon", prep: ["Engancha el triángulo (asa en V) a la polea.", "Ajusta el rodillo sobre los muslos."], err: ["Echarse muy atrás."], seg: [] },
+  "jalon-cerrado": { anim: "jalon", prep: ["Usa la barra recta larga.", "Ajusta el rodillo sobre los muslos."], err: ["Abrir las manos más que los hombros."], seg: [] },
   "jalon-supino": { anim: "jalon", prep: ["Palmas hacia ti, manos a la anchura de los hombros."], err: ["Tirar solo con los brazos."], seg: [] },
   "pullover-polea": { anim: "pullover", prep: ["Polea alta con barra recta o cuerda.", "Da un paso atrás e inclina un poco el tronco."], err: ["Doblar los codos."], seg: [] },
   "remo-alto-maquina": { anim: "jalon", prep: ["Ajusta el asiento y el apoyo de los muslos."], err: ["Encoger los hombros."], seg: [] },
@@ -347,7 +348,8 @@ const FOTOS = {
   "aperturas-mancuernas": "Dumbbell_Flyes",
   "aperturas-polea-baja": "Low_Cable_Crossover",
   "press-pecho-polea": "Cable_Chest_Press",
-  "jalon-estrecho": "Close-Grip_Front_Lat_Pulldown",
+  "jalon-estrecho": "V-Bar_Pulldown",
+  "jalon-cerrado": "Close-Grip_Front_Lat_Pulldown",
   "jalon-supino": "Underhand_Cable_Pulldowns",
   "pullover-polea": "Straight-Arm_Pulldown",
   "remo-alto-maquina": "Leverage_High_Row",
@@ -497,7 +499,7 @@ const TIPOS_AGARRE = {
   "cuerda":    { nombre: "Cuerda", texto: "Las palmas se miran entre sí, una mano a cada lado de la cuerda.", forma: "cuerda", manos: 22, palma: null }
 };
 const AGARRE = {
-  "jalon": "abierto", "jalon-estrecho": "triangulo", "jalon-supino": "supino",
+  "jalon": "abierto", "jalon-estrecho": "triangulo", "jalon-cerrado": "cerrado", "jalon-supino": "supino",
   "dominadas": "abierto", "dominadas-supinas": "supino", "dominadas-neutras": "neutro", "dominadas-asistidas": "prono",
   "remo-barra": "prono", "remo-barra-supino": "supino", "remo-multipower": "prono",
   "remo-polea": "triangulo", "remo-polea-barra-ancha": "abierto",
@@ -544,6 +546,9 @@ function agarreSVG(id) {
   s += '<text x="' + cx + '" y="97" text-anchor="middle" font-size="10" fill="currentColor" fill-opacity=".6">- - anchura de tus hombros - -</text>';
   return s + '</svg>';
 }
+
+// Foto ampliada de las manos (fotos/<id>-agarre.jpg) para ver bien la diferencia entre agarres
+const FOTO_AGARRE = { "jalon": true, "jalon-estrecho": true, "jalon-cerrado": true, "jalon-supino": true };
 
 function fotosDe(id) {
   if (!FOTOS[id]) return null;

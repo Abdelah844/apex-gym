@@ -1574,7 +1574,8 @@ function hojaEjercicio(id) {
 
   // Agarre (dibujo de frente: cambia qué músculo trabaja más)
   if (AGARRE[id]) { const ag = TIPOS_AGARRE[AGARRE[id]];
-    h += '<div class="card" style="padding:12px"><p class="label">✋ Agarre</p><p class="small"><b>' + ag.nombre + '</b></p>' + agarreSVG(id) + '<p class="small muted">' + ag.texto + '</p></div>'; }
+    h += '<div class="card" style="padding:12px"><p class="label">✋ Agarre</p><p class="small"><b>' + ag.nombre + '</b></p>' +
+      (FOTO_AGARRE[id] ? '<img src="fotos/' + id + '-agarre.jpg" alt="Detalle de las manos" loading="lazy" style="width:100%;border-radius:12px;margin:6px 0">' : "") + agarreSVG(id) + '<p class="small muted">' + ag.texto + '</p></div>'; }
   // Las cuatro partes de la ficha
   h += bloque("01", maquina ? "Preparación y ajuste de la máquina" : "Preparación", "var(--accent)", lista(f.preparacion));
   h += bloque("02", "Ejecución", "var(--accent)", '<ol class="pasos">' + f.ejecucion.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ol><p class="small" style="color:var(--good)"><b>Consejo:</b> ' + esc(f.consejo) + '</p>');

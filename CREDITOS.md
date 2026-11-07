@@ -102,7 +102,8 @@
 | hip-thrust-maquina | Barbell_Hip_Thrust (foto de referencia: mismo movimiento con otro material) |
 | hiperextensiones | Hyperextensions_Back_Extensions |
 | jalon | Wide-Grip_Lat_Pulldown |
-| jalon-estrecho | Close-Grip_Front_Lat_Pulldown |
+| jalon-estrecho | V-Bar_Pulldown |
+| jalon-cerrado | Close-Grip_Front_Lat_Pulldown |
 | jalon-supino | Underhand_Cable_Pulldowns |
 | pajaros-mancuernas | Reverse_Flyes |
 | pajaros-maquina | Reverse_Machine_Flyes |
@@ -187,3 +188,5 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 For more information, please refer to <https://unlicense.org>
 ```
+
+Las imágenes `*-agarre.jpg` son recortes ampliados de las mismas fotos (mismo origen y licencia).

@@ -289,7 +289,10 @@ const EJERCICIOS = [
   // ---------- ESPALDA ----------
   ej("jalon-estrecho", "Jalón con agarre estrecho (triángulo)", "espalda", ["biceps"], "polea", "Tirón vertical", 1, true, [8, 12], 1.0,
     ["Coge el agarre estrecho y sujeta bien los muslos con el rodillo.", "Tira llevando los codos hacia abajo y atrás.", "Sube despacio hasta estirar los brazos."],
-    "Echarse hacia atrás para tirar.", "Pecho hacia arriba durante todo el movimiento.", ["jalon", "jalon-supino"]),
+    "Echarse hacia atrás para tirar.", "Pecho hacia arriba durante todo el movimiento.", ["jalon", "jalon-cerrado", "jalon-supino"]),
+  ej("jalon-cerrado", "Jalón con agarre cerrado (barra recta)", "espalda", ["biceps"], "polea", "Tirón vertical", 1, true, [8, 12], 1.0,
+    ["Coge la barra recta por encima con las manos a la anchura de los hombros.", "Tira de la barra hasta la parte alta del pecho, con los codos hacia abajo.", "Sube despacio hasta estirar los brazos."],
+    "Echarse hacia atrás para tirar.", "Trabaja más la parte baja del dorsal que el agarre abierto.", ["jalon", "jalon-estrecho", "jalon-supino"]),
   ej("jalon-supino", "Jalón con agarre supino", "espalda", ["biceps"], "polea", "Tirón vertical", 1, true, [8, 12], 1.0,
     ["Agarra la barra con las palmas hacia ti, a la anchura de los hombros.", "Tira hasta la parte alta del pecho.", "Sube controlado hasta estirar los brazos."],
     "Tirar solo con los brazos.", "Implica más el bíceps que el jalón normal.", ["jalon", "dominadas-supinas"]),
