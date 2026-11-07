@@ -572,33 +572,42 @@ const ACCIONES = {
     await cargarSocialNube(); pintarSocial();
   },
   "social-quitar": async function (id) {
-    if (!pideConfirmar("social-quitar" + id, pintarSocial)) return;
+    if (!pideConfirmar("social-quitar" + id, repintarSocial)) return;
     const r = await borrarAmistadNube(id);
     if (!r.ok) { mensaje("No se ha podido quitar", r.msg); return; }
+    if (hojaSocial && hojaSocial.id === id) { hojaSocial = null; cerrarHoja(); }
     toast("Amigo quitado", "ok"); await cargarSocialNube(); pintarSocial();
   },
   "social-publicar": async function () {
     const s = estado.sesiones[estado.sesiones.length - 1];
     if (!s) return;
-    const r = await publicarNube("entreno", textoSesion(s));
+    const r = await publicarNube(s.prs.length ? "record" : "entreno", textoSesion(s), detalleSesion(s));
     if (!r.ok) { mensaje("No se puede publicar", r.msg); return; }
     s.publicadaNube = true; guardar(); toast("✓ Compartido con tus amigos", "ok");
     await cargarSocialNube(); pintarSocial();
   },
-  "social-like": async function (id) {
-    const p = socialNube.posts.find(function (x) { return x.id === id; });
+  // Reaccionar a una publicación. Si pulsas la reacción que ya tenías, se quita.
+  "social-reaccion": async function (id, emoji) {
+    const p = postPorId(id);
     if (!p) return;
-    const i = p.likes.indexOf(nube.id);
-    if (i >= 0) p.likes.splice(i, 1); else p.likes.push(nube.id);      // se pinta al momento y luego se guarda
-    pintarSocial();
-    const r = await meGustaNube(id, i < 0);
-    if (!r.ok) { await cargarSocialNube(); pintarSocial(); }
+    const mia = p.reacciones.find(function (x) { return x.u === nube.id; });
+    const quitar = mia && mia.r === emoji;
+    p.reacciones = p.reacciones.filter(function (x) { return x.u !== nube.id; });
+    if (!quitar) p.reacciones.push({ u: nube.id, r: emoji });          // se pinta al momento y luego se guarda
+    repintarSocial();
+    const r = await reaccionarNube(id, quitar ? "" : emoji);
+    if (!r.ok) { toast("No se pudo guardar la reacción"); await cargarSocialNube(); repintarSocial(); }
   },
+  "filtro-actividad": function (v) { filtroActividad = v; pintarSocial(); },
+  "ver-amigo": function (id) { hojaAmigo(id); },
+  "ver-post": function (id) { hojaPost(id); },
+  "historial-mas": function () { semanasHistorial += 8; pintarProgreso(); },
   "social-borrar-post": async function (id) {
-    if (!pideConfirmar("social-borrar-post" + id, pintarSocial)) return;
+    if (!pideConfirmar("social-borrar-post" + id, repintarSocial)) return;
     const r = await borrarPublicacionNube(id);
     if (!r.ok) { mensaje("No se ha podido borrar", r.msg); return; }
-    await cargarSocialNube(); pintarSocial();
+    if (hojaSocial && hojaSocial.id === id) { hojaSocial = null; cerrarHoja(); }
+    await cargarSocialNube(); repintarSocial();
   },
   "social-denunciar": function (id) { hojaDenunciaNube(id); },
   "social-enviar-denuncia": async function (id) {
@@ -896,7 +905,7 @@ const ACCIONES = {
 // Al terminar un entreno: si tienes cuenta y «Mostrar mis entrenos» activado, tus amigos lo ven en Actividad
 async function compartirConAmigosAlTerminar(s) {
   if (!s || !conectado() || estado.modo === "demo" || estado.ajustes.compartir === false || estado.perfil.edad < 16 || estado.ajustes.privacidad === "privado") return;
-  const r = await publicarNube(s.prs.length ? "record" : "entreno", textoSesion(s));
+  const r = await publicarNube(s.prs.length ? "record" : "entreno", textoSesion(s), detalleSesion(s));
   if (r.ok) { s.publicadaNube = true; guardar(); socialNube.cargado = false; }
 }
 

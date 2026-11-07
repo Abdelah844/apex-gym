@@ -987,16 +987,43 @@ function pintarProgreso() {
     '<div class="row"><input id="nuevoPeso" type="text" inputmode="decimal" autocomplete="off" placeholder="Peso de hoy (kg)" aria-label="Peso de hoy"><button class="btn auto" data-act="guardar-peso">Guardar</button></div><p class="err" id="errPeso"></p></div>';
 
   // Historial
-  h += '<div class="card"><h3>Historial de sesiones</h3><div class="list">';
-  if (estado.sesiones.length === 0) h += '<p class="muted" style="padding-top:8px">Tus entrenos completados aparecerán aquí.</p>';
-  for (const s of estado.sesiones.slice().reverse().slice(0, 30)) {
-    h += '<button class="item" data-act="ver-sesion" data-a="' + s.id + '"><div class="grow"><span class="name">' + esc(s.diaNombre) + '</span><span class="muted small num">' + fechaBonita(s.fecha) + ' · ' + s.duracion + ' min · ' + s.seriesEfectivas + ' series efectivas</span></div>' +
-      (s.prs.length ? '<span class="pill pr">' + s.prs.length + ' PR</span>' : "") + '</button>';
-  }
-  h += '</div></div><p class="muted small">Fotos de progreso: llegarán en la versión con servidor, privadas por defecto.</p></div>';
+  h += historialSemanasHtml();
+  h += '<p class="muted small">Fotos de progreso: llegarán en la versión con servidor, privadas por defecto.</p></div>';
   $("app").innerHTML = h;
 }
 
+
+// Historial de entrenos agrupado por semanas (de lunes a domingo), con los totales de cada semana
+let semanasHistorial = 8;
+function historialSemanasHtml() {
+  let h = '<div class="card"><h3>Mis entrenos</h3>';
+  if (estado.sesiones.length === 0) return h + '<p class="muted" style="padding-top:8px">Tus entrenos completados aparecerán aquí.</p></div>';
+  // 1) Agrupar: la clave de cada grupo es el lunes de esa semana
+  const grupos = {};
+  for (const s of estado.sesiones) {
+    const lunes = lunesDe(s.fecha);
+    if (!grupos[lunes]) grupos[lunes] = [];
+    grupos[lunes].push(s);
+  }
+  const semanas = Object.keys(grupos).sort().reverse();       // la más reciente primero
+  const estaSemana = lunesDe(hoy());
+  // 2) Pintar cada semana
+  for (const lunes of semanas.slice(0, semanasHistorial)) {
+    const lista = grupos[lunes].slice().reverse();
+    let series = 0, kg = 0, prs = 0;
+    for (const s of lista) { series += s.seriesEfectivas; kg += s.volumen; prs += s.prs.length; }
+    const titulo = lunes === estaSemana ? "Esta semana" : (lunes === sumarDias(estaSemana, -7) ? "Semana pasada" : "Semana del " + fechaBonita(lunes));
+    h += '<div class="semana"><div class="row between semana-cab"><span class="name small">' + titulo + '</span><span class="muted small num">' +
+      lista.length + (lista.length === 1 ? ' entreno · ' : ' entrenos · ') + series + ' series · ' + miles(kg) + ' kg' + (prs ? ' · 🏆 ' + prs : "") + '</span></div><div class="list">';
+    for (const s of lista) {
+      h += '<button class="item" data-act="ver-sesion" data-a="' + s.id + '"><div class="grow"><span class="name">' + esc(s.diaNombre) + '</span><span class="muted small num">' + fechaBonita(s.fecha) + ' · ' + s.duracion + ' min · ' + s.seriesEfectivas + ' series efectivas</span></div>' +
+        (s.prs.length ? '<span class="pill pr">' + s.prs.length + ' PR</span>' : "") + '</button>';
+    }
+    h += '</div></div>';
+  }
+  if (semanas.length > semanasHistorial) h += '<button class="btn-sec full" data-act="historial-mas">Ver semanas anteriores (' + (semanas.length - semanasHistorial) + ' más)</button>';
+  return h + '</div>';
+}
 
 // =====================================================
 // PANTALLA: SOCIAL
@@ -1058,7 +1085,7 @@ function amigosNubeHtml() {
   h += '<div class="card"><h3>Ranking de amigos</h3><div class="list">';
   if (ranking.length <= 1) h += '<p class="muted" style="padding-top:8px">Aún no tienes amigos. Añade a alguien por su usuario para competir en el ranking.</p>';
   ranking.forEach(function (a, i) {
-    h += '<div class="item" style="align-items:flex-start"><span class="num" style="width:22px;font-weight:700">' + (i + 1) + '</span>' + insignia(a.rango, "sm") + '<div class="grow bloque"><span class="name">@' + esc(a.usuario || "?") + (a.yo ? " (tú)" : "") + '</span>' +
+    h += '<div class="item" style="align-items:flex-start"><span class="num" style="width:22px;font-weight:700">' + (i + 1) + '</span>' + insignia(a.rango, "sm") + '<div class="grow bloque">' + (a.yo ? '<span class="name">@' + esc(a.usuario || "?") + ' (tú)</span>' : '<button class="link-nombre name" data-act="ver-amigo" data-a="' + esc(a.id) + '">@' + esc(a.usuario || "?") + ' ›</button>') +
       '<span class="muted small">' + nombreRango(a.rango) + ' · racha ' + a.racha + ' sem · ' + a.entrenos + ' entrenos</span>' +
       (a.marcas.length ? '<span class="small">' + a.marcas.map(function (r) { return esc(r.n) + ' ' + String(r.p).replace(".", ",") + '×' + r.r; }).join(" · ") + '</span>' : "") + '</div>' +
       (a.yo ? "" : '<button class="btn-txt small btn-danger" data-act="social-quitar" data-a="' + esc(a.id) + '">' + (confirmar === "social-quitar" + a.id ? "¿Seguro?" : "Quitar") + '</button>') + '</div>';
@@ -1086,19 +1113,122 @@ function actividadNubeHtml() {
   h += '</div>';
   const carga = estadoCargaSocial();
   if (carga) return h + carga;
+  const filtros = [["todos", "Todo"], ["amigos", "Amigos"], ["mios", "Míos"]];
+  h += '<div class="seg">' + filtros.map(function (o) { return '<button data-act="filtro-actividad" data-a="' + o[0] + '" class="' + (filtroActividad === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div>';
+  const posts = socialNube.posts.filter(function (x) {
+    return filtroActividad === "todos" || (filtroActividad === "mios" ? x.mio : !x.mio);
+  });
   h += '<div class="card"><div>';
-  if (socialNube.posts.length === 0) h += '<p class="muted">Todavía no hay actividad. Cuando tus amigos entrenen, lo verás aquí.</p>';
-  for (const x of socialNube.posts) {
-    const gusta = x.likes.indexOf(nube.id) >= 0;
-    h += '<div class="post"><div class="row"><div class="avatar" style="width:34px;height:34px;font-size:.85rem">' + esc((x.autor || "?")[0]).toUpperCase() + '</div>' +
-      '<div class="grow"><span class="name small">@' + esc(x.autor) + (x.mio ? " (tú)" : "") + '</span><span class="muted small">' + fechaBonita(x.fecha) + '</span></div>' +
-      '<span class="pill ' + (x.tipo === "record" ? "pr" : (x.tipo === "rango" ? "up" : "keep")) + '">' + { record: "Récord", rango: "Rango", entreno: "Entreno" }[x.tipo] + '</span></div>' +
-      '<p>' + esc(x.texto) + '</p>' +
-      '<div class="acts"><button class="' + (gusta ? "on" : "") + '" data-act="social-like" data-a="' + esc(x.id) + '" aria-label="Me gusta">' + (gusta ? "♥" : "♡") + ' ' + x.likes.length + '</button>' +
-      (x.mio ? '<button data-act="social-borrar-post" data-a="' + esc(x.id) + '">' + (confirmar === "social-borrar-post" + x.id ? "Pulsa otra vez" : "Eliminar") + '</button>'
-             : '<button data-act="social-denunciar" data-a="' + esc(x.id) + '">Denunciar</button>') + '</div></div>';
-  }
+  if (posts.length === 0) h += '<p class="muted">' + (filtroActividad === "mios" ? "Aún no has compartido entrenos. Se comparten solos al terminar si tienes activado «Mostrar mis entrenos» en Ajustes." : "Todavía no hay actividad. Cuando tus amigos entrenen, lo verás aquí.") + '</p>';
+  for (const x of posts) h += postNubeHtml(x);
   return h + '</div></div><button class="btn-txt" data-act="social-recargar">Actualizar</button>';
+}
+
+// Una publicación de la nube: autor, resumen del entreno y reacciones
+function postNubeHtml(x) {
+  let h = '<div class="post"><div class="row">' +
+    '<button class="avatar" style="width:34px;height:34px;font-size:.85rem" ' + (x.mio ? "" : 'data-act="ver-amigo" data-a="' + esc(x.autorId) + '" aria-label="Ver perfil"') + '>' + esc((x.autor || "?")[0]).toUpperCase() + '</button>' +
+    '<div class="grow">' + (x.mio ? '<span class="name small">@' + esc(x.autor) + ' (tú)</span>' : '<button class="link-nombre name small" data-act="ver-amigo" data-a="' + esc(x.autorId) + '">@' + esc(x.autor) + '</button>') +
+    '<span class="muted small">' + fechaBonita(x.fecha) + '</span></div>' +
+    '<span class="pill ' + (x.tipo === "record" ? "pr" : (x.tipo === "rango" ? "up" : "keep")) + '">' + { record: "Récord", rango: "Rango", entreno: "Entreno" }[x.tipo] + '</span></div>';
+  const d = x.detalle;
+  if (d && d.e) {
+    h += '<p><b>' + esc(d.n) + '</b></p><div class="row wrap small muted" style="gap:10px"><span>⏱ ' + d.d + ' min</span><span>🏋️ ' + d.e.length + ' ejercicios</span><span class="num">' + miles(d.v) + ' kg</span>' +
+      (d.p && d.p.length ? '<span style="color:var(--pr)">🏆 ' + d.p.length + ' récord(s)</span>' : "") + '</div>' +
+      '<p class="small">' + esc(d.e.slice(0, 3).map(function (e) { const ej = buscarEj(e.i); return (ej ? ej.nombre : e.i); }).join(" · ")) + (d.e.length > 3 ? " …" : "") + '</p>' +
+      '<button class="btn-sec small" data-act="ver-post" data-a="' + esc(x.id) + '">Ver entreno completo</button>';
+  } else h += '<p>' + esc(x.texto) + '</p>';
+  h += '<div class="acts reacciones">' + REACCIONES.map(function (r) {
+    const n = x.reacciones.filter(function (y) { return y.r === r; }).length;
+    const mia = x.reacciones.some(function (y) { return y.u === nube.id && y.r === r; });
+    return '<button class="' + (mia ? "on" : "") + '" data-act="social-reaccion" data-a="' + esc(x.id) + '" data-b="' + r + '" aria-label="Reaccionar ' + r + '">' + r + (n ? ' ' + n : "") + '</button>';
+  }).join("") +
+    (x.mio ? '<button data-act="social-borrar-post" data-a="' + esc(x.id) + '">' + (confirmar === "social-borrar-post" + x.id ? "Pulsa otra vez" : "Eliminar") + '</button>'
+           : '<button data-act="social-denunciar" data-a="' + esc(x.id) + '">Denunciar</button>') + '</div></div>';
+  return h;
+}
+
+// ---------- Perfil de un amigo y detalle de un entreno ----------
+let filtroActividad = "todos";
+let hojaSocial = null;           // qué hoja social está abierta: { tipo: "amigo"|"post", id }
+const postsAmigo = {};           // publicaciones de cada amigo ya cargadas
+
+function postPorId(id) {
+  let p = socialNube.posts.find(function (x) { return x.id === id; });
+  if (p) return p;
+  for (const k in postsAmigo) { p = (postsAmigo[k] || []).find(function (x) { return x.id === id; }); if (p) return p; }
+  return null;
+}
+// Vuelve a pintar Social y la hoja abierta (por ejemplo tras reaccionar)
+function repintarSocial() {
+  if (tab === "social") pintarSocial();
+  if (hojaSocial && !$("hoja").hidden) { if (hojaSocial.tipo === "amigo") hojaAmigo(hojaSocial.id, true); else hojaPost(hojaSocial.id, true); }
+}
+
+function hojaAmigo(id, mantener) {
+  const a = socialNube.amigos.find(function (x) { return x.id === id; });
+  if (!a) return;
+  hojaSocial = { tipo: "amigo", id: id };
+  const p = a.perfil || {};
+  let h = cabeceraHoja('@' + esc(a.usuario || "?"), "Perfil de tu amigo") + '<div class="stack">' +
+    '<div class="card row" style="gap:14px">' + insignia(p.rango, "md") + '<div class="grow"><p class="name">' + nombreRango(p.rango) + '</p>' +
+    '<p class="muted small">🔥 Racha de ' + (p.racha || 0) + (p.racha === 1 ? ' semana · ' : ' semanas · ') + (p.entrenos || 0) + (p.entrenos === 1 ? ' entreno' : ' entrenos') + '</p></div></div>';
+  const marcas = p.marcas || [];
+  if (marcas.length) h += '<div class="card"><h3>Sus mejores marcas</h3><div class="list">' + marcas.map(function (r) {
+    return '<div class="item"><div class="grow"><span class="name small">' + esc(r.n) + '</span></div><span class="num">' + String(r.p).replace(".", ",") + ' kg × ' + r.r + '</span></div>';
+  }).join("") + '</div></div>';
+  h += '<div class="card"><h3>Sus últimos entrenos</h3><div>';
+  const lista = postsAmigo[id];
+  if (lista === undefined) h += '<p class="muted">Cargando…</p>';
+  else if (lista === null) h += '<p class="err small">No se han podido cargar. Prueba otra vez más tarde.</p>';
+  else if (!lista.length) h += '<p class="muted">Todavía no ha compartido ningún entreno.</p>';
+  else for (const x of lista) h += postNubeHtml(x);
+  h += '</div></div>' +
+    '<button class="btn-txt small btn-danger" data-act="social-quitar" data-a="' + esc(id) + '">' + (confirmar === "social-quitar" + id ? "¿Seguro?" : "Quitar de amigos") + '</button></div>';
+  if (mantener) { const c = $("hojaContenido"), y = c.scrollTop; c.innerHTML = h; c.scrollTop = y; } else abrirHoja(h);
+  if (lista === undefined) cargarPostsDe(id).then(function (r) {
+    postsAmigo[id] = r;
+    if (hojaSocial && hojaSocial.tipo === "amigo" && hojaSocial.id === id && !$("hoja").hidden) hojaAmigo(id, true);
+  });
+}
+
+// Mejor serie (por 1RM estimado) de una lista [[kg, reps], ...]
+function mejorDeLista(series) {
+  let mejor = null, valor = -1;
+  for (const x of series) { const v = unaRM(x[0], x[1]); if (v > valor) { valor = v; mejor = x; } }
+  return mejor;
+}
+
+function hojaPost(id, mantener) {
+  const x = postPorId(id);
+  if (!x || !x.detalle) return;
+  hojaSocial = { tipo: "post", id: id };
+  const d = x.detalle;
+  let h = cabeceraHoja(esc(d.n), (x.mio ? "Tu entreno" : "@" + esc(x.autor)) + " · " + fechaBonita(x.fecha)) + '<div class="stack"><div class="grid3">' +
+    '<div class="card"><p class="label">Duración</p><div class="big-num num">' + d.d + '</div><p class="muted small">min</p></div>' +
+    '<div class="card"><p class="label">Ejercicios</p><div class="big-num num">' + d.e.length + '</div></div>' +
+    '<div class="card"><p class="label">Tonelaje</p><div class="big-num num">' + miles(d.v) + '</div><p class="muted small">kg</p></div></div>';
+  for (const e of d.e) {
+    const ej = buscarEj(e.i);
+    h += '<div class="card stack tight"><div class="row between"><h3>' + esc(ej ? ej.nombre : e.i) + '</h3>' + ((d.p || []).indexOf(e.i) >= 0 ? '<span class="pill pr">Récord</span>' : "") + '</div>';
+    e.s.forEach(function (y, i) { h += '<div class="row between small"><span>Serie ' + (i + 1) + '</span><span class="num">' + String(y[0]).replace(".", ",") + ' kg × ' + y[1] + '</span></div>'; });
+    // Comparar su mejor serie con la tuya en ese ejercicio
+    if (!x.mio && ej) {
+      const suya = mejorDeLista(e.s);
+      const tuya = mejorSerie(e.i);
+      if (!tuya) h += '<p class="muted small comparar">Tú aún no has hecho este ejercicio.</p>';
+      else if (suya) {
+        const a = unaRM(suya[0], suya[1]), b = unaRM(tuya.peso, tuya.reps);
+        const dif = a > 0 ? Math.round((b - a) / a * 100) : 0;
+        h += '<p class="small comparar"><span class="muted">Su mejor serie hoy: ' + String(suya[0]).replace(".", ",") + ' × ' + suya[1] + ' · Tu mejor serie: ' + String(tuya.peso).replace(".", ",") + ' × ' + tuya.reps + '</span><br>' +
+          (Math.abs(dif) < 3 ? '<b>🤝 Estáis muy igualados</b>' : (dif > 0 ? '<b style="color:var(--good)">💪 Tú vas un ' + dif + ' % por delante</b>' : '<b style="color:var(--warn)">🎯 Te saca un ' + (-dif) + ' %: ¡a por él!</b>')) + '</p>';
+      }
+    }
+    h += '</div>';
+  }
+  if (!x.mio) h += '<p class="muted small">La comparación usa la fuerza estimada (1RM) de la mejor serie: así se pueden comparar series con distintas repeticiones.</p>';
+  h += '</div>';
+  if (mantener) { const c = $("hojaContenido"), y = c.scrollTop; c.innerHTML = h; c.scrollTop = y; } else abrirHoja(h);
 }
 
 function feedHtml() {

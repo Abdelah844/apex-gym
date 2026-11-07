@@ -10782,5 +10782,65 @@ const TRADUCCIONES = {
 "- - anchura de tus hombros - -": [
 "- - your shoulder width - -",
 "- - largeur de tes épaules - -"
+],
+"Perfil de tu amigo": [
+"Your friend’s profile",
+"Profil de ton ami"
+],
+"Sus mejores marcas": [
+"Their best lifts",
+"Ses meilleures performances"
+],
+"Sus últimos entrenos": [
+"Their latest workouts",
+"Ses dernières séances"
+],
+"Quitar de amigos": [
+"Remove friend",
+"Retirer des amis"
+],
+"Ver entreno completo": [
+"See full workout",
+"Voir la séance complète"
+],
+"Míos": [
+"Mine",
+"Les miens"
+],
+"Mis entrenos": [
+"My workouts",
+"Mes séances"
+],
+"Semana pasada": [
+"Last week",
+"La semaine dernière"
+],
+"Tú aún no has hecho este ejercicio.": [
+"You haven’t done this exercise yet.",
+"Tu n’as pas encore fait cet exercice."
+],
+"🤝 Estáis muy igualados": [
+"🤝 You’re very evenly matched",
+"🤝 Vous êtes très proches"
+],
+"La comparación usa la fuerza estimada ({n}RM) de la mejor serie: así se pueden comparar series con distintas repeticiones.": [
+"The comparison uses the estimated strength ({n}RM) of the best set, so sets with different reps can be compared.",
+"La comparaison utilise la force estimée ({n}RM) de la meilleure série : on peut ainsi comparer des séries avec des répétitions différentes."
+],
+"Aún no has compartido entrenos. Se comparten solos al terminar si tienes activado «Mostrar mis entrenos» en Ajustes.": [
+"You haven’t shared any workouts yet. They’re shared automatically when you finish if «Show my workouts» is on in Settings.",
+"Tu n’as encore partagé aucune séance. Elles se partagent toutes seules à la fin si « Afficher mes séances » est activé dans les Réglages."
+],
+"No se han podido cargar. Prueba otra vez más tarde.": [
+"They couldn’t be loaded. Try again later.",
+"Impossible de les charger. Réessaie plus tard."
+],
+"Todavía no ha compartido ningún entreno.": [
+"They haven’t shared any workouts yet.",
+"Il n’a encore partagé aucune séance."
+],
+"No se pudo guardar la reacción": [
+"The reaction couldn’t be saved",
+"La réaction n’a pas pu être enregistrée"
 ]
 };

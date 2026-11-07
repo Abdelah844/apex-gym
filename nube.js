@@ -349,9 +349,22 @@ async function borrarAmistadNube(otro) {
   return r.ok ? { ok: true } : { ok: false, msg: mensajeErrorNube(r.datos, r.status) };
 }
 
-async function publicarNube(tipo, texto) {
+// Resumen del entreno que ven tus amigos: día, duración, kg y las series hechas de cada ejercicio
+function detalleSesion(s) {
+  if (!s) return null;
+  return {
+    n: String(s.diaNombre || "").slice(0, 60), d: s.duracion || 0, v: Math.round(s.volumen || 0), p: (s.prs || []).slice(0, 20),
+    e: s.ejercicios.slice(0, 20).map(function (e) {
+      return { i: e.id, s: e.series.filter(function (x) { return x.hecha; }).slice(0, 12).map(function (x) { return [x.peso, x.reps]; }) };
+    }).filter(function (e) { return e.s.length; })
+  };
+}
+
+async function publicarNube(tipo, texto, detalle) {
   if (!conectado() || !(await tokenAlDia())) return { ok: false, msg: "Vuelve a iniciar sesión en la nube." };
-  const r = await pedirNube("/rest/v1/publicaciones", "POST", { tipo: tipo, texto: String(texto).slice(0, 280) }, { "Prefer": "return=minimal" });
+  const datos = { tipo: tipo, texto: String(texto).slice(0, 280) };
+  if (detalle) datos.detalle = detalle;
+  const r = await pedirNube("/rest/v1/publicaciones", "POST", datos, { "Prefer": "return=minimal" });
   if (!r.ok && (r.status === 401 || r.status === 403)) return { ok: false, msg: "Has llegado al límite de 20 publicaciones al día." };
   return r.ok ? { ok: true } : { ok: false, msg: mensajeErrorNube(r.datos, r.status) };
 }
@@ -362,12 +375,33 @@ async function borrarPublicacionNube(id) {
   return r.ok ? { ok: true } : { ok: false, msg: mensajeErrorNube(r.datos, r.status) };
 }
 
-async function meGustaNube(id, poner) {
+// Reacciones: ♥ 💪 🔥 👏. "emoji" vacío = quitar mi reacción
+const REACCIONES = ["♥", "💪", "🔥", "👏"];
+async function reaccionarNube(id, emoji) {
   if (!(await tokenAlDia())) return { ok: false };
-  const r = poner
-    ? await pedirNube("/rest/v1/me_gusta", "POST", { publicacion: id }, { "Prefer": "return=minimal" })
+  const r = emoji
+    ? await pedirNube("/rest/v1/me_gusta?on_conflict=publicacion,usuario", "POST", { publicacion: id, usuario: nube.id, reaccion: emoji }, { "Prefer": "resolution=merge-duplicates,return=minimal" })
     : await pedirNube("/rest/v1/me_gusta?publicacion=eq." + encodeURIComponent(id) + "&usuario=eq." + nube.id, "DELETE", null, { "Prefer": "return=minimal" });
   return { ok: r.ok };
+}
+
+// Convierte una publicación de la base de datos al formato de la app
+function postDeNube(x, perfilDe) {
+  const yo = nube.id;
+  const p = x.autor === yo ? null : perfilDe(x.autor);
+  const reacciones = (x.me_gusta || []).map(function (l) { return { u: l.usuario, r: l.reaccion || "♥" }; });
+  return { id: x.id, autorId: x.autor, mio: x.autor === yo, autor: x.autor === yo ? (estado ? estado.perfil.usuario : "") : (p ? p.nombre_usuario : "?"),
+    tipo: x.tipo, texto: x.texto, fecha: String(x.creado).slice(0, 10), detalle: x.detalle || null, reacciones: reacciones };
+}
+const CAMPOS_POST = "id,autor,tipo,texto,creado,detalle,me_gusta(usuario,reaccion)";
+
+// Últimas publicaciones de un amigo (para su perfil)
+async function cargarPostsDe(idAmigo) {
+  if (!(await tokenAlDia())) return null;
+  const r = await pedirNube("/rest/v1/publicaciones?select=" + CAMPOS_POST + "&autor=eq." + encodeURIComponent(idAmigo) + "&order=creado.desc&limit=20", "GET");
+  if (!r.ok) return null;
+  const perfil = function (id) { const a = socialNube.amigos.find(function (x) { return x.id === id; }); return a ? a.perfil : null; };
+  return r.datos.map(function (x) { return postDeNube(x, perfil); });
 }
 
 async function denunciarNube(id, motivo) {
@@ -402,12 +436,8 @@ async function cargarSocialNube() {
       else if (x.a === yo) socialNube.recibidas.push(item);
       else socialNube.enviadas.push(item);
     }
-    const po = await pedirNube("/rest/v1/publicaciones?select=id,autor,tipo,texto,creado,me_gusta(usuario)&order=creado.desc&limit=50", "GET");
-    socialNube.posts = po.ok ? po.datos.map(function (x) {
-      const p = x.autor === yo ? null : perfilDe(x.autor);
-      return { id: x.id, mio: x.autor === yo, autor: x.autor === yo ? (estado ? estado.perfil.usuario : "") : (p ? p.nombre_usuario : "?"),
-        tipo: x.tipo, texto: x.texto, fecha: String(x.creado).slice(0, 10), likes: (x.me_gusta || []).map(function (l) { return l.usuario; }) };
-    }) : [];
+    const po = await pedirNube("/rest/v1/publicaciones?select=" + CAMPOS_POST + "&order=creado.desc&limit=50", "GET");
+    socialNube.posts = po.ok ? po.datos.map(function (x) { return postDeNube(x, perfilDe); }) : [];
     socialNube.error = ""; socialNube.cargado = true;
   } finally {
     socialNube.cargando = false;
