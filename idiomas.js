@@ -10966,5 +10966,17 @@ const TRADUCCIONES = {
 "Sin permiso no puedo avisarte con la app cerrada": [
 "Without permission I can’t notify you when the app is closed",
 "Sans autorisation, je ne peux pas te prévenir quand l’app est fermée"
+],
+"Press de banca con barra": [
+"Barbell bench press",
+"Développé couché à la barre"
+],
+"Press de banca en multipower": [
+"Smith machine bench press",
+"Développé couché à la Smith machine"
+],
+"Press de banca con agarre cerrado": [
+"Close-grip bench press",
+"Développé couché prise serrée"
 ]
 };

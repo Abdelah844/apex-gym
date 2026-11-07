@@ -22,9 +22,9 @@ const EQUIPOS = { barra: "Barra", mancuernas: "Mancuernas", maquina: "Máquina",
 
 const EJERCICIOS = [
   // ---------- PECHO ----------
-  ej("press-banca", "Press banca con barra", "pecho", ["triceps", "hombros"], "barra", "Empuje horizontal", 2, true, [6, 10], 1.25,
+  ej("press-banca", "Press de banca con barra", "pecho", ["triceps", "hombros"], "barra", "Empuje horizontal", 2, true, [6, 10], 1.25,
     ["Túmbate con los ojos bajo la barra y los pies firmes en el suelo.", "Baja la barra controlada hasta la parte baja del pecho.", "Empuja hacia arriba sin despegar la espalda del banco."],
-    "Rebotar la barra en el pecho.", "Junta las escápulas antes de bajar la barra.", ["press-maquina", "press-inclinado-mancuernas", "flexiones"]),
+    "Rebotar la barra en el pecho.", "Junta las escápulas antes de bajar la barra.", ["press-banca-multipower", "press-plano-mancuernas", "press-maquina", "press-inclinado-mancuernas"]),
   ej("press-inclinado-mancuernas", "Press inclinado con mancuernas", "pecho", ["hombros", "triceps"], "mancuernas", "Empuje inclinado", 2, true, [8, 12], 0.42,
     ["Coloca el banco a unos 30 grados.", "Baja las mancuernas a los lados del pecho.", "Empuja hacia arriba juntándolas un poco."],
     "Inclinar demasiado el banco y trabajar solo hombro.", "Peso indicado por mancuerna.", ["press-banca", "press-maquina"]),
@@ -270,7 +270,7 @@ const EJERCICIOS = [
   // AMPLIACIÓN 2.5 · 46 ejercicios más (máquinas, poleas y variantes habituales)
   // =====================================================
   // ---------- PECHO ----------
-  ej("press-banca-multipower", "Press banca en multipower", "pecho", ["triceps", "hombros"], "maquina", "Empuje horizontal", 1, true, [6, 10], 1.1,
+  ej("press-banca-multipower", "Press de banca en multipower", "pecho", ["triceps", "hombros"], "maquina", "Empuje horizontal", 1, true, [6, 10], 1.1,
     ["Túmbate con la barra encima de la parte baja del pecho.", "Desbloquea la barra girándola y bájala controlada.", "Empuja hacia arriba sin despegar la espalda del banco."],
     "Colocar el banco mal y que la barra baje hacia el cuello.", "La guía hace el movimiento más estable: ideal para empezar a cargar.", ["press-banca", "press-maquina"]),
   ej("press-inclinado-maquina", "Press inclinado en máquina", "pecho", ["hombros", "triceps"], "maquina", "Empuje inclinado", 1, true, [8, 12], 0.95,
@@ -430,7 +430,7 @@ const EJERCICIOS = [
   ej("press-cerrado-multipower", "Press cerrado en multipower", "triceps", ["pecho", "hombros"], "maquina", "Empuje horizontal", 1, true, [6, 10], 0.95,
     ["Túmbate con las manos a la anchura de los hombros.", "Baja la barra con los codos pegados al cuerpo.", "Empuja hasta estirar los brazos."],
     "Abrir los codos.", "Ejercicio compuesto para tríceps.", ["press-banca-cerrado", "press-frances", "fondos"]),
-  ej("press-banca-cerrado", "Press banca con agarre cerrado", "triceps", ["pecho", "hombros"], "barra", "Empuje horizontal", 2, true, [6, 10], 1.0,
+  ej("press-banca-cerrado", "Press de banca con agarre cerrado", "triceps", ["pecho", "hombros"], "barra", "Empuje horizontal", 2, true, [6, 10], 1.0,
     ["Túmbate y coge la barra con las manos a la anchura de los hombros.", "Baja la barra a la parte baja del pecho con los codos pegados al cuerpo.", "Empuja hasta estirar los brazos."],
     "Juntar demasiado las manos y forzar las muñecas.", "Con el agarre cerrado trabajas más el tríceps que en el press normal.", ["press-cerrado-multipower", "press-banca", "fondos"]),
   // Tríceps con banco

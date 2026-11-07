@@ -662,7 +662,7 @@ const PRUEBAS = [
     sesionPrueba(fechaTexto(8), [["press-banca", [[60, 8]]]]);
     sesionPrueba(fechaTexto(1), [["press-banca", [[65, 8]]]]);
     const k = estadoMascota();
-    return (k.humor === "celebra" && k.mensaje.indexOf("65 kg") >= 0 && k.mensaje.indexOf("press banca") >= 0) || k.humor + ": " + k.mensaje;
+    return (k.humor === "celebra" && k.mensaje.indexOf("65 kg") >= 0 && k.mensaje.indexOf("press de banca") >= 0) || k.humor + ": " + k.mensaje;
   }],
   ["Mascota", "Se enfada cuando pierdes la racha y dice cuántas semanas tenías", function () {
     estadoPrueba();

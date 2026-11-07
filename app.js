@@ -1515,11 +1515,25 @@ function filaEj(e) {
     '<span class="grow"><span class="name">' + esc(e.nombre) + (fav ? ' <span style="color:var(--warn)">★</span>' : "") + ((estado.noDisponibles || []).includes(e.id) ? ' <span class="muted small">· no hay en tu gimnasio</span>' : "") + '</span><span class="muted small">' + GRUPOS[e.grupo] + ' · ' + EQUIPOS[e.equipo] + ' · ' + ["", "Básico", "Medio", "Avanzado"][e.nivel] + '</span></span></button>';
 }
 
+// Quita tildes y mayúsculas: "Pájaros" y "pajaros" se buscan igual
+function normalizar(texto) {
+  return String(texto).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+// Palabras que no importan al buscar
+const PALABRAS_VACIAS = ["de", "del", "con", "en", "la", "el", "los", "las", "a", "al", "y"];
+
+// ¿El ejercicio encaja con lo que se ha escrito? Tiene que contener todas las palabras importantes,
+// en español o en el idioma de la app (por ejemplo "bench press").
+function encajaBusqueda(e, texto) {
+  const palabras = normalizar(texto).split(/\s+/).filter(function (p) { return p && PALABRAS_VACIAS.indexOf(p) < 0; });
+  const nombre = normalizar(e.nombre + " " + tr(e.nombre) + " " + e.id.replace(/-/g, " "));
+  return palabras.every(function (p) { return nombre.includes(p); });
+}
+
 function pintarListaBib() {
-  const t = filtroBib.texto.toLowerCase();
   const lista = EJERCICIOS.filter(function (e) {
     return (!filtroBib.grupo || e.grupo === filtroBib.grupo) && (!filtroBib.equipo || e.equipo === filtroBib.equipo) &&
-      (!filtroBib.favoritos || estado.favoritos.includes(e.id)) && e.nombre.toLowerCase().includes(t);
+      (!filtroBib.favoritos || estado.favoritos.includes(e.id)) && encajaBusqueda(e, filtroBib.texto);
   });
   $("bibLista").innerHTML = lista.length ? lista.map(filaEj).join("") : '<p class="muted" style="padding:14px 0">No hay ejercicios con esos filtros.</p>';
 }
