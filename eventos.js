@@ -903,10 +903,29 @@ const ACCIONES = {
 };
 
 // Al terminar un entreno: si tienes cuenta y «Mostrar mis entrenos» activado, tus amigos lo ven en Actividad
+function puedeCompartirSolo() {
+  return conectado() && estado.modo !== "demo" && estado.ajustes.compartir !== false && estado.perfil.edad >= 16 && estado.ajustes.privacidad !== "privado";
+}
 async function compartirConAmigosAlTerminar(s) {
-  if (!s || !conectado() || estado.modo === "demo" || estado.ajustes.compartir === false || estado.perfil.edad < 16 || estado.ajustes.privacidad === "privado") return;
+  if (!s || s.publicadaNube || !puedeCompartirSolo()) return false;
   const r = await publicarNube(s.prs.length ? "record" : "entreno", textoSesion(s), detalleSesion(s));
   if (r.ok) { s.publicadaNube = true; guardar(); socialNube.cargado = false; }
+  return r.ok;
+}
+// Si al terminar no había conexión (o la sesión de la nube había caducado), se vuelve a intentar
+// después con los entrenos de los últimos 3 días que aún no se han compartido.
+let reintentandoCompartir = false;
+async function compartirPendientes() {
+  if (reintentandoCompartir || !puedeCompartirSolo()) return;
+  reintentandoCompartir = true;
+  try {
+    const desde = sumarDias(hoy(), -3);
+    let alguno = false;
+    for (const s of estado.sesiones) {
+      if (s.fecha >= desde && !s.publicadaNube) { if (await compartirConAmigosAlTerminar(s)) alguno = true; else break; }
+    }
+    if (alguno) { await cargarSocialNube(); if (tab === "social") pintarSocial(); }
+  } finally { reintentandoCompartir = false; }
 }
 
 // ---------- Ayudas para la cuenta ----------
@@ -1208,13 +1227,16 @@ abrirEnlaceAmigo();
 if (hayPoliticaNueva() && $("hoja").hidden) hojaPoliticaNueva();
 // Cuenta en la nube: al abrir la app, al recuperar internet y al volver a la app
 procesarVueltaCorreo().then(function (hecho) { if (!hecho && conectado()) sincronizarYAvisar(false); });
-window.addEventListener("online", function () { if (conectado()) sincronizarYAvisar(false); });
+window.addEventListener("online", function () { if (conectado()) { sincronizarYAvisar(false); compartirPendientes(); } });
 let ultimaVueltaNube = 0;
 document.addEventListener("visibilitychange", function () {
   if (document.visibilityState !== "visible" || !conectado() || Date.now() - ultimaVueltaNube < 60000) return;
   ultimaVueltaNube = Date.now();
   sincronizarYAvisar(false);
+  compartirPendientes();
 });
+// Al abrir la app: comparte los entrenos recientes que no se pudieron compartir al terminar
+setTimeout(compartirPendientes, 3000);
 // Avisos push: al abrir la app y al volver a ella (como mucho una vez cada 10 minutos)
 sincronizarAvisosPush();
 let ultimaSyncPush = Date.now();
