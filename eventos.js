@@ -598,7 +598,6 @@ const ACCIONES = {
     const r = await reaccionarNube(id, quitar ? "" : emoji);
     if (!r.ok) { toast("No se pudo guardar la reacción"); await cargarSocialNube(); repintarSocial(); }
   },
-  "filtro-actividad": function (v) { filtroActividad = v; pintarSocial(); },
   "ver-amigo": function (id) { hojaAmigo(id); },
   "ver-post": function (id) { hojaPost(id); },
   "historial-mas": function () { semanasHistorial += 8; pintarProgreso(); },

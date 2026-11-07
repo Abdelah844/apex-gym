@@ -10946,5 +10946,13 @@ const TRADUCCIONES = {
 "Coges la barra en V por encima, con las manos juntas y las palmas mirando un poco hacia abajo.": [
 "You hold the V-bar from above, hands together and palms facing slightly down.",
 "Tu prends la barre en V par-dessus, mains jointes et paumes légèrement vers le bas."
+],
+"Mi actividad": [
+"My activity",
+"Mon activité"
+],
+"Toca a un amigo para ver su perfil y sus entrenos.": [
+"Tap a friend to see their profile and workouts.",
+"Touche un ami pour voir son profil et ses séances."
 ]
 };

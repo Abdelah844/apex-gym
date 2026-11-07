@@ -1082,10 +1082,10 @@ function amigosNubeHtml() {
     h += '</div></div>';
   }
   const ranking = rankingAmigos();
-  h += '<div class="card"><h3>Ranking de amigos</h3><div class="list">';
+  h += '<div class="card"><h3>Ranking de amigos</h3>' + (ranking.length > 1 ? '<p class="muted small">Toca a un amigo para ver su perfil y sus entrenos.</p>' : "") + '<div class="list">';
   if (ranking.length <= 1) h += '<p class="muted" style="padding-top:8px">Aún no tienes amigos. Añade a alguien por su usuario para competir en el ranking.</p>';
   ranking.forEach(function (a, i) {
-    h += '<div class="item" style="align-items:flex-start"><span class="num" style="width:22px;font-weight:700">' + (i + 1) + '</span>' + insignia(a.rango, "sm") + '<div class="grow bloque">' + (a.yo ? '<span class="name">@' + esc(a.usuario || "?") + ' (tú)</span>' : '<button class="link-nombre name" data-act="ver-amigo" data-a="' + esc(a.id) + '">@' + esc(a.usuario || "?") + ' ›</button>') +
+    h += '<div class="item' + (a.yo ? '' : ' tocable') + '" style="align-items:flex-start"' + (a.yo ? '' : ' data-act="ver-amigo" data-a="' + esc(a.id) + '"') + '><span class="num" style="width:22px;font-weight:700">' + (i + 1) + '</span>' + insignia(a.rango, "sm") + '<div class="grow bloque">' + (a.yo ? '<span class="name">@' + esc(a.usuario || "?") + ' (tú)</span>' : '<button class="link-nombre name" data-act="ver-amigo" data-a="' + esc(a.id) + '">@' + esc(a.usuario || "?") + ' ›</button>') +
       '<span class="muted small">' + nombreRango(a.rango) + ' · racha ' + a.racha + ' sem · ' + a.entrenos + ' entrenos</span>' +
       (a.marcas.length ? '<span class="small">' + a.marcas.map(function (r) { return esc(r.n) + ' ' + String(r.p).replace(".", ",") + '×' + r.r; }).join(" · ") + '</span>' : "") + '</div>' +
       (a.yo ? "" : '<button class="btn-txt small btn-danger" data-act="social-quitar" data-a="' + esc(a.id) + '">' + (confirmar === "social-quitar" + a.id ? "¿Seguro?" : "Quitar") + '</button>') + '</div>';
@@ -1113,13 +1113,10 @@ function actividadNubeHtml() {
   h += '</div>';
   const carga = estadoCargaSocial();
   if (carga) return h + carga;
-  const filtros = [["todos", "Todo"], ["amigos", "Amigos"], ["mios", "Míos"]];
-  h += '<div class="seg">' + filtros.map(function (o) { return '<button data-act="filtro-actividad" data-a="' + o[0] + '" class="' + (filtroActividad === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div>';
-  const posts = socialNube.posts.filter(function (x) {
-    return filtroActividad === "todos" || (filtroActividad === "mios" ? x.mio : !x.mio);
-  });
-  h += '<div class="card"><div>';
-  if (posts.length === 0) h += '<p class="muted">' + (filtroActividad === "mios" ? "Aún no has compartido entrenos. Se comparten solos al terminar si tienes activado «Mostrar mis entrenos» en Ajustes." : "Todavía no hay actividad. Cuando tus amigos entrenen, lo verás aquí.") + '</p>';
+  // En Actividad solo salen TUS entrenos. Los de cada amigo están en su perfil (pestaña Amigos).
+  const posts = socialNube.posts.filter(function (x) { return x.mio; });
+  h += '<div class="card"><h3>Mi actividad</h3><div>';
+  if (posts.length === 0) h += '<p class="muted">Aún no has compartido entrenos. Se comparten solos al terminar si tienes activado «Mostrar mis entrenos» en Ajustes.</p>';
   for (const x of posts) h += postNubeHtml(x);
   return h + '</div></div><button class="btn-txt" data-act="social-recargar">Actualizar</button>';
 }
@@ -1149,7 +1146,6 @@ function postNubeHtml(x) {
 }
 
 // ---------- Perfil de un amigo y detalle de un entreno ----------
-let filtroActividad = "todos";
 let hojaSocial = null;           // qué hoja social está abierta: { tipo: "amigo"|"post", id }
 const postsAmigo = {};           // publicaciones de cada amigo ya cargadas
 
@@ -1177,7 +1173,7 @@ function hojaAmigo(id, mantener) {
   if (marcas.length) h += '<div class="card"><h3>Sus mejores marcas</h3><div class="list">' + marcas.map(function (r) {
     return '<div class="item"><div class="grow"><span class="name small">' + esc(r.n) + '</span></div><span class="num">' + String(r.p).replace(".", ",") + ' kg × ' + r.r + '</span></div>';
   }).join("") + '</div></div>';
-  h += '<div class="card"><h3>Sus últimos entrenos</h3><div>';
+  h += '<div class="card"><h3>Actividad</h3><div>';
   const lista = postsAmigo[id];
   if (lista === undefined) h += '<p class="muted">Cargando…</p>';
   else if (lista === null) h += '<p class="err small">No se han podido cargar. Prueba otra vez más tarde.</p>';
