@@ -89,6 +89,7 @@ function cargar() {
       let d = JSON.parse(t);
       if (!datosValidos(d)) continue;
       d = migrarDatos(d);
+      cuadrarCalendario(d.rutina);          // repara rutinas guardadas con el fallo del calendario
       const errores = validarEsquema(d);
       if (errores.length === 0) { estado = d; recuperadoDeCopia = i === 1; return; }
       legibles.push({ datos: d, errores: errores, copia: i === 1 });
@@ -116,6 +117,16 @@ const NOMBRES_DIAS_SEMANA = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes
 // Días de la semana propuestos según cuántos días entrenas (0 = lunes)
 function calendarioPorDefecto(n) {
   return ({ 1: [0], 2: [0, 3], 3: [0, 2, 4], 4: [0, 1, 3, 4], 5: [0, 1, 2, 4, 5], 6: [0, 1, 2, 3, 4, 5] })[n] || [0, 2, 4];
+}
+
+// Si cambia el número de días de la rutina (añadir, duplicar o borrar un día),
+// el calendario semanal tiene que tener el mismo número de días.
+function cuadrarCalendario(r) {
+  if (!r || !Array.isArray(r.dias)) return;
+  const n = r.dias.length;
+  if (Array.isArray(r.calendario) && r.calendario.length === n) return;
+  if (n <= 6) r.calendario = calendarioPorDefecto(n);
+  else r.calendario = [0, 1, 2, 3, 4, 5, 6].slice(0, n);
 }
 
 function metricasVacias() {

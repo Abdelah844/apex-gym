@@ -657,6 +657,17 @@ const PRUEBAS = [
     return !validarImport(JSON.stringify(mal)).ok || "Aceptó una máquina inventada";
   }],
   // ===== Apix, la mascota =====
+  ["Rutinas", "Añadir, duplicar o borrar un día mantiene el calendario cuadrado", function () {
+    estadoPrueba();
+    estado.rutina = { nombre: "Prueba", dias: [{ nombre: "A", ejercicios: [] }, { nombre: "B", ejercicios: [] }, { nombre: "C", ejercicios: [] }], calendario: [0, 2, 4] };
+    const r = estado.rutina;
+    r.dias.push({ nombre: "Extra", ejercicios: [] }); cuadrarCalendario(r);
+    if (r.calendario.length !== r.dias.length) return "al añadir: " + r.calendario.length + " vs " + r.dias.length;
+    r.dias.splice(0, 2); cuadrarCalendario(r);
+    if (r.calendario.length !== r.dias.length) return "al borrar: " + r.calendario.length + " vs " + r.dias.length;
+    r.calendario = [0]; cuadrarCalendario(r);
+    return validarEsquema(estado).length === 0 || validarEsquema(estado).join("; ");
+  }],
   ["Mascota", "Felicita al superar un peso que antes no podías, nombrando el ejercicio y el peso", function () {
     estadoPrueba();
     sesionPrueba(fechaTexto(8), [["press-banca", [[60, 8]]]]);

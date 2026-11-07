@@ -137,6 +137,7 @@ const ACCIONES = {
   "editar-dia": function (i) { confirmar = ""; hojaEditarDia(parseInt(i)); },
   "anadir-dia": function () {
     estado.rutina.dias.push({ nombre: "Día " + (estado.rutina.dias.length + 1), ejercicios: [] });
+    cuadrarCalendario(estado.rutina);
     guardar(); hojaEditarDia(estado.rutina.dias.length - 1);
   },
   "dia-mover": function (i, k, dir) {
@@ -178,12 +179,14 @@ const ACCIONES = {
     const copia = JSON.parse(JSON.stringify(estado.rutina.dias[i]));
     copia.nombre += " (copia)";
     estado.rutina.dias.splice(parseInt(i) + 1, 0, copia);
+    cuadrarCalendario(estado.rutina);
     guardar(); hojaEditarDia(parseInt(i) + 1);
   },
   "dia-eliminar": function (i) {
     if (!pideConfirmar("dia-eliminar", function () { hojaEditarDia(parseInt(i)); })) return;
     estado.rutina.dias.splice(parseInt(i), 1);
     if (estado.rutina.dias.length === 0) estado.rutina = null;
+    else cuadrarCalendario(estado.rutina);
     guardar(); cerrarHoja(); pintar();
   },
 
