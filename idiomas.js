@@ -9873,7 +9873,7 @@ const TRADUCCIONES = {
 ],
 "Baja despacio sin soltar la tensión.": [
 "Lower slowly without losing tension.",
-"Descends lentement sans relâcher la tension."
+"Redescends lentement sans relâcher la tension."
 ],
 "Baja despacio y cambia de brazo.": [
 "Lower slowly and switch arms.",
@@ -10978,5 +10978,33 @@ const TRADUCCIONES = {
 "Press de banca con agarre cerrado": [
 "Close-grip bench press",
 "Développé couché prise serrée"
+],
+"Elevaciones laterales en máquina": [
+"Machine lateral raises",
+"Élévations latérales à la machine"
+],
+"Siéntate con el pecho contra el respaldo y los brazos en los cojines.": [
+"Sit with your chest against the backrest and your arms on the pads.",
+"Assieds-toi poitrine contre le dossier, bras sur les coussins."
+],
+"Encoger los hombros para subir.": [
+"Shrugging your shoulders to lift.",
+"Hausser les épaules pour monter."
+],
+"La máquina guía el movimiento: ideal para aprender o para acabar el hombro sin hacer trampa.": [
+"The machine guides the movement: great for learning or for finishing your shoulders without cheating.",
+"La machine guide le mouvement : idéal pour apprendre ou finir les épaules sans tricher."
+],
+"Ajusta el asiento: los hombros a la altura del eje de la máquina.": [
+"Adjust the seat: shoulders level with the machine’s pivot.",
+"Règle le siège : épaules à hauteur de l’axe de la machine."
+],
+"Codos apoyados en los cojines.": [
+"Elbows resting on the pads.",
+"Coudes appuyés sur les coussins."
+],
+"La foto es con mancuernas: en la máquina el movimiento es el mismo, pero empujas los cojines con los brazos.": [
+"The photo uses dumbbells: on the machine the movement is the same, but you push the pads with your arms.",
+"La photo est aux haltères : à la machine, le mouvement est le même, mais tu pousses les coussins avec les bras."
 ]
 };

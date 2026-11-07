@@ -5,7 +5,7 @@
 // Si cambias algún archivo, sube el número de VERSION para que los móviles descarguen la nueva.
 // =====================================================
 
-const VERSION = "apex-gym-2.23.1";
+const VERSION = "apex-gym-2.23.2";
 
 // Archivos que se guardan nada más instalar la app
 const ARCHIVOS = [

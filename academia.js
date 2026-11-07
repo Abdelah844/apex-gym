@@ -124,6 +124,7 @@ const TUTORIALES = {
   "aperturas-declinadas": { anim: "aperturas-declinado", prep: ["Pies sujetos en los rodillos.", "Mancuernas ligeras."], err: ["Bajar demasiado."], seg: ["Si notas tirón en el hombro, reduce el recorrido."] },
   "pullover-mancuerna": { anim: "pullover-banco", prep: ["Cruzado sobre el banco, solo la parte alta de la espalda apoyada.", "Sujeta la mancuerna por un disco con las dos manos."], err: ["Doblar mucho los codos."], seg: ["Empieza con poco peso: la mancuerna pasa sobre tu cara."] },
   "elevaciones-frontales": { anim: "elevacion-frontal", prep: ["Palmas hacia los muslos y codos casi rectos."], err: ["Balancearse."], seg: [] },
+  "elevaciones-maquina": { anim: "elevacion-lateral-sentado", prep: ["Ajusta el asiento: los hombros a la altura del eje de la máquina.", "Codos apoyados en los cojines."], err: ["Encoger los hombros."], seg: [] },
   "elevaciones-laterales-sentado": { anim: "elevacion-lateral-sentado", prep: ["Sentado en el extremo del banco, espalda recta."], err: ["Encoger los hombros."], seg: [] },
   "elevacion-lateral-inclinada": { anim: "lateral-tumbado", prep: ["Túmbate de lado sobre el respaldo inclinado."], err: ["Subir más allá de la vertical."], seg: [] },
   "pajaros-banco-inclinado": { anim: "pajaros-inclinado", prep: ["Pecho apoyado en el banco inclinado, brazos colgando."], err: ["Encoger los hombros."], seg: [] },
@@ -538,6 +539,7 @@ const FOTOS = {
   "pullover-mancuerna": "Straight-Arm_Dumbbell_Pullover",
   "elevaciones-frontales": "Front_Dumbbell_Raise",
   "elevaciones-laterales-sentado": "Seated_Side_Lateral_Raise",
+  "elevaciones-maquina": "Seated_Side_Lateral_Raise",
   "elevacion-lateral-inclinada": "One-Arm_Incline_Lateral_Raise",
   "pajaros-banco-inclinado": "Dumbbell_Lying_Rear_Lateral_Raise",
   "patada-triceps": "Tricep_Dumbbell_Kickback",
@@ -592,7 +594,8 @@ const FOTO_REFERENCIA = {
   "hip-thrust-maquina": "La foto es con barra: en la máquina el movimiento de cadera es el mismo.",
   "remo-barra-supino": "La foto es con agarre prono: aquí coge la barra con las palmas hacia arriba.",
   "remo-polea-barra-ancha": "La foto es con triángulo: aquí usa una barra larga con las manos más abiertas que los hombros.",
-  "remo-maquina-abierto": "La foto es con agarre neutro: aquí coge las asas horizontales y lleva los codos abiertos."
+  "remo-maquina-abierto": "La foto es con agarre neutro: aquí coge las asas horizontales y lleva los codos abiertos.",
+  "elevaciones-maquina": "La foto es con mancuernas: en la máquina el movimiento es el mismo, pero empujas los cojines con los brazos."
 };
 
 // Banco que usa cada ejercicio y su inclinación (cambia mucho qué parte del músculo trabaja).

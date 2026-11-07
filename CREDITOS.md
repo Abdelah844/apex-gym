@@ -105,6 +105,7 @@
 | jalon-estrecho | V-Bar_Pulldown |
 | jalon-cerrado | Close-Grip_Front_Lat_Pulldown |
 | extension-polea-v | Triceps_Pushdown_-_V-Bar_Attachment |
+| elevaciones-maquina | Seated_Side_Lateral_Raise (foto de referencia, con mancuernas) |
 | extension-una-mano-polea | Cable_One_Arm_Tricep_Extension |
 | jalon-supino | Underhand_Cable_Pulldowns |
 | pajaros-mancuernas | Reverse_Flyes |
