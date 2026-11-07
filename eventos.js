@@ -533,6 +533,14 @@ const ACCIONES = {
   // ---------- Social ----------
   "ir-amigos": function () { vistaSocial = "amigos"; irA("social"); },
   "ir-retos": function () { vistaSocial = "retos"; irA("social"); },
+  // Botón del descanso: pide permiso de notificaciones para oír el final con la app cerrada
+  "aviso-descanso": function () {
+    Notification.requestPermission().then(function (p) {
+      $("timerAviso").hidden = true;
+      if (p === "granted") { sincronizarAvisosPush(); toast("✓ Te avisaré al acabar el descanso", "ok"); }
+      else toast("Sin permiso no puedo avisarte con la app cerrada", "error");
+    });
+  },
   "activar-avisos": function () {
     if (permisoAvisos() === "no") { mensaje("Avisos", "Este navegador no permite avisos. En iPhone, primero añade la app a la pantalla de inicio."); return; }
     if (permisoAvisos() === "granted") {

@@ -2078,10 +2078,21 @@ function destello(color) {
 // TEMPORIZADOR DE DESCANSO
 // =====================================================
 
+// Para que suene el final del descanso con la app cerrada hacen falta notificaciones.
+// Si ya hay permiso, se apunta el móvil en el servidor; si no, se enseña un botón para pedirlo.
+function prepararAvisoDescanso() {
+  const boton = $("timerAviso");
+  boton.hidden = true;
+  if (typeof pushDisponible !== "function" || !pushDisponible() || estado.modo === "demo") return;
+  if (Notification.permission === "granted") { if (!pushActivo()) sincronizarAvisosPush(); }
+  else if (Notification.permission === "default") boton.hidden = false;
+}
+
 // La hora de fin se guarda en la sesión: sobrevive a bloquear el móvil y a recargar la página
 let tRest = 0, tTotal = 0, tFin = 0, tIntervalo = null;
 function empezarDescanso(seg, finGuardado) {
   tTotal = seg; tFin = finGuardado || Date.now() + seg * 1000; $("timer").hidden = false; document.body.classList.add("con-timer");
+  prepararAvisoDescanso();
   if (estado.activa && !finGuardado) { estado.activa.descanso = { fin: tFin, total: tTotal }; guardar(); }
   clearInterval(tIntervalo);
   let ultimoTic = null;

@@ -517,11 +517,6 @@ async function sincronizarAvisosPush() {
   if (!disp || pushOcupado) return false;
   pushOcupado = true;
   try {
-    if (!avisosActivados()) {                       // todo desactivado: se borra del servidor
-      await pedirNube("/rest/v1/rpc/borrar_avisos", "POST", { disp: disp }, null, true);
-      marcarPush("");
-      return false;
-    }
     const reg = await navigator.serviceWorker.ready;
     let sub = await reg.pushManager.getSubscription();
     if (!sub) {
@@ -529,7 +524,9 @@ async function sincronizarAvisosPush() {
       if (!r.ok || !r.datos) return false;
       sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: base64aBytes(r.datos) });
     }
-    const lista = planAvisos(new Date(), 21).map(function (a) {
+    // Si los recordatorios están apagados, el móvil se apunta igual (lista vacía):
+    // así sigue funcionando el aviso de fin de descanso con la app cerrada.
+    const lista = (avisosActivados() ? planAvisos(new Date(), 21) : []).map(function (a) {
       return { cuando: a.cuando, titulo: tr(a.titulo), texto: tr(a.texto) };   // se guardan ya traducidos
     });
     const g = await pedirNube("/rest/v1/rpc/guardar_avisos", "POST", { disp: disp, sub: sub.toJSON(), lista: lista }, null, true);

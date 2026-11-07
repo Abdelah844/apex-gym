@@ -10954,5 +10954,17 @@ const TRADUCCIONES = {
 "Toca a un amigo para ver su perfil y sus entrenos.": [
 "Tap a friend to see their profile and workouts.",
 "Touche un ami pour voir son profil et ses séances."
+],
+"🔔 Avisarme al acabar aunque salga de la app": [
+"🔔 Notify me when it ends, even if I leave the app",
+"🔔 Me prévenir à la fin, même si je quitte l’app"
+],
+"✓ Te avisaré al acabar el descanso": [
+"✓ I’ll let you know when your rest is over",
+"✓ Je te préviendrai à la fin du repos"
+],
+"Sin permiso no puedo avisarte con la app cerrada": [
+"Without permission I can’t notify you when the app is closed",
+"Sans autorisation, je ne peux pas te prévenir quand l’app est fermée"
 ]
 };

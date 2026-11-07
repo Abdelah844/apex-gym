@@ -5,7 +5,7 @@
 // Si cambias algún archivo, sube el número de VERSION para que los móviles descarguen la nueva.
 // =====================================================
 
-const VERSION = "apex-gym-2.21.1";
+const VERSION = "apex-gym-2.22.0";
 
 // Archivos que se guardan nada más instalar la app
 const ARCHIVOS = [
@@ -65,7 +65,8 @@ self.addEventListener("push", function (evento) {
   let datos = {};
   try { datos = evento.data ? evento.data.json() : {}; } catch (e) { datos = { texto: evento.data ? evento.data.text() : "" }; }
   evento.waitUntil(self.registration.showNotification(datos.titulo || "Apex Gym", {
-    body: datos.texto || "", icon: "iconos/icono-192.png", badge: "iconos/icono-192.png", tag: "apex-recordatorio"
+    body: datos.texto || "", icon: "iconos/icono-192.png", badge: "iconos/icono-192.png", tag: "apex-recordatorio",
+    renotify: true, vibrate: [300, 150, 300, 150, 300]   // vuelve a sonar y vibra aunque ya hubiera otro aviso
   }));
 });
 
