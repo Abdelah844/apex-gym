@@ -90,7 +90,7 @@
 | face-pull | Face_Pull |
 | flexiones | Pushups |
 | fondos | Dips_-_Chest_Version |
-| fondos-asistidos | Dips_-_Chest_Version (foto de referencia: mismo movimiento con otro material) |
+| fondos-asistidos | Imágenes generadas por IA (aportadas por el autor de la app) |
 | fondos-banco | Bench_Dips |
 | gemelo-sentado | Seated_Calf_Raise |
 | gemelos-mancuerna | Standing_Dumbbell_Calf_Raise |

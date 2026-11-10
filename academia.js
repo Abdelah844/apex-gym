@@ -497,7 +497,7 @@ const FOTOS = {
   "curl-maquina": "Machine_Preacher_Curls",
   "sentadilla-bulgara": "Split_Squat_with_Dumbbells",
   "dominadas-asistidas": "IA",   // imágenes generadas por IA
-  "fondos-asistidos": "Dips_-_Chest_Version",
+  "fondos-asistidos": "IA",   // imágenes generadas por IA
   "hip-thrust-maquina": "Barbell_Hip_Thrust",
   "press-banca-multipower": "Smith_Machine_Bench_Press",
   "press-inclinado-maquina": "Leverage_Incline_Chest_Press",
@@ -589,7 +589,6 @@ const SIN_FOTO = {};
 // Fotos de referencia: muestran el MISMO movimiento hecho con otro material.
 // Se avisa debajo de la foto para que nadie se confunda de máquina.
 const FOTO_REFERENCIA = {
-  "fondos-asistidos": "La foto son fondos libres: en la máquina haces lo mismo con las rodillas apoyadas.",
   "hip-thrust-maquina": "La foto es con barra: en la máquina el movimiento de cadera es el mismo.",
   "remo-barra-supino": "La foto es con agarre prono: aquí coge la barra con las palmas hacia arriba.",
   "remo-polea-barra-ancha": "La foto es con triángulo: aquí usa una barra larga con las manos más abiertas que los hombros.",
