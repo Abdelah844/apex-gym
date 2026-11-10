@@ -187,7 +187,7 @@ const EJERCICIOS = [
   ej("prensa", "Prensa de piernas", "cuadriceps", ["gluteos"], "maquina", "Sentadilla", 1, true, [8, 12], 3.0,
     ["Pies en la plataforma a la anchura de la cadera.", "Baja hasta 90 grados de rodilla.", "Empuja sin bloquear las rodillas."],
     "Despegar la cadera del asiento.", "Controla la bajada.", ["sentadilla", "hack"]),
-  ej("hack", "Hack squat", "cuadriceps", ["gluteos"], "maquina", "Sentadilla", 2, true, [8, 12], 2.0,
+  ej("hack", "Sentadilla hack (hack squat)", "cuadriceps", ["gluteos"], "maquina", "Sentadilla", 2, true, [8, 12], 2.0,
     ["Espalda contra el respaldo, hombros bajo los soportes.", "Baja doblando las rodillas.", "Sube empujando la plataforma."],
     "Bajar poco.", "Pies un poco adelantados si notas las rodillas.", ["prensa", "sentadilla"]),
   ej("extension-cuadriceps", "Extensión de cuádriceps", "cuadriceps", [], "maquina", "Extensión de rodilla", 1, false, [10, 15], 1.0,

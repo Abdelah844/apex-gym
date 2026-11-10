@@ -11018,5 +11018,9 @@ const TRADUCCIONES = {
 "Te llegan a esa hora aunque tengas la app cerrada. Máximo {n} al día.": [
 "They arrive at that time even if the app is closed. Max {n} a day.",
 "Ils arrivent à cette heure-là même si l’app est fermée. {n} par jour maximum."
+],
+"Sentadilla hack (hack squat)": [
+"Hack squat",
+"Hack squat"
 ]
 };
