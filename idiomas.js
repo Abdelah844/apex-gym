@@ -11010,5 +11010,13 @@ const TRADUCCIONES = {
 "Imágenes generadas por IA.": [
 "AI-generated images.",
 "Images générées par IA."
+],
+"¡Hola! Soy Apix y estaré aquí para que cumplas tus objetivos.": [
+"Hi! I’m Apix and I’ll be here to help you reach your goals.",
+"Salut ! Je suis Apix et je serai là pour que tu atteignes tes objectifs."
+],
+"Te llegan a esa hora aunque tengas la app cerrada. Máximo {n} al día.": [
+"They arrive at that time even if the app is closed. Max {n} a day.",
+"Ils arrivent à cette heure-là même si l’app est fermée. {n} par jour maximum."
 ]
 };

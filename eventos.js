@@ -41,6 +41,7 @@ const ACCIONES = {
     if (!acepta) return;
     estado = estadoVacio(p);
     estado.ajustes.privacidadAceptada = hoy() + " v" + VERSION_PRIVACIDAD;
+    estado.bienvenidaApix = hoy();          // Apix se presenta solo el día que creas tu perfil
     estado.rutina = generarRutina({ objetivo: p.objetivo, nivel: p.experiencia, dias: p.dias, duracion: p.duracion,
       tipo: "auto", equipo: p.equipo, prioridad: "", evitar: p.evitar });
     guardar(); tab = "inicio"; pintar();

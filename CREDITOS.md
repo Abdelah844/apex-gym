@@ -72,7 +72,7 @@
 | curl-polea | Standing_Biceps_Cable_Curl |
 | curl-predicador | Preacher_Curl |
 | dominadas | Pullups |
-| dominadas-asistidas | Band_Assisted_Pull-Up (foto de referencia: mismo movimiento con otro material) |
+| dominadas-asistidas | Imágenes generadas por IA (aportadas por el autor de la app) |
 | dominadas-supinas | Chin-Up |
 | elevacion-piernas | Hanging_Leg_Raise |
 | elevaciones-frontales-polea | Front_Cable_Raise |

@@ -128,6 +128,10 @@ function estadoMascota() {
   const validas = sesionesValidas();
   const ultima = validas[validas.length - 1];
 
+  // 0. Bienvenida: solo el día que creas el perfil y mientras no hayas entrenado
+  if (estado.bienvenidaApix === hoyF && validas.length === 0) {
+    return { humor: "contento", mensaje: "¡Hola! Soy Apix y estaré aquí para que cumplas tus objetivos." };
+  }
   // 1. Molestias recientes: nunca presionar
   if (ultima && diasEntre(ultima.fecha, hoyF) <= 3 && ultima.ejercicios.some(function (e) { return e.molestias; })) {
     return { humor: "cuida", mensaje: mensajeDelDia(MENSAJES_APIX.cuida, hoyF) };

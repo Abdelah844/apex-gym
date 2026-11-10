@@ -1911,7 +1911,7 @@ function hojaAjustes() {
       chk("nRec", n.recordatorios, "Recordatorio los días de entreno") + chk("nRacha", n.racha !== false, "Aviso si tu racha está en peligro") + chk("nReto", n.retos !== false, "Aviso del último día de un reto") +
       '<label class="f">Hora del recordatorio<select id="nHora">' + opciones([[8, "8:00"], [10, "10:00"], [12, "12:00"], [16, "16:00"], [17, "17:00"], [18, "18:00"], [19, "19:00"], [20, "20:00"]], n.hora || 18) + '</select></label>' +
       '<button class="btn-sec" data-act="activar-avisos">' + (permisoAvisos() === "granted" ? "✓ Avisos activados en este móvil · Probar" : "Activar avisos en este móvil") + '</button>' +
-      '<p class="muted small">' + (permisoAvisos() === "denied" ? "Has bloqueado los avisos. Actívalos en los ajustes del navegador." : (permisoAvisos() === "no" ? "Este navegador no permite avisos. En iPhone, instala la app en la pantalla de inicio." : "Llegan si abres la app ese día o la tienes en segundo plano. Máximo 1 al día.")) + '</p>' +
+      '<p class="muted small">' + (permisoAvisos() === "denied" ? "Has bloqueado los avisos. Actívalos en los ajustes del navegador." : (permisoAvisos() === "no" ? "Este navegador no permite avisos. En iPhone, instala la app en la pantalla de inicio." : (pushActivo() ? "Te llegan a esa hora aunque tengas la app cerrada. Máximo 1 al día." : "Llegan si abres la app ese día o la tienes en segundo plano. Máximo 1 al día."))) + '</p>' +
       chk("nRecords", n.records, "Récords personales") + chk("nRangos", n.rangos, "Ascensos de rango") + chk("nSemanal", n.semanal, "Resumen semanal") +
       '</div>' +
     '<button class="btn" data-act="guardar-ajustes">Guardar cambios</button><p class="muted small" id="aOk"></p>' +
