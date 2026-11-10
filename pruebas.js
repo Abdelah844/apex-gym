@@ -657,6 +657,17 @@ const PRUEBAS = [
     return !validarImport(JSON.stringify(mal)).ok || "Aceptó una máquina inventada";
   }],
   // ===== Apix, la mascota =====
+  ["Unidades", "En libras se guarda en kg y se ve en lb sin perder precisión", function () {
+    estadoPrueba();
+    estado.ajustes.unidad = "lb";
+    const kg = pesoDesdeVista(135);                         // escribes 135 lb
+    if (Math.abs(kg - 61.235) > 0.01) return "135 lb deberían ser 61,23 kg y son " + kg;
+    if (pesoVista(kg) !== 135) return "al volver a verlo sale " + pesoVista(kg);
+    if (pesoVista(100) !== 220.5) return "100 kg deberían verse como 220,5 lb";
+    if (convertirUnidades("Récord: 100 kg × 5").indexOf("lb") < 0) return "el texto no se convierte";
+    estado.ajustes.unidad = "kg";
+    return pesoVista(80) === 80 && pesoDesdeVista(80) === 80 || "en kg no debe cambiar nada";
+  }],
   ["Rutinas", "Añadir, duplicar o borrar un día mantiene el calendario cuadrado", function () {
     estadoPrueba();
     estado.rutina = { nombre: "Prueba", dias: [{ nombre: "A", ejercicios: [] }, { nombre: "B", ejercicios: [] }, { nombre: "C", ejercicios: [] }], calendario: [0, 2, 4] };

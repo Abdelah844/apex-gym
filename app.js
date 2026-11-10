@@ -33,6 +33,8 @@ function esc(t) {
   });
 }
 
+// Texto de los botones −/+ del peso (en libras: 5 lb o 2,5 lb)
+function textoPaso(paso) { return usaLibras() ? numero(Math.abs(paso) >= 2 ? 5 : 2.5) + " lb" : numero(paso) + " kg"; }
 function kg(n) { return (Math.round(n * 10) / 10).toLocaleString(localeApp()) + " kg"; }
 function miles(n) { return Math.round(n).toLocaleString(localeApp()); }
 
@@ -384,7 +386,7 @@ function pintarInicio() {
   let fuerza = "—";
   if (pg !== null && hace4 !== null) { const d = pg - hace4; fuerza = (d >= 0 ? "+" : "") + d.toFixed(1); }
   h += '<div class="grid3">' +
-    '<div class="card"><p class="label">Peso</p><div class="big-num num">' + (pesoC ? pesoC : "—") + '</div><p class="muted small">kg</p></div>' +
+    '<div class="card"><p class="label">Peso</p><div class="big-num num">' + (pesoC ? numero(pesoVista(pesoC)) : "—") + '</div><p class="muted small">' + unidadPeso() + '</p></div>' +
     '<div class="card"><p class="label">Fuerza</p><div class="big-num num">' + fuerza + '</div><p class="muted small">pts · 4 sem</p></div>' +
     '<div class="card"><p class="label">Entrenos</p><div class="big-num num">' + estado.sesiones.length + '</div><p class="muted small">en total</p></div>' +
   '</div>';
@@ -601,6 +603,7 @@ function tarjetaEjercicio(ei) {
     '<div class="ex-head">' + (fotosEj ? '<button class="foto-mini" data-act="info-ej" data-a="' + e.id + '" aria-label="Ver técnica"><img src="' + fotosEj[0] + '" alt="" decoding="async"></button>' : insignia(pr === null ? null : rangoDePuntos(pr), "sm")) +
     '<div class="grow"><p class="label">Ejercicio ' + (ei + 1) + ' de ' + a.ejercicios.length + (e.superserie ? ' · superserie con el siguiente' : (ei > 0 && a.ejercicios[ei - 1].superserie ? ' · superserie con el anterior' : "")) + '</p><h3>' + esc(ej.nombre) + '</h3>' +
     '<p class="muted small num">' + e.objetivo.series + ' × ' + e.objetivo.repMin + '-' + e.objetivo.repMax + ' · descanso ' + e.objetivo.descanso + ' s</p>' +
+    lineaAjusteMaquina(e.id) +
     (BANCO[e.id] ? '<p class="small banco-linea">🪑 <span>' + BANCO[e.id][0] + '</span></p>' : "") +
     (AGARRE[e.id] ? '<p class="small banco-linea">✋ <span>' + TIPOS_AGARRE[AGARRE[e.id]].nombre + '</span></p>' : "") +
     (record ? '<p class="small" style="color:var(--pr);font-weight:700">Récord: ' + numero(record.peso) + ' kg × ' + record.reps + '</p>' : "") + '</div>' +
@@ -642,14 +645,14 @@ function tarjetaEjercicio(ei) {
     h += '<div class="serie-fila ts-fila' + clase + '" role="row">' +
       '<button class="n" data-act="foco-serie" data-a="' + ei + '" data-b="' + j + '" aria-label="Serie ' + (j + 1) + '">' + (ETIQUETA_TIPO[x.tipo] || (j + 1)) + '</button>' +
       (previa === "—" ? '<span class="previa num">—</span>' : '<button class="previa num" data-act="copiar-anterior" data-a="' + ei + '" data-b="' + j + '" title="Copiar la marca anterior">' + previa + '</button>') +
-      '<input type="text" inputmode="decimal" autocomplete="off" value="' + numero(x.peso) + '" data-in="peso" data-e="' + ei + '" data-s="' + j + '" aria-label="Kilos serie ' + (j + 1) + '"' + (x.hecha ? " readonly" : "") + '>' +
+      '<input type="text" inputmode="decimal" autocomplete="off" value="' + numero(pesoVista(x.peso)) + '" data-in="peso" data-e="' + ei + '" data-s="' + j + '" aria-label="Kilos serie ' + (j + 1) + '"' + (x.hecha ? " readonly" : "") + '>' +
       '<input type="number" inputmode="numeric" min="0" value="' + x.reps + '" data-in="reps" data-e="' + ei + '" data-s="' + j + '" aria-label="Repeticiones serie ' + (j + 1) + '"' + (x.hecha ? " readonly" : "") + '>' +
       '<button class="tick" data-act="marcar" data-a="' + ei + '" data-b="' + j + '" aria-label="' + (x.hecha ? "Desmarcar" : "Completar") + ' serie ' + (j + 1) + '">' + I.check + '</button></div>';
     // Debajo de la serie actual: ajuste rápido con botones grandes
     if (j === si) {
       h += '<div class="ajuste-rapido">' +
-        '<button data-act="paso" data-a="' + ei + '" data-b="' + j + '" data-c="peso:-' + paso + '">−' + numero(paso) + ' kg</button>' +
-        '<button data-act="paso" data-a="' + ei + '" data-b="' + j + '" data-c="peso:' + paso + '">+' + numero(paso) + ' kg</button>' +
+        '<button data-act="paso" data-a="' + ei + '" data-b="' + j + '" data-c="peso:-' + paso + '">−' + textoPaso(paso) + '</button>' +
+        '<button data-act="paso" data-a="' + ei + '" data-b="' + j + '" data-c="peso:' + paso + '">+' + textoPaso(paso) + '</button>' +
         '<button data-act="paso" data-a="' + ei + '" data-b="' + j + '" data-c="reps:-1">−1 rep</button>' +
         '<button data-act="paso" data-a="' + ei + '" data-b="' + j + '" data-c="reps:1">+1 rep</button></div>' +
         (e.series.length > 1 ? '<button class="btn-txt small btn-danger borrar-serie" data-act="borrar-serie" data-a="' + ei + '" data-b="' + j + '">🗑 Borrar serie ' + (j + 1) + '</button>' : '');
@@ -910,7 +913,7 @@ function pintarProgreso() {
   const fat = indiceFatiga();
   const colorFat = { "muy-alta": "var(--danger)", alta: "var(--warn)", normal: "var(--good)", baja: "var(--muted)", pocos: "var(--muted)" }[fat.nivel];
   h += '<div class="card stack"><div class="row between"><h3>Carga de entrenamiento</h3><div class="seg mini">' + [["semana", "Semanal"], ["mes", "Mensual"]].map(function (o) { return '<button data-act="vista-carga" data-a="' + o[0] + '" class="' + (vistaCarga === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div></div>' +
-    graficaBarras(serie.map(function (x) { return vistaCarga === "mes" ? MESES_CORTOS[parseInt(x.desde.slice(5, 7)) - 1] : fechaBonita(x.desde); }), serie.map(function (x) { return Math.round(x.carga.kg); }), "kg") +
+    graficaBarras(serie.map(function (x) { return vistaCarga === "mes" ? MESES_CORTOS[parseInt(x.desde.slice(5, 7)) - 1] : fechaBonita(x.desde); }), serie.map(function (x) { return Math.round(pesoVista(x.carga.kg)); }), unidadPeso()) +
     '<div class="fatiga" style="border-color:' + colorFat + '"><p class="label" style="color:' + colorFat + '">Fatiga · ' + { "muy-alta": "muy alta", alta: "alta", normal: "normal", baja: "baja", pocos: "sin datos" }[fat.nivel] + (fat.ratio ? ' (' + fat.ratio.toFixed(2).replace(".", ",") + ')' : "") + '</p><p class="small">' + fat.texto + '</p></div>' +
     '<p class="muted small">Tonelaje = kg × reps. La fatiga compara tus series de los últimos 7 días con tu media de las 4 semanas anteriores.</p></div>';
 
@@ -931,11 +934,11 @@ function pintarProgreso() {
       else if (porDia[s.fecha] === undefined || v > porDia[s.fecha]) porDia[s.fecha] = v;
     }
     const fechas = Object.keys(porDia).sort();
-    const unidades = { rm: "kg", peso: "kg", reps: "reps", tonelaje: "kg" };
+    const unidades = { rm: unidadPeso(), peso: unidadPeso(), reps: "reps", tonelaje: unidadPeso() };
     h += '<div class="card stack"><h3>Evolución por ejercicio</h3>' +
       '<select data-cambio="ej-grafica" aria-label="Ejercicio">' + hechos.map(function (id) { return '<option value="' + id + '"' + (id === ejGrafica ? " selected" : "") + '>' + esc(buscarEj(id).nombre) + '</option>'; }).join("") + '</select>' +
       '<div class="seg">' + [["rm", "1RM"], ["peso", "Peso máx."], ["reps", "Reps máx."], ["tonelaje", "Tonelaje"]].map(function (o) { return '<button data-act="metrica" data-a="' + o[0] + '" class="' + (metrica === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div>' +
-      graficaLinea(fechas.map(fechaBonita), fechas.map(function (f) { return porDia[f]; }), unidades[metrica]) +
+      graficaLinea(fechas.map(fechaBonita), fechas.map(function (f) { return metrica === "reps" ? porDia[f] : pesoVista(porDia[f]); }), unidades[metrica]) +
       (metrica === "rm" ? '<p class="muted small">1RM estimada con ' + FORMULAS_1RM[estado.ajustes.formula1RM || "epley"].nombre.replace(" (por defecto)", "") + '. Cámbiala en Ajustes.</p>' : "") +
       (metrica === "tonelaje" ? '<p class="muted small">Tonelaje externo de este ejercicio (kg × reps). ' + (ej.equipo === "corporal" ? "En este ejercicio no incluye tu peso corporal, así que puede ser 0." : "") + '</p>' : "") + '</div>';
   }
@@ -983,8 +986,8 @@ function pintarProgreso() {
 
   // Peso corporal
   const pc = estado.pesoCorporal.filter(function (x) { return enPeriodo(x.fecha, periodo); });
-  h += '<div class="card stack"><h3>Peso corporal</h3>' + graficaLinea(pc.map(function (x) { return fechaBonita(x.fecha); }), pc.map(function (x) { return x.kg; }), "kg") +
-    '<div class="row"><input id="nuevoPeso" type="text" inputmode="decimal" autocomplete="off" placeholder="Peso de hoy (kg)" aria-label="Peso de hoy"><button class="btn auto" data-act="guardar-peso">Guardar</button></div><p class="err" id="errPeso"></p></div>';
+  h += '<div class="card stack"><h3>Peso corporal</h3>' + graficaLinea(pc.map(function (x) { return fechaBonita(x.fecha); }), pc.map(function (x) { return pesoVista(x.kg); }), unidadPeso()) +
+    '<div class="row"><input id="nuevoPeso" type="text" inputmode="decimal" autocomplete="off" placeholder="Peso de hoy (' + unidadPeso() + ')" aria-label="Peso de hoy"><button class="btn auto" data-act="guardar-peso">Guardar</button></div><p class="err" id="errPeso"></p></div>';
 
   // Historial
   h += historialSemanasHtml();
@@ -1203,7 +1206,7 @@ function hojaPost(id, mantener) {
   let h = cabeceraHoja(esc(d.n), (x.mio ? "Tu entreno" : "@" + esc(x.autor)) + " · " + fechaBonita(x.fecha)) + '<div class="stack"><div class="grid3">' +
     '<div class="card"><p class="label">Duración</p><div class="big-num num">' + d.d + '</div><p class="muted small">min</p></div>' +
     '<div class="card"><p class="label">Ejercicios</p><div class="big-num num">' + d.e.length + '</div></div>' +
-    '<div class="card"><p class="label">Tonelaje</p><div class="big-num num">' + miles(d.v) + '</div><p class="muted small">kg</p></div></div>';
+    '<div class="card"><p class="label">Tonelaje</p><div class="big-num num">' + miles(pesoVista(d.v)) + '</div><p class="muted small">' + unidadPeso() + '</p></div></div>';
   for (const e of d.e) {
     const ej = buscarEj(e.i);
     h += '<div class="card stack tight"><div class="row between"><h3>' + esc(ej ? ej.nombre : e.i) + '</h3>' + ((d.p || []).indexOf(e.i) >= 0 ? '<span class="pill pr">Récord</span>' : "") + '</div>';
@@ -1539,6 +1542,28 @@ function pintarListaBib() {
 }
 
 // ---------- Ficha de la Academia ----------
+// ---------- Ajustes fijos de cada máquina ("asiento 4, respaldo 2") ----------
+const EQUIPO_CON_AJUSTES = ["maquina", "polea", "multipower"];
+function ajusteMaquina(id) { return (estado.ajustesMaquina || {})[id] || ""; }
+
+// Línea corta en la tarjeta del entreno: tu nota, o un enlace para apuntarla
+function lineaAjusteMaquina(id) {
+  const nota = ajusteMaquina(id);
+  if (nota) return '<button class="link-nombre small banco-linea" data-act="editar-ajuste" data-a="' + id + '">⚙️ <span>' + esc(nota) + '</span></button>';
+  const ej = buscarEj(id);
+  if (ej && EQUIPO_CON_AJUSTES.indexOf(ej.equipo) >= 0) return '<button class="btn-txt small banco-linea" data-act="editar-ajuste" data-a="' + id + '">⚙️ Apuntar ajustes de la máquina</button>';
+  return "";
+}
+
+function hojaAjusteMaquina(id) {
+  const ej = buscarEj(id);
+  abrirHoja(cabeceraHoja("Ajustes de la máquina", esc(ej.nombre)) + '<div class="stack">' +
+    '<p class="muted small">Apunta cómo dejas la máquina para no tener que acordarte: te saldrá cada vez que hagas este ejercicio.</p>' +
+    '<label class="f">Tus ajustes<input id="ajusteTxt" maxlength="80" placeholder="Ej.: asiento 4, respaldo 2, agarre medio" value="' + esc(ajusteMaquina(id)) + '"></label>' +
+    '<div class="grid2"><button class="btn-sec" data-act="borrar-ajuste" data-a="' + id + '">Borrar</button><button class="btn" data-act="guardar-ajuste" data-a="' + id + '">Guardar</button></div></div>');
+  setTimeout(function () { const i = $("ajusteTxt"); if (i) i.focus(); }, 50);
+}
+
 function hojaEjercicio(id) {
   const e = buscarEj(id);
   const f = fichaEjercicio(id);
@@ -1582,6 +1607,10 @@ function hojaEjercicio(id) {
   if (BANCO[id]) h += '<div class="card" style="padding:12px"><p class="label">🪑 Banco</p><p class="small"><b>' + BANCO[id][0] + '</b></p>' +
     (BANCO[id][1] ? '<p class="small muted">' + BANCO[id][1] + '</p>' : "") + '</div>';
 
+  // Tus ajustes de la máquina
+  if (ajusteMaquina(id) || EQUIPO_CON_AJUSTES.indexOf(e.equipo) >= 0)
+    h += '<div class="card row between" style="padding:12px;gap:10px"><div class="grow"><p class="label">⚙️ Mis ajustes</p><p class="small">' + (ajusteMaquina(id) ? "<b>" + esc(ajusteMaquina(id)) + "</b>" : '<span class="muted">Aún no has apuntado cómo dejas la máquina.</span>') + '</p></div>' +
+      '<button class="btn-sec small" data-act="editar-ajuste" data-a="' + id + '">' + (ajusteMaquina(id) ? "Cambiar" : "Apuntar") + '</button></div>';
   // Agarre (dibujo de frente: cambia qué músculo trabaja más)
   if (AGARRE[id]) { const ag = TIPOS_AGARRE[AGARRE[id]];
     h += '<div class="card" style="padding:12px"><p class="label">✋ Agarre</p><p class="small"><b>' + ag.nombre + '</b></p>' +
@@ -1648,7 +1677,7 @@ function hojaSesion(id) {
   let h = cabeceraHoja(esc(s.diaNombre), fechaBonita(s.fecha)) + '<div class="stack"><div class="grid3">' +
     '<div class="card"><p class="label">Duración</p><div class="big-num num">' + s.duracion + '</div><p class="muted small">min</p></div>' +
     '<div class="card"><p class="label">Series efectivas</p><div class="big-num num">' + s.seriesEfectivas + '</div>' + (s.enRevision ? '<p class="muted small">+' + s.enRevision + ' en revisión</p>' : "") + '</div>' +
-    '<div class="card"><p class="label">Tonelaje externo</p><div class="big-num num">' + miles(s.volumen) + '</div><p class="muted small">kg (sin peso corporal)</p></div></div>';
+    '<div class="card"><p class="label">Tonelaje externo</p><div class="big-num num">' + miles(pesoVista(s.volumen)) + '</div><p class="muted small">' + unidadPeso() + ' (sin peso corporal)</p></div></div>';
   for (const e of s.ejercicios) {
     h += '<div class="card stack tight"><div class="row between"><h3>' + esc(buscarEj(e.id).nombre) + '</h3>' + (s.prs.includes(e.id) ? '<span class="pill pr">Récord</span>' : "") + '</div>';
     e.series.forEach(function (x, i) {
@@ -1658,6 +1687,7 @@ function hojaSesion(id) {
     if (e.nota) h += '<p class="muted small">Nota: ' + esc(e.nota) + '</p>';
     h += '</div>';
   }
+  h += '<button class="btn full" data-act="compartir-imagen" data-a="' + s.id + '">📸 Compartir imagen del entreno</button>';
   h += '<button class="btn-sec full" data-act="editar-sesion" data-a="' + s.id + '">Corregir este entreno</button>';
   h += '<button class="btn-txt btn-danger" data-act="borrar-sesion" data-a="' + s.id + '">' + (confirmar === "borrar-sesion" ? "Pulsa otra vez para eliminar" : "Eliminar esta sesión") + '</button></div>';
   abrirHoja(h);
@@ -1671,7 +1701,7 @@ function hojaEditarSesion(id) {
     h += '<div class="card stack tight"><h3>' + esc(buscarEj(e.id).nombre) + '</h3>';
     e.series.forEach(function (x, si) {
       h += '<div class="row small"><span style="width:56px">Serie ' + (si + 1) + '</span>' +
-        '<input type="number" step="0.5" min="0" value="' + x.peso + '" id="ed-p-' + ei + '-' + si + '" aria-label="Kilos" style="padding:8px">' +
+        '<input type="number" step="0.5" min="0" value="' + pesoVista(x.peso) + '" id="ed-p-' + ei + '-' + si + '" aria-label="Kilos" style="padding:8px">' +
         '<span>kg ×</span><input type="number" min="0" value="' + x.reps + '" id="ed-r-' + ei + '-' + si + '" aria-label="Repeticiones" style="padding:8px">' +
         '<label class="row small" style="gap:4px"><input type="checkbox" id="ed-h-' + ei + '-' + si + '"' + (x.hecha ? " checked" : "") + ' style="width:18px;height:18px">hecha</label></div>';
     });
@@ -1760,7 +1790,7 @@ function hojaResumen(r) {
     '<div class="card"><p class="label">Duración</p><div class="big-num num">' + s.duracion + ' min</div></div>' +
     '<div class="card"><p class="label">Ejercicios</p><div class="big-num num">' + s.ejercicios.filter(function (e) { return e.series.some(function (x) { return x.hecha; }); }).length + '</div></div>' +
     '<div class="card"><p class="label">Series efectivas</p><div class="big-num num">' + s.seriesEfectivas + '</div></div>' +
-    '<div class="card"><p class="label">Tonelaje externo</p><div class="big-num num">' + miles(s.volumen) + '</div><p class="muted small">kg (sin peso corporal)</p></div></div>';
+    '<div class="card"><p class="label">Tonelaje externo</p><div class="big-num num">' + miles(pesoVista(s.volumen)) + '</div><p class="muted small">' + unidadPeso() + ' (sin peso corporal)</p></div></div>';
   if (r.anterior) {
     const ds = s.seriesEfectivas - r.anterior.seriesEfectivas;
     h += '<div class="card"><p class="label">Frente a la última vez (' + fechaBonita(r.anterior.fecha) + ')</p><p class="num"><b style="color:' + (ds >= 0 ? "var(--good)" : "var(--danger)") + '">' + (ds >= 0 ? "+" : "") + ds + '</b> series efectivas</p>' +
@@ -1776,7 +1806,8 @@ function hojaResumen(r) {
   h += '<div class="card stack tight"><h3>Compartir</h3><div class="grid2">' +
     (s.compartida ? '<button class="btn-sec" disabled>✓ En tu diario</button>' : '<button class="btn-sec" data-act="compartir-sesion" data-a="' + s.id + '">Guardar en mi diario</button>') +
     '<button class="btn" data-act="compartir-fuera" data-a="' + s.id + '">Enviar a amigos</button></div>' +
-    '<p class="muted small">«Enviar» abre WhatsApp, Instagram u otra app de tu móvil.</p></div>' +
+    '<button class="btn full" data-act="compartir-imagen" data-a="' + s.id + '">📸 Compartir imagen del entreno</button>' +
+    '<p class="muted small">Crea una imagen con tu entreno, tu rango y Apix para subirla a Instagram, TikTok o WhatsApp.</p></div>' +
     '<button class="btn-sec full" data-act="cerrar-hoja">Cerrar</button></div>';
   abrirHoja(h);
 }
@@ -1896,7 +1927,8 @@ function hojaAjustes() {
       '<label class="f">Incremento de mancuernas<select id="aIncMancuernas">' + opciones([[1, "1 kg"], [2, "2 kg"], [2.5, "2,5 kg"]], a.incrementoMancuernas) + '</select></label></div>' +
       '<label class="f">Fórmula del 1RM estimado<select id="aFormula">' + opciones(Object.keys(FORMULAS_1RM).map(function (k) { return [k, FORMULAS_1RM[k].nombre]; }), a.formula1RM || "epley") + '</select></label>' +
       '<p class="muted small" style="margin-top:-4px">Cambia el 1RM que ves en Progreso. Los rangos usan siempre Epley, para que sean justos para todos.</p>' +
-      '<label class="f">Unidades<select disabled><option>Kilogramos (kg)</option></select></label><p class="muted small">Las libras llegarán en una próxima versión.</p></div>' +
+      '<label class="f">Unidades<select id="aUnidad">' + opciones([["kg", "Kilogramos (kg)"], ["lb", "Libras (lb)"]], a.unidad || "kg") + '</select></label>' +
+      '<p class="muted small">Tus datos se guardan siempre igual: cambiar de unidad no pierde nada.</p></div>' +
     '<div class="card stack"><h3>Apariencia</h3><div class="seg">' + [["oscuro", "Oscuro"], ["claro", "Claro"], ["sistema", "Sistema"]].map(function (o) { return '<button data-act="tema" data-a="' + o[0] + '" class="' + (a.tema === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div></div>' +
     '<div class="card stack"><h3>Privacidad</h3><label class="f">Quién ve tu perfil<select id="aPrivacidad">' + opciones([["publico", "Todo el mundo"], ["amigos", "Solo amigos"], ["privado", "Solo yo"]], a.privacidad) + '</select></label>' +
       chk("aCompartir", a.compartir, "Mostrar mis entrenos a mis amigos") + '</div>' +
@@ -1906,6 +1938,7 @@ function hojaAjustes() {
     '<div class="card stack tight" id="aj-sonido"><h3>Sonido y vibración</h3>' + chk("aSonido", a.sonido !== false, "Efectos de sonido") + chk("aVibracion", a.vibracion !== false, "Vibración") +
       '<p class="muted small">Prueba los sonidos:</p><div class="chips" style="flex-wrap:wrap">' + [["serie", "Serie"], ["descanso", "Descanso"], ["record", "Récord"], ["rango", "Rango"], ["fin", "Fin"], ["racha", "Racha"], ["enfadado", "Apix enfadado"]].map(function (x) { return '<button class="chip" data-act="probar-sonido" data-a="' + x[0] + '">' + x[1] + '</button>'; }).join("") + '</div></div>' +
     '<div class="card stack tight"><h3>Apix, la mascota</h3>' + chk("aMascota", a.mascota !== false, "Mostrar a Apix en Inicio") +
+      '<button class="btn-sec" data-act="ver-tutorial">Ver el tutorial otra vez</button>' +
       '<p class="muted small">Te anima los días de entreno, se enfada si pierdes la racha y celebra tus récords. Tócalo en Inicio y te contestará.</p></div>' +
     '<div class="card stack tight" id="aj-avisos"><h3>Notificaciones</h3>' +
       chk("nRec", n.recordatorios, "Recordatorio los días de entreno") + chk("nRacha", n.racha !== false, "Aviso si tu racha está en peligro") + chk("nReto", n.retos !== false, "Aviso del último día de un reto") +
@@ -2219,6 +2252,41 @@ function hojaCopiar(texto) {
 
 function mensaje(titulo, texto) {
   abrirHoja(cabeceraHoja(esc(titulo), "") + '<div class="stack"><p>' + esc(texto) + '</p><button class="btn" data-act="cerrar-hoja">Entendido</button></div>');
+}
+
+// =====================================================
+// TUTORIAL DE BIENVENIDA: Apix enseña la app en 6 pasos la primera vez
+// =====================================================
+const PASOS_TUTORIAL = [
+  { tab: "inicio", humor: "contento", titulo: "¡Hola! Soy Apix 👋", texto: "Estaré aquí para que cumplas tus objetivos. Te enseño la app en 30 segundos." },
+  { tab: "inicio", humor: "anima", titulo: "Tu entreno de hoy", texto: "En Inicio ves qué te toca hoy. Pulsa «Empezar» y la app te guía ejercicio a ejercicio." },
+  { tab: "entrenar", humor: "anima", titulo: "Apunta cada serie", texto: "Escribe los kg y las repeticiones y pulsa ✓. El descanso empieza solo y te aviso cuando acabe." },
+  { tab: "rangos", humor: "contento", titulo: "Sube de rango", texto: "Cada músculo tiene su rango, de Hierro a Apex. Entrena equilibrado para subir tu rango global." },
+  { tab: "progreso", humor: "contento", titulo: "Mira cómo mejoras", texto: "Aquí tienes tus récords, tus entrenos por semanas y las gráficas de cada ejercicio." },
+  { tab: "social", humor: "anima", titulo: "Entrena con amigos", texto: "Si quieres, añade amigos, mira sus entrenos y reaccionad con 💪🔥. ¡A por ello!" }
+];
+let pasoTutorial = -1;
+
+function mostrarTutorial(paso) {
+  pasoTutorial = paso;
+  const p = PASOS_TUTORIAL[paso];
+  tab = p.tab; pintar(); window.scrollTo(0, 0);
+  // Resaltar la pestaña de abajo de la que habla este paso
+  for (const b of document.querySelectorAll("nav.tabs button")) b.classList.toggle("tuto-on", b.dataset.tab === p.tab);
+  $("tutoApix").innerHTML = apixSVG(p.humor);
+  $("tutoPaso").textContent = "Paso " + (paso + 1) + " de " + PASOS_TUTORIAL.length;
+  $("tutoTitulo").textContent = p.titulo;
+  $("tutoTexto").textContent = p.texto;
+  $("tutoBoton").textContent = paso === PASOS_TUTORIAL.length - 1 ? "¡Vamos!" : "Siguiente";
+  $("tutorial").hidden = false;
+}
+
+function cerrarTutorial() {
+  pasoTutorial = -1;
+  $("tutorial").hidden = true;
+  for (const b of document.querySelectorAll("nav.tabs button")) b.classList.remove("tuto-on");
+  estado.ajustes.tutorialVisto = true;
+  guardar(); tab = "inicio"; pintar();
 }
 
 function pintar() {

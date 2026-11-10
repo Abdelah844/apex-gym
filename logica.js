@@ -119,6 +119,15 @@ function calendarioPorDefecto(n) {
   return ({ 1: [0], 2: [0, 3], 3: [0, 2, 4], 4: [0, 1, 3, 4], 5: [0, 1, 2, 4, 5], 6: [0, 1, 2, 3, 4, 5] })[n] || [0, 2, 4];
 }
 
+// ---------- Unidades: todo se GUARDA en kg; si eliges libras, solo cambia lo que ves y escribes ----------
+const KG_A_LB = 2.20462;
+function usaLibras() { return !!(typeof estado !== "undefined" && estado && estado.ajustes && estado.ajustes.unidad === "lb"); }
+function unidadPeso() { return usaLibras() ? "lb" : "kg"; }
+// kg guardados → número que ves (en libras se redondea a media libra)
+function pesoVista(kg) { if (!usaLibras() || typeof kg !== "number") return kg; return Math.round(kg * KG_A_LB * 2) / 2; }
+// número que escribes → kg que se guardan
+function pesoDesdeVista(v) { if (!usaLibras() || typeof v !== "number" || isNaN(v)) return v; return Math.round(v / KG_A_LB * 1000) / 1000; }
+
 // Si cambia el número de días de la rutina (añadir, duplicar o borrar un día),
 // el calendario semanal tiene que tener el mismo número de días.
 function cuadrarCalendario(r) {
@@ -153,6 +162,7 @@ function estadoVacio(perfil) {
     favoritos: [],
     evitados: [],
     noDisponibles: [],      // máquinas que no hay en tu gimnasio
+    ajustesMaquina: {},     // nota fija por ejercicio: "asiento 4, respaldo 2"
     ascensos: [],
     social: { amigos: [], bloqueados: [], posts: [], retos: [], amigosReales: [] },
     denuncias: [],
@@ -168,7 +178,7 @@ function migrarDatos(d) {
   if (v < 2) {
     // v1 → v2: ajustes nuevos, lista de evitados
     const base = estadoVacio({ nombre: "", dias: 3 });
-    for (const k of ["ajustes", "favoritos", "evitados", "ascensos", "social", "pesoCorporal"]) if (d[k] === undefined) d[k] = base[k];
+    for (const k of ["ajustes", "favoritos", "evitados", "ascensos", "social", "pesoCorporal", "ajustesMaquina"]) if (d[k] === undefined) d[k] = base[k];
     for (const k in base.ajustes) if (d.ajustes[k] === undefined) d.ajustes[k] = base.ajustes[k];
     for (const k in base.social) if (d.social[k] === undefined) d.social[k] = base.social[k];
     if (d.rutina === undefined) d.rutina = null;
@@ -286,6 +296,9 @@ function validarEsquema(d) {
   comprobar(d.social && Array.isArray(d.social.posts) && Array.isArray(d.social.amigos) && Array.isArray(d.social.bloqueados) && Array.isArray(d.social.retos), "Datos sociales no válidos.");
   if (d.social && Array.isArray(d.social.posts)) comprobar(d.social.posts.every(function (x) { return typeof x.autorId === "string"; }), "Hay publicaciones sin autor.");
   comprobar(Array.isArray(d.favoritos) && Array.isArray(d.evitados) && Array.isArray(d.ascensos) && Array.isArray(d.denuncias), "Faltan listas internas.");
+  comprobar(d.ajustesMaquina === undefined || (typeof d.ajustesMaquina === "object" && !Array.isArray(d.ajustesMaquina) &&
+    Object.keys(d.ajustesMaquina).length <= 300 && Object.keys(d.ajustesMaquina).every(function (k) {
+      return k.length <= 60 && typeof d.ajustesMaquina[k] === "string" && d.ajustesMaquina[k].length <= 80; })), "Los ajustes de las máquinas no son válidos.");
   comprobar(Array.isArray(d.noDisponibles) && d.noDisponibles.every(function (id) { return buscarEj(id); }), "La lista de máquinas de tu gimnasio no es válida.");
   comprobar(Array.isArray(d.medidas) && d.medidas.every(function (m) {
     return fecha(m.fecha) && CAMPOS_MEDIDAS.every(function (c) { return m[c[0]] === null || numero(m[c[0]], 10, 250); });

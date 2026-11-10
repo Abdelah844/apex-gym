@@ -1265,7 +1265,7 @@ const TRADUCCIONES = {
 ],
 "Cambiar": [
 "Change",
-"Changer"
+"Modifier"
 ],
 "Cambiar el nombre de usuario no rompe tus publicaciones (id permanente)": [
 "Changing your username doesn’t break your posts (permanent id)",
@@ -11022,5 +11022,141 @@ const TRADUCCIONES = {
 "Sentadilla hack (hack squat)": [
 "Hack squat",
 "Hack squat"
+],
+"¡Hola! Soy Apix 👋": [
+"Hi! I’m Apix 👋",
+"Salut ! Je suis Apix 👋"
+],
+"Estaré aquí para que cumplas tus objetivos. Te enseño la app en {n} segundos.": [
+"I’ll be here to help you reach your goals. Let me show you the app in {n} seconds.",
+"Je serai là pour que tu atteignes tes objectifs. Je te montre l’app en {n} secondes."
+],
+"Tu entreno de hoy": [
+"Today’s workout",
+"Ta séance du jour"
+],
+"En Inicio ves qué te toca hoy. Pulsa «Empezar» y la app te guía ejercicio a ejercicio.": [
+"On Home you see what’s on today. Tap «Start» and the app guides you exercise by exercise.",
+"Dans Accueil, tu vois ce qui est prévu aujourd’hui. Touche « Commencer » et l’app te guide exercice par exercice."
+],
+"Apunta cada serie": [
+"Log every set",
+"Note chaque série"
+],
+"Escribe los kg y las repeticiones y pulsa ✓. El descanso empieza solo y te aviso cuando acabe.": [
+"Enter the weight and reps and tap ✓. The rest timer starts on its own and I’ll tell you when it’s over.",
+"Écris les kg et les répétitions et touche ✓. Le repos démarre tout seul et je te préviens à la fin."
+],
+"Sube de rango": [
+"Rank up",
+"Monte en rang"
+],
+"Cada músculo tiene su rango, de Hierro a Apex. Entrena equilibrado para subir tu rango global.": [
+"Each muscle has its own rank, from Iron to Apex. Train in a balanced way to raise your overall rank.",
+"Chaque muscle a son rang, de Fer à Apex. Entraîne-toi de façon équilibrée pour monter ton rang global."
+],
+"Mira cómo mejoras": [
+"See how you improve",
+"Vois tes progrès"
+],
+"Aquí tienes tus récords, tus entrenos por semanas y las gráficas de cada ejercicio.": [
+"Here are your records, your workouts by week and the charts for each exercise.",
+"Ici, tu as tes records, tes séances par semaine et les graphiques de chaque exercice."
+],
+"Entrena con amigos": [
+"Train with friends",
+"Entraîne-toi avec des amis"
+],
+"Si quieres, añade amigos, mira sus entrenos y reaccionad con 💪🔥. ¡A por ello!": [
+"If you like, add friends, see their workouts and react with 💪🔥. Let’s go!",
+"Si tu veux, ajoute des amis, regarde leurs séances et réagissez avec 💪🔥. C’est parti !"
+],
+"¡Vamos!": [
+"Let’s go!",
+"C’est parti !"
+],
+"Ver el tutorial otra vez": [
+"Watch the tutorial again",
+"Revoir le tutoriel"
+],
+"Ajustes de la máquina": [
+"Machine settings",
+"Réglages de la machine"
+],
+"Apunta cómo dejas la máquina para no tener que acordarte: te saldrá cada vez que hagas este ejercicio.": [
+"Note how you set up the machine so you don’t have to remember: it’ll show up every time you do this exercise.",
+"Note comment tu règles la machine pour ne pas avoir à t’en souvenir : ça s’affichera à chaque fois que tu fais cet exercice."
+],
+"Tus ajustes": [
+"Your settings",
+"Tes réglages"
+],
+"Ej.: asiento {n}, respaldo {n}, agarre medio": [
+"E.g.: seat {n}, backrest {n}, middle grip",
+"Ex. : siège {n}, dossier {n}, prise moyenne"
+],
+"Borrar": [
+"Delete",
+"Supprimer"
+],
+"⚙️ Apuntar ajustes de la máquina": [
+"⚙️ Save machine settings",
+"⚙️ Noter les réglages de la machine"
+],
+"⚙️ Mis ajustes": [
+"⚙️ My settings",
+"⚙️ Mes réglages"
+],
+"Aún no has apuntado cómo dejas la máquina.": [
+"You haven’t noted how you set up the machine yet.",
+"Tu n’as pas encore noté comment tu règles la machine."
+],
+"Apuntar": [
+"Save",
+"Noter"
+],
+"✓ Ajustes guardados": [
+"✓ Settings saved",
+"✓ Réglages enregistrés"
+],
+"Ajustes borrados": [
+"Settings deleted",
+"Réglages supprimés"
+],
+"📸 Compartir imagen del entreno": [
+"📸 Share workout image",
+"📸 Partager l’image de la séance"
+],
+"Crea una imagen con tu entreno, tu rango y Apix para subirla a Instagram, TikTok o WhatsApp.": [
+"Creates an image with your workout, your rank and Apix to post on Instagram, TikTok or WhatsApp.",
+"Crée une image avec ta séance, ton rang et Apix à publier sur Instagram, TikTok ou WhatsApp."
+],
+"Creando la imagen…": [
+"Creating the image…",
+"Création de l’image…"
+],
+"No se ha podido crear la imagen": [
+"The image couldn’t be created",
+"Impossible de créer l’image"
+],
+"✓ Imagen descargada": [
+"✓ Image downloaded",
+"✓ Image téléchargée"
+],
+"Entrena conmigo en Apex Gym": [
+"Train with me on Apex Gym",
+"Entraîne-toi avec moi sur Apex Gym"
+],
+"Libras (lb)": [
+"Pounds (lb)",
+"Livres (lb)"
+],
+"Tus datos se guardan siempre igual: cambiar de unidad no pierde nada.": [
+"Your data is always stored the same way: switching units loses nothing.",
+"Tes données sont toujours enregistrées pareil : changer d’unité ne fait rien perdre."
+],
+"Los ajustes de las máquinas no son válidos.": [
+"The machine settings aren’t valid.",
+"Les réglages des machines ne sont pas valides."
 ]
 };

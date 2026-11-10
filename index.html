@@ -397,6 +397,12 @@ input, select, textarea { font-size: 16px; }
 @keyframes toast-entra { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }
 .post.nuevo { animation: post-nuevo 1.6s ease-out; border-radius: 12px; }
 @keyframes post-nuevo { 0% { background: color-mix(in srgb, var(--good) 28%, transparent); } 100% { background: transparent; } }
+#tutorial { position: fixed; left: 0; right: 0; z-index: 30; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); display: flex; justify-content: center; padding: 0 12px; }
+#tutorial .in { width: 100%; max-width: 520px; border: 1px solid var(--accent); box-shadow: 0 10px 40px rgba(0,0,0,.55); }
+nav.tabs button.tuto-on { color: var(--fg); animation: tutoPulso 1.2s ease-in-out infinite; }
+nav.tabs button.tuto-on svg { color: var(--accent); }
+@keyframes tutoPulso { 50% { transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { nav.tabs button.tuto-on { animation: none; outline: 2px solid var(--accent); border-radius: 12px; } }
 #timer { position: fixed; left: 0; right: 0; z-index: 8; bottom: calc(64px + env(safe-area-inset-bottom, 0px)); display: flex; justify-content: center; padding: 0 10px 8px; }
 #timer .in { width: 100%; max-width: 536px; background: var(--surface3); border: 1px solid var(--accent); border-radius: 18px; padding: 12px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 14px 40px rgba(0,0,0,.45); }
 #timer .timer-top { display: flex; gap: 12px; align-items: center; }
@@ -471,6 +477,13 @@ nav.tabs button.on svg { color: var(--accent); filter: drop-shadow(0 0 6px var(-
   <button data-tab="social"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c1-3.5 3.5-5.5 6.5-5.5s5.5 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.8.7 3 2.5 3.6 5.2"/></svg>Social</button>
 </div></nav>
 
+<div id="tutorial" hidden role="dialog" aria-live="polite"><div class="in card">
+  <div class="row" style="gap:12px;align-items:flex-start"><div id="tutoApix" style="width:64px;flex:none"></div>
+    <div class="grow"><p class="label" id="tutoPaso"></p><h3 id="tutoTitulo"></h3><p class="small" id="tutoTexto"></p></div></div>
+  <div class="row between" style="margin-top:10px"><button class="btn-txt small" data-act="tuto-saltar">Saltar</button>
+    <button class="btn" data-act="tuto-sig" id="tutoBoton">Siguiente</button></div>
+</div></div>
+
 <div id="timer" hidden><div class="in">
   <div class="timer-top">
     <div class="anillo"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44" class="fondo"/><circle cx="50" cy="50" r="44" class="avance" id="timerAnillo"/></svg><span class="t num" id="timerTxt">1:30</span></div>
@@ -502,6 +515,7 @@ nav.tabs button.on svg { color: var(--accent); filter: drop-shadow(0 0 6px var(-
 <script src="logica.js"></script>
 <script src="academia.js"></script>
 <script src="mascota.js"></script>
+<script src="imagen.js"></script>
 <script src="sonidos.js"></script>
 <script src="app.js"></script>
 <script src="nube.js"></script>

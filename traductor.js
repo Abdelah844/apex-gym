@@ -128,6 +128,7 @@ const PATRONES = [
   ["+{x} serie (ahora {x})", "+{x} set (now {x})", "+{x} série (maintenant {x})"],
   ["−{x} serie (ahora {x})", "−{x} set (now {x})", "−{x} série (maintenant {x})"],
   ["🗑 Borrar serie {x}", "🗑 Delete set {x}", "🗑 Supprimer la série {x}"],
+  ["Paso {x} de {x}", "Step {x} of {x}", "Étape {x} sur {x}"],
   ["🔥 Racha de {x} semanas · {x} entrenos", "🔥 {x}-week streak · {x} workouts", "🔥 Série de {x} semaines · {x} séances"],
   ["🔥 Racha de {x} semana · {x} entrenos", "🔥 {x}-week streak · {x} workouts", "🔥 Série de {x} semaine · {x} séances"],
   ["🔥 Racha de {x} semanas · {x} entreno", "🔥 {x}-week streak · {x} workout", "🔥 Série de {x} semaines · {x} séance"],
@@ -305,10 +306,29 @@ function saltarElemento(el) {
 // Recordamos lo que ya hemos traducido nosotros, para no volver a traducirlo (evita bucles)
 const traducidoPorMi = new WeakMap();
 
+// Lee un número escrito en cualquier idioma: "7.340", "7,340", "62,5" o "62.5".
+// Un separador seguido de exactamente 3 cifras es de miles; si no, es el decimal.
+function leerNumeroLocal(t) {
+  t = t.replace(/[\s\u00a0\u202f]/g, "");
+  t = t.replace(/[.,](?=\d{3}(?:[.,]|$))/g, "");
+  return parseFloat(t.replace(",", "."));
+}
+// Si el usuario usa libras, cambia "80 kg" por "176,5 lb" en todo el texto de la pantalla
+function convertirUnidades(texto) {
+  if (typeof usaLibras !== "function" || !usaLibras() || texto.indexOf("kg") < 0) return texto;
+  return texto.replace(/(\d[\d.,\u00a0\u202f]*\d|\d)\s?kg\b/g, function (todo, num) {
+    const kg = leerNumeroLocal(num);
+    if (isNaN(kg)) return todo;
+    const lb = kg * KG_A_LB;
+    const redondo = lb >= 1000 ? Math.round(lb) : Math.round(lb * 2) / 2;
+    return redondo.toLocaleString(localeApp()) + " lb";
+  }).replace(/\bkg\b/g, "lb").replace(/\bKg\b/g, "Lb").replace(/\bKG\b/g, "LB");
+}
+
 function traducirNodoTexto(n) {
   if (traducidoPorMi.get(n) === n.nodeValue) return;
   if (saltarElemento(n.parentElement) || n.parentElement.closest("textarea")) return;
-  const nuevo = tr(n.nodeValue);
+  const nuevo = convertirUnidades(IDIOMA_ACTUAL === "es" ? n.nodeValue : tr(n.nodeValue));
   if (nuevo !== n.nodeValue) { n.nodeValue = nuevo; traducidoPorMi.set(n, nuevo); }
 }
 
@@ -340,9 +360,8 @@ function traducirArbol(raiz) {
 
 function iniciarTraductor() {
   document.documentElement.lang = IDIOMA_ACTUAL;
-  if (IDIOMA_ACTUAL === "es") return;
-  prepararTraductor();
-  document.title = tr(document.title);
+  // En español no hace falta traducir, pero el observador sigue activo para pasar kg a libras si se eligen
+  if (IDIOMA_ACTUAL !== "es") { prepararTraductor(); document.title = tr(document.title); }
   traducirArbol(document.body);
   new MutationObserver(function (cambios) {
     for (const c of cambios) {

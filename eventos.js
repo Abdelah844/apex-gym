@@ -45,6 +45,7 @@ const ACCIONES = {
     estado.rutina = generarRutina({ objetivo: p.objetivo, nivel: p.experiencia, dias: p.dias, duracion: p.duracion,
       tipo: "auto", equipo: p.equipo, prioridad: "", evitar: p.evitar });
     guardar(); tab = "inicio"; pintar();
+    mostrarTutorial(0);                     // la primera vez, Apix enseña la app
   },
   "salir-demo": function () { estado = null; borrarAlmacenamiento(); pintarRegistro(); },
   "reintentar-guardado": function () { if (!guardar()) mensaje("No se ha podido guardar", "El almacenamiento del navegador está lleno o bloqueado. Exporta tus datos desde Ajustes para no perderlos."); },
@@ -243,7 +244,7 @@ const ACCIONES = {
     if (!s.hecha) {
       for (const campo of ["peso", "reps"]) {
         const inp = document.querySelector('input[data-in="' + campo + '"][data-e="' + ei + '"][data-s="' + si + '"]');
-        const v = inp ? (campo === "peso" ? leerNumero(inp.value) : parseInt(inp.value)) : NaN;
+        const v = inp ? (campo === "peso" ? pesoDesdeVista(leerNumero(inp.value)) : parseInt(inp.value)) : NaN;
         if (inp && !isNaN(v) && v !== s[campo]) cambiarSerie(e, si, campo, v);
       }
     }
@@ -287,6 +288,10 @@ const ACCIONES = {
     copiaSesion();
     const actual = e.series[si][campo];
     let nuevo = campo === "peso" ? Math.max(0, Math.round((actual + delta) * 100) / 100) : Math.max(0, Math.min(50, actual + delta));
+    if (campo === "peso" && usaLibras()) {
+      const pasoLb = Math.abs(delta) >= 2 ? 5 : 2.5;
+      nuevo = Math.max(0, pesoDesdeVista(pesoVista(actual) + (delta > 0 ? pasoLb : -pasoLb)));
+    }
     cambiarSerie(e, parseInt(si), campo, nuevo);
     e.foco = parseInt(si);
     guardar(); pintarSesion();
@@ -526,7 +531,7 @@ const ACCIONES = {
   "periodo": function (d) { periodo = parseInt(d); pintarProgreso(); },
   "metrica": function (m) { metrica = m; pintarProgreso(); },
   "guardar-peso": function () {
-    const v = leerNumero($("nuevoPeso").value);
+    const v = pesoDesdeVista(leerNumero($("nuevoPeso").value));
     if (!(v >= 35 && v <= 250)) { $("errPeso").textContent = "Escribe un peso entre 35 y 250 kg."; return; }
     estado.pesoCorporal = estado.pesoCorporal.filter(function (x) { return x.fecha !== hoy(); });
     estado.pesoCorporal.push({ fecha: hoy(), kg: v });
@@ -538,6 +543,27 @@ const ACCIONES = {
   "ir-amigos": function () { vistaSocial = "amigos"; irA("social"); },
   "ir-retos": function () { vistaSocial = "retos"; irA("social"); },
   // Botón del descanso: pide permiso de notificaciones para oír el final con la app cerrada
+  // Imagen del entreno para redes sociales
+  "compartir-imagen": function (id) {
+    const s = (id && estado.sesiones.find(function (z) { return z.id === id; })) || estado.sesiones[estado.sesiones.length - 1];
+    if (s) compartirImagenEntreno(s);
+  },
+  // Ajustes fijos de cada máquina
+  "editar-ajuste": function (id) { hojaAjusteMaquina(id); },
+  "guardar-ajuste": function (id) {
+    const texto = $("ajusteTxt").value.trim().slice(0, 80);
+    if (!estado.ajustesMaquina) estado.ajustesMaquina = {};
+    if (texto) estado.ajustesMaquina[id] = texto; else delete estado.ajustesMaquina[id];
+    guardar(); cerrarHoja(); pintar(); toast(texto ? "✓ Ajustes guardados" : "Ajustes borrados", "ok");
+  },
+  "borrar-ajuste": function (id) {
+    if (estado.ajustesMaquina) delete estado.ajustesMaquina[id];
+    guardar(); cerrarHoja(); pintar(); toast("Ajustes borrados", "ok");
+  },
+  // Tutorial de bienvenida
+  "tuto-sig": function () { if (pasoTutorial < PASOS_TUTORIAL.length - 1) mostrarTutorial(pasoTutorial + 1); else cerrarTutorial(); },
+  "tuto-saltar": function () { cerrarTutorial(); },
+  "ver-tutorial": function () { cerrarHoja(); mostrarTutorial(0); },
   "aviso-descanso": function () {
     Notification.requestPermission().then(function (p) {
       $("timerAviso").hidden = true;
@@ -729,6 +755,7 @@ const ACCIONES = {
     estado.perfil = p;
     const a = estado.ajustes;
     a.descanso = parseInt($("aDescanso").value); a.descansoAislamiento = a.descanso; a.descansoCompuesto = parseInt($("aDescComp").value); a.formula1RM = $("aFormula").value; a.incremento = parseFloat($("aIncremento").value); a.incrementoMancuernas = parseFloat($("aIncMancuernas").value);
+    a.unidad = $("aUnidad").value === "lb" ? "lb" : "kg";
     a.privacidad = $("aPrivacidad").value; a.compartir = $("aCompartir").checked; a.mascota = $("aMascota").checked;
     a.copiaDias = parseInt($("aCopiaDias").value); a.sonido = $("aSonido").checked; a.calentamiento = $("aCalentamiento").checked; a.vibracion = $("aVibracion").checked;
     a.notif = { recordatorios: $("nRec").checked, racha: $("nRacha").checked, retos: $("nReto").checked, hora: parseInt($("nHora").value), records: $("nRecords").checked, rangos: $("nRangos").checked, amigos: a.notif.amigos, semanal: $("nSemanal").checked, ultimoAviso: a.notif.ultimoAviso || "" };
@@ -759,7 +786,7 @@ const ACCIONES = {
     // Primero se valida todo con la MISMA regla que al registrar e importar; si algo es imposible, no se cambia nada
     for (let ei = 0; ei < s.ejercicios.length; ei++) {
       for (let si = 0; si < s.ejercicios[ei].series.length; si++) {
-        const p = parseFloat($("ed-p-" + ei + "-" + si).value), r = Number($("ed-r-" + ei + "-" + si).value);
+        const p = pesoDesdeVista(parseFloat($("ed-p-" + ei + "-" + si).value)), r = Number($("ed-r-" + ei + "-" + si).value);
         const hecha = $("ed-h-" + ei + "-" + si).checked;
         const m = validarValores(p, r, hecha);
         if (m) { $("edError").textContent = buscarEj(s.ejercicios[ei].id).nombre + ", serie " + (si + 1) + ": " + m; return; }
@@ -767,7 +794,7 @@ const ACCIONES = {
     }
     s.ejercicios.forEach(function (e, ei) {
       e.series.forEach(function (x, si) {
-        const p = parseFloat($("ed-p-" + ei + "-" + si).value), r = Number($("ed-r-" + ei + "-" + si).value);
+        const p = pesoDesdeVista(parseFloat($("ed-p-" + ei + "-" + si).value)), r = Number($("ed-r-" + ei + "-" + si).value);
         const hecha = $("ed-h-" + ei + "-" + si).checked;
         if (p !== x.peso || r !== x.reps || hecha !== x.hecha) {
           estado.metricas.correcciones++;
@@ -1018,13 +1045,13 @@ document.addEventListener("change", function (ev) {
     copiaSesion();
     const e = estado.activa.ejercicios[d.e];
     if (d.in === "rpe") e.series[d.s].rpe = t.value ? parseFloat(t.value) : null;
-    else cambiarSerie(e, parseInt(d.s), d.in, d.in === "peso" ? leerNumero(t.value) : parseInt(t.value));
+    else cambiarSerie(e, parseInt(d.s), d.in, d.in === "peso" ? pesoDesdeVista(leerNumero(t.value)) : parseInt(t.value));
     guardar();
     // Actualiza solo los números de las series siguientes, sin redibujar la pantalla
     e.series.forEach(function (x, j) {
       for (const campo of ["peso", "reps"]) {
         const inp = document.querySelector('input[data-in="' + campo + '"][data-e="' + d.e + '"][data-s="' + j + '"]');
-        if (inp && inp !== t) inp.value = campo === "peso" ? numero(x[campo]) : x[campo];
+        if (inp && inp !== t) inp.value = campo === "peso" ? numero(pesoVista(x[campo])) : x[campo];
       }
     });
   }
