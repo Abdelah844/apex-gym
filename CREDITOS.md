@@ -13,9 +13,9 @@
 |---|---|
 | dominadas-neutras | V-Bar_Pullup |
 | press-banca-cerrado | Close-Grip_Barbell_Bench_Press |
-| remo-barra-supino | Bent_Over_Barbell_Row (foto de referencia: agarre prono) |
-| remo-maquina-abierto | Leverage_Iso_Row (foto de referencia: agarre neutro) |
-| remo-polea-barra-ancha | Seated_Cable_Rows (foto de referencia: triángulo) |
+| remo-barra-supino | Imágenes generadas por IA (generadas con Figma) |
+| remo-maquina-abierto | Imágenes generadas por IA (generadas con Figma) |
+| remo-polea-barra-ancha | Imágenes generadas por IA (generadas con Figma) |
 | curl-arana | Dumbbell_Prone_Incline_Curl |
 | curl-inclinado | Incline_Dumbbell_Curl |
 | curl-martillo-cruzado | Cross_Body_Hammer_Curl |

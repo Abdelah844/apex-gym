@@ -515,9 +515,9 @@ const FOTOS = {
   "remo-multipower": "Smith_Machine_Bent_Over_Row",
   "dominadas-supinas": "Chin-Up",
   "dominadas-neutras": "V-Bar_Pullup",
-  "remo-barra-supino": "Bent_Over_Barbell_Row",
-  "remo-polea-barra-ancha": "Seated_Cable_Rows",
-  "remo-maquina-abierto": "Leverage_Iso_Row",
+  "remo-barra-supino": "IA",   // imágenes generadas por IA
+  "remo-polea-barra-ancha": "IA",   // imágenes generadas por IA
+  "remo-maquina-abierto": "IA",   // imágenes generadas por IA
   "press-banca-cerrado": "Close-Grip_Barbell_Bench_Press",
   "encogimientos-mancuernas": "Dumbbell_Shrug",
   "encogimientos-maquina": "Leverage_Shrug",
@@ -588,11 +588,7 @@ const SIN_FOTO = {};
 
 // Fotos de referencia: muestran el MISMO movimiento hecho con otro material.
 // Se avisa debajo de la foto para que nadie se confunda de máquina.
-const FOTO_REFERENCIA = {
-  "remo-barra-supino": "La foto es con agarre prono: aquí coge la barra con las palmas hacia arriba.",
-  "remo-polea-barra-ancha": "La foto es con triángulo: aquí usa una barra larga con las manos más abiertas que los hombros.",
-  "remo-maquina-abierto": "La foto es con agarre neutro: aquí coge las asas horizontales y lleva los codos abiertos."
-};
+const FOTO_REFERENCIA = {};
 
 // Banco que usa cada ejercicio y su inclinación (cambia mucho qué parte del músculo trabaja).
 // [lo que se muestra, explicación corta]
