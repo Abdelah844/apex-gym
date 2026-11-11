@@ -1739,6 +1739,9 @@ function hojaDenuncia(postId) {
 }
 
 // ---------- Prueba piloto: métricas e informes de problemas ----------
+const MODO_DESARROLLO = location.search.indexOf("dev") >= 0;
+const CORREO_SOPORTE = "apexgymscx@gmail.com";
+
 function hojaPiloto() {
   const m = estado.metricas;
   const tasa = m.propuestas ? Math.round(m.aceptadas / m.propuestas * 100) + " %" : "—";
@@ -1949,11 +1952,13 @@ function hojaAjustes() {
       '</div>' +
     '<button class="btn" data-act="guardar-ajustes">Guardar cambios</button><p class="muted small" id="aOk"></p>' +
     '<div class="card stack tight" id="aj-datos"><h3>Tus datos</h3>' +
-      '<button class="btn-sec full" data-act="exportar">Ver los datos como texto</button>' +
-      '<button class="btn-sec full" data-act="abrir-privacidad">Privacidad y condiciones de uso</button>' +
-      '<button class="btn-sec full" data-act="pruebas">Ejecutar pruebas de calidad</button>' +
-      '<button class="btn-sec full" data-act="abrir-piloto">Prueba piloto e informar de problemas</button>' +
       '<button class="btn-sec full" data-act="abrir-gimnasio">Mi gimnasio (máquinas disponibles)</button>' +
+      '<button class="btn-sec full" data-act="abrir-privacidad">Privacidad y condiciones de uso</button>' +
+      '<button class="btn-sec full" data-act="informar-problema">Informar de un problema</button>' +
+      // Herramientas para revisar la app: solo se ven abriendo la app con ?dev al final de la dirección
+      (MODO_DESARROLLO ? '<button class="btn-sec full" data-act="exportar">Ver los datos como texto</button>' +
+        '<button class="btn-sec full" data-act="pruebas">Ejecutar pruebas de calidad</button>' +
+        '<button class="btn-sec full" data-act="abrir-piloto">Prueba piloto</button>' : "") +
       '<button class="btn-sec full" data-act="cerrar-sesion">Cerrar sesión</button>' +
       '<button class="btn-sec full btn-danger" data-act="borrar-todo">' + (confirmar === "borrar-todo" ? "Pulsa otra vez: se borrará todo" : "Eliminar cuenta y datos") + '</button></div></div>');
 }

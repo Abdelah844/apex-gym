@@ -543,6 +543,14 @@ const ACCIONES = {
   "ir-amigos": function () { vistaSocial = "amigos"; irA("social"); },
   "ir-retos": function () { vistaSocial = "retos"; irA("social"); },
   // Botón del descanso: pide permiso de notificaciones para oír el final con la app cerrada
+  // Abre el correo para contar un problema, con la versión y el móvil ya escritos
+  "informar-problema": async function () {
+    // La versión es el nombre de la caché del service worker (por ejemplo "apex-gym-2.26.2")
+    let version = "?";
+    try { const claves = await caches.keys(); version = claves.filter(function (k) { return k.indexOf("apex-gym-") === 0; }).join(", ") || "?"; } catch (e) {}
+    const cuerpo = "Cuéntame qué ha pasado:\n\n\n---\nVersión: " + version + "\nMóvil: " + navigator.userAgent;
+    location.href = "mailto:" + CORREO_SOPORTE + "?subject=" + encodeURIComponent("Problema en Apix Gym") + "&body=" + encodeURIComponent(cuerpo);
+  },
   // Imagen del entreno para redes sociales
   "compartir-imagen": function (id) {
     const s = (id && estado.sesiones.find(function (z) { return z.id === id; })) || estado.sesiones[estado.sesiones.length - 1];
