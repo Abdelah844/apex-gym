@@ -1740,7 +1740,7 @@ function hojaDenuncia(postId) {
 
 // ---------- Prueba piloto: métricas e informes de problemas ----------
 const MODO_DESARROLLO = location.search.indexOf("dev") >= 0;
-const CORREO_SOPORTE = "apexgymscx@gmail.com";
+const CORREO_SOPORTE = "apixgymsoporte@gmail.com";
 
 function hojaPiloto() {
   const m = estado.metricas;
