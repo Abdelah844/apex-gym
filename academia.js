@@ -498,7 +498,7 @@ const FOTOS = {
   "sentadilla-bulgara": "Split_Squat_with_Dumbbells",
   "dominadas-asistidas": "IA",   // imágenes generadas por IA
   "fondos-asistidos": "IA",   // imágenes generadas por IA
-  "hip-thrust-maquina": "Barbell_Hip_Thrust",
+  "hip-thrust-maquina": "IA",   // imágenes generadas por IA
   "press-banca-multipower": "Smith_Machine_Bench_Press",
   "press-inclinado-maquina": "Leverage_Incline_Chest_Press",
   "press-declinado-maquina": "Leverage_Decline_Chest_Press",
@@ -589,7 +589,6 @@ const SIN_FOTO = {};
 // Fotos de referencia: muestran el MISMO movimiento hecho con otro material.
 // Se avisa debajo de la foto para que nadie se confunda de máquina.
 const FOTO_REFERENCIA = {
-  "hip-thrust-maquina": "La foto es con barra: en la máquina el movimiento de cadera es el mismo.",
   "remo-barra-supino": "La foto es con agarre prono: aquí coge la barra con las palmas hacia arriba.",
   "remo-polea-barra-ancha": "La foto es con triángulo: aquí usa una barra larga con las manos más abiertas que los hombros.",
   "remo-maquina-abierto": "La foto es con agarre neutro: aquí coge las asas horizontales y lleva los codos abiertos."

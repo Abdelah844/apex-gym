@@ -99,7 +99,7 @@
 | gemelos-prensa | Calf_Press_On_The_Leg_Press_Machine |
 | hack | Hack_Squat |
 | hip-thrust | Barbell_Hip_Thrust |
-| hip-thrust-maquina | Barbell_Hip_Thrust (foto de referencia: mismo movimiento con otro material) |
+| hip-thrust-maquina | Imágenes generadas por IA (aportadas por el autor de la app) |
 | hiperextensiones | Hyperextensions_Back_Extensions |
 | jalon | Wide-Grip_Lat_Pulldown |
 | jalon-estrecho | V-Bar_Pulldown |
