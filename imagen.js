@@ -106,14 +106,14 @@ async function compartirImagenEntreno(s) {
   toast("Creando la imagen…");
   let blob;
   try { blob = await crearImagenEntreno(s); } catch (e) { toast("No se ha podido crear la imagen", "error"); return; }
-  const archivo = new File([blob], "apex-gym-entreno.png", { type: "image/png" });
+  const archivo = new File([blob], "apix-gym-entreno.png", { type: "image/png" });
   if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
     try { await navigator.share({ files: [archivo], title: tr("Mi entreno"), text: tr("Entrena conmigo en Apix Gym") + " " + URL_APP }); }
     catch (e) { /* el usuario ha cancelado */ }
     return;
   }
   const enlace = document.createElement("a");
-  enlace.href = URL.createObjectURL(blob); enlace.download = "apex-gym-entreno.png";
+  enlace.href = URL.createObjectURL(blob); enlace.download = "apix-gym-entreno.png";
   document.body.appendChild(enlace); enlace.click(); enlace.remove();
   setTimeout(function () { URL.revokeObjectURL(enlace.href); }, 4000);
   toast("✓ Imagen descargada", "ok");

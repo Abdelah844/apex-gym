@@ -1175,7 +1175,7 @@ function registrarServiceWorker() {
 // Copia de seguridad en un archivo. En el móvil se abre el menú de compartir (Archivos, Drive, correo…);
 // si no se puede, se descarga el archivo.
 function hacerCopia() {
-  const nombre = "apex-gym-copia-" + hoy() + ".json";
+  const nombre = "apix-gym-copia-" + hoy() + ".json";
   const texto = exportarDatos();
   const marcar = function () { estado.ajustes.ultimaCopia = hoy(); estado.ajustes.copiaPospuesta = ""; guardar(); pintar(); };
   let archivo = null;
