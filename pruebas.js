@@ -715,13 +715,15 @@ const PRUEBAS = [
     if (planAvisos(lunes, 7).length !== 2) return "No quita el aviso de hoy después de entrenar";
     return true;
   }],
-  ["Mascota", "Un día de entreno sin entrenar te anima con la frase de la disciplina", function () {
+  ["Mascota", "Un día de entreno sin entrenar te anima (las frases rotan)", function () {
     estadoPrueba();
     estado.rutina = generarRutina({ objetivo: "masa", nivel: "intermedio", dias: 6, duracion: 60, tipo: "auto", equipo: TODO_EQUIPO, prioridad: "", evitar: "",
       calendario: [0, 1, 2, 3, 4, 5, 6].filter(function (x) { return x !== ((new Date().getDay() + 6) % 7 + 1) % 7; }).slice(0, 6) });
     sesionPrueba(fechaTexto(4), [["press-banca", [[60, 8]]]]);
     const k = estadoMascota();
-    return (k.humor === "anima" && k.mensaje.indexOf(FRASE_DISCIPLINA) >= 0 && k.mensaje.indexOf("4 días") >= 0) || k.humor + ": " + k.mensaje;
+    // Las frases de "llevas días sin entrenar" rotan según el día: vale cualquiera de ellas
+    const posibles = MENSAJES_APIX.animaFuerte.map(function (m) { return m.replace("{dias}", "4"); });
+    return (k.humor === "anima" && posibles.indexOf(k.mensaje) >= 0) || k.humor + ": " + k.mensaje;
   }],
   ["Mascota", "En días de descanso no presiona y con molestias pide calma", function () {
     estadoPrueba();
