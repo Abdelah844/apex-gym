@@ -1,5 +1,5 @@
 // =====================================================
-// APEX GYM · ACADEMIA (fichas de aprendizaje y animaciones propias)
+// APIX GYM · ACADEMIA (fichas de aprendizaje y animaciones propias)
 // - Cada ejercicio tiene: preparación, errores extra, seguridad y animación.
 // - Las animaciones son dibujos propios hechos con código (sin licencias de terceros).
 //   Muestran el PATRÓN de movimiento, no la máquina exacta de cada gimnasio.
@@ -435,7 +435,7 @@ const ANIMACIONES = {
 // ---------- Fotos reales (dominio público) ----------
 // Origen: Free Exercise DB (github.com/yuhonas/free-exercise-db), licencia Unlicense = dominio público.
 // Solo se incluyen fotos que muestran el mismo ejercicio y la misma máquina. El resto usa la animación.
-// Clave: id del ejercicio en Apex Gym · valor: nombre del ejercicio en Free Exercise DB (para poder rastrear el origen).
+// Clave: id del ejercicio en Apix Gym · valor: nombre del ejercicio en Free Exercise DB (para poder rastrear el origen).
 const FOTOS = {
   "abductores": "Thigh_Abductor",
   "aductores": "Thigh_Adductor",

@@ -1,5 +1,5 @@
 // =====================================================
-// APEX GYM · PANTALLAS (todo lo que se pinta y los botones)
+// APIX GYM · PANTALLAS (todo lo que se pinta y los botones)
 // =====================================================
 
 // ---------- Variables de la interfaz ----------
@@ -53,7 +53,7 @@ const I = {
   rayo: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>'
 };
 
-// ---------- Insignia de rango (diseño propio de Apex Gym) ----------
+// ---------- Insignia de rango (diseño propio de Apix Gym) ----------
 // Gema hexagonal con relieve. Cuanto más alto el rango, más adornos:
 //   Hierro, Bronce, Plata → 1, 2 o 3 galones
 //   Oro, Platino, Esmeralda → estrella y 1, 2 o 3 puntos
@@ -181,7 +181,7 @@ function pintarBienvenida() {
   $("app").innerHTML =
     '<div class="welcome">' +
       insignia(8, "logo") +
-      '<div><h1>Apex Gym</h1><p class="muted" style="font-size:1rem;margin-top:6px">Registra tus entrenos, sigue tu progreso y sube de rango con datos reales.</p></div>' +
+      '<div><h1>Apix Gym</h1><p class="muted" style="font-size:1rem;margin-top:6px">Registra tus entrenos, sigue tu progreso y sube de rango con datos reales.</p></div>' +
       '<button class="btn" data-act="ir-registro">Crear mi perfil</button>' +
       '<button class="btn-sec full" data-act="abrir-cuenta" data-a="entrar">☁️ Ya tengo cuenta: iniciar sesión</button>' +
       '<button class="btn-txt" data-act="usar-demo">Probar con datos de ejemplo</button>' +
@@ -1725,7 +1725,7 @@ function hojaDenunciaNube(postId) {
   for (const k in MOTIVOS_DENUNCIA) ops += '<label class="check"><input type="radio" name="motivo" value="' + k + '">' + MOTIVOS_DENUNCIA[k] + '</label>';
   abrirHoja(cabeceraHoja("Denunciar publicación", "Moderación") + '<div class="stack"><div class="stack tight">' + ops + '</div>' +
     '<label class="f">Detalles (opcional)<textarea id="denDetalle" maxlength="250"></textarea></label>' +
-    '<p class="muted small">La publicación se ocultará para ti y la denuncia llegará al equipo de Apex Gym para revisarla.</p>' +
+    '<p class="muted small">La publicación se ocultará para ti y la denuncia llegará al equipo de Apix Gym para revisarla.</p>' +
     '<p class="err" id="denError"></p><button class="btn" data-act="social-enviar-denuncia" data-a="' + postId + '">Denunciar</button></div>');
 }
 
@@ -1983,7 +1983,7 @@ function hojaCuenta(modo, aviso) {
   if (modo !== "nueva") h += '<label class="f">Correo electrónico<input id="cEmail" type="email" inputmode="email" autocomplete="email" autocapitalize="off" placeholder="tucorreo@gmail.com"></label>';
   if (modo !== "olvido") h += '<label class="f">' + (modo === "entrar" ? "Contraseña" : "Contraseña (mínimo 8 caracteres)") +
     '<input id="cPass" type="password" autocomplete="' + (modo === "entrar" ? "current-password" : "new-password") + '"></label>';
-  if (modo === "crear") h += '<label class="check priv-ok"><input type="checkbox" id="cAcepto"><span>Acepto que mis datos de Apex Gym (perfil, entrenos, medidas y, si las apunto, lesiones o molestias) se guarden en la nube, según la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a>.</span></label>';
+  if (modo === "crear") h += '<label class="check priv-ok"><input type="checkbox" id="cAcepto"><span>Acepto que mis datos de Apix Gym (perfil, entrenos, medidas y, si las apunto, lesiones o molestias) se guarden en la nube, según la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a>.</span></label>';
   h += '<p class="err" id="cError"></p>';
   const botones = { crear: ["cuenta-crear", "Crear cuenta"], entrar: ["cuenta-entrar", "Iniciar sesión"], olvido: ["cuenta-olvido", "Enviarme un correo"], nueva: ["cuenta-nueva", "Guardar contraseña"] };
   h += '<button class="btn" id="cBoton" data-act="' + botones[modo][0] + '">' + botones[modo][1] + '</button>';
@@ -2342,8 +2342,8 @@ function comprobarRecordatorios() {
 // ---------- Instalar la app (PWA) ----------
 // Texto y botón de la tarjeta "Instalar en el móvil" de Ajustes
 function textoInstalar() {
-  if (appInstalada()) return '<p class="small">✓ Ya estás usando Apex Gym como app instalada.</p>';
-  if (avisoInstalar) return '<button class="btn" data-act="instalar-app">Instalar Apex Gym</button><p class="muted small">Tendrás su icono en el móvil y funcionará sin internet.</p>';
+  if (appInstalada()) return '<p class="small">✓ Ya estás usando Apix Gym como app instalada.</p>';
+  if (avisoInstalar) return '<button class="btn" data-act="instalar-app">Instalar Apix Gym</button><p class="muted small">Tendrás su icono en el móvil y funcionará sin internet.</p>';
   return '<p class="muted small">En Android (Chrome): menú ⋮ → «Instalar aplicación». En iPhone (Safari): botón Compartir → «Añadir a pantalla de inicio».</p>';
 }
 function appInstalada() {

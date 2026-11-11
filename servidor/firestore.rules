@@ -1,7 +1,7 @@
 rules_version = '2';
 
 // =====================================================
-// APEX GYM 2.1.1 · REGLAS DE SEGURIDAD DEL SERVIDOR (Firebase Firestore)
+// APIX GYM 2.1.1 · REGLAS DE SEGURIDAD DEL SERVIDOR (Firebase Firestore)
 // Estado: ESCRITAS, NO EJECUTADAS. Hay que pasar servidor/reglas.test.js con el
 // emulador de Firebase antes de conectar usuarios reales.
 //

@@ -1,5 +1,5 @@
 // =====================================================
-// APEX GYM 2.0 · LÓGICA (estado, cálculos, rutinas, progresión, rangos, social)
+// APIX GYM 2.0 · LÓGICA (estado, cálculos, rutinas, progresión, rangos, social)
 // Aquí no se pinta nada en pantalla: solo datos y cálculos.
 // Todo lo de este archivo se puede probar sin navegador (ver pruebas.js).
 // =====================================================
@@ -1712,7 +1712,7 @@ function leerTarjeta(texto) {
   let t;
   try { t = JSON.parse(deBase64(codigo)); } catch (e) { return { ok: false, msg: "El código no es válido. Pide a tu amigo que te lo vuelva a enviar." }; }
   const texto60 = function (x) { return typeof x === "string" && x.length > 0 && x.length <= 60; };
-  if (!t || t.v !== 1 || !texto60(t.uid) || !texto60(t.usuario)) return { ok: false, msg: "El código no es una tarjeta de Apex Gym." };
+  if (!t || t.v !== 1 || !texto60(t.uid) || !texto60(t.usuario)) return { ok: false, msg: "El código no es una tarjeta de Apix Gym." };
   if (t.rango !== null && !(Number.isInteger(t.rango) && t.rango >= 0 && t.rango < RANGOS.length)) return { ok: false, msg: "La tarjeta tiene un rango no válido." };
   if (!(Number.isInteger(t.racha) && t.racha >= 0 && t.racha < 1000) || !(Number.isInteger(t.entrenos) && t.entrenos >= 0 && t.entrenos < 100000)) return { ok: false, msg: "La tarjeta tiene datos no válidos." };
   if (!Array.isArray(t.records) || t.records.length > 3 || !t.records.every(function (r) { return r && texto60(r.n) && typeof r.p === "number" && r.p >= 0 && r.p <= 400 && Number.isInteger(r.r) && r.r >= 1 && r.r <= 50; })) return { ok: false, msg: "La tarjeta tiene marcas no válidas." };

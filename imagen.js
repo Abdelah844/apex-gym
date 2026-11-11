@@ -39,7 +39,7 @@ async function crearImagenEntreno(s) {
 
   // 2. Cabecera: nombre de la app y fecha
   ctx.fillStyle = "#9A7CFF"; ctx.font = "700 44px " + TITULO; ctx.textBaseline = "top";
-  ctx.fillText("APEX GYM", 80, 80);
+  ctx.fillText("APIX GYM", 80, 80);
   ctx.fillStyle = "#A8A8BC"; ctx.font = "500 34px " + TEXTO;
   ctx.fillText(tr(fechaBonita(s.fecha)), 80, 140);
 
@@ -93,7 +93,7 @@ async function crearImagenEntreno(s) {
 
   // 8. Pie: dónde descargar la app
   ctx.fillStyle = "#A8A8BC"; ctx.font = "600 30px " + TEXTO; ctx.textAlign = "center";
-  ctx.fillText(tr("Entrena conmigo en Apex Gym"), W / 2, H - 110);
+  ctx.fillText(tr("Entrena conmigo en Apix Gym"), W / 2, H - 110);
   ctx.fillStyle = "#9A7CFF"; ctx.font = "700 30px " + TEXTO;
   ctx.fillText("abdelah844.github.io/apex-gym", W / 2, H - 66);
   ctx.textAlign = "left";
@@ -108,7 +108,7 @@ async function compartirImagenEntreno(s) {
   try { blob = await crearImagenEntreno(s); } catch (e) { toast("No se ha podido crear la imagen", "error"); return; }
   const archivo = new File([blob], "apex-gym-entreno.png", { type: "image/png" });
   if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
-    try { await navigator.share({ files: [archivo], title: tr("Mi entreno"), text: tr("Entrena conmigo en Apex Gym") + " " + URL_APP }); }
+    try { await navigator.share({ files: [archivo], title: tr("Mi entreno"), text: tr("Entrena conmigo en Apix Gym") + " " + URL_APP }); }
     catch (e) { /* el usuario ha cancelado */ }
     return;
   }

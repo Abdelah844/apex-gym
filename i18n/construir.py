@@ -31,6 +31,6 @@ for f in sorted(glob.glob("i18n/extra_*.tsv")):
             if t.count("{n}") != es.count("{n}"): problemas.append((f, nombre, es, t))
         dicc[es] = [en, fr]
 for p in problemas: print("NÚMEROS DISTINTOS", p)
-cab = "// =====================================================\n// APEX GYM · TRADUCCIONES (generado automáticamente desde i18n/tr_*.tsv)\n// Clave = texto en español ({n} = un número). Valor = [inglés, francés].\n// =====================================================\n"
+cab = "// =====================================================\n// APIX GYM · TRADUCCIONES (generado automáticamente desde i18n/tr_*.tsv)\n// Clave = texto en español ({n} = un número). Valor = [inglés, francés].\n// =====================================================\n"
 open("apex/idiomas.js", "w", encoding="utf-8").write(cab + "const TRADUCCIONES = " + json.dumps(dicc, ensure_ascii=False, indent=0) + ";\n")
 print("entradas", len(dicc))

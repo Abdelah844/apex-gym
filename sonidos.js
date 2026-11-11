@@ -1,5 +1,5 @@
 // =====================================================
-// APEX GYM · EFECTOS DE SONIDO
+// APIX GYM · EFECTOS DE SONIDO
 // Todos los sonidos se crean con código: no hay archivos de audio ni licencias de terceros.
 // Cada sonido es una lista de notas. Con esas notas se fabrica un pequeño archivo de audio (WAV)
 // que se reproduce con un elemento <audio>. Así suena también con el iPhone en modo silencio

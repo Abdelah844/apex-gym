@@ -1,6 +1,6 @@
-# Apex Gym 2.1 · Informe de entrega
+# Apix Gym 2.1 · Informe de entrega
 
-Fecha: 1 de noviembre de 2026 · Respuesta a la revisión «Nuevos fallos encontrados en Apex Gym 2.0».
+Fecha: 1 de noviembre de 2026 · Respuesta a la revisión «Nuevos fallos encontrados en Apix Gym 2.0».
 
 ## 1. Defectos de la auditoría: estado
 
@@ -152,7 +152,7 @@ Fecha: 1 de noviembre de 2026 · Respuesta a la revisión «Nuevos fallos encont
 
 - **manifest.json:** nombre, colores, modo app (sin barra del navegador) e iconos de 192 y 512 px, más uno «maskable» para Android. Los iconos llevan a Kilo.
 - **sw.js (service worker):** guarda la app en el móvil para que funcione **sin internet**. Las fotos se guardan cuando las ves. Para publicar cambios hay que subir el número `VERSION`.
-- **Ajustes → Instalar en el móvil:** botón «Instalar Apex Gym» cuando Chrome lo permite y, si no, instrucciones para Android y iPhone.
+- **Ajustes → Instalar en el móvil:** botón «Instalar Apix Gym» cuando Chrome lo permite y, si no, instrucciones para Android y iPhone.
 - **Requisito:** solo funciona en una web con https (por ejemplo, GitHub Pages). Dentro del enlace de Claude se ve la app, pero no se instala.
 - **Pruebas:** 99 de 99 (5 nuevas). En el navegador: se registra el service worker, se lee el manifest y la app abre con el modo sin conexión.
 

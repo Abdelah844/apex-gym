@@ -1,5 +1,5 @@
 // =====================================================
-// APEX GYM · APIX, LA MASCOTA (personaje propio: una bolita morada)
+// APIX GYM · APIX, LA MASCOTA (personaje propio: una bolita morada)
 // - estadoMascota() decide su humor y su mensaje a partir de tus datos reales.
 // - apixSVG() lo dibuja según el humor.
 // Los mensajes se eligen según la fecha (no al azar), así se pueden probar.
@@ -200,7 +200,7 @@ function apixSVG(humor, tam) {
   const tinta = "#1F2B2B";                            // ojos, cejas y boca
   const id = "kg-" + h;                               // id del degradado (uno por humor)
 
-  let s = '<svg class="apix apix-' + h + ' ' + (tam || "") + '" viewBox="0 -16 120 136" role="img" aria-label="Apix, la mascota de Apex Gym">';
+  let s = '<svg class="apix apix-' + h + ' ' + (tam || "") + '" viewBox="0 -16 120 136" role="img" aria-label="Apix, la mascota de Apix Gym">';
   s += '<defs><radialGradient id="' + id + '" cx="40%" cy="30%" r="80%">' +
        '<stop offset="0" stop-color="' + claro + '"/><stop offset=".6" stop-color="' + medio + '"/><stop offset="1" stop-color="' + borde + '"/></radialGradient></defs>';
   // Sombra, patas y brazos

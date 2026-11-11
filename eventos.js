@@ -1,5 +1,5 @@
 // =====================================================
-// APEX GYM · EVENTOS (qué pasa al pulsar o escribir)
+// APIX GYM · EVENTOS (qué pasa al pulsar o escribir)
 // Un solo "escuchador" para toda la página: mira el atributo data-act del botón.
 // =====================================================
 
@@ -575,13 +575,13 @@ const ACCIONES = {
     if (permisoAvisos() === "no") { mensaje("Avisos", "Este navegador no permite avisos. En iPhone, primero añade la app a la pantalla de inicio."); return; }
     if (permisoAvisos() === "granted") {
       // Prueba por push (llega aunque cierres la app). Si no se puede, aviso normal.
-      probarAvisoPush("Apex Gym", "Así te llegarán los recordatorios, aunque la app esté cerrada. 💪").then(function (ok) {
-        if (!ok) mostrarAviso("Apex Gym", "Así te llegarán los recordatorios. 💪");
+      probarAvisoPush("Apix Gym", "Así te llegarán los recordatorios, aunque la app esté cerrada. 💪").then(function (ok) {
+        if (!ok) mostrarAviso("Apix Gym", "Así te llegarán los recordatorios. 💪");
       });
       return;
     }
     Notification.requestPermission().then(function (p) {
-      if (p === "granted") { toast("✓ Avisos activados", "ok"); mostrarAviso("Apex Gym", "Avisos activados. Te recordaré tus entrenos. 💪"); sincronizarAvisosPush(); }
+      if (p === "granted") { toast("✓ Avisos activados", "ok"); mostrarAviso("Apix Gym", "Avisos activados. Te recordaré tus entrenos. 💪"); sincronizarAvisosPush(); }
       else toast("No se han activado los avisos", "error");
       hojaAjustes();
     });
@@ -597,7 +597,7 @@ const ACCIONES = {
     toast(r.msg, "ok"); await cargarSocialNube(); pintarSocial();
   },
   "social-invitar": function () {
-    compartirTexto("Añádeme en Apex Gym", "¡Añádeme como amigo en Apex Gym! Mi usuario es @" + estado.perfil.usuario + ". Abre el enlace:", URL_APP + "#u=" + encodeURIComponent(estado.perfil.usuario));
+    compartirTexto("Añádeme en Apix Gym", "¡Añádeme como amigo en Apix Gym! Mi usuario es @" + estado.perfil.usuario + ". Abre el enlace:", URL_APP + "#u=" + encodeURIComponent(estado.perfil.usuario));
   },
   "social-aceptar": async function (id) {
     const r = await aceptarAmistadNube(id);
@@ -694,13 +694,13 @@ const ACCIONES = {
   "compartir-fuera": function (id) {
     const s = (id && estado.sesiones.find(function (z) { return z.id === id; })) || estado.sesiones[estado.sesiones.length - 1];
     if (!s) return;
-    const texto = "💪 " + textoSesion(s) + " en Apex Gym" + (rachaSemanas() > 1 ? " · racha de " + rachaSemanas() + " semanas 🔥" : "");
+    const texto = "💪 " + textoSesion(s) + " en Apix Gym" + (rachaSemanas() > 1 ? " · racha de " + rachaSemanas() + " semanas 🔥" : "");
     compartirTexto("Mi entreno", texto, URL_APP);
   },
   "compartir-tarjeta": function () {
     const p = puedeCompartirTarjeta();
     if (!p.ok) { mensaje("No se puede compartir", p.msg); return; }
-    compartirTexto("Añádeme en Apex Gym", "¡Añádeme como amigo en Apex Gym! Abre el enlace:", enlaceTarjeta());
+    compartirTexto("Añádeme en Apix Gym", "¡Añádeme como amigo en Apix Gym! Abre el enlace:", enlaceTarjeta());
   },
   "anadir-amigo-real": function () {
     const r = anadirAmigoReal($("codigoAmigo").value);
@@ -912,7 +912,7 @@ const ACCIONES = {
     if (!enAppInstalada() && !estado) {
       // Estamos en el navegador (enlace del correo): la sesión no sirve en la app instalada
       await salirNube();
-      pantallaVueltaCorreo("✓ Contraseña cambiada", "Ahora abre la app Apex Gym e inicia sesión con tu nueva contraseña. Ya puedes cerrar esta pestaña.");
+      pantallaVueltaCorreo("✓ Contraseña cambiada", "Ahora abre la app Apix Gym e inicia sesión con tu nueva contraseña. Ya puedes cerrar esta pestaña.");
       return;
     }
     cerrarHoja(); toast("✓ Contraseña cambiada", "ok");
@@ -1011,7 +1011,7 @@ async function procesarVueltaCorreo() {
   if (v.error) { mensaje("Enlace no válido", "El enlace ha caducado o ya se usó. Vuelve a pedirlo. (" + v.error + ")"); return true; }
   // Confirmar la cuenta desde el navegador: el correo ya queda confirmado; se entra desde la app
   if (v.tipo !== "recovery" && !enAppInstalada() && !estado) {
-    pantallaVueltaCorreo("✓ Correo confirmado", "Tu cuenta ya está activada. Vuelve a la app Apex Gym y pulsa «Ya lo he confirmado» (o inicia sesión con tu correo y contraseña). Ya puedes cerrar esta pestaña.");
+    pantallaVueltaCorreo("✓ Correo confirmado", "Tu cuenta ya está activada. Vuelve a la app Apix Gym y pulsa «Ya lo he confirmado» (o inicia sesión con tu correo y contraseña). Ya puedes cerrar esta pestaña.");
     return true;
   }
   guardarSesionNube({ access_token: v.access_token, refresh_token: v.refresh_token, expires_in: v.expires_in });
@@ -1148,7 +1148,7 @@ window.addEventListener("beforeunload", function (ev) {
 
 // ---------- App instalable (PWA) ----------
 // Chrome avisa con "beforeinstallprompt" cuando la app se puede instalar. Guardamos ese aviso
-// para lanzarlo cuando el usuario pulse el botón "Instalar Apex Gym" de Ajustes.
+// para lanzarlo cuando el usuario pulse el botón "Instalar Apix Gym" de Ajustes.
 let avisoInstalar = null;
 window.addEventListener("beforeinstallprompt", function (ev) {
   ev.preventDefault();
@@ -1181,7 +1181,7 @@ function hacerCopia() {
   let archivo = null;
   try { archivo = new File([texto], nombre, { type: "application/json" }); } catch (e) { }
   if (archivo && navigator.canShare && navigator.canShare({ files: [archivo] })) {
-    navigator.share({ files: [archivo], title: "Copia de Apex Gym" }).then(function () { marcar(); toast("✓ Copia guardada", "ok"); }).catch(function (e) {
+    navigator.share({ files: [archivo], title: "Copia de Apix Gym" }).then(function () { marcar(); toast("✓ Copia guardada", "ok"); }).catch(function (e) {
       if (e && e.name === "AbortError") return;
       descargarCopia(texto, nombre); marcar();
     });
@@ -1224,7 +1224,7 @@ function abrirEnlaceAmigo() {
   else mensaje("Enlace de amigo", r.msg);
 }
 
-// Enlace de invitación (Apex Gym/#u=usuario): envía la solicitud de amistad
+// Enlace de invitación (Apix Gym/#u=usuario): envía la solicitud de amistad
 async function abrirInvitacion(usuario) {
   try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { }
   if (!estado || !estado.perfil || estado.modo === "demo" || !conectado()) {

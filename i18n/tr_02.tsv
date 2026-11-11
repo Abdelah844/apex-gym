@@ -84,7 +84,7 @@
 403	Password	Mot de passe
 404	Password (at least {n} characters)	Mot de passe ({n} caractères minimum)
 405	Control the way down.	Contrôle la descente.
-406	Apex Gym backup	Sauvegarde Apex Gym
+406	Apix Gym backup	Sauvegarde Apix Gym
 407	Backup	Sauvegarde
 408	Copy this text and save it in a file. It contains your whole history in JSON format, with the format version so it can be imported in future versions.	Copie ce texte et enregistre-le dans un fichier. Il contient tout ton historique au format JSON, avec la version du format pour pouvoir l’importer dans de futures versions.
 409	Copied.	Copié.

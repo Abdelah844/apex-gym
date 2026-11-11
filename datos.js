@@ -1,5 +1,5 @@
 // =====================================================
-// APEX GYM · DATOS FIJOS (ejercicios y rangos)
+// APIX GYM · DATOS FIJOS (ejercicios y rangos)
 // =====================================================
 
 // Función para crear un ejercicio de forma ordenada.

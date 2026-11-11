@@ -1,4 +1,4 @@
-# Apex Gym · Protocolo de prueba piloto
+# Apix Gym · Protocolo de prueba piloto
 
 Objetivo: comprobar con personas reales si los rangos parecen justos, si las recomendaciones son útiles y si registrar un entreno es rápido.
 
@@ -10,7 +10,7 @@ Objetivo: comprobar con personas reales si los rangos parecen justos, si las rec
 
 ## 2. Duración y uso
 
-- 3 semanas usando Apex Gym en todos sus entrenos.
+- 3 semanas usando Apix Gym en todos sus entrenos.
 - Día 1: crear el perfil y la rutina con el responsable delante (sin ayudarle salvo bloqueo).
 - Al terminar: cada participante exporta sus datos (Ajustes → Exportar) y los entrega. Contienen las métricas del piloto.
 

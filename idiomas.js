@@ -1,5 +1,5 @@
 // =====================================================
-// APEX GYM · TRADUCCIONES (generado automáticamente desde i18n/tr_*.tsv)
+// APIX GYM · TRADUCCIONES (generado automáticamente desde i18n/tr_*.tsv)
 // Clave = texto en español ({n} = un número). Valor = [inglés, francés].
 // =====================================================
 const TRADUCCIONES = {
@@ -159,9 +159,9 @@ const TRADUCCIONES = {
 "Academy",
 "Académie"
 ],
-"Acepto que mis datos de Apex Gym (perfil, entrenos, medidas y, si las apunto, lesiones o molestias) se guarden en la nube, según la": [
-"I agree that my Apex Gym data (profile, workouts, measurements and, if I log them, injuries or discomfort) is stored in the cloud, according to the",
-"J’accepte que mes données Apex Gym (profil, séances, mensurations et, si je les note, blessures ou gênes) soient enregistrées dans le cloud, selon la"
+"Acepto que mis datos de Apix Gym (perfil, entrenos, medidas y, si las apunto, lesiones o molestias) se guarden en la nube, según la": [
+"I agree that my Apix Gym data (profile, workouts, measurements and, if I log them, injuries or discomfort) is stored in the cloud, according to the",
+"J’accepte que mes données Apix Gym (profil, séances, mensurations et, si je les note, blessures ou gênes) soient enregistrées dans le cloud, selon la"
 ],
 "Activar avisos en este móvil": [
 "Turn on notifications on this phone",
@@ -247,9 +247,9 @@ const TRADUCCIONES = {
 "Now",
 "Maintenant"
 ],
-"Ahora abre la app Apex Gym e inicia sesión con tu nueva contraseña. Ya puedes cerrar esta pestaña.": [
-"Now open the Apex Gym app and log in with your new password. You can close this tab.",
-"Ouvre maintenant l’app Apex Gym et connecte-toi avec ton nouveau mot de passe. Tu peux fermer cet onglet."
+"Ahora abre la app Apix Gym e inicia sesión con tu nueva contraseña. Ya puedes cerrar esta pestaña.": [
+"Now open the Apix Gym app and log in with your new password. You can close this tab.",
+"Ouvre maintenant l’app Apix Gym et connecte-toi avec ton nouveau mot de passe. Tu peux fermer cet onglet."
 ],
 "Ajusta el apoyo para que quede justo por debajo de la cadera.": [
 "Adjust the pad so it sits just below your hips.",
@@ -511,9 +511,9 @@ const TRADUCCIONES = {
 "Apix, the mascot",
 "Apix, la mascotte"
 ],
-"Apix, la mascota de Apex Gym": [
-"Apix, the Apex Gym mascot",
-"Apix, la mascotte d’Apex Gym"
+"Apix, la mascota de Apix Gym": [
+"Apix, the Apix Gym mascot",
+"Apix, la mascotte d’Apix Gym"
 ],
 "Apix:": [
 "Apix:",
@@ -747,9 +747,9 @@ const TRADUCCIONES = {
 "Add it here. When the whole workout is done, tap “Finish” at the top.",
 "Ajoute-la ici. Une fois la séance terminée, appuie sur « Terminer » en haut."
 ],
-"Añádeme en Apex Gym": [
-"Add me on Apex Gym",
-"Ajoute-moi sur Apex Gym"
+"Añádeme en Apix Gym": [
+"Add me on Apix Gym",
+"Ajoute-moi sur Apix Gym"
 ],
 "Aún no has añadido a nadie.": [
 "You haven’t added anyone yet.",
@@ -1579,9 +1579,9 @@ const TRADUCCIONES = {
 "Control the way down.",
 "Contrôle la descente."
 ],
-"Copia de Apex Gym": [
-"Apex Gym backup",
-"Sauvegarde Apex Gym"
+"Copia de Apix Gym": [
+"Apix Gym backup",
+"Sauvegarde Apix Gym"
 ],
 "Copia de seguridad": [
 "Backup",
@@ -2383,9 +2383,9 @@ const TRADUCCIONES = {
 "The code is too long.",
 "Le code est trop long."
 ],
-"El código no es una tarjeta de Apex Gym.": [
-"The code isn’t an Apex Gym card.",
-"Le code n’est pas une carte Apex Gym."
+"El código no es una tarjeta de Apix Gym.": [
+"The code isn’t an Apix Gym card.",
+"Le code n’est pas une carte Apix Gym."
 ],
 "El código no es válido. Pide a tu amigo que te lo vuelva a enviar.": [
 "The code isn’t valid. Ask your friend to send it again.",
@@ -7055,9 +7055,9 @@ const TRADUCCIONES = {
 "Your account is empty",
 "Ton compte est vide"
 ],
-"Tu cuenta ya está activada. Vuelve a la app Apex Gym y pulsa «Ya lo he confirmado» (o inicia sesión con tu correo y contraseña). Ya puedes cerrar esta pestaña.": [
-"Your account is now active. Go back to the Apex Gym app and tap “I’ve confirmed it” (or log in with your email and password). You can close this tab.",
-"Ton compte est activé. Retourne dans l’app Apex Gym et appuie sur « Je l’ai confirmé » (ou connecte-toi avec ton e-mail et ton mot de passe). Tu peux fermer cet onglet."
+"Tu cuenta ya está activada. Vuelve a la app Apix Gym y pulsa «Ya lo he confirmado» (o inicia sesión con tu correo y contraseña). Ya puedes cerrar esta pestaña.": [
+"Your account is now active. Go back to the Apix Gym app and tap “I’ve confirmed it” (or log in with your email and password). You can close this tab.",
+"Ton compte est activé. Retourne dans l’app Apix Gym et appuie sur « Je l’ai confirmé » (ou connecte-toi avec ton e-mail et ton mot de passe). Tu peux fermer cet onglet."
 ],
 "Tu esfuerzo medio esta semana es muy alto (RPE": [
 "Your average effort this week is very high (RPE",
@@ -8151,9 +8151,9 @@ const TRADUCCIONES = {
 "~{n} min per day",
 "~{n} min par jour"
 ],
-"¡Añádeme como amigo en Apex Gym! Abre el enlace:": [
-"Add me as a friend on Apex Gym! Open the link:",
-"Ajoute-moi comme ami sur Apex Gym ! Ouvre le lien :"
+"¡Añádeme como amigo en Apix Gym! Abre el enlace:": [
+"Add me as a friend on Apix Gym! Open the link:",
+"Ajoute-moi comme ami sur Apix Gym ! Ouvre le lien :"
 ],
 "¡Bestia!": [
 "Beast!",
@@ -8791,9 +8791,9 @@ const TRADUCCIONES = {
 "Rest day today · next:",
 "Repos aujourd’hui · prochain :"
 ],
-"Instalar Apex Gym": [
-"Install Apex Gym",
-"Installer Apex Gym"
+"Instalar Apix Gym": [
+"Install Apix Gym",
+"Installer Apix Gym"
 ],
 "Invita a tus amigos y compara rango y racha.": [
 "Invite your friends and compare rank and streak.",
@@ -9295,9 +9295,9 @@ const TRADUCCIONES = {
 "✓ My gym has it",
 "✓ Ma salle l’a"
 ],
-"✓ Ya estás usando Apex Gym como app instalada.": [
-"✓ You’re already using Apex Gym as an installed app.",
-"✓ Tu utilises déjà Apex Gym comme app installée."
+"✓ Ya estás usando Apix Gym como app instalada.": [
+"✓ You’re already using Apix Gym as an installed app.",
+"✓ Tu utilises déjà Apix Gym comme app installée."
 ],
 "🏆 ¡Récord personal!": [
 "🏆 Personal record!",
@@ -9347,9 +9347,9 @@ const TRADUCCIONES = {
 "two sessions in a row",
 "deux séances d’affilée"
 ],
-"en Apex Gym": [
-"on Apex Gym",
-"sur Apex Gym"
+"en Apix Gym": [
+"on Apix Gym",
+"sur Apix Gym"
 ],
 "kg e intenta sumar una repetición con buena técnica.": [
 "kg and try to add one rep with good technique.",
@@ -9407,9 +9407,9 @@ const TRADUCCIONES = {
 "Waiting for them to accept",
 "En attente d’acceptation"
 ],
-"La publicación se ocultará para ti y la denuncia llegará al equipo de Apex Gym para revisarla.": [
-"The post will be hidden for you and the report will reach the Apex Gym team for review.",
-"La publication sera masquée pour toi et le signalement sera envoyé à l’équipe d’Apex Gym pour examen."
+"La publicación se ocultará para ti y la denuncia llegará al equipo de Apix Gym para revisarla.": [
+"The post will be hidden for you and the report will reach the Apix Gym team for review.",
+"La publication sera masquée pour toi et le signalement sera envoyé à l’équipe d’Apix Gym pour examen."
 ],
 "No hay ningún usuario con ese nombre (o tiene el perfil privado).": [
 "There’s no user with that name (or their profile is private).",
@@ -11143,9 +11143,9 @@ const TRADUCCIONES = {
 "✓ Image downloaded",
 "✓ Image téléchargée"
 ],
-"Entrena conmigo en Apex Gym": [
-"Train with me on Apex Gym",
-"Entraîne-toi avec moi sur Apex Gym"
+"Entrena conmigo en Apix Gym": [
+"Train with me on Apix Gym",
+"Entraîne-toi avec moi sur Apix Gym"
 ],
 "Libras (lb)": [
 "Pounds (lb)",

@@ -1,5 +1,5 @@
 // =====================================================
-// APEX GYM · IDIOMAS (español, inglés y francés)
+// APIX GYM · IDIOMAS (español, inglés y francés)
 // La app está escrita en español. Este archivo cambia los textos de la pantalla
 // al idioma elegido usando la lista de idiomas.js.
 //
@@ -68,8 +68,8 @@ const PATRONES = [
   ["Hoy toca descanso · próximo: {x}", "Rest day today · next: {x}", "Repos aujourd’hui · prochain : {x}"],
   ["Completó {x} · {x} series efectivas · {x} récord(s)", "Completed {x} · {x} effective sets · {x} record(s)", "A terminé {x} · {x} séries efficaces · {x} record(s)"],
   ["Completó {x} · {x} series efectivas", "Completed {x} · {x} effective sets", "A terminé {x} · {x} séries efficaces"],
-  ["💪 {x} en Apex Gym · racha de {x} semanas 🔥", "💪 {x} on Apex Gym · {x}-week streak 🔥", "💪 {x} sur Apex Gym · série de {x} semaines 🔥"],
-  ["💪 {x} en Apex Gym", "💪 {x} on Apex Gym", "💪 {x} sur Apex Gym"],
+  ["💪 {x} en Apix Gym · racha de {x} semanas 🔥", "💪 {x} on Apix Gym · {x}-week streak 🔥", "💪 {x} sur Apix Gym · série de {x} semaines 🔥"],
+  ["💪 {x} en Apix Gym", "💪 {x} on Apix Gym", "💪 {x} sur Apix Gym"],
   ["{x} series hechas. Estoy orgulloso de ti.", "{x} sets done. I’m proud of you.", "{x} séries faites. Je suis fier de toi."],
   ["{x} récords nuevos. ¡Eres una máquina!", "{x} new records. You’re a machine!", "{x} nouveaux records. Tu es une machine !"],
   ["{x} récord nuevo. ¡Eres una máquina!", "{x} new record. You’re a machine!", "{x} nouveau record. Tu es une machine !"],
@@ -187,7 +187,7 @@ const PATRONES = [
   ["+{x} en revisión", "+{x} under review", "+{x} en vérification"],
   ["Invitación de @{x}", "Invitation from @{x}", "Invitation de @{x}"],
   ["Crea tu perfil y una cuenta en la nube (Ajustes → ☁️ Cuenta). Después, en Social → Amigos, escribe su usuario: @{x}", "Create your profile and a cloud account (Settings → ☁️ Account). Then, in Social → Friends, type their username: @{x}", "Crée ton profil et un compte cloud (Réglages → ☁️ Compte). Ensuite, dans Social → Amis, écris son nom d’utilisateur : @{x}"],
-  ["¡Añádeme como amigo en Apex Gym! Mi usuario es @{x}. Abre el enlace:", "Add me as a friend on Apex Gym! My username is @{x}. Open the link:", "Ajoute-moi comme ami sur Apex Gym ! Mon nom d’utilisateur est @{x}. Ouvre le lien :"],
+  ["¡Añádeme como amigo en Apix Gym! Mi usuario es @{x}. Abre el enlace:", "Add me as a friend on Apix Gym! My username is @{x}. Open the link:", "Ajoute-moi comme ami sur Apix Gym ! Mon nom d’utilisateur est @{x}. Ouvre le lien :"],
   ["Solicitudes recibidas ({x})", "Requests received ({x})", "Demandes reçues ({x})"],
   // ---- Mensajes de Apix (mascota.js) ----
   ["{x} días parado…", "{x} days without moving…", "{x} jours à l’arrêt…"],

@@ -1,7 +1,7 @@
 {
   "id": "./index.html",
-  "name": "Apex Gym",
-  "short_name": "Apex Gym",
+  "name": "Apix Gym",
+  "short_name": "Apix Gym",
   "description": "Registra tus entrenos, sube de rango y mantén la racha.",
   "lang": "es-ES",
   "start_url": "./index.html",

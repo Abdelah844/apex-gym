@@ -7,9 +7,9 @@
 - **Cambios hechos:** reducidas a 480 px de ancho y comprimidas en JPEG.
 - **Aviso:** según su README, Free Exercise DB reorganizó los datos de un proyecto anterior (exercises.json). Antes de publicar la app con fines comerciales, conviene revisar también ese origen.
 
-### Correspondencia (ejercicio de Apex Gym → ejercicio de Free Exercise DB)
+### Correspondencia (ejercicio de Apix Gym → ejercicio de Free Exercise DB)
 
-| Apex Gym | Free Exercise DB |
+| Apix Gym | Free Exercise DB |
 |---|---|
 | dominadas-neutras | V-Bar_Pullup |
 | press-banca-cerrado | Close-Grip_Barbell_Bench_Press |

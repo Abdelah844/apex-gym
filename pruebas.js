@@ -1,5 +1,5 @@
 // =====================================================
-// APEX GYM 2.0 · PRUEBAS AUTOMÁTICAS
+// APIX GYM 2.0 · PRUEBAS AUTOMÁTICAS
 // Se ejecutan igual en el navegador (Ajustes → Pruebas) y en Node (node test/correr.js).
 // Cada prueba crea sus propios datos; al terminar se restauran los datos del usuario.
 // =====================================================

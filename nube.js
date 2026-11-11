@@ -1,5 +1,5 @@
 // =====================================================
-// APEX GYM · CUENTA EN LA NUBE (Supabase)
+// APIX GYM · CUENTA EN LA NUBE (Supabase)
 // La app sigue funcionando SIN cuenta: los datos se guardan en el móvil.
 // Si el usuario crea una cuenta, además se guarda una copia en la nube
 // para no perder nada al cambiar de móvil.

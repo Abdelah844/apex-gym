@@ -1,4 +1,4 @@
-// Ejecuta las pruebas de Apex Gym sin navegador.
+// Ejecuta las pruebas de Apix Gym sin navegador.
 // Uso (desde la carpeta del proyecto):  node test/correr.js
 // Devuelve código de salida 1 si alguna prueba falla (útil para integración continua).
 
