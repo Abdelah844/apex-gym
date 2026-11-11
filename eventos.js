@@ -819,8 +819,12 @@ const ACCIONES = {
     navigator.clipboard.writeText(t.value).then(function () { $("copiaOk").textContent = "Copiado."; })
       .catch(function () { t.select(); $("copiaOk").textContent = "Texto seleccionado: cópialo con Ctrl+C o mantén pulsado."; });
   },
-  "cerrar-sesion": function () {
-    // Los datos siguen guardados en este dispositivo; al volver se recuperan
+  "cerrar-sesion": async function () {
+    // Si hay cuenta en la nube, también se cierra allí. Los datos siguen guardados en este móvil.
+    if (conectado()) {
+      await salirNube();
+      socialNube = { cargado: false, cargando: false, error: "", amigos: [], recibidas: [], enviadas: [], posts: [] };
+    }
     cerrarHoja(); pararDescanso(); $("tabs").hidden = true;
     $("app").innerHTML = '<div class="welcome">' + insignia(8, "logo") + '<h1>Sesión cerrada</h1><p class="muted">Tus datos siguen guardados en este dispositivo.</p><button class="btn" data-act="volver-a-entrar">Volver a entrar</button></div>';
   },

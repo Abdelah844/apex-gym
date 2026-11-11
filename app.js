@@ -1959,6 +1959,7 @@ function hojaAjustes() {
       (MODO_DESARROLLO ? '<button class="btn-sec full" data-act="exportar">Ver los datos como texto</button>' +
         '<button class="btn-sec full" data-act="pruebas">Ejecutar pruebas de calidad</button>' +
         '<button class="btn-sec full" data-act="abrir-piloto">Prueba piloto</button>' : "") +
+      '<button class="btn-sec full" data-act="cerrar-sesion">Cerrar sesión</button>' +
       '<button class="btn-sec full btn-danger" data-act="borrar-todo">' + (confirmar === "borrar-todo" ? "Pulsa otra vez: se borrará todo" : "Eliminar cuenta y datos") + '</button></div></div>');
 }
 
