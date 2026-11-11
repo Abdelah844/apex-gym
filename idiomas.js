@@ -11186,5 +11186,25 @@ const TRADUCCIONES = {
 "Así se construye el cuerpo que quieres.": [
 "That’s how you build the body you want.",
 "C’est comme ça qu’on construit le corps qu’on veut."
+],
+"Las pesas no se levantan solas.": [
+"The weights won’t lift themselves.",
+"Les poids ne se soulèvent pas tout seuls."
+],
+"El sofá te echará de menos. 😏": [
+"The couch will miss you. 😏",
+"Le canapé va te manquer. 😏"
+],
+"Las mancuernas preguntan por ti. Les he dicho que estabas en el sofá.": [
+"The dumbbells are asking about you. I told them you were on the couch.",
+"Les haltères demandent de tes nouvelles. Je leur ai dit que tu étais sur le canapé."
+],
+"Hoy toca sofá, pero con permiso. 😴": [
+"Couch day today, but with permission. 😴",
+"Aujourd’hui c’est canapé, mais avec permission. 😴"
+],
+"Una menos. Las pesas ya te tienen miedo.": [
+"One down. The weights are scared of you now.",
+"Une de moins. Les poids ont peur de toi maintenant."
 ]
 };

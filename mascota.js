@@ -12,10 +12,13 @@ const MENSAJES_APIX = {
     FRASE_DISCIPLINA,
     "Hoy toca. Tu yo del futuro te lo agradecerá.",
     "No hacen falta ganas, hace falta empezar.",
-    "Un entreno más, un paso más cerca."
+    "Un entreno más, un paso más cerca.",
+    "Las pesas no se levantan solas.",
+    "El sofá te echará de menos. 😏"
   ],
   animaFuerte: [
-    "Llevas {dias} días sin entrenar. " + FRASE_DISCIPLINA
+    "Llevas {dias} días sin entrenar. " + FRASE_DISCIPLINA,
+    "Las mancuernas preguntan por ti. Les he dicho que estabas en el sofá."
   ],
   enfadado: [
     "¡¿Cómo que has perdido la racha?! {racha} semanas seguidas… Esta semana la recuperamos, ¿vale?",
@@ -36,7 +39,8 @@ const MENSAJES_APIX = {
   descanso: [
     "Hoy toca descanso. Recuperar también es entrenar.",
     "Día libre. El músculo crece mientras descansas.",
-    "Descansa bien hoy: mañana vuelves más fuerte."
+    "Descansa bien hoy: mañana vuelves más fuerte.",
+    "Hoy toca sofá, pero con permiso. 😴"
   ],
   cuida: [
     "La última vez marcaste molestias. Hoy, con calma: si duele, para y consulta a un profesional.",
