@@ -18,7 +18,8 @@ const MENSAJES_APIX = {
   ],
   animaFuerte: [
     "Llevas {dias} días sin entrenar. " + FRASE_DISCIPLINA,
-    "Las mancuernas preguntan por ti. Les he dicho que estabas en el sofá."
+    "Las mancuernas preguntan por ti. Les he dicho que estabas en el sofá.",
+    "¿Vas a estar todo el día en casa? 👀"
   ],
   enfadado: [
     "¡¿Cómo que has perdido la racha?! {racha} semanas seguidas… Esta semana la recuperamos, ¿vale?",

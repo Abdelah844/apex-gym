@@ -11206,5 +11206,9 @@ const TRADUCCIONES = {
 "Una menos. Las pesas ya te tienen miedo.": [
 "One down. The weights are scared of you now.",
 "Une de moins. Les poids ont peur de toi maintenant."
+],
+"¿Vas a estar todo el día en casa? 👀": [
+"Are you going to stay home all day? 👀",
+"Tu vas rester à la maison toute la journée ? 👀"
 ]
 };
