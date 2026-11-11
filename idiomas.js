@@ -11158,5 +11158,33 @@ const TRADUCCIONES = {
 "Los ajustes de las máquinas no son válidos.": [
 "The machine settings aren’t valid.",
 "Les réglages des machines ne sont pas valides."
+],
+"Hoy toca. Tu yo del futuro te lo agradecerá.": [
+"Today’s the day. Your future self will thank you.",
+"C’est le jour. Ton futur toi te remerciera."
+],
+"No hacen falta ganas, hace falta empezar.": [
+"You don’t need to feel like it, you just need to start.",
+"Pas besoin d’en avoir envie, il suffit de commencer."
+],
+"Un entreno más, un paso más cerca.": [
+"One more workout, one step closer.",
+"Une séance de plus, un pas de plus."
+],
+"Descansa bien hoy: mañana vuelves más fuerte.": [
+"Rest well today: tomorrow you’ll come back stronger.",
+"Repose-toi bien aujourd’hui : demain tu reviens plus fort."
+],
+"Una serie más cerca de tu objetivo.": [
+"One set closer to your goal.",
+"Une série de plus vers ton objectif."
+],
+"Ni una repetición regalada.": [
+"Not a single rep wasted.",
+"Pas une répétition gâchée."
+],
+"Así se construye el cuerpo que quieres.": [
+"That’s how you build the body you want.",
+"C’est comme ça qu’on construit le corps qu’on veut."
 ]
 };

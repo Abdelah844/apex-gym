@@ -9,7 +9,10 @@ const FRASE_DISCIPLINA = "Hay que tener disciplina para el cuerpo que deseas.";
 
 const MENSAJES_APIX = {
   anima: [
-    FRASE_DISCIPLINA
+    FRASE_DISCIPLINA,
+    "Hoy toca. Tu yo del futuro te lo agradecerá.",
+    "No hacen falta ganas, hace falta empezar.",
+    "Un entreno más, un paso más cerca."
   ],
   animaFuerte: [
     "Llevas {dias} días sin entrenar. " + FRASE_DISCIPLINA
@@ -32,7 +35,8 @@ const MENSAJES_APIX = {
   ],
   descanso: [
     "Hoy toca descanso. Recuperar también es entrenar.",
-    "Día libre. El músculo crece mientras descansas."
+    "Día libre. El músculo crece mientras descansas.",
+    "Descansa bien hoy: mañana vuelves más fuerte."
   ],
   cuida: [
     "La última vez marcaste molestias. Hoy, con calma: si duele, para y consulta a un profesional.",

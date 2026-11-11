@@ -2206,7 +2206,8 @@ function avisoGuardado() {
 
 // Apix aparece un momento con una frase (al completar series, récords, fin del descanso…)
 let tApix = null, fraseN = 0;
-const FRASES_SERIE = ["¡Una menos! 💪", "¡Bien hecho!", "¡Buena serie!", "Así se hace.", "¡Sigue así!", "¡Eso es constancia!", "Respira y a por la siguiente."];
+const FRASES_SERIE = ["¡Una menos! 💪", "¡Bien hecho!", "¡Buena serie!", "Así se hace.", "¡Sigue así!", "¡Eso es constancia!", "Respira y a por la siguiente.",
+  "Una serie más cerca de tu objetivo.", "Ni una repetición regalada.", "Así se construye el cuerpo que quieres."];
 function apixDice(humor, texto, ms) {
   if (!estado || estado.ajustes.mascota === false) return;
   const el = $("apixPop");
