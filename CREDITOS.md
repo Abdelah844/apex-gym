@@ -64,7 +64,7 @@
 | curl-femoral-tumbado | Lying_Leg_Curls |
 | curl-inverso | Reverse_Barbell_Curl |
 | curl-mancuernas | Dumbbell_Bicep_Curl |
-| curl-maquina | Machine_Preacher_Curls |
+| curl-maquina | Machine_Bicep_Curl |
 | curl-martillo | Hammer_Curls |
 | curl-martillo-cuerda | Cable_Hammer_Curls_-_Rope_Attachment |
 | curl-muneca | Palms-Up_Dumbbell_Wrist_Curl_Over_A_Bench |
@@ -109,6 +109,13 @@
 | extension-una-mano-polea | Cable_One_Arm_Tricep_Extension |
 | jalon-supino | Underhand_Cable_Pulldowns |
 | jalon-una-mano | One_Arm_Lat_Pulldown |
+| sentadilla-frontal | Front_Barbell_Squat |
+| peso-muerto-sumo | Sumo_Deadlift |
+| encogimientos-barra | Barbell_Shrug |
+| remo-menton-barra | Upright_Barbell_Row |
+| lenador-polea | Standing_Cable_Wood_Chop |
+| pallof-press | Pallof_Press |
+| remo-invertido | Inverted_Row |
 | pajaros-mancuernas | Reverse_Flyes |
 | pajaros-maquina | Reverse_Machine_Flyes |
 | pajaros-polea | Cable_Rear_Delt_Fly |

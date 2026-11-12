@@ -1968,7 +1968,7 @@ const TRADUCCIONES = {
 "Laisser tomber la barre en bas."
 ],
 "Dejar caer la cadera.": [
-"Letting your hips sag.",
+"Letting your hips drop.",
 "Laisser tomber les hanches."
 ],
 "Dejar caer las muñecas.": [
@@ -2149,7 +2149,7 @@ const TRADUCCIONES = {
 ],
 "Doblar los codos para ayudarte.": [
 "Bending your elbows to help yourself.",
-"Plier les coudes pour t’aider."
+"Plier les coudes pour t'aider."
 ],
 "Doblar los codos y convertirlo en un press.": [
 "Bending your elbows and turning it into a press.",
@@ -9868,8 +9868,8 @@ const TRADUCCIONES = {
 "Descends lentement jusqu’à tendre complètement."
 ],
 "Baja despacio hasta estirar los brazos.": [
-"Lower slowly until your arms are straight.",
-"Descends lentement jusqu’à tendre les bras."
+"Lower yourself slowly until your arms are straight.",
+"Redescends lentement jusqu'à tendre les bras."
 ],
 "Baja despacio sin soltar la tensión.": [
 "Lower slowly without losing tension.",
@@ -11298,5 +11298,233 @@ const TRADUCCIONES = {
 "Encoger el hombro del brazo que tira.": [
 "Shrugging the shoulder of the pulling arm.",
 "Hausser l'épaule du bras qui tire."
+],
+"Remo invertido (australiano)": [
+"Inverted row (Australian pull-up)",
+"Rowing inversé (traction australienne)"
+],
+"Cuélgate bajo la barra con el cuerpo recto y los talones en el suelo.": [
+"Hang under the bar with your body straight and heels on the floor.",
+"Suspends-toi sous la barre, corps droit et talons au sol."
+],
+"Tira del pecho hacia la barra.": [
+"Pull your chest towards the bar.",
+"Tire ta poitrine vers la barre."
+],
+"Dejar la cadera colgando.": [
+"Letting your hips sag.",
+"Laisser les hanches tomber."
+],
+"Cuanto más horizontal estés, más difícil. Escribe {n} kg si no usas lastre.": [
+"The more horizontal you are, the harder it is. Enter {n} kg if you don't use extra weight.",
+"Plus tu es horizontal, plus c'est difficile. Note {n} kg si tu n'utilises pas de lest."
+],
+"Encogimientos con barra": [
+"Barbell shrugs",
+"Haussements d'épaules à la barre"
+],
+"De pie, con la barra cogida por encima y los brazos estirados.": [
+"Stand holding the bar overhand with your arms straight.",
+"Debout, la barre en prise pronation et les bras tendus."
+],
+"Trabaja el trapecio. Puedes usar correas si se te escapa la barra.": [
+"Works the traps. You can use straps if the bar slips.",
+"Travaille les trapèzes. Tu peux utiliser des sangles si la barre glisse."
+],
+"Remo al mentón con barra": [
+"Barbell upright row",
+"Rowing menton à la barre"
+],
+"De pie, con la barra cogida por encima delante de los muslos.": [
+"Stand holding the bar overhand in front of your thighs.",
+"Debout, la barre en pronation devant les cuisses."
+],
+"Sube la barra pegada al cuerpo llevando los codos por encima de las manos.": [
+"Raise the bar close to your body, leading with your elbows above your hands.",
+"Monte la barre près du corps, les coudes au-dessus des mains."
+],
+"Subir la barra demasiado alto y forzar el hombro.": [
+"Raising the bar too high and straining your shoulder.",
+"Monter la barre trop haut et forcer l'épaule."
+],
+"Con las manos algo más abiertas que los hombros es más cómodo.": [
+"It's more comfortable with your hands slightly wider than your shoulders.",
+"C'est plus confortable avec les mains un peu plus écartées que les épaules."
+],
+"Sentadilla frontal": [
+"Front squat",
+"Squat avant"
+],
+"Barra apoyada delante de los hombros, codos altos.": [
+"Bar resting on the front of your shoulders, elbows high.",
+"Barre posée sur l'avant des épaules, coudes hauts."
+],
+"Baja con el tronco recto, lo más vertical que puedas.": [
+"Go down with your torso straight, as upright as you can.",
+"Descends le buste droit, le plus vertical possible."
+],
+"Sube empujando el suelo sin bajar los codos.": [
+"Stand up by pushing the floor away without dropping your elbows.",
+"Remonte en poussant le sol sans baisser les coudes."
+],
+"Dejar caer los codos.": [
+"Letting your elbows drop.",
+"Laisser tomber les coudes."
+],
+"Trabaja más el cuádriceps y menos la espalda que la sentadilla normal.": [
+"Works the quads more and the back less than the regular squat.",
+"Travaille plus les quadriceps et moins le dos que le squat classique."
+],
+"Peso muerto sumo": [
+"Sumo deadlift",
+"Soulevé de terre sumo"
+],
+"Pies muy abiertos y puntas hacia fuera; manos por dentro de las rodillas.": [
+"Very wide stance with toes pointing out; hands inside your knees.",
+"Pieds très écartés, pointes vers l'extérieur ; mains à l'intérieur des genoux."
+],
+"Pecho arriba y espalda recta.": [
+"Chest up and back straight.",
+"Poitrine haute et dos droit."
+],
+"Sube empujando el suelo hacia los lados y extendiendo la cadera.": [
+"Stand up by pushing the floor apart and extending your hips.",
+"Remonte en écartant le sol avec les pieds et en tendant les hanches."
+],
+"Trabaja más el glúteo y la parte interna del muslo que el peso muerto normal.": [
+"Works the glutes and inner thighs more than the regular deadlift.",
+"Travaille plus les fessiers et l'intérieur des cuisses que le soulevé de terre classique."
+],
+"Leñador en polea": [
+"Cable woodchopper",
+"Bûcheron à la poulie"
+],
+"De lado a la polea alta, coge el asa con las dos manos.": [
+"Stand side-on to the high pulley and grab the handle with both hands.",
+"De profil à la poulie haute, saisis la poignée à deux mains."
+],
+"Baja en diagonal hacia la rodilla contraria girando el tronco.": [
+"Pull down diagonally towards the opposite knee while rotating your torso.",
+"Descends en diagonale vers le genou opposé en tournant le buste."
+],
+"Vuelve despacio. Luego cambia de lado.": [
+"Return slowly. Then switch sides.",
+"Reviens lentement. Puis change de côté."
+],
+"Mover solo los brazos.": [
+"Moving only your arms.",
+"Bouger seulement les bras."
+],
+"Trabaja los oblicuos, los abdominales de los lados.": [
+"Works the obliques, the abs on your sides.",
+"Travaille les obliques, les abdominaux sur les côtés."
+],
+"Press Pallof": [
+"Pallof press",
+"Presse Pallof"
+],
+"De lado a la polea, con el asa pegada al pecho.": [
+"Stand side-on to the pulley with the handle against your chest.",
+"De profil à la poulie, la poignée contre la poitrine."
+],
+"Estira los brazos hacia delante sin dejar que el cable te gire.": [
+"Push your arms forward without letting the cable rotate you.",
+"Tends les bras devant toi sans laisser le câble te faire tourner."
+],
+"Aguanta dos segundos y vuelve. Luego cambia de lado.": [
+"Hold for two seconds and come back. Then switch sides.",
+"Tiens deux secondes et reviens. Puis change de côté."
+],
+"Girar el cuerpo hacia la polea.": [
+"Rotating your body towards the pulley.",
+"Tourner le corps vers la poulie."
+],
+"El trabajo es aguantar sin girar: así se fortalece el abdomen.": [
+"The work is resisting the rotation: that's how it strengthens your core.",
+"Le travail consiste à résister à la rotation : c'est ainsi que les abdos se renforcent."
+],
+"Rotación de tronco": [
+"Trunk rotation",
+"Rotation du tronc"
+],
+"Apoya la barra sobre la parte delantera de los hombros, cerca del cuello.": [
+"Rest the bar on the front of your shoulders, close to your neck.",
+"Pose la barre sur l'avant des épaules, près du cou."
+],
+"Codos altos, apuntando hacia delante.": [
+"Elbows high, pointing forward.",
+"Coudes hauts, pointés vers l'avant."
+],
+"Dejar caer los codos y que la barra se vaya hacia delante.": [
+"Letting your elbows drop so the bar rolls forward.",
+"Laisser tomber les coudes et la barre partir vers l'avant."
+],
+"Usa las barras de seguridad del rack a la altura de tu sentadilla.": [
+"Set the rack's safety bars at the height of your squat.",
+"Règle les barres de sécurité du rack à la hauteur de ton squat."
+],
+"Pies muy abiertos y puntas hacia fuera.": [
+"Very wide stance with toes pointing out.",
+"Pieds très écartés, pointes vers l'extérieur."
+],
+"Agarra la barra con las manos por dentro de las rodillas.": [
+"Grab the bar with your hands inside your knees.",
+"Saisis la barre avec les mains à l'intérieur des genoux."
+],
+"Dejar que las rodillas se cierren hacia dentro.": [
+"Letting your knees cave in.",
+"Laisser les genoux rentrer vers l'intérieur."
+],
+"Coge la barra por encima, a la anchura de los hombros.": [
+"Grab the bar overhand, shoulder-width apart.",
+"Saisis la barre en pronation, à largeur d'épaules."
+],
+"Brazos estirados y espalda recta.": [
+"Arms straight and back straight.",
+"Bras tendus et dos droit."
+],
+"Coge la barra por encima, a la anchura de los hombros o algo más.": [
+"Grab the bar overhand, shoulder-width or slightly wider.",
+"Saisis la barre en pronation, à largeur d'épaules ou un peu plus."
+],
+"Subir la barra por encima del pecho.": [
+"Raising the bar above your chest.",
+"Monter la barre au-dessus de la poitrine."
+],
+"Si notas pinchazo en el hombro, para y cambia a elevaciones laterales.": [
+"If you feel a sharp pain in your shoulder, stop and switch to lateral raises.",
+"Si tu sens une douleur vive à l'épaule, arrête et passe aux élévations latérales."
+],
+"Polea alta con un asa o cuerda, de lado a la máquina.": [
+"High pulley with a handle or rope, standing side-on to the machine.",
+"Poulie haute avec une poignée ou une corde, de profil à la machine."
+],
+"Pies separados y rodillas un poco dobladas.": [
+"Feet apart and knees slightly bent.",
+"Pieds écartés et genoux légèrement fléchis."
+],
+"Mover solo los brazos sin girar el tronco.": [
+"Moving only your arms without rotating your torso.",
+"Bouger seulement les bras sans tourner le buste."
+],
+"Polea a la altura del pecho, de lado a la máquina.": [
+"Pulley at chest height, standing side-on to the machine.",
+"Poulie à hauteur de poitrine, de profil à la machine."
+],
+"Sujeta el asa con las dos manos pegada al pecho.": [
+"Hold the handle with both hands against your chest.",
+"Tiens la poignée à deux mains contre la poitrine."
+],
+"Dejar que el cable te gire el cuerpo.": [
+"Letting the cable rotate your body.",
+"Laisser le câble te faire tourner."
+],
+"Barra del multipower o del rack a la altura de la cadera.": [
+"Smith machine or rack bar at hip height.",
+"Barre du Smith ou du rack à hauteur de hanches."
+],
+"Cuélgate debajo con el cuerpo recto y los talones en el suelo.": [
+"Hang underneath with your body straight and heels on the floor.",
+"Suspends-toi dessous, corps droit et talons au sol."
 ]
 };
