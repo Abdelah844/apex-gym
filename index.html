@@ -242,6 +242,18 @@ body.con-timer #toast { bottom: calc(300px + env(safe-area-inset-bottom, 0px)); 
 
 .seg.mini { width: auto; }
 .seg.mini button { padding: 6px 10px; font-size: .78rem; }
+.resumen-apix { display: grid; grid-template-columns: 64px minmax(0,1fr); gap: 14px; align-items: start; border-color: var(--accent); }
+.resumen-apix svg { width: 64px; height: auto; }
+.clave { display: grid; grid-template-columns: minmax(0,1fr) 80px auto; gap: 10px; align-items: center; width: 100%; padding: 10px 0; border: 0; border-top: 1px solid var(--line); background: none; color: inherit; text-align: left; font: inherit; cursor: pointer; }
+.clave-nombre { font-size: .9rem; line-height: 1.25; }
+.clave-num { display: flex; flex-direction: column; align-items: flex-end; font-size: .9rem; gap: 2px; }
+.clave-num .sube { color: var(--good); font-weight: 800; font-size: .8rem; }
+.clave-num .baja { color: var(--danger); font-weight: 800; font-size: .8rem; }
+.clave-num .muted { font-size: .78rem; }
+.mini-graf { width: 80px; height: 28px; }
+.leyenda { gap: 14px; font-size: .8rem; color: var(--muted); }
+.leyenda i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+details summary { cursor: pointer; color: var(--accent); font-weight: 700; padding: 4px 0; }
 .tabla-comp { width: 100%; border-collapse: collapse; font-size: .88rem; }
 .tabla-comp th { font-size: .66rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); text-align: right; padding: 4px 6px; }
 .tabla-comp td { padding: 7px 6px; border-top: 1px solid var(--line); text-align: right; }

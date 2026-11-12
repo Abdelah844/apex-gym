@@ -11534,5 +11534,105 @@ const TRADUCCIONES = {
 "«Ahora» es la semana en curso: aún no ha terminado.": [
 "\"Now\" is the current week: it isn't over yet.",
 "« Maintenant » est la semaine en cours : elle n'est pas encore finie."
+],
+"Resumen": [
+"Summary",
+"Résumé"
+],
+"Cuerpo": [
+"Body",
+"Corps"
+],
+"Historial": [
+"History",
+"Historique"
+],
+"Resumen de Apix": [
+"Apix's summary",
+"Le résumé d'Apix"
+],
+"Aún no hay entrenos en este periodo. ¡A por el primero!": [
+"No workouts in this period yet. Go for the first one!",
+"Pas encore d'entraînement sur cette période. Fonce pour le premier !"
+],
+"Aún no hay entrenos. ¡A por el primero!": [
+"No workouts yet. Go for the first one!",
+"Pas encore d'entraînement. Fonce pour le premier !"
+],
+"Has entrenado {n} vez en las últimas {n} semanas.": [
+"You've trained {n} time in the last {n} weeks.",
+"Tu t'es entraîné {n} fois ces {n} dernières semaines."
+],
+"Has entrenado {n} veces en las últimas {n} semanas.": [
+"You've trained {n} times in the last {n} weeks.",
+"Tu t'es entraîné {n} fois ces {n} dernières semaines."
+],
+"Has entrenado {n} vez en total.": [
+"You've trained {n} time in total.",
+"Tu t'es entraîné {n} fois au total."
+],
+"Has entrenado {n} veces en total.": [
+"You've trained {n} times in total.",
+"Tu t'es entraîné {n} fois au total."
+],
+"Son {n} más que en las {n} semanas anteriores.": [
+"That's {n} more than in the previous {n} weeks.",
+"C'est {n} de plus que les {n} semaines précédentes."
+],
+"Son {n} menos que en las {n} semanas anteriores.": [
+"That's {n} fewer than in the previous {n} weeks.",
+"C'est {n} de moins que les {n} semaines précédentes."
+],
+"Igual que en las {n} semanas anteriores.": [
+"The same as in the previous {n} weeks.",
+"Autant que les {n} semaines précédentes."
+],
+"Ojo, casi no entrenas:": [
+"Heads up, you barely train:",
+"Attention, tu ne travailles presque pas :"
+],
+"Tus ejercicios clave": [
+"Your key exercises",
+"Tes exercices clés"
+],
+"Tu mejor marca estimada ({n}RM) y cuánto ha cambiado en este periodo. Toca uno para ver su gráfica.": [
+"Your best estimated max ({n}RM) and how much it has changed in this period. Tap one to see its chart.",
+"Ton meilleur max estimé ({n}RM) et son évolution sur cette période. Touche-en un pour voir son graphique."
+],
+"{n} entreno": [
+"{n} workout",
+"{n} entraînement"
+],
+"Sin cambios": [
+"No change",
+"Pas de changement"
+],
+"Mapa del cuerpo": [
+"Body map",
+"Carte du corps"
+],
+"Series efectivas a la semana de cada músculo (media del periodo). Toca un músculo para ver sus semanas.": [
+"Effective sets per week for each muscle (period average). Tap a muscle to see its weeks.",
+"Séries efficaces par semaine pour chaque muscle (moyenne de la période). Touche un muscle pour voir ses semaines."
+],
+"Poco": [
+"Too little",
+"Peu"
+],
+"Bien": [
+"Good",
+"Bien"
+],
+"Mucho": [
+"A lot",
+"Beaucoup"
+],
+"Para ganar músculo, lo normal es dar a cada músculo entre {n} y {n} series a la semana (menos en abdomen, antebrazos, gemelos y aductores).": [
+"To build muscle, each muscle usually needs {n} to {n} sets a week (fewer for abs, forearms, calves and adductors).",
+"Pour prendre du muscle, chaque muscle a besoin en général de {n} à {n} séries par semaine (moins pour les abdos, les avant-bras, les mollets et les adducteurs)."
+],
+"Ver los números": [
+"See the numbers",
+"Voir les chiffres"
 ]
 };

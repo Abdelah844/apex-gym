@@ -757,6 +757,13 @@ const PRUEBAS = [
   }]
   ,
   // ---------- 2.5: más máquinas, fotos, Apix y sonidos ----------
+  ["Progreso", "El mapa del cuerpo colorea bien cada músculo según sus series", function () {
+    if (nivelMusculo("pecho", 3) !== "poco") return "3 series de pecho a la semana deberían ser poco";
+    if (nivelMusculo("pecho", 12) !== "bien") return "12 series de pecho a la semana deberían estar bien";
+    if (nivelMusculo("pecho", 25) !== "mucho") return "25 series de pecho a la semana deberían ser mucho";
+    if (nivelMusculo("gemelos", 4) !== "bien") return "En gemelos, 4 series a la semana ya están bien";
+    return true;
+  }],
   ["2.5 Máquinas", "Hay más de 100 ejercicios y todos tienen ficha, animación y fotos", function () {
     if (EJERCICIOS.length < 100) return "Solo hay " + EJERCICIOS.length;
     const sinFoto = EJERCICIOS.filter(function (e) { return !fotosDe(e.id); }).map(function (e) { return e.id; });

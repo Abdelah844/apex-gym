@@ -37,6 +37,7 @@ function cambiarIdioma(nuevo) {
 const PATRONES = [
   // ---- Generales ----
   ["Hola, {x}", "Hi, {x}", "Salut, {x}"],
+  ["Tu mejor avance: {x} en {x}.", "Your best progress: {x} in {x}.", "Ton meilleur progrès : {x} en {x}."],
   ["Animación del movimiento: {x}", "Movement animation: {x}", "Animation du mouvement : {x}"],
   ["Animación del patrón: {x}", "Pattern animation: {x}", "Animation du schéma : {x}"],
   ["Academia · {x}", "Academy · {x}", "Académie · {x}"],

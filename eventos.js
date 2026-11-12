@@ -529,6 +529,19 @@ const ACCIONES = {
 
   // ---------- Progreso ----------
   "periodo": function (d) { periodo = parseInt(d); pintarProgreso(); },
+  "sub-progreso": function (sub) { subProgreso = sub; pintarProgreso(); scrollTo(0, 0); },
+  // Ejercicio clave tocado: se enseña su gráfica de 1RM
+  "ver-clave": function (id) {
+    ejGrafica = id; metrica = "rm"; pintarProgreso();
+    const tarjeta = document.getElementById("evolucion");
+    if (tarjeta) tarjeta.scrollIntoView({ behavior: "smooth", block: "start" });
+  },
+  // Músculo tocado en el mapa: se enseñan sus series por semana
+  "grupo-progreso": function (g) {
+    grupoVolumen = g; pintarProgreso();
+    const tarjeta = document.getElementById("series-semana");
+    if (tarjeta) tarjeta.scrollIntoView({ behavior: "smooth", block: "start" });
+  },
   "metrica": function (m) { metrica = m; pintarProgreso(); },
   "guardar-peso": function () {
     const v = pesoDesdeVista(leerNumero($("nuevoPeso").value));

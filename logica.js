@@ -1892,6 +1892,15 @@ function molestiasRecientes() {
   return !!u && diasEntre(u.fecha, hoy()) <= 3 && u.ejercicios.some(function (e) { return e.molestias; });
 }
 
+// Series a la semana recomendadas: los músculos pequeños necesitan menos trabajo directo
+const MINIMO_SEMANAL = { antebrazos: 3, abdominales: 3, aductores: 3, gemelos: 3 };
+function nivelMusculo(g, porSemana) {
+  const minimo = MINIMO_SEMANAL[g] || 6;
+  if (porSemana < minimo) return "poco";
+  if (porSemana > 20) return "mucho";
+  return "bien";
+}
+
 function seriesEfectivasPorGrupo(sesiones) {
   const v = {};
   for (const g in GRUPOS) v[g] = 0;
