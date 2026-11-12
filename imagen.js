@@ -95,7 +95,7 @@ async function crearImagenEntreno(s) {
   ctx.fillStyle = "#A8A8BC"; ctx.font = "600 30px " + TEXTO; ctx.textAlign = "center";
   ctx.fillText(tr("Entrena conmigo en Apix Gym"), W / 2, H - 110);
   ctx.fillStyle = "#9A7CFF"; ctx.font = "700 30px " + TEXTO;
-  ctx.fillText("abdelah844.github.io/apex-gym", W / 2, H - 66);
+  ctx.fillText(URL_APP.replace(/^https?:\/\//, "").replace(/\/$/, ""), W / 2, H - 66);
   ctx.textAlign = "left";
 
   return new Promise(function (ok) { lienzo.toBlob(ok, "image/png"); });
@@ -187,7 +187,7 @@ async function crearImagenMes(d) {
   ctx.fillStyle = "#A8A8BC"; ctx.font = "600 30px " + TEXTO; ctx.textAlign = "center";
   ctx.fillText(tr("Entrena conmigo en Apix Gym"), W / 2, H - 110);
   ctx.fillStyle = "#9A7CFF"; ctx.font = "700 30px " + TEXTO;
-  ctx.fillText("abdelah844.github.io/apex-gym", W / 2, H - 66);
+  ctx.fillText(URL_APP.replace(/^https?:\/\//, "").replace(/\/$/, ""), W / 2, H - 66);
   ctx.textAlign = "left";
 
   return new Promise(function (ok) { lienzo.toBlob(ok, "image/png"); });

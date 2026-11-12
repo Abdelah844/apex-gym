@@ -3,7 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Apix Gym</title>
+<title>Apix Gym · Tu entrenador de gimnasio gratis</title>
+<meta name="description" content="App gratis para el gimnasio: rutina hecha para ti, te dice cuándo subir peso, rangos por músculo y técnica de cada ejercicio. Sin anuncios.">
+<meta property="og:title" content="Apix Gym">
+<meta property="og:description" content="Registra tus entrenos, sigue tu progreso y sube de rango con datos reales. Gratis y sin anuncios.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="iconos/icono-512.png">
+<meta name="twitter:card" content="summary">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0B0A10">
 <link rel="icon" href="iconos/icono-192.png">
@@ -474,6 +480,12 @@ nav.tabs button.on svg { color: var(--accent); filter: drop-shadow(0 0 6px var(-
 .welcome { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; gap: 18px; padding-top: 20px; }
 .welcome h1 { font-size: 2.6rem; }
 .welcome .logo { width: 64px; height: 72px; }
+.ventajas { display: grid; gap: 10px; text-align: start; }
+@media (min-width: 560px) { .ventajas { grid-template-columns: 1fr 1fr; } }
+.ventaja { display: flex; gap: 12px; align-items: flex-start; background: var(--surface); border: 1px solid var(--edge); border-radius: 14px; padding: 12px; }
+.ventaja h3 { font-size: .95rem; margin-bottom: 2px; }
+.ventaja-ico { font-size: 1.4rem; line-height: 1.2; }
+.gratis { color: var(--accent); font-weight: 600; }
 
 [hidden] { display: none !important; }
 /* Apix, la mascota */

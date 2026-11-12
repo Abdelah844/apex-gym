@@ -1653,7 +1653,8 @@ function feedVisible() {
 // Cada persona comparte un enlace con un resumen de sus datos (rango, racha y mejores marcas).
 // Quien lo abre o pega el código lo añade como amigo. Para actualizarlo, se vuelve a enviar.
 // =====================================================
-const URL_APP = "https://abdelah844.github.io/apex-gym/";
+// La dirección de la app sale de donde está abierta (así sigue bien si cambia el nombre del repositorio)
+const URL_APP = (typeof location !== "undefined" && /^https:/.test(location.protocol)) ? location.origin + location.pathname.replace(/[^/]*$/, "") : "https://abdelah844.github.io/apix-gym/";
 const TABLA_B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
 // Texto → base64 "seguro para enlaces" (sin + / =). Primero se pasa a bytes UTF-8 para que funcionen las tildes.

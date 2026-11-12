@@ -14763,6 +14763,86 @@ const TRADUCCIONES = {
 "Chaque jour d'entraînement apparaîtra ici.",
 "كل نهار تمرنتي فيه غادي يتلوّن هنا."
 ],
+"Rutina hecha para ti": [
+"A routine made for you",
+"Une routine faite pour toi",
+"روتين مصاوب ليك"
+],
+"Según tus días, tu tiempo y lo que hay en tu gimnasio. La cambias cuando quieras.": [
+"Based on your days, your time and what your gym has. Change it whenever you want.",
+"Selon tes jours, ton temps et ce qu'il y a dans ta salle. Tu la changes quand tu veux.",
+"على حساب الأيام ديالك، الوقت ديالك وشنو كاين ف الجيم ديالك. تبدلو فاش ما بغيتي."
+],
+"Sabes cuándo subir peso": [
+"Know when to add weight",
+"Tu sais quand augmenter le poids",
+"كتعرف فوقاش تزيد ف الوزن"
+],
+"Te dice cuándo toca subir, mantener o bajar, con tus series reales.": [
+"It tells you when to go up, stay or go down, based on your real sets.",
+"Elle te dit quand augmenter, garder ou baisser, avec tes vraies séries.",
+"كيقول ليك فوقاش تزيد، تبقى ولا تنقص، بالسيريات الحقيقية ديالك."
+],
+"Rangos por músculo": [
+"Ranks for each muscle",
+"Des rangs par muscle",
+"رتب لكل عضلة"
+],
+"De Hierro a Apex: ves qué músculos van bien y cuáles flojean.": [
+"From Iron to Apex: see which muscles are doing well and which are lagging.",
+"De Fer à Apex : tu vois quels muscles vont bien et lesquels sont à la traîne.",
+"من حديد حتى Apex: كتشوف شمن عضلات ماشيين مزيان وشمن واحدين ضعاف."
+],
+"Aprende la técnica": [
+"Learn the technique",
+"Apprends la technique",
+"تعلم التقنية"
+],
+"Cada ejercicio con fotos, animación y los errores típicos.": [
+"Every exercise with photos, an animation and the common mistakes.",
+"Chaque exercice avec des photos, une animation et les erreurs fréquentes.",
+"كل تمرين بالتصاور، الأنيماسيون والغلطات اللي كيديرو الناس بزاف."
+],
+"Gratis · Sin anuncios · En español, inglés, francés y darija": [
+"Free · No ads · In Spanish, English, French and Darija",
+"Gratuit · Sans pub · En espagnol, anglais, français et darija",
+"فابور · بلا إشهارات · بالسبنيولية، النگليزية، الفرنسية والدارجة"
+],
+"Empezar gratis": [
+"Start for free",
+"Commencer gratuitement",
+"بدا فابور"
+],
+"📲 Consejo: añádela a la pantalla de inicio desde el menú del navegador («Compartir» → «Añadir a pantalla de inicio» en iPhone) y se abrirá como una app.": [
+"📲 Tip: add it to your home screen from the browser menu (\"Share\" → \"Add to Home Screen\" on iPhone) and it will open like an app.",
+"📲 Astuce : ajoute-la à l'écran d'accueil depuis le menu du navigateur (« Partager » → « Sur l'écran d'accueil » sur iPhone) et elle s'ouvrira comme une app.",
+"📲 نصيحة: زيدها للشاشة الرئيسية من المينو ديال المتصفح («Partager» ← «Sur l'écran d'accueil» ف الآيفون) وغادي تتحل بحال شي أپليكاسيون."
+],
+"Tu entreno solo está en este móvil": [
+"Your workout is only on this phone",
+"Ta séance est seulement sur ce téléphone",
+"الحصة ديالك غير ف هاد التيليفون"
+],
+"Tus {n} entrenos solo están en este móvil": [
+"Your {n} workouts are only on this phone",
+"Tes {n} séances sont seulement sur ce téléphone",
+"{n} حصص ديالك غير ف هاد التيليفون"
+],
+"Si pierdes el móvil o se borran los datos del navegador, se pierden. Crea una cuenta gratis y se guardan solos en la nube.": [
+"If you lose your phone or the browser data is cleared, they're gone. Create a free account and they'll be saved to the cloud automatically.",
+"Si tu perds ton téléphone ou si les données du navigateur sont effacées, elles sont perdues. Crée un compte gratuit et elles seront sauvegardées toutes seules dans le cloud.",
+"إلا ضاع ليك التيليفون ولا تمسحات الداتا ديال المتصفح، كيضيعو. دير كونط فابور وغادي يتحفظو بوحدهم ف السحابة."
+],
+"Crear cuenta gratis": [
+"Create a free account",
+"Créer un compte gratuit",
+"دير كونط فابور"
+],
+"💾 Solo una copia": [
+"💾 Just a backup",
+"💾 Juste une copie",
+"💾 غير نسخة احتياطية"
+],
 "Social": [
 "Social",
 "Social",

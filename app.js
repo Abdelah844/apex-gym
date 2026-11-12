@@ -192,15 +192,28 @@ function graficaBarras(etiquetas, valores, unidad) {
 
 function pintarBienvenida() {
   $("tabs").hidden = true;
+  const instalada = window.matchMedia && window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  const VENTAJAS = [
+    ["📋", "Rutina hecha para ti", "Según tus días, tu tiempo y lo que hay en tu gimnasio. La cambias cuando quieras."],
+    ["📈", "Sabes cuándo subir peso", "Te dice cuándo toca subir, mantener o bajar, con tus series reales."],
+    ["🏆", "Rangos por músculo", "De Hierro a Apex: ves qué músculos van bien y cuáles flojean."],
+    ["🎓", "Aprende la técnica", "Cada ejercicio con fotos, animación y los errores típicos."]
+  ];
+  let v = "";
+  for (const x of VENTAJAS) v += '<div class="ventaja"><span class="ventaja-ico" aria-hidden="true">' + x[0] + '</span><div><h3>' + x[1] + '</h3><p class="muted small">' + x[2] + '</p></div></div>';
   $("app").innerHTML =
     '<div class="welcome">' +
       insignia(8, "logo") +
       '<div><h1>Apix Gym</h1><p class="muted" style="font-size:1rem;margin-top:6px">Registra tus entrenos, sigue tu progreso y sube de rango con datos reales.</p></div>' +
-      '<button class="btn" data-act="ir-registro">Crear mi perfil</button>' +
+      '<div class="ventajas">' + v + '</div>' +
+      '<p class="gratis small">Gratis · Sin anuncios · En español, inglés, francés y darija</p>' +
+      '<button class="btn" data-act="ir-registro">Empezar gratis</button>' +
       '<button class="btn-sec full" data-act="abrir-cuenta" data-a="entrar">☁️ Ya tengo cuenta: iniciar sesión</button>' +
       '<button class="btn-txt" data-act="usar-demo">Probar con datos de ejemplo</button>' +
+      (instalada ? "" : '<p class="muted small">📲 Consejo: añádela a la pantalla de inicio desde el menú del navegador («Compartir» → «Añadir a pantalla de inicio» en iPhone) y se abrirá como una app.</p>') +
       '<p class="muted small">Tu perfil se guarda en este dispositivo. Si quieres, luego puedes crear una cuenta gratis para guardarlo también en la nube.</p>' +
       '<a class="muted small" href="privacidad.html">Privacidad y condiciones de uso</a>' +
+      selectorIdioma() +
     '</div>';
 }
 
@@ -317,12 +330,13 @@ function pintarInicio() {
 
   h += '<div class="stack">';
 
-  // Aviso de copia de seguridad (cada 14 días)
+  // Aviso: sin cuenta, los entrenos solo están en este móvil (cada 14 días)
   if (necesitaCopia()) {
-    const dias = estado.ajustes.ultimaCopia ? diasEntre(estado.ajustes.ultimaCopia, hoy()) : null;
-    h += '<div class="card copia-aviso stack tight"><div class="row" style="gap:10px"><span style="font-size:1.6rem">💾</span><div class="grow"><h3>¿Guardamos una copia?</h3>' +
-      '<p class="muted small">' + (dias === null ? "Aún no tienes ninguna copia." : "Tu última copia es de hace " + dias + " días.") + ' Tus entrenos solo están en este móvil. También puedes hacerla en Ajustes (⚙).</p></div></div>' +
-      '<div class="grid2"><button class="btn-sec" data-act="posponer-copia">Ahora no</button><button class="btn" data-act="hacer-copia">Hacer copia</button></div></div>';
+    const n = sesionesValidas().length;
+    h += '<div class="card copia-aviso stack tight"><div class="row" style="gap:10px"><span style="font-size:1.6rem">☁️</span><div class="grow"><h3>' + (n === 1 ? "Tu entreno solo está en este móvil" : "Tus " + n + " entrenos solo están en este móvil") + '</h3>' +
+      '<p class="muted small">Si pierdes el móvil o se borran los datos del navegador, se pierden. Crea una cuenta gratis y se guardan solos en la nube.</p></div></div>' +
+      '<button class="btn" data-act="abrir-cuenta" data-a="crear">Crear cuenta gratis</button>' +
+      '<div class="grid2"><button class="btn-sec" data-act="posponer-copia">Ahora no</button><button class="btn-sec" data-act="hacer-copia">💾 Solo una copia</button></div></div>';
   }
 
   // Apix, la mascota
