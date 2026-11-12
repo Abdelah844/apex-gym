@@ -127,6 +127,12 @@ function insignia(i, tam) {
 function nombreRango(i) { return i === null || i === undefined ? "Sin rango" : RANGOS[i].nombre; }
 
 // ---------- Gráficas ----------
+// Número del eje: si la gráfica abarca poco (menos de 3 unidades), con un decimal para que no se repitan
+function numeroEje(v, rango) {
+  if (rango < 3) return (Math.round(v * 10) / 10).toLocaleString(localeApp());
+  return Math.round(v).toLocaleString(localeApp());
+}
+
 function graficaLinea(etiquetas, valores, unidad) {
   if (valores.length < 2) return '<p class="muted">Necesitas al menos 2 registros para ver la gráfica.</p>';
   const W = 340, H = 170, mx = 36, mt = 14, mb = 26;
@@ -141,7 +147,7 @@ function graficaLinea(etiquetas, valores, unidad) {
   for (let k = 0; k <= 2; k++) {
     const v = min + (max - min) * k / 2;
     s += '<line x1="' + mx + '" x2="' + (W - 10) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="var(--line)"/>' +
-      '<text x="' + (mx - 6) + '" y="' + (y(v) + 4) + '" text-anchor="end" font-size="10" fill="var(--muted)">' + Math.round(v) + '</text>';
+      '<text x="' + (mx - 6) + '" y="' + (y(v) + 4) + '" text-anchor="end" font-size="10" fill="var(--muted)">' + numeroEje(v, max - min) + '</text>';
   }
   s += '<polygon points="' + x(0) + ',' + (H - mb) + ' ' + pts + x(valores.length - 1) + ',' + (H - mb) + '" fill="var(--accent)" fill-opacity=".14"/>' +
     '<polyline points="' + pts + '" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>';
@@ -151,7 +157,7 @@ function graficaLinea(etiquetas, valores, unidad) {
   });
   s += '<text x="' + mx + '" y="' + (H - 6) + '" font-size="10" fill="var(--muted)">' + etiquetas[0] + '</text>' +
     '<text x="' + (W - 10) + '" y="' + (H - 6) + '" font-size="10" text-anchor="end" fill="var(--muted)">' + etiquetas[etiquetas.length - 1] + '</text>' +
-    '<text x="' + (W - 10) + '" y="' + (y(valores[valores.length - 1]) - 10) + '" font-size="11" font-weight="700" text-anchor="end" fill="var(--fg)">' + (Math.round(valores[valores.length - 1] * 10) / 10) + ' ' + unidad + '</text>';
+    '<text x="' + (W - 10) + '" y="' + (y(valores[valores.length - 1]) - 10) + '" font-size="11" font-weight="700" text-anchor="end" fill="var(--fg)">' + (Math.round(valores[valores.length - 1] * 10) / 10).toLocaleString(localeApp()) + ' ' + unidad + '</text>';
   return s + '</svg>';
 }
 
@@ -878,6 +884,8 @@ function pintarProgreso() {
   let efectivas = 0, efectivasPrev = 0, dur = 0, prs = 0;
   for (const s of ses) { efectivas += s.seriesEfectivas; dur += s.duracion; prs += s.prs.length; }
   for (const s of prev) efectivasPrev += s.seriesEfectivas;
+  let prsPrev = 0;
+  for (const s of prev) prsPrev += s.prs.length;
   function delta(a, b) {
     if (periodo === 0 || b === 0) return "";
     const d = Math.round((a - b) / b * 100);
@@ -890,30 +898,16 @@ function pintarProgreso() {
       '<div class="card"><p class="label">Entrenos</p><div class="big-num num">' + ses.length + delta(ses.length, prev.length) + '</div></div>' +
       '<div class="card"><p class="label">Series efectivas</p><div class="big-num num">' + efectivas + delta(efectivas, efectivasPrev) + '</div><p class="muted small">hechas y válidas</p></div>' +
       '<div class="card"><p class="label">Duración media</p><div class="big-num num">' + (ses.length ? Math.round(dur / ses.length) : 0) + '</div><p class="muted small">minutos reales</p></div>' +
-      '<div class="card"><p class="label">Récords</p><div class="big-num num" style="color:var(--pr)">' + prs + '</div><p class="muted small">racha: ' + rachaSemanas() + ' sem</p></div>' +
-    '</div>';
-
-  // Comparativa con el periodo anterior, en tabla
-  if (periodo) {
-    let volAhora = 0, volAntes = 0, durPrev = 0, prsPrev = 0;
-    for (const s of ses) volAhora += s.volumen || 0;
-    for (const s of prev) { volAntes += s.volumen || 0; durPrev += s.duracion; prsPrev += s.prs.length; }
-    const filas = [["Entrenos", ses.length, prev.length], ["Series efectivas", efectivas, efectivasPrev], ["Tonelaje (kg)", Math.round(volAhora), Math.round(volAntes)],
-      ["Duración media (min)", ses.length ? Math.round(dur / ses.length) : 0, prev.length ? Math.round(durPrev / prev.length) : 0], ["Récords", prs, prsPrev]];
-    h += '<div class="card"><h3 style="margin-bottom:8px">Comparado con las ' + (periodo / 7) + ' semanas anteriores</h3><table class="tabla-comp"><tr><th></th><th>Ahora</th><th>Antes</th><th>Cambio</th></tr>' +
-      filas.map(function (f) {
-        const d = f[1] - f[2];
-        const clase = d > 0 ? "sube" : (d < 0 ? "baja" : "");
-        return '<tr><td>' + f[0] + '</td><td class="num"><b>' + miles(f[1]) + '</b></td><td class="num muted">' + miles(f[2]) + '</td><td class="num ' + clase + '">' + (d > 0 ? "▲ +" : (d < 0 ? "▼ " : "= ")) + (d !== 0 ? miles(d) : "") + '</td></tr>';
-      }).join("") + '</table></div>';
-  }
+      '<div class="card"><p class="label">Récords</p><div class="big-num num" style="color:var(--pr)">' + prs + delta(prs, prsPrev) + '</div><p class="muted small">racha: ' + rachaSemanas() + ' sem</p></div>' +
+    '</div>' +
+    (periodo ? '<p class="muted small">Los % comparan con las ' + (periodo / 7) + ' semanas anteriores.</p>' : "");
 
   // Carga semanal o mensual y fatiga
   const serie = vistaCarga === "mes" ? cargaPorMeses(6) : cargaPorSemanas(8);
   const fat = indiceFatiga();
   const colorFat = { "muy-alta": "var(--danger)", alta: "var(--warn)", normal: "var(--good)", baja: "var(--muted)", pocos: "var(--muted)" }[fat.nivel];
   h += '<div class="card stack"><div class="row between"><h3>Carga de entrenamiento</h3><div class="seg mini">' + [["semana", "Semanal"], ["mes", "Mensual"]].map(function (o) { return '<button data-act="vista-carga" data-a="' + o[0] + '" class="' + (vistaCarga === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div></div>' +
-    graficaBarras(serie.map(function (x) { return vistaCarga === "mes" ? MESES_CORTOS[parseInt(x.desde.slice(5, 7)) - 1] : fechaBonita(x.desde); }), serie.map(function (x) { return Math.round(pesoVista(x.carga.kg)); }), unidadPeso()) +
+    graficaBarras(serie.map(function (x, i) { if (i === serie.length - 1) return "Ahora"; return vistaCarga === "mes" ? MESES_CORTOS[parseInt(x.desde.slice(5, 7)) - 1] : fechaBonita(x.desde); }), serie.map(function (x) { return Math.round(pesoVista(x.carga.kg)); }), unidadPeso()) +
     '<div class="fatiga" style="border-color:' + colorFat + '"><p class="label" style="color:' + colorFat + '">Fatiga · ' + { "muy-alta": "muy alta", alta: "alta", normal: "normal", baja: "baja", pocos: "sin datos" }[fat.nivel] + (fat.ratio ? ' (' + fat.ratio.toFixed(2).replace(".", ",") + ')' : "") + '</p><p class="small">' + fat.texto + '</p></div>' +
     '<p class="muted small">Tonelaje = kg × reps. La fatiga compara tus series de los últimos 7 días con tu media de las 4 semanas anteriores.</p></div>';
 
@@ -957,8 +951,8 @@ function pintarProgreso() {
   }
   h += '<div class="card stack"><h3>Series efectivas por semana</h3><select data-cambio="grupo-volumen" aria-label="Grupo muscular"><option value="">Todo el cuerpo</option>' +
     Object.keys(GRUPOS).map(function (g) { return '<option value="' + g + '"' + (g === grupoVolumen ? " selected" : "") + '>' + GRUPOS[g] + '</option>'; }).join("") + '</select>' +
-    graficaBarras(lunes.map(fechaBonita), lunes.map(function (l) { return porSemana[l]; }), "series") +
-    '<p class="muted small">' + (grupoVolumen ? "Directas cuentan 1 y secundarias 0,5. " : "") + 'Las semanas sin entrenos aparecen a 0.</p></div>';
+    graficaBarras(lunes.map(function (l) { return l === lunesDe(hoy()) ? "Ahora" : fechaBonita(l); }), lunes.map(function (l) { return porSemana[l]; }), "series") +
+    '<p class="muted small">' + (grupoVolumen ? "Directas cuentan 1 y secundarias 0,5. " : "") + '«Ahora» es la semana en curso: aún no ha terminado.</p></div>';
 
   // Series efectivas por grupo en el periodo
   const cuenta = seriesEfectivasPorGrupo(ses);
@@ -991,7 +985,7 @@ function pintarProgreso() {
 
   // Historial
   h += historialSemanasHtml();
-  h += '<p class="muted small">Fotos de progreso: llegarán en la versión con servidor, privadas por defecto.</p></div>';
+  h += '</div>';
   $("app").innerHTML = h;
 }
 

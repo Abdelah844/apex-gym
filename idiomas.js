@@ -11526,5 +11526,13 @@ const TRADUCCIONES = {
 "Cuélgate debajo con el cuerpo recto y los talones en el suelo.": [
 "Hang underneath with your body straight and heels on the floor.",
 "Suspends-toi dessous, corps droit et talons au sol."
+],
+"Los % comparan con las {n} semanas anteriores.": [
+"The % compare with the previous {n} weeks.",
+"Les % comparent avec les {n} semaines précédentes."
+],
+"«Ahora» es la semana en curso: aún no ha terminado.": [
+"\"Now\" is the current week: it isn't over yet.",
+"« Maintenant » est la semaine en cours : elle n'est pas encore finie."
 ]
 };
