@@ -351,7 +351,7 @@ a { color: var(--accent); }
 // Muestra la versión en el idioma elegido en la app (o el del móvil). Los enlaces de arriba cambian de idioma.
 (function () {
   function elegir() {
-    try { var g = localStorage.getItem("apex-idioma"); if (g === "es" || g === "en" || g === "fr") return g; } catch (e) { }
+    try { var g = localStorage.getItem("apex-idioma"); if (g === "es" || g === "en" || g === "fr") return g; if (g === "ary") return "fr"; } catch (e) { }
     var m = (navigator.language || "es").slice(0, 2).toLowerCase();
     return m === "fr" ? "fr" : (["es", "ca", "gl", "eu"].indexOf(m) >= 0 ? "es" : "en");
   }

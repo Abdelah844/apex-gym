@@ -368,7 +368,7 @@ function pintarInicio() {
   const hoyNum = (new Date().getDay() + 6) % 7;
   const fechas = estado.sesiones.map(function (s) { return s.fecha; });
   // Iniciales de los días según el idioma (lunes primero)
-  const iniciales = { es: "LMXJVSD", en: "MTWTFSS", fr: "LMMJVSD" }[typeof IDIOMA_ACTUAL !== "undefined" ? IDIOMA_ACTUAL : "es"] || "LMXJVSD";
+  const iniciales = { es: "LMXJVSD", en: "MTWTFSS", fr: "LMMJVSD", ary: "ثثرخجسح" }[typeof IDIOMA_ACTUAL !== "undefined" ? IDIOMA_ACTUAL : "es"] || "LMXJVSD";
   iniciales.split("").forEach(function (l, i) {
     const f = fechaTexto(hoyNum - i);
     const on = fechas.includes(f);
