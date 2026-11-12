@@ -31,7 +31,7 @@ const TUTORIALES = {
   "fondos": { anim: "fondos", prep: ["Sujétate con los brazos estirados y los hombros bajos."], err: ["Encoger los hombros hacia las orejas."], seg: ["Si te molesta el hombro, empieza con fondos asistidos."] },
   "flexiones": { anim: "flexion", prep: ["Manos algo más abiertas que los hombros.", "Cuerpo recto de cabeza a talones."], err: ["Abrir los codos a 90 grados del cuerpo."], seg: [] },
   "dominadas": { anim: "dominada", prep: ["Agarre algo más abierto que los hombros."], err: ["No estirar los brazos abajo (medio recorrido)."], seg: ["Si aún no haces 5, usa las dominadas asistidas."] },
-  "jalon": { anim: "jalon", prep: ["Ajusta el rodillo para que sujete bien los muslos."], err: ["Llevar la barra por detrás de la nuca."], seg: [] },
+  "jalon": { anim: "jalon-frente-abierto", prep: ["Ajusta el rodillo para que sujete bien los muslos."], err: ["Llevar la barra por detrás de la nuca."], seg: [] },
   "remo-barra": { anim: "remo-inclinado", prep: ["Rodillas algo dobladas y espalda recta.", "Tronco inclinado unos 45 grados."], err: ["Levantar el tronco para subir la barra."], seg: ["Si te molesta la espalda baja, usa el remo en barra T."] },
   "remo-polea": { anim: "remo", prep: ["Pies en los apoyos y rodillas un poco dobladas."], err: ["Encoger los hombros al tirar."], seg: [] },
   "remo-mancuerna": { anim: "remo-inclinado", prep: ["Apoya rodilla y mano del mismo lado en el banco."], err: ["Tirar con el bíceps en vez de llevar el codo atrás."], seg: [] },
@@ -93,9 +93,10 @@ const TUTORIALES = {
   "aperturas-mancuernas": { anim: "aperturas-banco", prep: ["Banco plano y mancuernas ligeras.", "Codos un poco doblados y fijos."], err: ["Bajar los brazos por debajo del banco."], seg: ["Si notas tirón en el hombro, reduce el recorrido."] },
   "aperturas-polea-baja": { anim: "aperturas", prep: ["Poleas en la posición más baja.", "Un pie adelantado para estar estable."], err: ["Encoger los hombros."], seg: [] },
   "press-pecho-polea": { anim: "press-de-pie", prep: ["Poleas a la altura del pecho.", "Espalda apoyada si hay banco."], err: ["Arquear la espalda."], seg: [] },
-  "jalon-estrecho": { anim: "jalon", prep: ["Engancha el triángulo (asa en V) a la polea.", "Ajusta el rodillo sobre los muslos."], err: ["Echarse muy atrás."], seg: [] },
-  "jalon-cerrado": { anim: "jalon", prep: ["Usa la barra recta larga.", "Ajusta el rodillo sobre los muslos."], err: ["Abrir las manos más que los hombros."], seg: [] },
-  "jalon-supino": { anim: "jalon", prep: ["Palmas hacia ti, manos a la anchura de los hombros."], err: ["Tirar solo con los brazos."], seg: [] },
+  "jalon-estrecho": { anim: "jalon-frente-triangulo", prep: ["Engancha el triángulo (asa en V) a la polea.", "Ajusta el rodillo sobre los muslos."], err: ["Echarse muy atrás."], seg: [] },
+  "jalon-cerrado": { anim: "jalon-frente-cerrado", prep: ["Usa la barra recta larga.", "Ajusta el rodillo sobre los muslos."], err: ["Abrir las manos más que los hombros."], seg: [] },
+  "jalon-supino": { anim: "jalon-frente-supino", prep: ["Palmas hacia ti, manos a la anchura de los hombros."], err: ["Tirar solo con los brazos."], seg: [] },
+  "jalon-una-mano": { anim: "jalon-frente-una-mano", prep: ["Engancha un asa (estribo) a la polea alta.", "Ajusta el rodillo sobre los muslos."], err: ["Encoger el hombro del brazo que tira."], seg: [] },
   "pullover-polea": { anim: "pullover", prep: ["Polea alta con barra recta o cuerda.", "Da un paso atrás e inclina un poco el tronco."], err: ["Doblar los codos."], seg: [] },
   "remo-alto-maquina": { anim: "jalon", prep: ["Ajusta el asiento y el apoyo de los muslos."], err: ["Encoger los hombros."], seg: [] },
   "remo-polea-una-mano": { anim: "remo", prep: ["Asa individual en la polea.", "Rodillas un poco dobladas."], err: ["Girar el tronco."], seg: [] },
@@ -348,6 +349,28 @@ const ANIMACIONES = {
   "press-vertical": { vista: "lado", carga: "W", props: [[80, 106, 112, 106], [96, 106, 96, 150], [84, 106, 84, 48]],
     a: { H: [96, 46], S: [96, 59], E: [104, 84], W: [104, 58], Hp: [96, 104], K: [128, 106], A: [130, 150], T: [142, 150] },
     b: { H: [96, 46], S: [96, 59], E: [98, 31], W: [100, 5], Hp: [96, 104], K: [128, 106], A: [130, 150], T: [142, 150] } },
+  // Jalones vistos de frente: cada agarre con su anchura de manos
+  "jalon-frente-abierto": { vista: "frente", carga: "W", cable: [100, 0], barra: true, props: [[70, 108, 130, 108], [74, 114, 126, 114]],
+    a: { H: [100, 40], S1: [84, 60], S2: [116, 60], Hp1: [90, 104], Hp2: [110, 104], K1: [86, 124], K2: [114, 124], A1: [86, 150], A2: [114, 150], E1: [62, 34], W1: [48, 8], E2: [138, 34], W2: [152, 8] },
+    b: { E1: [60, 84], W1: [54, 58], E2: [140, 84], W2: [146, 58] } },
+  "jalon-frente-cerrado": { vista: "frente", carga: "W", cable: [100, 0], barra: true, props: [[70, 108, 130, 108], [74, 114, 126, 114]],
+    a: { H: [100, 40], S1: [84, 60], S2: [116, 60], Hp1: [90, 104], Hp2: [110, 104], K1: [86, 124], K2: [114, 124], A1: [86, 150], A2: [114, 150], E1: [80, 32], W1: [84, 6], E2: [120, 32], W2: [116, 6] },
+    b: { E1: [70, 86], W1: [84, 62], E2: [130, 86], W2: [116, 62] } },
+  "jalon-frente-supino": { vista: "frente", carga: "W", cable: [100, 0], barra: true, props: [[70, 108, 130, 108], [74, 114, 126, 114]],
+    a: { H: [100, 40], S1: [84, 60], S2: [116, 60], Hp1: [90, 104], Hp2: [110, 104], K1: [86, 124], K2: [114, 124], A1: [86, 150], A2: [114, 150], E1: [82, 32], W1: [88, 6], E2: [118, 32], W2: [112, 6] },
+    b: { E1: [74, 88], W1: [88, 66], E2: [126, 88], W2: [112, 66] } },
+  "jalon-frente-triangulo": { vista: "frente", carga: "W", cable: [100, 0], barra: true, props: [[70, 108, 130, 108], [74, 114, 126, 114]],
+    a: { H: [100, 40], S1: [84, 60], S2: [116, 60], Hp1: [90, 104], Hp2: [110, 104], K1: [86, 124], K2: [114, 124], A1: [86, 150], A2: [114, 150], E1: [86, 32], W1: [96, 6], E2: [114, 32], W2: [104, 6] },
+    b: { E1: [76, 88], W1: [96, 64], E2: [124, 88], W2: [104, 64] } },
+  "jalon-frente-neutro-ancho": { vista: "frente", carga: "W", cable: [100, 0], barra: true, props: [[70, 108, 130, 108], [74, 114, 126, 114]],
+    a: { H: [100, 40], S1: [84, 60], S2: [116, 60], Hp1: [90, 104], Hp2: [110, 104], K1: [86, 124], K2: [114, 124], A1: [86, 150], A2: [114, 150], E1: [70, 34], W1: [64, 8], E2: [130, 34], W2: [136, 8] },
+    b: { E1: [64, 86], W1: [66, 60], E2: [136, 86], W2: [134, 60] } },
+  "jalon-frente-cuerda": { vista: "frente", carga: "W", cable: [100, 0], cuerda: true, props: [[70, 108, 130, 108], [74, 114, 126, 114]],
+    a: { H: [100, 40], S1: [84, 60], S2: [116, 60], Hp1: [90, 104], Hp2: [110, 104], K1: [86, 124], K2: [114, 124], A1: [86, 150], A2: [114, 150], E1: [86, 32], W1: [96, 8], E2: [114, 32], W2: [104, 8] },
+    b: { E1: [66, 86], W1: [78, 64], E2: [134, 86], W2: [122, 64] } },
+  "jalon-frente-una-mano": { vista: "frente", carga: "W", cable: [100, 0], unaMano: true, props: [[70, 108, 130, 108], [74, 114, 126, 114]],
+    a: { H: [100, 40], S1: [84, 60], S2: [116, 60], Hp1: [90, 104], Hp2: [110, 104], K1: [86, 124], K2: [114, 124], A1: [86, 150], A2: [114, 150], E1: [80, 32], W1: [90, 6], E2: [122, 82], W2: [118, 104] },
+    b: { E1: [72, 88], W1: [86, 62] } },
   "jalon": { vista: "lado", carga: "W", cable: [100, 0], props: [[80, 106, 112, 106], [96, 106, 96, 150]],
     a: { H: [96, 46], S: [96, 59], E: [98, 31], W: [100, 6], Hp: [96, 104], K: [128, 106], A: [130, 150], T: [142, 150] },
     b: { H: [94, 46], S: [96, 59], E: [84, 80], W: [100, 60], Hp: [96, 104], K: [128, 106], A: [130, 150], T: [142, 150] } },
@@ -509,6 +532,7 @@ const FOTOS = {
   "jalon-estrecho": "V-Bar_Pulldown",
   "jalon-cerrado": "Close-Grip_Front_Lat_Pulldown",
   "jalon-supino": "Underhand_Cable_Pulldowns",
+  "jalon-una-mano": "One_Arm_Lat_Pulldown",
   "pullover-polea": "Straight-Arm_Pulldown",
   "remo-alto-maquina": "Leverage_High_Row",
   "remo-polea-una-mano": "Seated_One-arm_Cable_Pulley_Rows",
@@ -649,6 +673,7 @@ const TIPOS_AGARRE = {
   "neutro":    { nombre: "Agarre neutro", texto: "Las palmas se miran entre sí, a la anchura de los hombros.", forma: "asas", manos: 68, palma: null },
   "triangulo": { nombre: "Triángulo", texto: "Las palmas se miran entre sí y las manos van casi juntas.", forma: "triangulo", manos: 16, palma: null },
   "barra-v":   { nombre: "Barra en V", texto: "Coges la barra en V por encima, con las manos juntas y las palmas mirando un poco hacia abajo.", forma: "v", manos: 34, palma: false },
+  "neutro-ancho": { nombre: "Agarre neutro ancho", texto: "Coges las asas paralelas de una barra ancha: las palmas se miran entre sí y las manos van más abiertas que los hombros.", forma: "asas", manos: 104, palma: null },
   "cuerda":    { nombre: "Cuerda", texto: "Las palmas se miran entre sí, una mano a cada lado de la cuerda.", forma: "cuerda", manos: 22, palma: null }
 };
 const AGARRE = {
@@ -755,6 +780,13 @@ function animacionSVG(id, titulo) {
       '<animate attributeName="x2" values="' + valores(p[0], q[0]) + '" ' + tiempos + '/><animate attributeName="y2" values="' + valores(p[1], q[1]) + '" ' + tiempos + '/></line>';
   }
 
+  // Cable que baja hasta el centro de la barra (entre las dos manos)
+  function cableAlCentro(anclaje) {
+    const mx = (a.W1[0] + a.W2[0]) / 2, my = (a.W1[1] + a.W2[1]) / 2, nx = (b.W1[0] + b.W2[0]) / 2, ny = (b.W1[1] + b.W2[1]) / 2;
+    return '<line x1="' + anclaje[0] + '" y1="' + anclaje[1] + '" x2="' + mx + '" y2="' + my + '" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 3">' +
+      '<animate attributeName="x2" values="' + valores(mx, nx) + '" ' + tiempos + '/><animate attributeName="y2" values="' + valores(my, ny) + '" ' + tiempos + '/></line>';
+  }
+
   const cuerpo = "var(--fg)", suave = "var(--muted)", acento = "var(--accent)";
   let s = '<svg class="anim" viewBox="0 0 200 165" role="img" aria-label="Animación del movimiento: ' + String(titulo || "").replace(/[<>"&]/g, "") + '">' +
     '<line x1="0" y1="151" x2="200" y2="151" stroke="var(--line)" stroke-width="2"/>';
@@ -770,6 +802,10 @@ function animacionSVG(id, titulo) {
       linea("Hp1", "K1", cuerpo, 6) + linea("K1", "A1", cuerpo, 6) + linea("Hp2", "K2", cuerpo, 6) + linea("K2", "A2", cuerpo, 6) +
       linea("S1", "E1", cuerpo, 5) + linea("E1", "W1", cuerpo, 5) + linea("S2", "E2", cuerpo, 5) + linea("E2", "W2", cuerpo, 5) + punto("H", 9, cuerpo);
     if (def.carga) s += punto("W1", 4.5, acento) + punto("W2", 4.5, acento);
+    if (def.barra) s += linea("W1", "W2", acento, 4);                     // barra o asa que une las dos manos
+    if (def.cuerda && def.cable) s += cable(def.cable, "W1") + cable(def.cable, "W2");   // cuerda: un cabo a cada mano
+    else if (def.unaMano && def.cable) s += cable(def.cable, "W1");        // a una mano: el cable solo va a una
+    else if (def.barra && def.cable) s += cableAlCentro(def.cable);       // barra: el cable va al centro
   }
   return s + '</svg>';
 }

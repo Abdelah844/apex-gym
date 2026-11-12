@@ -10912,8 +10912,8 @@ const TRADUCCIONES = {
 "Remonte lentement jusqu’à ce que le coude soit à {n} degrés."
 ],
 "Girar el tronco para ayudarte.": [
-"Twisting your torso to help.",
-"Tourner le buste pour t’aider."
+"Twisting your torso to help yourself.",
+"Tourner le buste pour t'aider."
 ],
 "Peso para un brazo. Sirve para igualar si un brazo es más fuerte que el otro.": [
 "Weight for one arm. Helps even out a stronger and a weaker arm.",
@@ -11210,5 +11210,93 @@ const TRADUCCIONES = {
 "¿Vas a estar todo el día en casa? 👀": [
 "Are you going to stay home all day? 👀",
 "Tu vas rester à la maison toute la journée ? 👀"
+],
+"Jalón con agarre neutro ancho": [
+"Wide neutral-grip lat pulldown",
+"Tirage vertical prise neutre large"
+],
+"Jalón con cuerda": [
+"Rope lat pulldown",
+"Tirage vertical à la corde"
+],
+"Jalón a una mano": [
+"Single-arm lat pulldown",
+"Tirage vertical à un bras"
+],
+"Coge las asas paralelas con las palmas mirándose y las manos más abiertas que los hombros.": [
+"Grab the parallel handles with your palms facing each other and your hands wider than your shoulders.",
+"Saisis les poignées parallèles, paumes face à face, mains plus écartées que les épaules."
+],
+"Tira hasta la parte alta del pecho, con los codos hacia abajo.": [
+"Pull to your upper chest, elbows pointing down.",
+"Tire jusqu'au haut de la poitrine, coudes vers le bas."
+],
+"Es más cómodo para los hombros y las muñecas que el agarre abierto.": [
+"It's easier on your shoulders and wrists than the wide grip.",
+"C'est plus confortable pour les épaules et les poignets que la prise large."
+],
+"Coge la cuerda con una mano a cada lado, palmas mirándose.": [
+"Hold the rope with one hand on each side, palms facing each other.",
+"Tiens la corde avec une main de chaque côté, paumes face à face."
+],
+"Tira hacia el pecho y separa las manos al bajar.": [
+"Pull towards your chest and spread your hands apart on the way down.",
+"Tire vers la poitrine et écarte les mains en descendant."
+],
+"Separar las manos abajo te deja llevar los codos más atrás.": [
+"Spreading your hands at the bottom lets you bring your elbows further back.",
+"Écarter les mains en bas te permet d'amener les coudes plus en arrière."
+],
+"Coge el asa con una mano y apoya la otra en el muslo.": [
+"Grab the handle with one hand and rest the other on your thigh.",
+"Saisis la poignée d'une main et pose l'autre sur ta cuisse."
+],
+"Tira llevando el codo hacia abajo, pegado al costado.": [
+"Pull by driving your elbow down, close to your side.",
+"Tire en descendant le coude, collé au flanc."
+],
+"Sube despacio hasta estirar el brazo. Luego cambia de lado.": [
+"Go back up slowly until your arm is straight. Then switch sides.",
+"Remonte lentement jusqu'à tendre le bras. Puis change de côté."
+],
+"Va genial para igualar un lado de la espalda que esté más flojo.": [
+"Great for evening out a weaker side of your back.",
+"Idéal pour équilibrer un côté du dos plus faible."
+],
+"Engancha la barra con asas paralelas (las de agarre neutro) a la polea alta.": [
+"Attach the bar with parallel handles (the neutral-grip one) to the high pulley.",
+"Accroche la barre à poignées parallèles (prise neutre) à la poulie haute."
+],
+"Engancha la cuerda a la polea alta.": [
+"Attach the rope to the high pulley.",
+"Accroche la corde à la poulie haute."
+],
+"Tirar solo con los brazos sin bajar los codos.": [
+"Pulling only with your arms without bringing your elbows down.",
+"Tirer seulement avec les bras sans descendre les coudes."
+],
+"Engancha un asa (estribo) a la polea alta.": [
+"Attach a single handle (stirrup) to the high pulley.",
+"Accroche une poignée (étrier) à la poulie haute."
+],
+"Agarre neutro ancho": [
+"Wide neutral grip",
+"Prise neutre large"
+],
+"Coges las asas paralelas de una barra ancha: las palmas se miran entre sí y las manos van más abiertas que los hombros.": [
+"You hold the parallel handles of a wide bar: palms facing each other and hands wider than your shoulders.",
+"Tu tiens les poignées parallèles d'une barre large : paumes face à face et mains plus écartées que les épaules."
+],
+"Encoger los hombros hacia las orejas al tirar.": [
+"Shrugging your shoulders up to your ears as you pull.",
+"Hausser les épaules vers les oreilles en tirant."
+],
+"Juntar las manos abajo en vez de separarlas.": [
+"Keeping your hands together at the bottom instead of spreading them.",
+"Garder les mains jointes en bas au lieu de les écarter."
+],
+"Encoger el hombro del brazo que tira.": [
+"Shrugging the shoulder of the pulling arm.",
+"Hausser l'épaule du bras qui tire."
 ]
 };

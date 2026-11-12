@@ -108,6 +108,7 @@
 | elevaciones-maquina | Imágenes generadas por IA (aportadas por el autor de la app) |
 | extension-una-mano-polea | Cable_One_Arm_Tricep_Extension |
 | jalon-supino | Underhand_Cable_Pulldowns |
+| jalon-una-mano | One_Arm_Lat_Pulldown |
 | pajaros-mancuernas | Reverse_Flyes |
 | pajaros-maquina | Reverse_Machine_Flyes |
 | pajaros-polea | Cable_Rear_Delt_Fly |
