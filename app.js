@@ -208,7 +208,7 @@ function pintarBienvenida() {
       '<div class="ventajas">' + v + '</div>' +
       '<button class="btn" data-act="ir-registro">Crear mi perfil</button>' +
       '<button class="btn-sec full" data-act="abrir-cuenta" data-a="entrar">☁️ Ya tengo cuenta: iniciar sesión</button>' +
-      '<button class="btn-txt" data-act="usar-demo">👀 Ver cómo es la app (con un perfil inventado)</button>' +
+      '<button class="btn-txt" data-act="usar-demo">Entrar como invitado</button>' +
       (instalada ? "" : '<p class="muted small">📲 Consejo: añádela a la pantalla de inicio desde el menú del navegador («Compartir» → «Añadir a pantalla de inicio» en iPhone) y se abrirá como una app.</p>') +
       '<p class="muted small">Tu perfil se guarda en este dispositivo. Si quieres, luego puedes crear una cuenta gratis para guardarlo también en la nube.</p>' +
       '<a class="muted small" href="privacidad.html">Privacidad y condiciones de uso</a>' +

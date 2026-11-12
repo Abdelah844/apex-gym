@@ -14848,6 +14848,11 @@ const TRADUCCIONES = {
 "👀 Voir à quoi ressemble l'app (avec un profil inventé)",
 "👀 شوف كيف داير الأپليكاسيون (ببروفيل مخترع)"
 ],
+"Entrar como invitado": [
+"Continue as guest",
+"Entrer en tant qu'invité",
+"دخل كضيف"
+],
 "Social": [
 "Social",
 "Social",
