@@ -192,7 +192,6 @@ function graficaBarras(etiquetas, valores, unidad) {
 
 function pintarBienvenida() {
   $("tabs").hidden = true;
-  const instalada = window.matchMedia && window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
   const VENTAJAS = [
     ["📋", "Rutina hecha para ti", "Según tus días, tu tiempo y lo que hay en tu gimnasio. La cambias cuando quieras."],
     ["📈", "Sabes cuándo subir peso", "Te dice cuándo toca subir, mantener o bajar, con tus series reales."],
@@ -209,8 +208,6 @@ function pintarBienvenida() {
       '<button class="btn" data-act="ir-registro">Crear mi perfil</button>' +
       '<button class="btn-sec full" data-act="abrir-cuenta" data-a="entrar">☁️ Ya tengo cuenta: iniciar sesión</button>' +
       '<button class="btn-txt" data-act="usar-demo">Entrar como invitado</button>' +
-      (instalada ? "" : '<p class="muted small">📲 Consejo: añádela a la pantalla de inicio desde el menú del navegador («Compartir» → «Añadir a pantalla de inicio» en iPhone) y se abrirá como una app.</p>') +
-      '<p class="muted small">Tu perfil se guarda en este dispositivo. Si quieres, luego puedes crear una cuenta gratis para guardarlo también en la nube.</p>' +
       '<a class="muted small" href="privacidad.html">Privacidad y condiciones de uso</a>' +
       selectorIdioma() +
     '</div>';
