@@ -933,10 +933,11 @@ function miniGrafica(valores) {
 
 // Cuántas semanas abarca el periodo (para sacar la media semanal)
 function semanasDelPeriodo(ses) {
-  if (periodo) return periodo / 7;
-  if (!ses.length) return 1;
-  const dias = (new Date(hoy()) - new Date(ses[0].fecha)) / 86400000 + 1;
-  return Math.max(1, dias / 7);
+  const todas = sesionesValidas();
+  if (!todas.length) return 1;
+  let desde = todas[0].fecha;                                  // tu primer entreno
+  if (periodo && fechaTexto(periodo - 1) > desde) desde = fechaTexto(periodo - 1);
+  return Math.max(1, (diasEntre(desde, hoy()) + 1) / 7);
 }
 
 const COLOR_NIVEL = { poco: "var(--danger)", bien: "var(--good)", mucho: "var(--accent)" };
@@ -953,7 +954,8 @@ function resumenApixHtml(ses, prev, clave, olvidados) {
     frases.push(periodo ? "Has entrenado " + veces + " en las últimas " + (periodo / 7) + " semanas." : "Has entrenado " + veces + " en total.");
     if (periodo) {
       const d = ses.length - prev.length;
-      if (d > 0) { frases.push("Son " + d + " más que en las " + (periodo / 7) + " semanas anteriores."); humor = "celebra"; }
+      if (prev.length === 0) humor = "celebra";              // antes no había entrenos: no se compara
+      else if (d > 0) { frases.push("Son " + d + " más que en las " + (periodo / 7) + " semanas anteriores."); humor = "celebra"; }
       else if (d < 0) { frases.push("Son " + (-d) + " menos que en las " + (periodo / 7) + " semanas anteriores."); humor = "anima"; }
       else frases.push("Igual que en las " + (periodo / 7) + " semanas anteriores.");
     }
@@ -963,12 +965,13 @@ function resumenApixHtml(ses, prev, clave, olvidados) {
     if (mejor) frases.push("Tu mejor avance: +" + (Math.round(mejor.cambio * 10) / 10).toLocaleString(localeApp()) + " " + unidadPeso() + " en " + buscarEj(mejor.id).nombre + ".");
   }
   let h = '<div class="card resumen-apix">' + apixSVG(humor, "s") + '<div class="stack" style="gap:6px"><p class="label">Resumen de Apix</p>' +
-    frases.map(function (f) { return '<p>' + esc(f) + '</p>'; }).join("");
+    '<p class="resumen-texto">' + frases.map(function (f) { return '<span>' + esc(f) + '</span>'; }).join(" ") + '</p>';
   if (ses.length && olvidados.length) {
-    h += '<p class="small muted">Ojo, casi no entrenas:</p><div class="row wrap">' +
-      olvidados.map(function (g) { return '<span class="pill down">' + GRUPOS[g] + '</span>'; }).join("") + '</div>';
+    const mas = olvidados.length - 3;
+    h += '<p class="small muted">Ojo, casi no entrenas: ' + olvidados.slice(0, 3).map(function (g) { return '<b class="olvidado">' + GRUPOS[g] + '</b>'; }).join(", ") +
+      (mas > 0 ? ' <span>y ' + mas + ' más</span>' : "") + '</p>';
   }
-  h += '<button class="btn-sec full" data-act="compartir-mes">📸 Compartir mi mes de ' + nombreMes(mesParaCompartir()) + '</button>';
+  h += '<button class="btn-sec compartir-mes" data-act="compartir-mes">📸 Compartir mi mes de ' + nombreMes(mesParaCompartir()) + '</button>';
   return h + '</div></div>';
 }
 
@@ -1168,15 +1171,17 @@ function pintarProgreso() {
   const clave = ejerciciosClave();
   const cuenta = seriesEfectivasPorGrupo(ses);
   const semanas = semanasDelPeriodo(ses);
-  const olvidados = Object.keys(GRUPOS).filter(function (g) { return nivelMusculo(g, cuenta[g] / semanas) === "poco"; });
+  const olvidados = Object.keys(GRUPOS)
+    .filter(function (g) { return nivelMusculo(g, cuenta[g] / semanas) === "poco"; })
+    .sort(function (a, b) { return cuenta[a] / (MINIMO_SEMANAL[a] || 6) - cuenta[b] / (MINIMO_SEMANAL[b] || 6); });
   h += resumenApixHtml(ses, prev, clave, olvidados) +
-    '<div class="grid2">' +
+    '<div class="grid2 cifras">' +
       '<div class="card"><p class="label">Entrenos</p><div class="big-num num">' + ses.length + delta(ses.length, prev.length) + '</div></div>' +
       '<div class="card"><p class="label">Series efectivas</p><div class="big-num num">' + efectivas + delta(efectivas, efectivasPrev) + '</div><p class="muted small">hechas y válidas</p></div>' +
       '<div class="card"><p class="label">Duración media</p><div class="big-num num">' + (ses.length ? Math.round(dur / ses.length) : 0) + '</div><p class="muted small">minutos reales</p></div>' +
       '<div class="card"><p class="label">Récords</p><div class="big-num num" style="color:var(--pr)">' + prs + delta(prs, prsPrev) + '</div><p class="muted small">racha: ' + rachaSemanas() + ' sem</p></div>' +
     '</div>' +
-    (periodo ? '<p class="muted small">Los % comparan con las ' + (periodo / 7) + ' semanas anteriores.</p>' : "");
+    (periodo && prev.length ? '<p class="muted small">Los % comparan con las ' + (periodo / 7) + ' semanas anteriores.</p>' : "");
 
   h += pesoTotalHtml(ses);
   h += calendarioConstanciaHtml();

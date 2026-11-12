@@ -11798,5 +11798,9 @@ const TRADUCCIONES = {
 "Foto borrada": [
 "Photo deleted",
 "Photo supprimée"
+],
+"y {n} más": [
+"and {n} more",
+"et {n} de plus"
 ]
 };

@@ -242,8 +242,14 @@ body.con-timer #toast { bottom: calc(300px + env(safe-area-inset-bottom, 0px)); 
 
 .seg.mini { width: auto; }
 .seg.mini button { padding: 6px 10px; font-size: .78rem; }
-.resumen-apix { display: grid; grid-template-columns: 64px minmax(0,1fr); gap: 14px; align-items: start; border-color: var(--accent); }
-.resumen-apix svg { width: 64px; height: auto; }
+.resumen-apix { display: grid; grid-template-columns: 46px minmax(0,1fr); gap: 12px; align-items: start; border-color: var(--accent); padding: 14px 16px; }
+.resumen-apix svg { width: 46px; height: auto; }
+.resumen-texto { font-size: .9rem; line-height: 1.4; }
+.olvidado { color: var(--warn); font-weight: 700; }
+.compartir-mes { align-self: flex-start; font-size: .82rem; padding: 8px 12px; }
+.cifras .card { padding: 12px 14px; }
+.cifras .big-num { font-size: 1.4rem; }
+.cifras .muted.small { font-size: .74rem; }
 .clave { display: grid; grid-template-columns: minmax(0,1fr) 80px auto; gap: 10px; align-items: center; width: 100%; padding: 10px 0; border: 0; border-top: 1px solid var(--line); background: none; color: inherit; text-align: left; font: inherit; cursor: pointer; }
 .clave-nombre { font-size: .9rem; line-height: 1.25; }
 .clave-num { display: flex; flex-direction: column; align-items: flex-end; font-size: .9rem; gap: 2px; }
