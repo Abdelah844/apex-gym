@@ -134,10 +134,12 @@ function numeroEje(v, rango) {
   return Math.round(v).toLocaleString(localeApp());
 }
 
-function graficaLinea(etiquetas, valores, unidad) {
+// tendencia (opcional): otra lista de valores que se dibuja como línea discontinua
+function graficaLinea(etiquetas, valores, unidad, tendencia) {
   if (valores.length < 2) return '<p class="muted">Necesitas al menos 2 registros para ver la gráfica.</p>';
   const W = 340, H = 170, mx = 36, mt = 14, mb = 26;
-  let min = Math.min.apply(null, valores), max = Math.max.apply(null, valores);
+  const todos = tendencia ? valores.concat(tendencia) : valores;
+  let min = Math.min.apply(null, todos), max = Math.max.apply(null, todos);
   if (max === min) { max += 1; min -= 1; }
   const pad = (max - min) * 0.1; max += pad; min -= pad;
   function x(i) { return mx + i * (W - mx - 10) / (valores.length - 1); }
@@ -152,6 +154,11 @@ function graficaLinea(etiquetas, valores, unidad) {
   }
   s += '<polygon points="' + x(0) + ',' + (H - mb) + ' ' + pts + x(valores.length - 1) + ',' + (H - mb) + '" fill="var(--accent)" fill-opacity=".14"/>' +
     '<polyline points="' + pts + '" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>';
+  if (tendencia) {
+    let ptsT = "";
+    tendencia.forEach(function (v, i) { ptsT += x(i).toFixed(1) + "," + y(v).toFixed(1) + " "; });
+    s += '<polyline points="' + ptsT + '" fill="none" stroke="var(--good)" stroke-width="2" stroke-dasharray="5 4" stroke-linejoin="round"/>';
+  }
   valores.forEach(function (v, i) {
     const ult = i === valores.length - 1;
     s += '<circle cx="' + x(i) + '" cy="' + y(v) + '" r="' + (ult ? 5 : 3) + '" fill="' + (ult ? "var(--pr)" : "var(--accent)") + '"><title>' + etiquetas[i] + ': ' + (Math.round(v * 10) / 10) + ' ' + unidad + '</title></circle>';
@@ -961,6 +968,7 @@ function resumenApixHtml(ses, prev, clave, olvidados) {
     h += '<p class="small muted">Ojo, casi no entrenas:</p><div class="row wrap">' +
       olvidados.map(function (g) { return '<span class="pill down">' + GRUPOS[g] + '</span>'; }).join("") + '</div>';
   }
+  h += '<button class="btn-sec full" data-act="compartir-mes">📸 Compartir mi mes de ' + nombreMes(mesParaCompartir()) + '</button>';
   return h + '</div></div>';
 }
 
@@ -999,6 +1007,131 @@ function mapaProgresoHtml(cuenta, semanas, olvidados) {
   return h + '<p class="muted small">Directas cuentan 1 y como músculo secundario 0,5.</p></details></div>';
 }
 
+// ---------- 6) Calendario de constancia: las últimas 12 semanas, un cuadrado por día ----------
+function calendarioConstanciaHtml() {
+  const entrenados = {};
+  for (const s of sesionesValidas()) entrenados[s.fecha] = true;
+  const inicio = sumarDias(lunesDe(hoy()), -77);           // lunes de hace 11 semanas
+  let h = '<div class="card stack"><h3>Tu constancia</h3><div class="calendario">';
+  // Inicial de cada día de la semana en el idioma de la app (L, M, X... o M, T, W...)
+  const letras = [];
+  for (let i = 0; i < 7; i++) letras.push(new Date(sumarDias(inicio, i) + "T12:00:00").toLocaleDateString(localeApp(), { weekday: "narrow" }));
+  let dias = 0;
+  for (let fila = 0; fila < 7; fila++) {
+    h += '<span class="cal-letra">' + letras[fila] + '</span>';
+    for (let semana = 0; semana < 12; semana++) {
+      const f = sumarDias(inicio, semana * 7 + fila);
+      let clase = "cal-dia";
+      if (f > hoy()) clase += " futuro";
+      else if (entrenados[f]) { clase += " hecho"; dias++; }
+      if (f === hoy()) clase += " hoy";
+      h += '<span class="' + clase + '" title="' + fechaBonita(f) + '"></span>';
+    }
+  }
+  return h + '</div><p class="muted small">' + dias + ' días entrenados en las últimas 12 semanas. ¡No rompas la cadena!</p></div>';
+}
+
+// ---------- 7) Peso total levantado, comparado con cosas reales ----------
+const EQUIVALENCIAS = [
+  [150000, "ballena azul", "ballenas azules", "🐋"],
+  [5000, "elefante", "elefantes", "🐘"],
+  [1200, "coche", "coches", "🚗"],
+  [450, "oso polar", "osos polares", "🐻‍❄️"],
+  [40, "perro grande", "perros grandes", "🐕"]
+];
+function equivalenciaPeso(kgTotal) {
+  for (const e of EQUIVALENCIAS) {
+    const n = Math.floor(kgTotal / e[0]);
+    if (n >= 1) return "Lo mismo que levantar " + (n === 1 ? "1 " + e[1] : n + " " + e[2]) + " " + e[3];
+  }
+  return "";
+}
+function pesoTotalHtml(ses) {
+  let total = 0;
+  for (const s of ses) total += s.volumen || 0;
+  if (total <= 0) return "";
+  const eq = equivalenciaPeso(total);
+  return '<div class="card peso-total"><p class="label">Peso total levantado</p><div class="big-num num">' + miles(pesoVista(total)) + ' ' + unidadPeso() + '</div>' +
+    (eq ? '<p>' + eq + '</p>' : "") + '</div>';
+}
+
+// ---------- 8) Peso corporal: tendencia y consejo según tu objetivo ----------
+// Media de cada valor con los anteriores (hasta "n"), para suavizar los altibajos del día a día
+function mediaMovil(valores, n) {
+  return valores.map(function (v, i) {
+    const trozo = valores.slice(Math.max(0, i - n + 1), i + 1);
+    let suma = 0;
+    for (const x of trozo) suma += x;
+    return suma / trozo.length;
+  });
+}
+
+// Cuántos kg al mes cambia tu peso (recta que mejor se ajusta a los pesos de los últimos 60 días)
+function cambioPesoMensual() {
+  const lista = estado.pesoCorporal.filter(function (x) { return x.fecha >= fechaTexto(60); });
+  if (lista.length < 3) return null;
+  if (diasEntre(lista[0].fecha, lista[lista.length - 1].fecha) < 14) return null;
+  const xs = lista.map(function (x) { return diasEntre(lista[0].fecha, x.fecha); });
+  const ys = lista.map(function (x) { return x.kg; });
+  let mx = 0, my = 0;
+  for (let i = 0; i < xs.length; i++) { mx += xs[i]; my += ys[i]; }
+  mx /= xs.length; my /= ys.length;
+  let arriba = 0, abajo = 0;
+  for (let i = 0; i < xs.length; i++) { arriba += (xs[i] - mx) * (ys[i] - my); abajo += (xs[i] - mx) * (xs[i] - mx); }
+  return abajo === 0 ? 0 : arriba / abajo * 30;          // kg por día × 30 días
+}
+
+function consejoPesoHtml() {
+  const c = cambioPesoMensual();
+  if (c === null) return '<p class="muted small">Pésate al menos 3 veces en 2 semanas (mejor por la mañana) para ver hacia dónde va tu peso.</p>';
+  const obj = estado.perfil.objetivo;
+  const cifra = (c > 0 ? "+" : "") + (Math.round(pesoVista(c) * 10) / 10).toLocaleString(localeApp()) + " " + unidadPeso();
+  let texto, color = "var(--good)";
+  if (obj === "masa") {
+    if (c < 0.25) { texto = "Para ganar masa te conviene subir un poco. Come algo más cada día."; color = "var(--warn)"; }
+    else if (c > 1.2) { texto = "Subes muy rápido: parte puede ser grasa. Come un poco menos."; color = "var(--warn)"; }
+    else texto = "Vas bien: para ganar masa lo ideal es subir entre 0,25 y 1 kg al mes.";
+  } else if (obj === "fuerza") {
+    if (c < -0.75) { texto = "Estás bajando de peso y eso puede frenar tu fuerza. Come un poco más."; color = "var(--warn)"; }
+    else texto = "Vas bien: para ganar fuerza basta con mantener tu peso o subir poco a poco.";
+  } else {
+    if (Math.abs(c) > 1.5) { texto = "Tu peso cambia bastante rápido. Si no lo buscas, revisa cuánto comes."; color = "var(--warn)"; }
+    else texto = "Tu peso está estable. ¡Sigue así!";
+  }
+  return '<div class="fatiga" style="border-color:' + color + '"><p class="label" style="color:' + color + '">Ritmo: ' + cifra + ' al mes</p><p class="small">' + texto + '</p></div>';
+}
+
+// ---------- 9) Resumen del mes para compartir ----------
+// Los primeros 5 días de un mes se comparte el mes anterior (el que acaba de terminar)
+function mesParaCompartir() {
+  const d = new Date();
+  if (d.getDate() <= 5) d.setMonth(d.getMonth() - 1);
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+}
+function nombreMes(mes) {
+  return new Date(mes + "-15T12:00:00").toLocaleDateString(localeApp(), { month: "long" });
+}
+// Datos del mes: entrenos, series, peso total, récords y el ejercicio que más ha mejorado
+function datosDelMes(mes) {
+  const ses = sesionesValidas().filter(function (s) { return s.fecha.slice(0, 7) === mes; });
+  const d = { mes: mes, entrenos: ses.length, series: 0, volumen: 0, prs: 0, mejor: null };
+  for (const s of ses) { d.series += s.seriesEfectivas; d.volumen += s.volumen || 0; d.prs += s.prs.length; }
+  for (const id of ejerciciosHechos()) {
+    const ej = buscarEj(id);
+    const porDia = {};
+    for (const x of seriesDe(id)) {
+      if (x.fecha.slice(0, 7) !== mes) continue;
+      const v = rm1Mostrado(cargaSerie(ej, x.peso, x.fecha), x.reps);
+      if (porDia[x.fecha] === undefined || v > porDia[x.fecha]) porDia[x.fecha] = v;
+    }
+    const fechas = Object.keys(porDia).sort();
+    if (fechas.length < 2) continue;
+    const sube = porDia[fechas[fechas.length - 1]] - porDia[fechas[0]];
+    if (sube > 0 && (!d.mejor || sube > d.mejor.sube)) d.mejor = { id: id, sube: sube };
+  }
+  return d;
+}
+
 function pintarProgreso() {
   const ses = sesionesValidas().filter(function (s) { return enPeriodo(s.fecha, periodo); });
   const prev = sesionesValidas().filter(function (s) { return enPeriodo(s.fecha, periodo, true); });
@@ -1026,7 +1159,8 @@ function pintarProgreso() {
 
   // ----- Pestaña Cuerpo: peso y medidas -----
   if (subProgreso === "cuerpo") {
-    $("app").innerHTML = h + htmlPesoCorporal() + htmlMedidas() + '</div>';
+    $("app").innerHTML = h + htmlPesoCorporal() + htmlFotosProgreso() + htmlMedidas() + '</div>';
+    pintarFotos();
     return;
   }
 
@@ -1044,6 +1178,8 @@ function pintarProgreso() {
     '</div>' +
     (periodo ? '<p class="muted small">Los % comparan con las ' + (periodo / 7) + ' semanas anteriores.</p>' : "");
 
+  h += pesoTotalHtml(ses);
+  h += calendarioConstanciaHtml();
   h += ejerciciosClaveHtml(clave);
 
   // Carga semanal o mensual y fatiga
@@ -1106,7 +1242,11 @@ function pintarProgreso() {
 function htmlPesoCorporal() {
   let h = '';
   const pc = estado.pesoCorporal.filter(function (x) { return enPeriodo(x.fecha, periodo); });
-  h += '<div class="card stack"><h3>Peso corporal</h3>' + graficaLinea(pc.map(function (x) { return fechaBonita(x.fecha); }), pc.map(function (x) { return pesoVista(x.kg); }), unidadPeso()) +
+  const valoresPeso = pc.map(function (x) { return pesoVista(x.kg); });
+  const tendencia = pc.length >= 3 ? mediaMovil(valoresPeso, 5) : null;
+  h += '<div class="card stack"><h3>Peso corporal</h3>' + graficaLinea(pc.map(function (x) { return fechaBonita(x.fecha); }), valoresPeso, unidadPeso(), tendencia) +
+    (tendencia ? '<p class="muted small"><span style="color:var(--good)">- - -</span> Tendencia: la media de tus últimos pesos. El peso sube y baja cada día; la tendencia dice la verdad.</p>' : "") +
+    consejoPesoHtml() +
     '<div class="row"><input id="nuevoPeso" type="text" inputmode="decimal" autocomplete="off" placeholder="Peso de hoy (' + unidadPeso() + ')" aria-label="Peso de hoy"><button class="btn auto" data-act="guardar-peso">Guardar</button></div><p class="err" id="errPeso"></p></div>';
 
   return h;

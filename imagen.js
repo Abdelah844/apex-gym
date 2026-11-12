@@ -118,3 +118,96 @@ async function compartirImagenEntreno(s) {
   setTimeout(function () { URL.revokeObjectURL(enlace.href); }, 4000);
   toast("✓ Imagen descargada", "ok");
 }
+
+// =====================================================
+// IMAGEN DEL RESUMEN DEL MES (como el "Wrapped" de Spotify, pero del gym)
+// =====================================================
+async function crearImagenMes(d) {
+  if (document.fonts && document.fonts.ready) await document.fonts.ready;
+  const W = 1080, H = 1350;
+  const lienzo = document.createElement("canvas");
+  lienzo.width = W; lienzo.height = H;
+  const ctx = lienzo.getContext("2d");
+  const TITULO = '"Chakra Petch", sans-serif', TEXTO = '"Manrope", sans-serif';
+
+  // 1. Fondo: igual que la imagen del entreno
+  const fondo = ctx.createLinearGradient(0, 0, W, H);
+  fondo.addColorStop(0, "#0E0E16"); fondo.addColorStop(1, "#24194A");
+  ctx.fillStyle = fondo; ctx.fillRect(0, 0, W, H);
+  const brillo = ctx.createRadialGradient(W * 0.75, 300, 0, W * 0.75, 300, 560);
+  brillo.addColorStop(0, "rgba(138,92,255,.5)"); brillo.addColorStop(1, "rgba(138,92,255,0)");
+  ctx.fillStyle = brillo; ctx.fillRect(0, 0, W, H);
+
+  // 2. Cabecera y título del mes
+  ctx.textBaseline = "top";
+  ctx.fillStyle = "#9A7CFF"; ctx.font = "700 44px " + TITULO;
+  ctx.fillText("APIX GYM", 80, 80);
+  ctx.fillStyle = "#A8A8BC"; ctx.font = "600 38px " + TEXTO;
+  ctx.fillText(tr("Mi mes de"), 80, 200);
+  ctx.fillStyle = "#FFFFFF"; ctx.font = "700 110px " + TITULO;
+  ctx.fillText(nombreMes(d.mes).toUpperCase(), 80, 250);
+
+  // 3. Apix celebrando
+  const apix = await svgAImagen(apixSVG(d.entrenos ? "celebra" : "descanso"), 280, 280);
+  ctx.drawImage(apix, W - 360, 60, 280, 280);
+
+  // 4. Cuatro cifras en dos filas
+  const cifras = [[d.entrenos, tr("entrenos")], [d.series, tr("series efectivas")], [d.prs, tr("récords")], [rachaSemanas(), tr("semanas de racha")]];
+  const anchoCaja = (W - 160 - 30) / 2;
+  let y = 420;
+  cifras.forEach(function (c, i) {
+    const x = 80 + (i % 2) * (anchoCaja + 30);
+    const yy = y + Math.floor(i / 2) * 230;
+    ctx.fillStyle = "rgba(255,255,255,.07)"; rectRedondo(ctx, x, yy, anchoCaja, 200, 28); ctx.fill();
+    ctx.fillStyle = i === 2 ? "#FF5C8A" : "#FFFFFF"; ctx.font = "700 88px " + TITULO; ctx.textAlign = "center";
+    ctx.fillText(String(c[0]), x + anchoCaja / 2, yy + 30);
+    ctx.fillStyle = "#A8A8BC"; ctx.font = "600 32px " + TEXTO;
+    ctx.fillText(c[1], x + anchoCaja / 2, yy + 138);
+    ctx.textAlign = "left";
+  });
+  y += 480;
+
+  // 5. Peso total y su comparación divertida
+  ctx.fillStyle = "#A8A8BC"; ctx.font = "600 32px " + TEXTO;
+  ctx.fillText(tr("Peso total levantado"), 80, y);
+  ctx.fillStyle = "#FFFFFF"; ctx.font = "700 64px " + TITULO;
+  ctx.fillText(miles(pesoVista(d.volumen)) + " " + unidadPeso(), 80, y + 44);
+  const eq = equivalenciaPeso(d.volumen);
+  if (eq) { ctx.fillStyle = "#FFD23F"; ctx.font = "700 36px " + TEXTO; ctx.fillText(tr(eq), 80, y + 124); }
+  y += 190;
+
+  // 6. Mejor avance del mes
+  if (d.mejor) {
+    ctx.fillStyle = "#3DDC97"; ctx.font = "700 36px " + TEXTO;
+    const txt = "▲ +" + (Math.round(pesoVista(d.mejor.sube) * 10) / 10).toLocaleString(localeApp()) + " " + unidadPeso() + " · " + tr(buscarEj(d.mejor.id).nombre);
+    ctx.fillText(txt.length > 46 ? txt.slice(0, 45) + "…" : txt, 80, y);
+  }
+
+  // 7. Pie
+  ctx.fillStyle = "#A8A8BC"; ctx.font = "600 30px " + TEXTO; ctx.textAlign = "center";
+  ctx.fillText(tr("Entrena conmigo en Apix Gym"), W / 2, H - 110);
+  ctx.fillStyle = "#9A7CFF"; ctx.font = "700 30px " + TEXTO;
+  ctx.fillText("abdelah844.github.io/apex-gym", W / 2, H - 66);
+  ctx.textAlign = "left";
+
+  return new Promise(function (ok) { lienzo.toBlob(ok, "image/png"); });
+}
+
+async function compartirImagenMes() {
+  const d = datosDelMes(mesParaCompartir());
+  if (!d.entrenos) { toast("Aún no hay entrenos este mes", "error"); return; }
+  toast("Creando la imagen…");
+  let blob;
+  try { blob = await crearImagenMes(d); } catch (e) { toast("No se ha podido crear la imagen", "error"); return; }
+  const archivo = new File([blob], "apix-gym-mi-mes.png", { type: "image/png" });
+  if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
+    try { await navigator.share({ files: [archivo], title: tr("Mi mes en el gym"), text: tr("Entrena conmigo en Apix Gym") + " " + URL_APP }); }
+    catch (e) { /* el usuario ha cancelado */ }
+    return;
+  }
+  const enlace = document.createElement("a");
+  enlace.href = URL.createObjectURL(blob); enlace.download = "apix-gym-mi-mes.png";
+  document.body.appendChild(enlace); enlace.click(); enlace.remove();
+  setTimeout(function () { URL.revokeObjectURL(enlace.href); }, 4000);
+  toast("✓ Imagen descargada", "ok");
+}

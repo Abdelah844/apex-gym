@@ -38,6 +38,8 @@ const PATRONES = [
   // ---- Generales ----
   ["Hola, {x}", "Hi, {x}", "Salut, {x}"],
   ["Tu mejor avance: {x} en {x}.", "Your best progress: {x} in {x}.", "Ton meilleur progrès : {x} en {x}."],
+  ["📸 Compartir mi mes de {x}", "📸 Share my {x}", "📸 Partager mon mois de {x}"],
+  ["Ritmo: {x} al mes", "Pace: {x} a month", "Rythme : {x} par mois"],
   ["Animación del movimiento: {x}", "Movement animation: {x}", "Animation du mouvement : {x}"],
   ["Animación del patrón: {x}", "Pattern animation: {x}", "Animation du schéma : {x}"],
   ["Academia · {x}", "Academy · {x}", "Académie · {x}"],

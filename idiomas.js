@@ -4616,7 +4616,7 @@ const TRADUCCIONES = {
 "Rien n’a été supprimé."
 ],
 "No se ha podido borrar": [
-"Couldn’t delete",
+"It couldn't be deleted",
 "Impossible de supprimer"
 ],
 "No se ha podido cargar": [
@@ -11634,5 +11634,169 @@ const TRADUCCIONES = {
 "Ver los números": [
 "See the numbers",
 "Voir les chiffres"
+],
+"Tu constancia": [
+"Your consistency",
+"Ta régularité"
+],
+"{n} días entrenados en las últimas {n} semanas. ¡No rompas la cadena!": [
+"{n} days trained in the last {n} weeks. Don't break the chain!",
+"{n} jours d'entraînement ces {n} dernières semaines. Ne casse pas la chaîne !"
+],
+"Peso total levantado": [
+"Total weight lifted",
+"Poids total soulevé"
+],
+"Lo mismo que levantar {n} ballena azul 🐋": [
+"The same as lifting {n} blue whale 🐋",
+"Autant que soulever {n} baleine bleue 🐋"
+],
+"Lo mismo que levantar {n} ballenas azules 🐋": [
+"The same as lifting {n} blue whales 🐋",
+"Autant que soulever {n} baleines bleues 🐋"
+],
+"Lo mismo que levantar {n} elefante 🐘": [
+"The same as lifting {n} elephant 🐘",
+"Autant que soulever {n} éléphant 🐘"
+],
+"Lo mismo que levantar {n} elefantes 🐘": [
+"The same as lifting {n} elephants 🐘",
+"Autant que soulever {n} éléphants 🐘"
+],
+"Lo mismo que levantar {n} coche 🚗": [
+"The same as lifting {n} car 🚗",
+"Autant que soulever {n} voiture 🚗"
+],
+"Lo mismo que levantar {n} coches 🚗": [
+"The same as lifting {n} cars 🚗",
+"Autant que soulever {n} voitures 🚗"
+],
+"Lo mismo que levantar {n} oso polar 🐻‍❄️": [
+"The same as lifting {n} polar bear 🐻‍❄️",
+"Autant que soulever {n} ours polaire 🐻‍❄️"
+],
+"Lo mismo que levantar {n} osos polares 🐻‍❄️": [
+"The same as lifting {n} polar bears 🐻‍❄️",
+"Autant que soulever {n} ours polaires 🐻‍❄️"
+],
+"Lo mismo que levantar {n} perro grande 🐕": [
+"The same as lifting {n} big dog 🐕",
+"Autant que soulever {n} gros chien 🐕"
+],
+"Lo mismo que levantar {n} perros grandes 🐕": [
+"The same as lifting {n} big dogs 🐕",
+"Autant que soulever {n} gros chiens 🐕"
+],
+"Tendencia: la media de tus últimos pesos. El peso sube y baja cada día; la tendencia dice la verdad.": [
+"Trend: the average of your latest weigh-ins. Your weight goes up and down every day; the trend tells the truth.",
+"Tendance : la moyenne de tes dernières pesées. Le poids monte et descend chaque jour ; la tendance dit la vérité."
+],
+"Pésate al menos {n} veces en {n} semanas (mejor por la mañana) para ver hacia dónde va tu peso.": [
+"Weigh yourself at least {n} times in {n} weeks (ideally in the morning) to see where your weight is heading.",
+"Pèse-toi au moins {n} fois en {n} semaines (de préférence le matin) pour voir où va ton poids."
+],
+"Para ganar masa te conviene subir un poco. Come algo más cada día.": [
+"To build muscle you should gain a little. Eat a bit more every day.",
+"Pour prendre du muscle, il vaut mieux prendre un peu de poids. Mange un peu plus chaque jour."
+],
+"Subes muy rápido: parte puede ser grasa. Come un poco menos.": [
+"You're gaining very fast: some of it may be fat. Eat a little less.",
+"Tu prends très vite : une partie peut être du gras. Mange un peu moins."
+],
+"Vas bien: para ganar masa lo ideal es subir entre {n} y {n} kg al mes.": [
+"You're doing well: to build muscle, the ideal is to gain {n} to {n} kg a month.",
+"Tu es sur la bonne voie : pour prendre du muscle, l'idéal est de prendre {n} à {n} kg par mois."
+],
+"Estás bajando de peso y eso puede frenar tu fuerza. Come un poco más.": [
+"You're losing weight and that can slow your strength gains. Eat a little more.",
+"Tu perds du poids et ça peut freiner ta force. Mange un peu plus."
+],
+"Vas bien: para ganar fuerza basta con mantener tu peso o subir poco a poco.": [
+"You're doing well: to get stronger it's enough to keep your weight or gain slowly.",
+"Tu es sur la bonne voie : pour gagner en force, il suffit de garder ton poids ou d'en prendre peu à peu."
+],
+"Tu peso cambia bastante rápido. Si no lo buscas, revisa cuánto comes.": [
+"Your weight is changing quite fast. If that's not your goal, check how much you eat.",
+"Ton poids change assez vite. Si ce n'est pas voulu, vérifie combien tu manges."
+],
+"Tu peso está estable. ¡Sigue así!": [
+"Your weight is stable. Keep it up!",
+"Ton poids est stable. Continue comme ça !"
+],
+"Mi mes de": [
+"My month of",
+"Mon mois de"
+],
+"entrenos": [
+"workouts",
+"entraînements"
+],
+"series efectivas": [
+"effective sets",
+"séries efficaces"
+],
+"récords": [
+"records",
+"records"
+],
+"semanas de racha": [
+"week streak",
+"semaines de série"
+],
+"Mi mes en el gym": [
+"My month at the gym",
+"Mon mois à la salle"
+],
+"Aún no hay entrenos este mes": [
+"No workouts this month yet",
+"Pas encore d'entraînement ce mois-ci"
+],
+"Fotos de progreso": [
+"Progress photos",
+"Photos de progression"
+],
+"Hazte una foto al mes, con la misma luz y en la misma postura, y compara cómo cambias. Solo se guardan en este móvil: no se suben a la nube ni van en la copia de seguridad.": [
+"Take one photo a month, with the same light and pose, and compare how you change. They're only saved on this phone: they aren't uploaded to the cloud or included in the backup.",
+"Prends une photo par mois, avec la même lumière et la même pose, et compare ton évolution. Elles sont seulement enregistrées sur ce téléphone : elles ne vont ni dans le cloud ni dans la sauvegarde."
+],
+"📷 Añadir foto": [
+"📷 Add photo",
+"📷 Ajouter une photo"
+],
+"Cargando fotos…": [
+"Loading photos…",
+"Chargement des photos…"
+],
+"Este navegador no deja guardar fotos.": [
+"This browser doesn't allow saving photos.",
+"Ce navigateur ne permet pas d'enregistrer des photos."
+],
+"Aún no tienes fotos.": [
+"You don't have any photos yet.",
+"Tu n'as pas encore de photos."
+],
+"Desliza: izquierda, antes · derecha, después": [
+"Slide: left, before · right, after",
+"Glisse : à gauche, avant · à droite, après"
+],
+"¿Borrar?": [
+"Delete?",
+"Supprimer ?"
+],
+"Guardando la foto…": [
+"Saving the photo…",
+"Enregistrement de la photo…"
+],
+"✓ Foto guardada": [
+"✓ Photo saved",
+"✓ Photo enregistrée"
+],
+"No se ha podido guardar la foto": [
+"The photo couldn't be saved",
+"Impossible d'enregistrer la photo"
+],
+"Foto borrada": [
+"Photo deleted",
+"Photo supprimée"
 ]
 };

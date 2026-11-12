@@ -529,6 +529,8 @@ const ACCIONES = {
 
   // ---------- Progreso ----------
   "periodo": function (d) { periodo = parseInt(d); pintarProgreso(); },
+  "borrar-foto": function (id) { pedirBorrarFoto(id); },
+  "compartir-mes": function () { compartirImagenMes(); },
   "sub-progreso": function (sub) { subProgreso = sub; pintarProgreso(); scrollTo(0, 0); },
   // Ejercicio clave tocado: se enseña su gráfica de 1RM
   "ver-clave": function (id) {
@@ -851,6 +853,8 @@ const ACCIONES = {
       if (!r.ok) { mensaje("No se ha podido borrar", r.msg + " No se ha borrado nada."); return; }
     }
     await borrarAvisosPush();
+    // Las fotos de progreso también se borran (están aparte, en IndexedDB)
+    try { indexedDB.deleteDatabase(FOTOS_BD); } catch (e) { }
     estado = null; borrarAlmacenamiento();
     cerrarHoja(); pararDescanso(); pintar();
   },
@@ -1066,6 +1070,8 @@ document.addEventListener("change", function (ev) {
     return;
   }
   const t = ev.target, d = t.dataset;
+  // Foto de progreso nueva elegida en el móvil
+  if (t.hasAttribute("data-foto-nueva")) { anadirFotoProgreso(t.files && t.files[0]); t.value = ""; return; }
   if (d.in === "peso" || d.in === "reps" || d.in === "rpe") {
     copiaSesion();
     const e = estado.activa.ejercicios[d.e];
@@ -1317,3 +1323,8 @@ document.addEventListener("visibilitychange", function () {
 comprobarRecordatorios();
 setInterval(comprobarRecordatorios, 5 * 60 * 1000);
 document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") comprobarRecordatorios(); });
+
+// Comparador de fotos: la línea se mueve mientras deslizas
+document.addEventListener("input", function (ev) {
+  if (ev.target.hasAttribute && ev.target.hasAttribute("data-comparar")) moverComparador(parseInt(ev.target.value));
+});

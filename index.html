@@ -254,6 +254,25 @@ body.con-timer #toast { bottom: calc(300px + env(safe-area-inset-bottom, 0px)); 
 .leyenda { gap: 14px; font-size: .8rem; color: var(--muted); }
 .leyenda i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
 details summary { cursor: pointer; color: var(--accent); font-weight: 700; padding: 4px 0; }
+.peso-total .big-num { margin: 4px 0 6px; }
+.calendario { display: grid; grid-template-columns: 16px repeat(12, minmax(0,1fr)); gap: 4px; align-items: center; }
+.cal-letra { font-size: .66rem; color: var(--muted); text-align: center; }
+.cal-dia { aspect-ratio: 1; border-radius: 4px; background: var(--surface2); }
+.cal-dia.hecho { background: var(--accent); }
+.cal-dia.futuro { background: transparent; }
+.cal-dia.hoy { outline: 2px solid var(--fg); outline-offset: -2px; }
+.comparador { position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 3 / 4; background: var(--surface2); }
+.comparador img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.comparador-antes { position: absolute; inset: 0; }
+.comparador-linea { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1.5px; background: #fff; box-shadow: 0 0 8px rgba(0,0,0,.5); }
+.comparador-etiqueta { position: absolute; bottom: 10px; padding: 4px 10px; border-radius: 99px; background: rgba(0,0,0,.6); color: #fff; font-size: .74rem; font-weight: 700; }
+.comparador-etiqueta.izq { left: 10px; } .comparador-etiqueta.der { right: 10px; }
+.fotos-lista { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; }
+.fotos-lista figure { position: relative; margin: 0; }
+.fotos-lista img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 10px; display: block; }
+.fotos-lista figcaption { font-size: .7rem; color: var(--muted); text-align: center; margin-top: 3px; }
+.foto-borrar { position: absolute; top: 4px; right: 4px; border: 0; border-radius: 99px; min-width: 28px; height: 28px; padding: 0 8px; background: rgba(0,0,0,.65); color: #fff; font-weight: 800; font-size: .74rem; }
+.foto-borrar.pidiendo { background: var(--danger); }
 .tabla-comp { width: 100%; border-collapse: collapse; font-size: .88rem; }
 .tabla-comp th { font-size: .66rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); text-align: right; padding: 4px 6px; }
 .tabla-comp td { padding: 7px 6px; border-top: 1px solid var(--line); text-align: right; }
@@ -528,6 +547,7 @@ nav.tabs button.on svg { color: var(--accent); filter: drop-shadow(0 0 6px var(-
 <script src="academia.js"></script>
 <script src="mascota.js"></script>
 <script src="imagen.js"></script>
+<script src="fotos.js"></script>
 <script src="sonidos.js"></script>
 <script src="app.js"></script>
 <script src="nube.js"></script>
