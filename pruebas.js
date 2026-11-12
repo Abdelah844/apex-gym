@@ -230,7 +230,8 @@ const PRUEBAS = [
     estadoPrueba();
     estado.rutina = generarRutina({ objetivo: "masa", nivel: "intermedio", dias: 4, duracion: 60, tipo: "auto", equipo: TODO_EQUIPO, prioridad: "", evitar: "" });
     crearSesion(0);
-    estado.activa.inicio = Date.now() - 26 * 3600 * 1000;
+    const ayer = new Date(); ayer.setDate(ayer.getDate() - 1); ayer.setHours(12, 0, 0, 0);   // ayer a mediodía (con 26 h fallaba justo después de medianoche)
+    estado.activa.inicio = ayer.getTime();
     estado.activa.ejercicios[0].series[0].hecha = true;
     const r = terminarSesion();
     return (r.sesion.fecha === fechaTexto(1) && r.sesion.duracion <= 180) || r.sesion.fecha + ", " + r.sesion.duracion + " min";

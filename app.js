@@ -206,10 +206,9 @@ function pintarBienvenida() {
       insignia(8, "logo") +
       '<div><h1>Apix Gym</h1><p class="muted" style="font-size:1rem;margin-top:6px">Registra tus entrenos, sigue tu progreso y sube de rango con datos reales.</p></div>' +
       '<div class="ventajas">' + v + '</div>' +
-      '<p class="gratis small">Gratis · Sin anuncios · En español, inglés, francés y darija</p>' +
-      '<button class="btn" data-act="ir-registro">Empezar gratis</button>' +
+      '<button class="btn" data-act="ir-registro">Crear mi perfil</button>' +
       '<button class="btn-sec full" data-act="abrir-cuenta" data-a="entrar">☁️ Ya tengo cuenta: iniciar sesión</button>' +
-      '<button class="btn-txt" data-act="usar-demo">Probar con datos de ejemplo</button>' +
+      '<button class="btn-txt" data-act="usar-demo">👀 Ver cómo es la app (con un perfil inventado)</button>' +
       (instalada ? "" : '<p class="muted small">📲 Consejo: añádela a la pantalla de inicio desde el menú del navegador («Compartir» → «Añadir a pantalla de inicio» en iPhone) y se abrirá como una app.</p>') +
       '<p class="muted small">Tu perfil se guarda en este dispositivo. Si quieres, luego puedes crear una cuenta gratis para guardarlo también en la nube.</p>' +
       '<a class="muted small" href="privacidad.html">Privacidad y condiciones de uso</a>' +

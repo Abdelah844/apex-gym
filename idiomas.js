@@ -14843,6 +14843,11 @@ const TRADUCCIONES = {
 "💾 Juste une copie",
 "💾 غير نسخة احتياطية"
 ],
+"👀 Ver cómo es la app (con un perfil inventado)": [
+"👀 See what the app looks like (with a made-up profile)",
+"👀 Voir à quoi ressemble l'app (avec un profil inventé)",
+"👀 شوف كيف داير الأپليكاسيون (ببروفيل مخترع)"
+],
 "Social": [
 "Social",
 "Social",
