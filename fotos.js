@@ -110,6 +110,8 @@ async function anadirFotoProgreso(archivo) {
   try {
     const reducida = await reducirFoto(archivo);
     await guardarFotoBD(reducida);
+    // Pide al navegador que no borre las fotos aunque el móvil vaya justo de espacio
+    if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function () { });
     toast("✓ Foto guardada", "ok");
   } catch (e) {
     toast("No se ha podido guardar la foto", "error");

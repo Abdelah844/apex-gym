@@ -971,7 +971,9 @@ function resumenApixHtml(ses, prev, clave, olvidados) {
     h += '<p class="small muted">Ojo, casi no entrenas: ' + olvidados.slice(0, 3).map(function (g) { return '<b class="olvidado">' + GRUPOS[g] + '</b>'; }).join(", ") +
       (mas > 0 ? ' <span>y ' + mas + ' más</span>' : "") + '</p>';
   }
-  h += '<button class="btn-sec compartir-mes" data-act="compartir-mes">📸 Compartir mi mes de ' + nombreMes(mesParaCompartir()) + '</button>';
+  const mes = mesParaCompartir();
+  const hayEntrenosMes = sesionesValidas().some(function (s) { return s.fecha.slice(0, 7) === mes; });
+  if (hayEntrenosMes) h += '<button class="btn-sec compartir-mes" data-act="compartir-mes">📸 Compartir mi mes de ' + nombreMes(mes) + '</button>';
   return h + '</div></div>';
 }
 
@@ -994,6 +996,13 @@ function ejerciciosClaveHtml(clave) {
 
 // Mapa del cuerpo: cada músculo coloreado según las series que le das a la semana
 function mapaProgresoHtml(cuenta, semanas, olvidados) {
+  let hayDatos = false;
+  for (const g in cuenta) if (cuenta[g] > 0) hayDatos = true;
+  // Sin entrenos en el periodo, el muñeco sale gris (no en rojo, que desanima)
+  if (!hayDatos) {
+    return '<div class="card stack"><h3>Mapa del cuerpo</h3>' + mapaCorporal(function () { return "var(--surface3)"; }, "grupo-progreso") +
+      '<p class="muted small">Cuando entrenes, cada músculo se pintará de un color según lo que lo trabajas.</p></div>';
+  }
   function colorDe(g) { return COLOR_NIVEL[nivelMusculo(g, cuenta[g] / semanas)]; }
   let h = '<div class="card stack"><h3>Mapa del cuerpo</h3>' +
     '<p class="muted small">Series efectivas a la semana de cada músculo (media del periodo). Toca un músculo para ver sus semanas.</p>' +
@@ -1031,7 +1040,8 @@ function calendarioConstanciaHtml() {
       h += '<span class="' + clase + '" title="' + fechaBonita(f) + '"></span>';
     }
   }
-  return h + '</div><p class="muted small">' + dias + ' días entrenados en las últimas 12 semanas. ¡No rompas la cadena!</p></div>';
+  const texto = dias === 0 ? "Cada día que entrenes se pintará aquí." : dias + " días entrenados en las últimas 12 semanas. ¡No rompas la cadena!";
+  return h + '</div><p class="muted small">' + texto + '</p></div>';
 }
 
 // ---------- 7) Peso total levantado, comparado con cosas reales ----------

@@ -11802,5 +11802,13 @@ const TRADUCCIONES = {
 "y {n} más": [
 "and {n} more",
 "et {n} de plus"
+],
+"Cuando entrenes, cada músculo se pintará de un color según lo que lo trabajas.": [
+"When you train, each muscle will be coloured by how much you work it.",
+"Quand tu t'entraîneras, chaque muscle prendra une couleur selon ton travail."
+],
+"Cada día que entrenes se pintará aquí.": [
+"Every day you train will be coloured in here.",
+"Chaque jour d'entraînement apparaîtra ici."
 ]
 };
