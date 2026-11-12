@@ -109,6 +109,8 @@
 | extension-una-mano-polea | Cable_One_Arm_Tricep_Extension |
 | jalon-supino | Underhand_Cable_Pulldowns |
 | jalon-una-mano | One_Arm_Lat_Pulldown |
+| jalon-neutro-ancho | Imágenes generadas por IA (generadas con Figma) |
+| jalon-cuerda | Imágenes generadas por IA (generadas con Figma) |
 | sentadilla-frontal | Front_Barbell_Squat |
 | peso-muerto-sumo | Sumo_Deadlift |
 | encogimientos-barra | Barbell_Shrug |

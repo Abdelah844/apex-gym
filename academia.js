@@ -103,6 +103,8 @@ const TUTORIALES = {
   "lenador-polea": { anim: "lenador", prep: ["Polea alta con un asa o cuerda, de lado a la máquina.", "Pies separados y rodillas un poco dobladas."], err: ["Mover solo los brazos sin girar el tronco."], seg: [] },
   "pallof-press": { anim: "pallof", prep: ["Polea a la altura del pecho, de lado a la máquina.", "Sujeta el asa con las dos manos pegada al pecho."], err: ["Dejar que el cable te gire el cuerpo."], seg: [] },
   "remo-invertido": { anim: "remo-invertido", prep: ["Barra del multipower o del rack a la altura de la cadera.", "Cuélgate debajo con el cuerpo recto y los talones en el suelo."], err: ["Dejar caer la cadera."], seg: [] },
+  "jalon-neutro-ancho": { anim: "jalon-frente-neutro-ancho", prep: ["Engancha la barra con asas paralelas (las de agarre neutro) a la polea alta.", "Ajusta el rodillo sobre los muslos."], err: ["Encoger los hombros hacia las orejas al tirar."], seg: [] },
+  "jalon-cuerda": { anim: "jalon-frente-cuerda", prep: ["Engancha la cuerda a la polea alta.", "Ajusta el rodillo sobre los muslos."], err: ["Juntar las manos abajo en vez de separarlas."], seg: [] },
   "jalon-una-mano": { anim: "jalon-frente-una-mano", prep: ["Engancha un asa (estribo) a la polea alta.", "Ajusta el rodillo sobre los muslos."], err: ["Encoger el hombro del brazo que tira."], seg: [] },
   "pullover-polea": { anim: "pullover", prep: ["Polea alta con barra recta o cuerda.", "Da un paso atrás e inclina un poco el tronco."], err: ["Doblar los codos."], seg: [] },
   "remo-alto-maquina": { anim: "jalon", prep: ["Ajusta el asiento y el apoyo de los muslos."], err: ["Encoger los hombros."], seg: [] },
@@ -613,6 +615,8 @@ const FOTOS = {
   "jalon-cerrado": "Close-Grip_Front_Lat_Pulldown",
   "jalon-supino": "Underhand_Cable_Pulldowns",
   "jalon-una-mano": "One_Arm_Lat_Pulldown",
+  "jalon-neutro-ancho": "IA",   // imágenes generadas por IA
+  "jalon-cuerda": "IA",   // imágenes generadas por IA
   "sentadilla-frontal": "Front_Barbell_Squat",
   "peso-muerto-sumo": "Sumo_Deadlift",
   "encogimientos-barra": "Barbell_Shrug",
@@ -765,6 +769,8 @@ const TIPOS_AGARRE = {
 };
 const AGARRE = {
   "jalon": "abierto", "jalon-estrecho": "triangulo", "jalon-cerrado": "cerrado", "jalon-supino": "supino",
+  "jalon-neutro-ancho": "neutro-ancho", "jalon-cuerda": "cuerda",
+  "encogimientos-barra": "prono", "remo-menton-barra": "cerrado", "remo-invertido": "prono",
   "dominadas": "abierto", "dominadas-supinas": "supino", "dominadas-neutras": "neutro", "dominadas-asistidas": "prono",
   "remo-barra": "prono", "remo-barra-supino": "supino", "remo-multipower": "prono",
   "remo-polea": "triangulo", "remo-polea-barra-ancha": "abierto",
