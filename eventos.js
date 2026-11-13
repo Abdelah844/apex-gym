@@ -40,7 +40,19 @@ const ACCIONES = {
   // ---------- Bienvenida y registro ----------
   "ir-registro": function () { pintarRegistro(); },
   "volver-bienvenida": function () { pintarBienvenida(); },
-  "usar-demo": function () { crearDemo(); guardar(); tab = "inicio"; pintar(); },
+  // Invitado: primero se pregunta el nombre (se puede dejar vacío) y luego se entra con los datos de ejemplo
+  "usar-demo": function () {
+    abrirHoja(cabeceraHoja("Entrar como invitado", "") + '<div class="stack">' +
+      '<label class="f">¿Cómo te llamas?<input id="fInvitado" maxlength="30" placeholder="Invitado" autocomplete="given-name"></label>' +
+      '<p class="muted small">Verás la app con entrenos de ejemplo para probarla. Puedes cambiar tu nombre cuando quieras en Ajustes → Perfil.</p>' +
+      '<button class="btn full" data-act="entrar-invitado">Entrar</button></div>');
+  },
+  "entrar-invitado": function () {
+    const nombre = $("fInvitado") ? $("fInvitado").value.trim() : "";
+    crearDemo();
+    estado.perfil.nombre = nombre || (typeof traducirFrase === "function" ? traducirFrase("Invitado") : "Invitado");
+    cerrarHoja(); guardar(); tab = "inicio"; pintar();
+  },
   "crear-perfil": function () {
     const p = leerPerfil();
     if (!p) return;

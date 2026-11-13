@@ -14878,6 +14878,31 @@ const TRADUCCIONES = {
 "Recharger",
 "عاود حل"
 ],
+"¿Cómo te llamas?": [
+"What's your name?",
+"Comment tu t'appelles ?",
+"شنو سميتك؟"
+],
+"Invitado": [
+"Guest",
+"Invité",
+"ضيف"
+],
+"Verás la app con entrenos de ejemplo para probarla. Puedes cambiar tu nombre cuando quieras en Ajustes → Perfil.": [
+"You'll see the app with sample workouts so you can try it. You can change your name whenever you want in Settings → Profile.",
+"Tu verras l'app avec des séances d'exemple pour l'essayer. Tu peux changer ton nom quand tu veux dans Réglages → Profil.",
+"غادي تشوف الأپليكاسيون بحصص ديال المثال باش تجربها. تقدر تبدل سميتك فاش ما بغيتي ف الإعدادات ← البروفيل."
+],
+"Entrar": [
+"Enter",
+"Entrer",
+"دخل"
+],
+"Ahora contamos cuánta gente abre la app cada día. Es anónimo: no se envía tu nombre, tu correo ni tus entrenos.": [
+"We now count how many people open the app each day. It's anonymous: your name, email and workouts are not sent.",
+"Nous comptons maintenant combien de personnes ouvrent l'app chaque jour. C'est anonyme : ton nom, ton e-mail et tes séances ne sont pas envoyés.",
+"دابا كنحسبو شحال ديال الناس كيحلو الأپليكاسيون كل نهار. بلا سمية: ما كنصيفطوش سميتك، الإيميل ديالك ولا الحصص ديالك."
+],
 "Social": [
 "Social",
 "Social",

@@ -2355,8 +2355,7 @@ function hojaPoliticaNueva() {
   abrirHoja(cabeceraHoja("Política de privacidad actualizada", "Aviso") + '<div class="stack">' +
     '<p>Hemos actualizado la política de privacidad. Lo más importante:</p>' +
     '<ul class="small" style="padding-left:20px;margin:0">' +
-      '<li>Los recordatorios ahora llegan aunque la app esté cerrada. Para eso guardamos tus próximos avisos en el servidor, sin tu nombre ni tu correo.</li>' +
-      '<li>Los correos de la cuenta se envían con Gmail (Google).</li>' +
+      '<li>Ahora contamos cuánta gente abre la app cada día. Es anónimo: no se envía tu nombre, tu correo ni tus entrenos.</li>' +
     '</ul>' +
     '<p class="muted small">Tus datos se siguen usando igual: solo para que la app funcione.</p>' +
     '<button class="btn-sec full" data-act="abrir-privacidad">Leer la política</button>' +

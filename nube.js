@@ -603,3 +603,48 @@ function cancelarDescansoPush() {
   descansoEnServidor = false;
   pedirRapido("cancelar_descanso", { disp: idDispositivoPush() });
 }
+
+// =====================================================
+// CONTADOR ANÓNIMO DE VISITAS
+// Sirve para saber cuánta gente abre la app cada día, tenga cuenta o no.
+// Solo se manda: un código al azar, el tipo de visita y si la app está instalada.
+// No se manda el nombre, el correo ni ningún dato de los entrenos, y el código no está unido a la cuenta.
+// =====================================================
+const CLAVE_VISITA_ID = "apix-visita-id";
+const CLAVE_VISITA_DIA = "apix-visita-dia";
+let visitaContada = "";          // día ya contado en esta apertura
+
+function codigoAlAzar() {
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  return Array.from(bytes, function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+}
+
+function contarVisita() {
+  if (typeof navigator === "undefined" || !navigator.onLine || !/^https:/.test(location.protocol)) return;
+  const dia = hoy();
+  if (visitaContada === dia) return;
+  let tipo = "nuevo";                                     // solo ha visto la bienvenida
+  if (estado && estado.modo === "demo") tipo = "invitado";
+  else if (estado) tipo = conectado() ? "cuenta" : "sin_cuenta";
+  let id = "";
+  const conPerfil = tipo === "cuenta" || tipo === "sin_cuenta";
+  try {
+    if (conPerfil) {
+      // Quien tiene perfil ya ha aceptado la política: su código se guarda para contarle una sola vez al día
+      if (localStorage.getItem(CLAVE_VISITA_DIA) === dia) { visitaContada = dia; return; }
+      id = localStorage.getItem(CLAVE_VISITA_ID) || "";
+      if (!id) { id = codigoAlAzar(); localStorage.setItem(CLAVE_VISITA_ID, id); }
+    }
+  } catch (e) { }
+  if (!id) id = codigoAlAzar();                           // visitantes e invitados: código de usar y tirar, no se guarda
+  visitaContada = dia;
+  const instalada = !!(window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || navigator.standalone === true;
+  pedirNube("/rest/v1/rpc/contar_visita", "POST", { p_dispositivo: id, p_tipo: tipo, p_instalada: instalada }, null, true).then(function (r) {
+    if (r.ok && conPerfil) { try { localStorage.setItem(CLAVE_VISITA_DIA, dia); } catch (e) { } }
+    if (!r.ok) visitaContada = "";
+  });
+}
+if (typeof document !== "undefined") {
+  setTimeout(contarVisita, 4000);
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible") contarVisita(); });
+}
