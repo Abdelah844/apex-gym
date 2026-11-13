@@ -480,6 +480,12 @@ nav.tabs button.on svg { color: var(--accent); filter: drop-shadow(0 0 6px var(-
 .welcome { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; gap: 18px; padding-top: 20px; }
 .welcome h1 { font-size: 2.6rem; }
 .welcome .logo { width: 64px; height: 72px; }
+/* Móviles muy estrechos (menos de 350 px): los contadores del editor van de 2 en 2 y los títulos con botones pueden partirse */
+@media (max-width: 349px) {
+  .steppers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .row.between { flex-wrap: wrap; row-gap: 8px; }
+}
+.campo-mal, input.campo-mal, select.campo-mal { border-color: var(--danger) !important; box-shadow: 0 0 0 2px color-mix(in srgb, var(--danger) 30%, transparent); border-radius: 12px; }
 .ventajas { display: grid; gap: 10px; text-align: start; }
 @media (min-width: 560px) { .ventajas { grid-template-columns: 1fr 1fr; } }
 .ventaja { display: flex; gap: 12px; align-items: flex-start; background: var(--surface); border: 1px solid var(--edge); border-radius: 14px; padding: 12px; }

@@ -14858,6 +14858,26 @@ const TRADUCCIONES = {
 "Impossible de se connecter. Vérifie ta connexion.",
 "ما قدرناش نتاصلو. شوف الكونيكسيون ديالك."
 ],
+"No apagar la pantalla mientras entreno": [
+"Keep the screen on while I train",
+"Ne pas éteindre l'écran pendant que je m'entraîne",
+"ما تطفيش الشاشة ملي كنتمرن"
+],
+"Algo ha fallado": [
+"Something went wrong",
+"Un problème est survenu",
+"وقع شي مشكل"
+],
+"Tus entrenos están a salvo: siguen guardados en este móvil. Recarga la app para continuar.": [
+"Your workouts are safe: they're still saved on this phone. Reload the app to continue.",
+"Tes séances sont en sécurité : elles sont toujours enregistrées sur ce téléphone. Recharge l'app pour continuer.",
+"الحصص ديالك ف أمان: مازال محفوظين ف هاد التيليفون. عاود حل الأپليكاسيون باش تكمل."
+],
+"Recargar": [
+"Reload",
+"Recharger",
+"عاود حل"
+],
 "Social": [
 "Social",
 "Social",

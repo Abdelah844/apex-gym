@@ -276,15 +276,22 @@ function leerPerfil() {
     dias: parseInt($("fDias").value), duracion: parseInt($("fDuracion").value), lugar: $("fLugar").value,
     equipo: equipo, evitar: $("fEvitar").value.trim(), lesiones: $("fLesiones").value.trim()
   };
-  let error = "";
-  if (!p.nombre) error = "Escribe tu nombre.";
-  else if (!p.usuario || p.usuario.length < 3) error = "El usuario necesita al menos 3 letras o números.";
-  else if (p.usuario.length > 20) error = "El usuario puede tener como máximo 20 caracteres.";
-  else if (!p.sexo) error = "Elige una opción en Sexo (puedes elegir «Prefiero no decirlo»).";
-  else if (!(p.edad >= 14 && p.edad <= 90)) error = "La edad debe estar entre 14 y 90 años.";
-  else if (!(p.altura >= 120 && p.altura <= 230)) error = "Escribe la altura en centímetros y sin comas (por ejemplo, 175).";
-  else if (!(p.peso >= 35 && p.peso <= 250)) error = "El peso debe estar entre 35 y 250 kg.";
-  else if (p.equipo.length === 0) error = "Marca al menos un tipo de equipamiento.";
+  // Cada comprobación dice qué casilla está mal, para llevar a la persona hasta ella
+  let error = "", campo = "";
+  if (!p.nombre) { error = "Escribe tu nombre."; campo = "fNombre"; }
+  else if (!p.usuario || p.usuario.length < 3) { error = "El usuario necesita al menos 3 letras o números."; campo = "fUsuario"; }
+  else if (p.usuario.length > 20) { error = "El usuario puede tener como máximo 20 caracteres."; campo = "fUsuario"; }
+  else if (!p.sexo) { error = "Elige una opción en Sexo (puedes elegir «Prefiero no decirlo»)."; campo = "fSexo"; }
+  else if (!(p.edad >= 14 && p.edad <= 90)) { error = "La edad debe estar entre 14 y 90 años."; campo = "fEdad"; }
+  else if (!(p.altura >= 120 && p.altura <= 230)) { error = "Escribe la altura en centímetros y sin comas (por ejemplo, 175)."; campo = "fAltura"; }
+  else if (!(p.peso >= 35 && p.peso <= 250)) { error = "El peso debe estar entre 35 y 250 kg."; campo = "fPeso"; }
+  else if (p.equipo.length === 0) { error = "Marca al menos un tipo de equipamiento."; campo = "fEquipo"; }
+  for (const mal of document.querySelectorAll(".campo-mal")) mal.classList.remove("campo-mal");
+  if (campo && $(campo)) {
+    $(campo).classList.add("campo-mal");
+    $(campo).scrollIntoView({ block: "center", behavior: "smooth" });
+    if ($(campo).focus && campo !== "fEquipo") $(campo).focus({ preventScroll: true });
+  }
   $("fError").textContent = error;
   return error ? null : p;
 }
@@ -2245,6 +2252,7 @@ function hojaAjustes() {
     '<div class="card stack tight"><h3>Calentamiento</h3>' + chk("aCalentamiento", a.calentamiento !== false, "Proponer series de calentamiento") +
       '<p class="muted small">En los ejercicios grandes con peso (sentadilla, press banca, peso muerto…). No cuentan para récords ni rangos.</p></div>' +
     '<div class="card stack tight" id="aj-sonido"><h3>Sonido y vibración</h3>' + chk("aSonido", a.sonido !== false, "Efectos de sonido") + chk("aVibracion", a.vibracion !== false, "Vibración") +
+      (("wakeLock" in navigator) ? chk("aPantalla", a.pantallaEncendida !== false, "No apagar la pantalla mientras entreno") : "") +
       '<p class="muted small">Prueba los sonidos:</p><div class="chips" style="flex-wrap:wrap">' + [["serie", "Serie"], ["descanso", "Descanso"], ["record", "Récord"], ["rango", "Rango"], ["fin", "Fin"], ["racha", "Racha"], ["enfadado", "Apix enfadado"]].map(function (x) { return '<button class="chip" data-act="probar-sonido" data-a="' + x[0] + '">' + x[1] + '</button>'; }).join("") + '</div></div>' +
     '<div class="card stack tight"><h3>Apix, la mascota</h3>' + chk("aMascota", a.mascota !== false, "Mostrar a Apix en Inicio") +
       '<button class="btn-sec" data-act="ver-tutorial">Ver el tutorial otra vez</button>' +
@@ -2605,6 +2613,7 @@ function cerrarTutorial() {
 function pintar() {
   aplicarTema();
   avisoGuardado();
+  pantallaEncendida();
   if (!estado) { pintarBienvenida(); return; }
   $("tabs").hidden = false;
   for (const b of document.querySelectorAll("nav.tabs button")) b.classList.toggle("on", b.dataset.tab === tab);

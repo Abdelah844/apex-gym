@@ -7,6 +7,15 @@ document.addEventListener("click", function (ev) {
   prepararAudio();                       // el navegador solo deja sonar tras un toque
   const b = ev.target.closest("[data-act], [data-tab]");
   if (!b || b.disabled) return;
+  // Si el tutorial está abierto y la persona toca otra cosa de la app, el tutorial se da por visto
+  // y se quita (si no, se quedaba encima de la pantalla siguiente)
+  if (typeof pasoTutorial !== "undefined" && pasoTutorial >= 0 && estado && !b.closest("#tutorial")) {
+    pasoTutorial = -1;
+    $("tutorial").hidden = true;
+    for (const t of document.querySelectorAll("nav.tabs button")) t.classList.remove("tuto-on");
+    estado.ajustes.tutorialVisto = true;
+    guardar();
+  }
   if (b.dataset.tab) { cerrarHoja(); irA(b.dataset.tab); return; }
 
   const act = b.dataset.act;
@@ -780,7 +789,7 @@ const ACCIONES = {
     a.descanso = parseInt($("aDescanso").value); a.descansoAislamiento = a.descanso; a.descansoCompuesto = parseInt($("aDescComp").value); a.formula1RM = $("aFormula").value; a.incremento = parseFloat($("aIncremento").value); a.incrementoMancuernas = parseFloat($("aIncMancuernas").value);
     a.unidad = $("aUnidad").value === "lb" ? "lb" : "kg";
     a.privacidad = $("aPrivacidad").value; a.compartir = $("aCompartir").checked; a.mascota = $("aMascota").checked;
-    a.copiaDias = parseInt($("aCopiaDias").value); a.sonido = $("aSonido").checked; a.calentamiento = $("aCalentamiento").checked; a.vibracion = $("aVibracion").checked;
+    a.copiaDias = parseInt($("aCopiaDias").value); a.sonido = $("aSonido").checked; a.calentamiento = $("aCalentamiento").checked; a.vibracion = $("aVibracion").checked; if ($("aPantalla")) a.pantallaEncendida = $("aPantalla").checked;
     a.notif = { recordatorios: $("nRec").checked, racha: $("nRacha").checked, retos: $("nReto").checked, hora: parseInt($("nHora").value), records: $("nRecords").checked, rangos: $("nRangos").checked, amigos: a.notif.amigos, semanal: $("nSemanal").checked, ultimoAviso: a.notif.ultimoAviso || "" };
     guardar(); pintar();
     sincronizarAvisosPush();                         // la hora o los avisos pueden haber cambiado
@@ -1171,6 +1180,68 @@ setInterval(function () {
   const c = $("cronometro");
   if (c && estado && estado.activa) c.textContent = tiempoEntreno();
 }, 1000);
+
+// ---------- Pantalla encendida durante el entreno ----------
+// Mientras hay un entreno en marcha, se pide al móvil que no apague la pantalla ("wake lock").
+// El móvil suelta el permiso solo al salir de la app, así que se vuelve a pedir al volver.
+let bloqueoPantalla = null;
+function pantallaEncendida() {
+  if (!("wakeLock" in navigator)) return;
+  const hace = !!(estado && estado.activa && estado.ajustes.pantallaEncendida !== false && document.visibilityState === "visible");
+  if (hace && !bloqueoPantalla) {
+    bloqueoPantalla = "pidiendo";
+    navigator.wakeLock.request("screen").then(function (b) {
+      bloqueoPantalla = b;
+      b.addEventListener("release", function () { if (bloqueoPantalla === b) bloqueoPantalla = null; });
+      pantallaEncendida();                       // por si el entreno ha terminado mientras se pedía
+    }).catch(function () { bloqueoPantalla = null; });   // p. ej. batería baja: no pasa nada
+  }
+  if (!hace && bloqueoPantalla && bloqueoPantalla !== "pidiendo") {
+    const b = bloqueoPantalla; bloqueoPantalla = null;
+    b.release().catch(function () { });
+  }
+}
+document.addEventListener("visibilitychange", pantallaEncendida);
+
+// ---------- Fotos de tu rutina sin internet ----------
+// Con internet, descarga en segundo plano las fotos de los ejercicios de tu rutina.
+// El service worker las guarda, y así se ven en el gimnasio aunque no haya cobertura.
+let fotosRutinaGuardadas = "";
+function guardarFotosRutina() {
+  if (!estado || !estado.rutina || !navigator.onLine || !("serviceWorker" in navigator) || !navigator.serviceWorker.controller) return;
+  if (navigator.connection && navigator.connection.saveData) return;      // modo "ahorro de datos": no se descarga nada extra
+  const ids = [];
+  for (const d of estado.rutina.dias || []) for (const e of d.ejercicios || []) if (ids.indexOf(e.id) < 0 && FOTOS[e.id]) ids.push(e.id);
+  const firma = ids.join(",");
+  if (!ids.length || firma === fotosRutinaGuardadas) return;
+  fotosRutinaGuardadas = firma;
+  const lista = [];
+  for (const id of ids) { lista.push("fotos/" + id + "-inicio.jpg"); lista.push("fotos/" + id + "-final.jpg"); }
+  let i = 0;
+  (function siguiente() {                       // de una en una, para no frenar la app
+    if (i >= lista.length) return;
+    fetch(lista[i++]).then(siguiente, siguiente);
+  })();
+}
+setTimeout(guardarFotosRutina, 5000);
+// Con entrenos guardados, se pide al navegador que no borre los datos de la app si el móvil se queda sin espacio
+setTimeout(function () {
+  if (estado && estado.sesiones.length && navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(function () { });
+}, 6000);
+window.addEventListener("online", function () { setTimeout(guardarFotosRutina, 3000); });
+
+// ---------- Red de seguridad ----------
+// Si algo falla de forma inesperada y la pantalla se queda vacía, se enseña un aviso con un botón
+// para recargar. Los entrenos no se tocan: están guardados en el móvil.
+function pantallaDeError() {
+  const app = $("app");
+  if (!app || app.innerHTML.trim() !== "") return;       // solo si no se ha podido pintar nada
+  app.innerHTML = '<div class="welcome"><h1>Algo ha fallado</h1>' +
+    '<p class="muted">Tus entrenos están a salvo: siguen guardados en este móvil. Recarga la app para continuar.</p>' +
+    '<button class="btn" onclick="location.reload()">Recargar</button></div>';
+}
+window.addEventListener("error", function () { setTimeout(pantallaDeError, 0); });
+window.addEventListener("unhandledrejection", function () { setTimeout(pantallaDeError, 0); });
 
 // Si el último guardado falló, el navegador avisa antes de cerrar la página
 window.addEventListener("beforeunload", function (ev) {

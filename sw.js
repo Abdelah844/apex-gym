@@ -5,7 +5,7 @@
 // Si cambias algún archivo, sube el número de VERSION para que los móviles descarguen la nueva.
 // =====================================================
 
-const VERSION = "apex-gym-2.34.4";
+const VERSION = "apex-gym-2.35.0";
 
 // Archivos que se guardan nada más instalar la app
 const ARCHIVOS = [
@@ -24,40 +24,56 @@ self.addEventListener("install", function (evento) {
   self.skipWaiting();
 });
 
+// Las fotos de los ejercicios van en una caché aparte que NO se borra al actualizar la app:
+// así no hay que volver a descargarlas en cada versión y siguen viéndose sin internet.
+const FOTOS_CACHE = "apix-fotos-1";
+
 // 2. Activar: borra las copias de versiones antiguas y toma el control enseguida
 self.addEventListener("activate", function (evento) {
   evento.waitUntil(caches.keys().then(function (nombres) {
-    return Promise.all(nombres.filter(function (n) { return n !== VERSION; }).map(function (n) { return caches.delete(n); }));
+    return Promise.all(nombres.filter(function (n) { return n !== VERSION && n !== FOTOS_CACHE; }).map(function (n) { return caches.delete(n); }));
   }).then(function () { return self.clients.claim(); }));
 });
 
+// Pide un archivo a internet, pero si tarda más de "ms" se rinde (cobertura mala del gimnasio)
+function pedirConLimite(peticion, ms) {
+  return new Promise(function (resolver, rechazar) {
+    const reloj = setTimeout(function () { rechazar(new Error("lento")); }, ms);
+    fetch(peticion, { cache: "no-cache" }).then(function (r) {
+      clearTimeout(reloj);
+      guardarCopia(peticion, r, VERSION);      // aunque llegue tarde, se guarda para la próxima vez
+      resolver(r);
+    }, function (e) { clearTimeout(reloj); rechazar(e); });
+  });
+}
+
 // 3. Cada vez que la app pide un archivo:
-//    - Fotos e iconos (no cambian): primero la copia guardada, así cargan al instante.
+//    - Fotos, iconos y letras (no cambian): primero la copia guardada, así cargan al instante.
 //    - Todo lo demás (código y página): primero internet, para tener siempre la última versión.
-//      Si no hay internet, se usa la copia guardada.
+//      Si no hay internet o va muy lento (más de 4 segundos), se usa la copia guardada.
 self.addEventListener("fetch", function (evento) {
   if (evento.request.method !== "GET") return;
   const url = new URL(evento.request.url);
   if (url.origin !== self.location.origin) return;
   const esImagen = /\.(jpg|png|woff)$/.test(url.pathname);   // fotos, iconos y letras
   if (esImagen) {
+    const esFoto = url.pathname.indexOf("/fotos/") >= 0;
     evento.respondWith(caches.match(evento.request).then(function (guardado) {
-      return guardado || fetch(evento.request).then(function (r) { guardarCopia(evento.request, r); return r; });
+      return guardado || fetch(evento.request).then(function (r) { guardarCopia(evento.request, r, esFoto ? FOTOS_CACHE : VERSION); return r; });
     }));
     return;
   }
-  evento.respondWith(fetch(evento.request, { cache: "no-cache" }).then(function (r) {
-    guardarCopia(evento.request, r);
-    return r;
-  }).catch(function () {
-    return caches.match(evento.request, { ignoreSearch: true }).then(function (g) { return g || caches.match("./index.html"); });
+  evento.respondWith(pedirConLimite(evento.request, 4000).catch(function () {
+    return caches.match(evento.request, { ignoreSearch: true }).then(function (g) {
+      return g || fetch(evento.request).catch(function () { return caches.match("./index.html"); });   // sin copia: se espera a internet lo que haga falta
+    });
   }));
 });
 
-function guardarCopia(peticion, respuesta) {
+function guardarCopia(peticion, respuesta, donde) {
   if (!respuesta || !respuesta.ok) return;
   const copia = respuesta.clone();
-  caches.open(VERSION).then(function (cache) { cache.put(peticion, copia); });
+  caches.open(donde).then(function (cache) { cache.put(peticion, copia); });
 }
 
 // 4. Llega un aviso push (aunque la app esté cerrada): se muestra la notificación
