@@ -485,6 +485,21 @@ nav.tabs button.on svg { color: var(--accent); filter: drop-shadow(0 0 6px var(-
   .steppers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .row.between { flex-wrap: wrap; row-gap: 8px; }
 }
+.logros-inicio { display: flex; align-items: center; gap: 14px; width: 100%; }
+.logro-ico { font-size: 1.7rem; line-height: 1; flex: none; width: 40px; text-align: center; }
+.barra-logro { height: 6px; border-radius: 99px; background: var(--surface3); overflow: hidden; }
+.barra-logro i { display: block; height: 100%; border-radius: 99px; background: var(--accent); }
+.logros-lista { display: grid; gap: 10px; }
+.logro { display: flex; gap: 12px; align-items: center; background: var(--surface2); border-radius: 14px; padding: 12px; opacity: .75; }
+.logro.hecho { opacity: 1; border: 1px solid var(--accent); }
+.logro h3 { font-size: .95rem; }
+.logro .barra-logro { margin: 6px 0 2px; }
+.logros-nuevos { border-color: var(--accent); }
+.dia-plegado { padding: 14px 16px; }
+.dia-plegado summary { display: flex; align-items: center; gap: 10px; list-style: none; color: inherit; padding: 0; }
+.dia-plegado summary::-webkit-details-marker { display: none; }
+.dia-plegado .flecha { color: var(--muted); transition: transform .15s; }
+.dia-plegado[open] .flecha { transform: rotate(180deg); }
 .campo-mal, input.campo-mal, select.campo-mal { border-color: var(--danger) !important; box-shadow: 0 0 0 2px color-mix(in srgb, var(--danger) 30%, transparent); border-radius: 12px; }
 .ventajas { display: grid; gap: 10px; text-align: start; }
 @media (min-width: 560px) { .ventajas { grid-template-columns: 1fr 1fr; } }

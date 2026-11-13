@@ -505,7 +505,10 @@ const ACCIONES = {
     pararDescanso();
     const semana = lunesDe(hoy());
     const rachaAntes = (sesionesPorSemana()[semana] || 0) >= minimoSemanal();
+    revisarLogros();                                 // los que ya tenías de antes no cuentan como nuevos
     const r = terminarSesion();
+    r.logros = (r.vacio || r.duplicado) ? [] : revisarLogros();     // logros conseguidos con este entreno
+    if (r.logros.length) guardar();
     sincronizarAvisosPush();                         // hoy ya has entrenado: se quita el aviso de hoy
     const rachaAhora = (sesionesPorSemana()[semana] || 0) >= minimoSemanal();
     pilaDeshacer = []; sesionRecuperada = false;
@@ -607,6 +610,7 @@ const ACCIONES = {
   // Tutorial de bienvenida
   "tuto-sig": function () { if (pasoTutorial < PASOS_TUTORIAL.length - 1) mostrarTutorial(pasoTutorial + 1); else cerrarTutorial(); },
   "tuto-saltar": function () { cerrarTutorial(); },
+  "ver-logros": function () { hojaLogros(); },
   "ver-tutorial": function () { cerrarHoja(); mostrarTutorial(0); },
   "aviso-descanso": function () {
     Notification.requestPermission().then(function (p) {
@@ -1410,4 +1414,13 @@ document.addEventListener("visibilitychange", function () { if (document.visibil
 // Comparador de fotos: la línea se mueve mientras deslizas
 document.addEventListener("input", function (ev) {
   if (ev.target.hasAttribute && ev.target.hasAttribute("data-comparar")) moverComparador(parseInt(ev.target.value));
+});
+
+// Calculadora de discos: se actualiza mientras escribes el peso de la serie actual
+document.addEventListener("input", function (ev) {
+  const t = ev.target;
+  if (!t || !t.dataset || t.dataset.in !== "peso") return;
+  const linea = document.querySelector(".discos-linea");
+  if (!linea || !t.closest(".ts-fila.foco")) return;
+  linea.textContent = textoDiscos(parseFloat(String(t.value).replace(",", ".")));
 });

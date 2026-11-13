@@ -1055,10 +1055,30 @@ const PRUEBAS = [
     return (d.version === VERSION_DATOS && Array.isArray(d.medidas) && d.ajustes.ultimaCopia === "") || "Migración incompleta";
   }]
   ,
+  ["2.8 Logros", "Los logros se consiguen al llegar a su meta y no se repiten", function () {
+    crearDemo();
+    estado.logros = {};
+    const d = datosLogros();
+    const nuevos = revisarLogros();
+    if (d.entrenos < 10) return "La demo debería tener al menos 10 entrenos";
+    if (!estado.logros["entrenos-1"] || !estado.logros["entrenos-10"]) return "Faltan logros de entrenos";
+    if (estado.logros["entrenos-100"]) return "Logro de 100 entrenos sin tenerlos";
+    if (nuevos.length !== Object.keys(estado.logros).length) return "Los nuevos no coinciden con los guardados";
+    if (revisarLogros().length !== 0) return "Un logro se ha dado dos veces";
+    const sig = siguienteLogro();
+    if (!sig || estado.logros[sig.logro.id]) return "El siguiente logro ya estaba conseguido";
+    return new Set(LOGROS.map(function (l) { return l.id; })).size === LOGROS.length || "Hay logros con el mismo id";
+  }],
   ["2.7 Guía", "Cada ejercicio explica cómo apuntar su peso según el material", function () {
     estadoPrueba();
     if (comoApuntar(buscarEj("curl-mancuernas")).corto.indexOf("UNA mancuerna") < 0) return "Mancuernas";
     if (comoApuntar(buscarEj("press-banca")).corto.indexOf("barra + discos") < 0) return "Barra";
+    // Calculadora de discos: 60 kg = barra de 20 + 20 por lado; 62,5 = 20 + 1,25 por lado
+    if (JSON.stringify(discosPorLado(60)) !== "[20]") return "Discos 60";
+    if (JSON.stringify(discosPorLado(62.5)) !== "[20,1.25]") return "Discos 62,5";
+    if (JSON.stringify(discosPorLado(102.5)) !== "[25,15,1.25]") return "Discos 102,5";
+    if (discosPorLado(20) !== null || discosPorLado(61) !== null) return "Discos imposibles";
+    if (usaBarraOlimpica(buscarEj("curl-mancuernas")) || !usaBarraOlimpica(buscarEj("press-banca"))) return "Barra olímpica";
     if (comoApuntar(buscarEj("dominadas-asistidas")).corto.indexOf("ayuda") < 0) return "Asistido";
     if (comoApuntar(buscarEj("fondos")).corto.indexOf("0 si no usas") < 0) return "Peso corporal";
     if (comoApuntar(buscarEj("press-banca-multipower")).corto.indexOf("multipower") < 0 && comoApuntar(buscarEj("press-banca-multipower")).corto.indexOf("guiada") < 0) return "Multipower";

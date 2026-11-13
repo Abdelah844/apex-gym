@@ -520,6 +520,70 @@ function rachaSemanas() {
 }
 
 // =====================================================
+// LOGROS
+// Medallas que se consiguen entrenando. Cada logro tiene una meta (un número) y una forma de medirla.
+// Los conseguidos se guardan en estado.logros con su fecha, y ya no se pierden.
+// =====================================================
+const LOGROS = [
+  { id: "entrenos-1", icono: "🎬", nombre: "Primer paso", texto: "Completa tu primer entreno", tipo: "entrenos", meta: 1 },
+  { id: "entrenos-10", icono: "💪", nombre: "Cogiendo ritmo", texto: "Completa 10 entrenos", tipo: "entrenos", meta: 10 },
+  { id: "entrenos-25", icono: "🔩", nombre: "De hierro", texto: "Completa 25 entrenos", tipo: "entrenos", meta: 25 },
+  { id: "entrenos-50", icono: "⚙️", nombre: "Máquina", texto: "Completa 50 entrenos", tipo: "entrenos", meta: 50 },
+  { id: "entrenos-100", icono: "👑", nombre: "Centenario", texto: "Completa 100 entrenos", tipo: "entrenos", meta: 100 },
+  { id: "racha-2", icono: "🔥", nombre: "Encendido", texto: "Racha de 2 semanas", tipo: "racha", meta: 2 },
+  { id: "racha-4", icono: "📅", nombre: "Un mes sin fallar", texto: "Racha de 4 semanas", tipo: "racha", meta: 4 },
+  { id: "racha-12", icono: "🧱", nombre: "Constancia de acero", texto: "Racha de 12 semanas", tipo: "racha", meta: 12 },
+  { id: "racha-26", icono: "🏔️", nombre: "Medio año imparable", texto: "Racha de 26 semanas", tipo: "racha", meta: 26 },
+  { id: "records-1", icono: "🏆", nombre: "Primer récord", texto: "Bate tu primer récord", tipo: "records", meta: 1 },
+  { id: "records-10", icono: "🥇", nombre: "Rompemarcas", texto: "Bate 10 récords", tipo: "records", meta: 10 },
+  { id: "records-50", icono: "🚀", nombre: "Sin techo", texto: "Bate 50 récords", tipo: "records", meta: 50 },
+  { id: "toneladas-10", icono: "🚗", nombre: "Levantacoches", texto: "Levanta 10 toneladas en total", tipo: "toneladas", meta: 10 },
+  { id: "toneladas-100", icono: "🐘", nombre: "Fuerza de elefante", texto: "Levanta 100 toneladas en total", tipo: "toneladas", meta: 100 },
+  { id: "toneladas-500", icono: "🐋", nombre: "Ballena azul", texto: "Levanta 500 toneladas en total", tipo: "toneladas", meta: 500 },
+  { id: "grupos-12", icono: "🧍", nombre: "Cuerpo completo", texto: "Entrena los 12 grupos musculares", tipo: "grupos", meta: 12 }
+];
+
+// Cuánto llevas de cada tipo de logro
+function datosLogros() {
+  const validas = sesionesValidas();
+  let records = 0, kilos = 0;
+  const grupos = {};
+  for (const s of validas) {
+    records += (s.prs || []).length;
+    kilos += s.volumen || 0;
+    for (const e of s.ejercicios) {
+      const ej = buscarEj(e.id);
+      if (ej && e.series.some(function (x) { return x.hecha; })) grupos[ej.grupo] = true;
+    }
+  }
+  return { entrenos: validas.length, racha: rachaSemanas(), records: records, toneladas: Math.floor(kilos / 1000), grupos: Object.keys(grupos).length };
+}
+
+// Apunta los logros recién conseguidos y devuelve la lista de los nuevos
+function revisarLogros() {
+  if (!estado) return [];
+  if (!estado.logros) estado.logros = {};
+  const d = datosLogros();
+  const nuevos = [];
+  for (const l of LOGROS) {
+    if (!estado.logros[l.id] && d[l.tipo] >= l.meta) { estado.logros[l.id] = hoy(); nuevos.push(l); }
+  }
+  return nuevos;
+}
+
+// El logro sin conseguir que tienes más cerca (para animar a ir a por él)
+function siguienteLogro() {
+  const d = datosLogros();
+  let mejor = null;
+  for (const l of LOGROS) {
+    if (estado.logros && estado.logros[l.id]) continue;
+    const parte = Math.min(1, d[l.tipo] / l.meta);
+    if (!mejor || parte > mejor.parte) mejor = { logro: l, llevas: d[l.tipo], parte: parte };
+  }
+  return mejor;
+}
+
+// =====================================================
 // CONTROL DE CALIDAD DE LOS DATOS
 // =====================================================
 
@@ -1331,6 +1395,32 @@ function comoApuntar(e) {
   if (/multipower/.test(e.id)) return { corto: "Kg = los discos que pongas en la barra guiada.", largo: "En el multipower apunta solo los discos (la barra guiada pesa poco y cambia según la máquina). Así siempre lo medirás igual." };
   if (e.equipo === "polea") return { corto: "Kg = el número de la placa en la columna de peso.", largo: "Apunta el número que marca la placa donde metes el pasador. Cada máquina es distinta: compárate siempre en la misma." };
   return { corto: "Kg = el peso que marca la máquina.", largo: "Apunta el número de la placa o los discos que cargues. Cada máquina es distinta: compárate siempre en la misma." };
+}
+
+// ---------- Calculadora de discos ----------
+// Para ejercicios con barra olímpica (20 kg): qué discos poner EN CADA LADO para llegar al peso total.
+// Devuelve la lista de discos de un lado (de mayor a menor) o null si no hace falta o no sale exacto.
+const DISCOS_KG = [25, 20, 15, 10, 5, 2.5, 1.25];
+const BARRA_KG = 20;
+function discosPorLado(total) {
+  if (typeof total !== "number" || !(total > BARRA_KG)) return null;
+  let resto = Math.round((total - BARRA_KG) / 2 * 1000) / 1000;      // lo que va en cada lado
+  const lista = [];
+  for (const d of DISCOS_KG) {
+    while (resto >= d - 0.0001) { lista.push(d); resto = Math.round((resto - d) * 1000) / 1000; }
+  }
+  if (resto > 0.0001 || lista.length > 8) return null;                // no sale con discos normales
+  return lista;
+}
+// ¿Tiene sentido enseñar los discos en este ejercicio? Solo barra olímpica recta y en kg.
+function usaBarraOlimpica(e) {
+  return !!e && e.equipo === "barra" && !/barra-z|pecho-apoyado/.test(e.id) && !usaLibras();
+}
+function textoDiscos(total) {
+  const l = discosPorLado(total);
+  if (!l) return "";
+  const titulo = typeof tr === "function" ? tr("Discos por lado:") : "Discos por lado:";
+  return "🏋️ " + titulo + " " + l.map(function (d) { return String(d).replace(".", ","); }).join(" + ");
 }
 
 // ---------- Series de calentamiento ----------

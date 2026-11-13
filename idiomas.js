@@ -2100,7 +2100,7 @@ const TRADUCCIONES = {
 ],
 "Cuerpo completo": [
 "Full body",
-"Full body",
+"Corps complet",
 "الجسم كامل"
 ],
 "Cuerpo completo para empezar": [
@@ -5605,8 +5605,8 @@ const TRADUCCIONES = {
 ],
 "Más opciones": [
 "More options",
-"Plus d’options",
-"خيارات أخرى"
+"Plus d'options",
+"اختيارات أخرى"
 ],
 "Máximo {n} caracteres.": [
 "Maximum {n} characters.",
@@ -14902,6 +14902,146 @@ const TRADUCCIONES = {
 "We now count how many people open the app each day. It's anonymous: your name, email and workouts are not sent.",
 "Nous comptons maintenant combien de personnes ouvrent l'app chaque jour. C'est anonyme : ton nom, ton e-mail et tes séances ne sont pas envoyés.",
 "دابا كنحسبو شحال ديال الناس كيحلو الأپليكاسيون كل نهار. بلا سمية: ما كنصيفطوش سميتك، الإيميل ديالك ولا الحصص ديالك."
+],
+"Logros": [
+"Achievements",
+"Succès",
+"الإنجازات"
+],
+"¡Los tienes todos!": [
+"You've got them all!",
+"Tu les as tous !",
+"عندك كلشي!"
+],
+"🏅 Logro conseguido": [
+"🏅 Achievement unlocked",
+"🏅 Succès débloqué",
+"🏅 إنجاز جديد"
+],
+"Primer paso": [
+"First step",
+"Premier pas",
+"الخطوة اللولة"
+],
+"Completa tu primer entreno": [
+"Complete your first workout",
+"Termine ta première séance",
+"كمّل الحصة اللولة ديالك"
+],
+"Cogiendo ritmo": [
+"Getting into the rhythm",
+"Tu prends le rythme",
+"بديتي تشد الريتم"
+],
+"Completa {n} entrenos": [
+"Complete {n} workouts",
+"Termine {n} séances",
+"كمّل {n} حصص"
+],
+"De hierro": [
+"Made of iron",
+"En fer",
+"ديال الحديد"
+],
+"Centenario": [
+"Centurion",
+"Centenaire",
+"المية"
+],
+"Encendido": [
+"On fire",
+"En feu",
+"شاعل"
+],
+"Racha de {n} semanas": [
+"{n}-week streak",
+"Série de {n} semaines",
+"سلسلة ديال {n} سيمانات"
+],
+"Un mes sin fallar": [
+"A month without missing",
+"Un mois sans faute",
+"شهر بلا ما تفلت"
+],
+"Constancia de acero": [
+"Steel consistency",
+"Régularité d'acier",
+"استمرارية ديال الفولاذ"
+],
+"Medio año imparable": [
+"Half a year unstoppable",
+"Six mois inarrêtable",
+"نص عام بلا توقف"
+],
+"Primer récord": [
+"First record",
+"Premier record",
+"أول ريكور"
+],
+"Bate tu primer récord": [
+"Beat your first record",
+"Bats ton premier record",
+"كسّر أول ريكور ديالك"
+],
+"Rompemarcas": [
+"Record breaker",
+"Briseur de records",
+"مكسّر الريكورات"
+],
+"Bate {n} récords": [
+"Beat {n} records",
+"Bats {n} records",
+"كسّر {n} ريكورات"
+],
+"Sin techo": [
+"No ceiling",
+"Sans limite",
+"بلا حدود"
+],
+"Levantacoches": [
+"Car lifter",
+"Souleveur de voitures",
+"هزّاز الطوموبيلات"
+],
+"Levanta {n} toneladas en total": [
+"Lift {n} tonnes in total",
+"Soulève {n} tonnes au total",
+"هز {n} طن ف المجموع"
+],
+"Fuerza de elefante": [
+"Elephant strength",
+"Force d'éléphant",
+"قوة الفيل"
+],
+"Ballena azul": [
+"Blue whale",
+"Baleine bleue",
+"الحوتة الزرقا"
+],
+"Entrena los {n} grupos musculares": [
+"Train all {n} muscle groups",
+"Entraîne les {n} groupes musculaires",
+"خدّم {n} مجموعات ديال العضلات"
+],
+"Discos por lado:": [
+"Plates per side:",
+"Disques par côté :",
+"الديسكات ف كل جيهة:"
+],
+"⚡ Entreno libre": [
+"⚡ Free workout",
+"⚡ Séance libre",
+"⚡ حصة حرة"
+],
+"✨ Nueva rutina": [
+"✨ New routine",
+"✨ Nouvelle routine",
+"✨ روتين جديد"
+],
+"🏆 Rutinas famosas": [
+"🏆 Famous routines",
+"🏆 Routines célèbres",
+"🏆 روتينات معروفة"
 ],
 "Social": [
 "Social",
