@@ -50,7 +50,7 @@ const ACCIONES = {
   "entrar-invitado": function () {
     const nombre = $("fInvitado") ? $("fInvitado").value.trim() : "";
     crearDemo();
-    estado.perfil.nombre = nombre || (typeof traducirFrase === "function" ? traducirFrase("Invitado") : "Invitado");
+    estado.perfil.nombre = nombre || (typeof tr === "function" ? tr("Invitado") : "Invitado");
     cerrarHoja(); guardar(); tab = "inicio"; pintar();
   },
   "crear-perfil": function () {
