@@ -368,7 +368,7 @@ function pintarInicio() {
     let proximo = "";
     if (descanso) { for (let k = 1; k <= 7; k++) { const d = (hoyN + k) % 7; if (cal.includes(d)) { proximo = NOMBRES_DIAS_SEMANA[d].toLowerCase(); break; } } }
     h += '<div class="card hero stack tight"><div class="row between"><p class="label" style="color:var(--accent)">' + (descanso ? "Hoy toca descanso · próximo: " + proximo : "Entreno de hoy") + '</p><span class="muted small">' + dia.ejercicios.length + ' ejercicios</span></div>' +
-      '<h2>' + esc(dia.nombre) + '</h2><p class="muted">' + dia.ejercicios.map(function (o) { return esc(buscarEj(o.id).nombre); }).join(" · ") + '</p>' +
+      '<h2>' + esc(dia.nombre) + '</h2>' + fotosDelDia(dia) +
       '<button class="' + (descanso ? "btn-sec full" : "btn") + '" data-act="empezar-dia" data-a="' + idx + '">' + (descanso ? "Entrenar igualmente" : "Empezar entrenamiento") + '</button></div>';
 
     // Siguiente paso recomendado (primer ejercicio del día)
@@ -391,16 +391,16 @@ function pintarInicio() {
     const on = fechas.includes(f);
     semanaHtml += '<div>' + l + '<i class="' + (on ? "on" : "") + (i === hoyNum ? " today" : "") + '">' + (on ? '<span style="color:var(--on-accent)">' + I.check + '</span>' : "") + '</i></div>';
   });
+  // Una sola tarjeta: racha, anillo de la semana, días y rango global
   h += '<div class="card stack tight"><div class="row between"><div><p class="label">Racha de constancia</p>' +
-    '<div class="row" style="gap:6px;align-items:baseline"><span class="big-num num" style="color:var(--fire)">' + rachaSemanas() + '</span><span class="muted">semanas</span></div></div>' +
-    '<div style="text-align:right"><p class="label">Esta semana</p><span class="big-num num">' + semana + '</span><span class="muted"> / ' + p.dias + '</span></div></div>' +
-    '<div class="week">' + semanaHtml + '</div><p class="muted small">Una semana cuenta si entrenas al menos ' + minimoSemanal() + ' días.</p></div>';
-
-  h += '<button class="card row" data-tab="rangos" style="text-align:left">' + insignia(rg, "") +
-    '<div class="grow stack tight"><p class="label">Rango global</p><h2>' + nombreRango(rg) + '</h2>' +
-    (pg === null ? '<p class="muted">Completa un entreno para conseguir rango.</p>' :
-      '<div class="bar"><i style="width:' + progresoRango(pg) + '%"></i></div><p class="muted small">' +
-      (rg < RANGOS.length - 1 ? progresoRango(pg) + "% hacia " + RANGOS[rg + 1].nombre : "Rango máximo") + '</p>') + '</div></button>';
+    '<div class="row" style="gap:6px;align-items:baseline"><span class="big-num num" style="color:var(--fire)">' + rachaSemanas() + '</span><span class="muted">semanas</span></div>' +
+    '<p class="muted small">Una semana cuenta si entrenas al menos ' + minimoSemanal() + ' días.</p></div>' +
+    anilloSemana(semana, p.dias) + '</div>' +
+    '<div class="week">' + semanaHtml + '</div>' +
+    '<button class="row rango-fila" data-tab="rangos" style="text-align:left">' + insignia(rg, "") +
+    '<div class="grow stack tight"><div class="row between"><p class="label">Rango global</p><span class="muted small">' +
+      (pg === null ? "" : (rg < RANGOS.length - 1 ? progresoRango(pg) + "% hacia " + RANGOS[rg + 1].nombre : "Rango máximo")) + '</span></div><h3>' + nombreRango(rg) + '</h3>' +
+    (pg === null ? '<p class="muted small">Completa un entreno para conseguir rango.</p>' : '<div class="bar"><i style="width:' + progresoRango(pg) + '%"></i></div>') + '</div></button></div>';
 
   // Próximo ascenso: el objetivo más cercano para subir de rango
   const prox = proximoAscenso();
@@ -425,26 +425,25 @@ function pintarInicio() {
     '<div class="card"><p class="label">Entrenos</p><div class="big-num num">' + estado.sesiones.length + '</div><p class="muted small">en total</p></div>' +
   '</div>';
 
-  // Último entreno
-  if (ultima) {
-    h += '<button class="card stack tight" data-act="ver-sesion" data-a="' + ultima.id + '" style="text-align:left"><div class="row between"><p class="label">Último entreno</p><span class="muted small">' + fechaBonita(ultima.fecha) + '</span></div>' +
-      '<h3>' + esc(ultima.diaNombre) + '</h3><p class="muted num">' + ultima.duracion + ' min · ' + ultima.seriesEfectivas + ' series efectivas' +
-      (ultima.prs.length ? ' · <span style="color:var(--pr);font-weight:700">' + ultima.prs.length + ' récord' + (ultima.prs.length > 1 ? "s" : "") + '</span>' : "") + '</p></button>';
-  }
-
-  // Récords recientes
+  // Último entreno y récords recientes, en una sola tarjeta
   const prs = [];
   for (let i = estado.sesiones.length - 1; i >= 0 && prs.length < 3; i--) {
     for (const id of estado.sesiones[i].prs) if (prs.length < 3) prs.push({ id: id, fecha: estado.sesiones[i].fecha, s: estado.sesiones[i] });
   }
-  if (prs.length) {
-    h += '<div class="card"><div class="row between"><h3>Récords recientes</h3><button class="btn-txt small" data-tab="progreso">Ver progreso</button></div><div class="list">';
-    for (const r of prs) {
-      const e = r.s.ejercicios.find(function (x) { return x.id === r.id; });
-      const mejor = e.series.filter(function (x) { return x.hecha; }).sort(function (a, b) { return unaRM(b.peso, b.reps) - unaRM(a.peso, a.reps); })[0];
-      h += '<div class="item"><div class="grow"><span class="name">' + esc(buscarEj(r.id).nombre) + '</span><span class="muted num">' + mejor.peso + ' kg × ' + mejor.reps + ' · ' + fechaBonita(r.fecha) + '</span></div><span class="pill pr">Récord</span></div>';
+  if (ultima) {
+    h += '<div class="card stack tight"><button class="stack tight" data-act="ver-sesion" data-a="' + ultima.id + '" style="text-align:left;width:100%;padding:0"><div class="row between"><p class="label">Último entreno</p><span class="muted small">' + fechaBonita(ultima.fecha) + '</span></div>' +
+      '<h3>' + esc(ultima.diaNombre) + '</h3><p class="muted num">' + ultima.duracion + ' min · ' + ultima.seriesEfectivas + ' series efectivas' +
+      (ultima.prs.length ? ' · <span style="color:var(--pr);font-weight:700">' + ultima.prs.length + ' récord' + (ultima.prs.length > 1 ? "s" : "") + '</span>' : "") + '</p></button>';
+    if (prs.length) {
+      h += '<div class="row between" style="border-top:1px solid var(--line);padding-top:10px"><p class="label">Récords recientes</p><button class="btn-txt small" data-tab="progreso">Ver progreso</button></div><div class="list">';
+      for (const r of prs) {
+        const e = r.s.ejercicios.find(function (x) { return x.id === r.id; });
+        const mejor = e.series.filter(function (x) { return x.hecha; }).sort(function (a, b) { return unaRM(b.peso, b.reps) - unaRM(a.peso, a.reps); })[0];
+        h += '<div class="item" style="padding:7px 0"><div class="grow"><span class="name small">' + esc(buscarEj(r.id).nombre) + '</span><span class="muted small num">' + numero(pesoVista(mejor.peso)) + ' ' + unidadPeso() + ' × ' + mejor.reps + ' · ' + fechaBonita(r.fecha) + '</span></div><span class="pill pr">Récord</span></div>';
+      }
+      h += '</div>';
     }
-    h += '</div></div>';
+    h += '</div>';
   }
 
   // Amigos: los tuyos (con su tarjeta) y, en la demo, su actividad
@@ -568,6 +567,31 @@ function mostrarGuia(paso) {
     '<div class="row between" style="margin-top:10px"><button class="btn-txt small" data-act="guia-saltar">Saltar guía</button>' +
     '<button class="btn auto" data-act="guia-siguiente">' + (paso === pasos.length - 1 ? "¡Entendido!" : "Siguiente →") + '</button></div></div>';
   $("guia").hidden = false;
+}
+
+// Fotos pequeñas de los ejercicios del día (si alguno no tiene foto, sale su número)
+function fotosDelDia(dia) {
+  if (!dia.ejercicios.length) return '<p class="muted small">Sin ejercicios. Añádelos en Entrenar.</p>';
+  let h = '<div class="fotos-dia">';
+  dia.ejercicios.forEach(function (o, i) {
+    const f = fotosDe(o.id);
+    const nombre = esc(buscarEj(o.id).nombre);
+    h += '<button class="foto-dia" data-act="info-ej" data-a="' + o.id + '" aria-label="' + nombre + '">' +
+      (f ? '<img src="' + f[0] + '" alt="" loading="lazy" decoding="async">' : '<span class="num">' + (i + 1) + '</span>') + '</button>';
+  });
+  const primero = buscarEj(dia.ejercicios[0].id).nombre;
+  return h + '</div><p class="muted small">' + esc(primero) + (dia.ejercicios.length > 1 ? ' <span data-no-traducir>+ ' + (dia.ejercicios.length - 1) + '</span>' : "") + '</p>';
+}
+
+// Anillo de la semana: un círculo que se rellena con cada entreno (verde al cumplir la meta)
+function anilloSemana(hechos, meta) {
+  const r = 30, largo = 2 * Math.PI * r;
+  const parte = meta > 0 ? Math.min(1, hechos / meta) : 0;
+  const cumplida = parte >= 1;
+  return '<div class="anillo-semana' + (cumplida ? " cumplida" : "") + '" role="img" aria-label="Esta semana: ' + hechos + ' de ' + meta + '">' +
+    '<svg viewBox="0 0 72 72" aria-hidden="true"><circle class="fondo" cx="36" cy="36" r="' + r + '"/>' +
+    (parte <= 0 ? "" : '<circle class="avance" cx="36" cy="36" r="' + r + '" stroke-dasharray="' + (largo * parte).toFixed(1) + ' ' + largo.toFixed(1) + '" transform="rotate(-90 36 36)"/>') + '</svg>' +
+    '<div class="anillo-num"><span class="num"><b>' + hechos + '</b><span class="muted">/' + meta + '</span></span><span class="label">' + (cumplida ? "✓" : "Semana") + '</span></div></div>';
 }
 
 // ---------- Logros ----------
@@ -710,10 +734,18 @@ function tarjetaEjercicio(ei) {
     const cal = seriesCalentamiento(e.id, pesoTrabajo);
     if (cal.length) {
       const hechos = e.calHecho || [];
-      h += '<div class="calentamiento"><div class="row between"><p class="label">🔥 Calentamiento · no cuenta</p><button class="btn-txt small" data-act="cal-ocultar" data-a="' + ei + '">Ocultar</button></div><div class="cal-filas">' +
-        cal.map(function (c, k) {
-          return '<button class="cal-fila' + (hechos[k] ? " hecha" : "") + '" data-act="cal-marcar" data-a="' + ei + '" data-b="' + k + '"><span class="cal-check">' + (hechos[k] ? "✓" : "") + '</span><span class="num">' + (ej.equipo === "barra" && c.peso === 20 && k === 0 ? "Barra sola" : numero(c.peso) + " kg") + ' × ' + c.reps + '</span></button>';
-        }).join("") + '</div><p class="muted small">Prepara músculos y articulaciones. Peso ligero y sin llegar al fallo.</p></div>';
+      const textoCal = function (c, k) { return (ej.equipo === "barra" && c.peso === 20 && k === 0 ? "Barra sola" : numero(c.peso) + " kg") + ' × ' + c.reps; };
+      // Las primeras veces sale abierto; después, plegado en una línea para llegar antes a las series
+      const abierto = e.calAbierto === undefined ? sesionesValidas().length < 3 : e.calAbierto;
+      if (abierto) {
+        h += '<div class="calentamiento"><div class="row between"><button class="label cal-titulo" data-act="cal-plegar" data-a="' + ei + '">🔥 Calentamiento · no cuenta</button><button class="btn-txt small" data-act="cal-ocultar" data-a="' + ei + '">Ocultar</button></div><div class="cal-filas">' +
+          cal.map(function (c, k) {
+            return '<button class="cal-fila' + (hechos[k] ? " hecha" : "") + '" data-act="cal-marcar" data-a="' + ei + '" data-b="' + k + '"><span class="cal-check">' + (hechos[k] ? "✓" : "") + '</span><span class="num">' + textoCal(c, k) + '</span></button>';
+          }).join("") + '</div><p class="muted small">Prepara músculos y articulaciones. Peso ligero y sin llegar al fallo.</p></div>';
+      } else {
+        h += '<button class="calentamiento plegado" data-act="cal-plegar" data-a="' + ei + '"><span>🔥</span><span class="grow small num">' +
+          cal.map(function (c, k) { return '<span>' + textoCal(c, k) + '</span>'; }).join(" · ") + '</span><span aria-hidden="true">▾</span></button>';
+      }
     }
   }
 
@@ -721,7 +753,7 @@ function tarjetaEjercicio(ei) {
   const ultima = ultimaVez(e.id);
   const paso = pasoPeso(ej);
   h += (ej.asistido ? '<p class="small" style="color:var(--warn);margin-top:10px">Los kg son ayuda: cuantos menos, más difícil.</p>' : "") +
-    '<div class="ayuda-registro"><span>ⓘ ' + comoApuntar(ej).corto + '</span><button class="btn-txt small" data-act="guia-series">¿Cómo se apunta?</button></div>' +
+    (sesionesValidas().length < 3 ? '<div class="ayuda-registro"><span>ⓘ ' + comoApuntar(ej).corto + '</span><button class="btn-txt small" data-act="guia-series">¿Cómo se apunta?</button></div>' : "") +
     '<div class="tabla-series series-lista" role="table" aria-label="Series de ' + esc(ej.nombre) + '">' +
     '<div class="ts-cab" role="row"><span>Serie</span><span>Previa</span><span>' + (ej.asistido ? "Ayuda" : "Kg") + '</span><span>Reps</span><span></span></div>';
   e.series.forEach(function (x, j) {
@@ -773,6 +805,7 @@ function tarjetaEjercicio(ei) {
 
   // Más opciones
   h += '<details class="mas-opciones"><summary>Más opciones</summary><div class="tools">' +
+    '<button class="btn-sec small" data-act="guia-series">¿Cómo se apunta?</button>' +
     '<button class="btn-sec small" data-act="serie-menos" data-a="' + ei + '"' + (e.series.length > 1 ? "" : " disabled") + '>− Quitar última serie</button>' +
     (ei < a.ejercicios.length - 1 ? '<button class="btn-sec small" data-act="superserie" data-a="' + ei + '">' + (e.superserie ? "Quitar superserie" : "Superserie con el siguiente") + '</button>' : "") +
     '<button class="icon-btn sm" data-act="mover-ej" data-a="' + ei + '" data-b="-1" aria-label="Mover antes"' + (ei > 0 ? "" : " disabled") + '>' + I.arriba + '</button>' +
@@ -827,7 +860,8 @@ function pintarRangos() {
   let h = '<div class="head"><div><p class="label">Clasificación</p><h1>Rangos</h1></div><button class="btn-txt small" data-act="como-rangos">¿Cómo funciona?</button></div><div class="stack">';
 
   // Global
-  h += '<div class="card hero stack" style="align-items:center;text-align:center">' + insignia(rg, "lg") +
+  h += '<div class="card hero stack" style="align-items:center;text-align:center">' +
+    '<div class="insignia-brillo"' + (rg === null ? "" : ' style="--c:' + RANGOS[rg].color + '"') + '>' + insignia(rg, "lg") + '</div>' +
     '<div><p class="label">Rango global</p><h1>' + nombreRango(rg) + '</h1>' + (pg !== null ? '<p class="muted num">' + pg.toFixed(1) + ' puntos</p>' : "") + '</div>';
   if (pg !== null) {
     h += '<div style="width:100%" class="stack tight"><div class="bar"><i style="width:' + progresoRango(pg) + '%"></i></div>' +
@@ -2461,7 +2495,7 @@ function celebrar(resultado) {
   const s = resultado.sesion;
   const rango = asc ? asc.rango : (puntosGlobal() !== null ? rangoDePuntos(puntosGlobal()) : 0);
   const conApix = estado.ajustes.mascota !== false && s.prs.length;
-  $("celebraMsg").innerHTML = insignia(rango, "xl") +
+  $("celebraMsg").innerHTML = '<div class="insignia-ascenso' + (asc ? " sube" : "") + '" style="--c:' + RANGOS[rango].color + '"><span class="rayos" aria-hidden="true"></span>' + insignia(rango, "xl") + '</div>' +
     (conApix ? '<div class="row" style="gap:8px;text-align:left">' + apixSVG("celebra", "sm") + '<p class="small"><b>Apix:</b> ¡Eso antes no lo levantabas! Estoy orgulloso de ti.</p></div>' : "") +
     '<p class="label" style="color:var(--accent)">' + (asc ? "Subes de rango" : "Entreno completado") + '</p>' +
     '<h1>' + (asc ? esc(asc.nombre) + ' · ' + RANGOS[asc.rango].nombre : s.prs.length + " récord" + (s.prs.length > 1 ? "s" : "") + " nuevo" + (s.prs.length > 1 ? "s" : "")) + '</h1>' +
@@ -2516,6 +2550,7 @@ function prepararAvisoDescanso() {
 let tRest = 0, tTotal = 0, tFin = 0, tIntervalo = null;
 function empezarDescanso(seg, finGuardado) {
   tTotal = seg; tFin = finGuardado || Date.now() + seg * 1000; $("timer").hidden = false; document.body.classList.add("con-timer");
+  $("timer").classList.toggle("grande", !!(estado && estado.ajustes.timerGrande));
   prepararAvisoDescanso();
   if (estado.activa && !finGuardado) { estado.activa.descanso = { fin: tFin, total: tTotal }; guardar(); }
   clearInterval(tIntervalo);

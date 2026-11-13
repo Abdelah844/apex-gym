@@ -485,6 +485,59 @@ nav.tabs button.on svg { color: var(--accent); filter: drop-shadow(0 0 6px var(-
   .steppers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .row.between { flex-wrap: wrap; row-gap: 8px; }
 }
+.anillo-semana { position: relative; width: 84px; height: 84px; flex: none; }
+.anillo-semana svg { width: 100%; height: 100%; }
+.anillo-semana circle { fill: none; stroke-width: 7; }
+.anillo-semana .fondo { stroke: var(--surface3); }
+.anillo-semana .avance { stroke: var(--accent); stroke-linecap: round; }
+.anillo-semana.cumplida .avance { stroke: var(--good); }
+.anillo-num { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
+.anillo-num b { font-family: var(--display); font-size: 1.35rem; }
+.anillo-num .label { font-size: .55rem; margin: 0; }
+.anillo-semana.cumplida .anillo-num .label { color: var(--good); font-size: .8rem; }
+/* Inicio: fotos del día y fila del rango dentro de la tarjeta de racha */
+.fotos-dia { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 4px; scrollbar-width: none; }
+.fotos-dia::-webkit-scrollbar { display: none; }
+.foto-dia { width: 58px; height: 58px; border-radius: 14px; overflow: hidden; flex: none; padding: 0; background: var(--surface3); display: grid; place-items: center; font-weight: 800; color: var(--muted); }
+.foto-dia img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.rango-fila { width: 100%; gap: 12px; align-items: center; border-top: 1px solid var(--line); padding-top: 12px; margin-top: 4px; }
+/* Entreno: calentamiento plegado en una línea */
+.calentamiento.plegado { flex-direction: row; align-items: center; gap: 8px; width: 100%; text-align: start; padding: 8px 12px; color: var(--muted); }
+.cal-titulo { text-align: start; }
+/* Entreno: al completar una serie, el botón ✓ da un salto y suelta una onda */
+.serie-fila.recien .tick { animation: tick-salto .5s cubic-bezier(.3, 1.6, .5, 1); position: relative; }
+.serie-fila.recien .tick::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--good); animation: tick-onda .6s ease-out forwards; }
+@keyframes tick-salto { 0% { transform: scale(.6); } 60% { transform: scale(1.25); } 100% { transform: scale(1); } }
+@keyframes tick-onda { from { transform: scale(1); opacity: .9; } to { transform: scale(2.4); opacity: 0; } }
+.chip-ej.hecho.recien-hecho { animation: tick-salto .5s cubic-bezier(.3, 1.6, .5, 1); }
+/* Descanso en grande: ocupa toda la pantalla (se abre y se cierra tocando el círculo) */
+#timer .anillo { padding: 0; background: none; }
+#timer .agrandar { position: absolute; right: -2px; bottom: -2px; width: 22px; height: 22px; border-radius: 50%; background: var(--surface2); color: var(--muted); font-size: .75rem; display: grid; place-items: center; }
+#timer.grande { top: 0; bottom: 0; padding: 0; z-index: 30; background: var(--bg); align-items: stretch; }
+#timer.grande .in { max-width: none; border: 0; border-radius: 0; background: var(--bg); box-shadow: none; justify-content: center; gap: 22px; padding: 24px 20px calc(24px + env(safe-area-inset-bottom, 0px)); }
+#timer.grande .timer-top { flex-direction: column; gap: 22px; text-align: center; }
+#timer.grande .anillo { width: min(74vw, 46vh, 340px); height: min(74vw, 46vh, 340px); }
+#timer.grande .anillo circle { stroke-width: 5; }
+#timer.grande .t { font-size: clamp(3.4rem, 20vw, 6rem); }
+#timer.grande .sig { font-size: 1.2rem; }
+#timer.grande .grow { width: 100%; }
+#timer.grande .bar { display: none; }
+#timer.grande .timer-botones .btn, #timer.grande .timer-botones .btn-sec { padding: 18px 8px; font-size: 1.05rem; }
+/* Rangos: la insignia de tu rango global respira con un brillo de su color */
+.insignia-brillo { position: relative; display: grid; place-items: center; }
+.insignia-brillo .badge { filter: drop-shadow(0 0 10px var(--c, transparent)); animation: brillo-rango 3.2s ease-in-out infinite; }
+@keyframes brillo-rango { 0%, 100% { filter: drop-shadow(0 0 6px var(--c, transparent)); transform: scale(1); } 50% { filter: drop-shadow(0 0 22px var(--c, transparent)); transform: scale(1.04); } }
+/* Celebración: rayos de luz que giran detrás de la insignia al subir de rango */
+.insignia-ascenso { position: relative; display: grid; place-items: center; width: 220px; height: 200px; }
+.insignia-ascenso .badge { position: relative; filter: drop-shadow(0 0 18px var(--c)); }
+.insignia-ascenso .rayos { position: absolute; inset: -40px; border-radius: 50%; opacity: .5;
+  background: repeating-conic-gradient(from 0deg, var(--c) 0deg 8deg, transparent 8deg 24deg);
+  -webkit-mask: radial-gradient(circle, #000 0%, transparent 68%); mask: radial-gradient(circle, #000 0%, transparent 68%);
+  animation: rayos-giran 9s linear infinite; }
+.insignia-ascenso.sube .badge { animation: insignia-llega 1s cubic-bezier(.2, 1.4, .4, 1); }
+@keyframes rayos-giran { to { transform: rotate(360deg); } }
+@keyframes insignia-llega { 0% { transform: scale(.2) rotate(-25deg); opacity: 0; } 60% { transform: scale(1.18) rotate(4deg); opacity: 1; } 100% { transform: scale(1) rotate(0); } }
+@media (prefers-reduced-motion: reduce) { .insignia-brillo .badge, .insignia-ascenso .rayos, .insignia-ascenso .badge, .serie-fila.recien .tick, .serie-fila.recien .tick::after { animation: none !important; } }
 .logros-inicio { display: flex; align-items: center; gap: 14px; width: 100%; }
 .logro-ico { font-size: 1.7rem; line-height: 1; flex: none; width: 40px; text-align: center; }
 .barra-logro { height: 6px; border-radius: 99px; background: var(--surface3); overflow: hidden; }
@@ -555,7 +608,7 @@ nav.tabs button.on svg { color: var(--accent); filter: drop-shadow(0 0 6px var(-
 
 <div id="timer" hidden><div class="in">
   <div class="timer-top">
-    <div class="anillo"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44" class="fondo"/><circle cx="50" cy="50" r="44" class="avance" id="timerAnillo"/></svg><span class="t num" id="timerTxt">1:30</span></div>
+    <button class="anillo" data-act="timer-grande" aria-label="Ver el descanso en grande"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44" class="fondo"/><circle cx="50" cy="50" r="44" class="avance" id="timerAnillo"/></svg><span class="t num" id="timerTxt">1:30</span><span class="agrandar" aria-hidden="true">⤢</span></button>
     <div class="grow"><p class="label">Descanso · siguiente</p><p class="sig" id="timerSig"></p><div class="bar"><i id="timerBar" style="width:100%"></i></div></div>
   </div>
   <div class="timer-botones">

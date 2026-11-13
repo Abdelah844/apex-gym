@@ -15043,6 +15043,21 @@ const TRADUCCIONES = {
 "🏆 Routines célèbres",
 "🏆 روتينات معروفة"
 ],
+"Sin ejercicios. Añádelos en Entrenar.": [
+"No exercises. Add them in Train.",
+"Aucun exercice. Ajoute-les dans Entraîner.",
+"بلا تمارين. زيدهم ف «تمرن»."
+],
+"Ver el descanso en grande": [
+"Show the rest timer full screen",
+"Voir le repos en grand",
+"شوف الراحة بالكبير"
+],
+"Semana": [
+"Week",
+"Semaine",
+"السيمانة"
+],
 "Social": [
 "Social",
 "Social",

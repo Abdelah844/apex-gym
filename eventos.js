@@ -453,6 +453,12 @@ const ACCIONES = {
     guardar(); pintarSesion();
     if (e.calHecho[k]) { sonar("serie"); const pendientes = seriesCalentamiento(e.id, (e.series.find(function (x) { return !x.tipo; }) || e.series[0]).peso).length - e.calHecho.filter(Boolean).length; if (!pendientes) apixDice("anima", "¡Calentamiento hecho!|Ahora, a por las series de verdad."); }
   },
+  // Abre o pliega el calentamiento de este ejercicio
+  "cal-plegar": function (ei) {
+    const e = estado.activa.ejercicios[ei];
+    const abierto = e.calAbierto === undefined ? sesionesValidas().length < 3 : e.calAbierto;
+    e.calAbierto = !abierto; guardar(); pintarSesion();
+  },
   "cal-ocultar": function (ei) { estado.activa.ejercicios[ei].sinCalentamiento = true; guardar(); pintarSesion(); },
   "hacer-copia": function () { hacerCopia(); },
   "posponer-copia": function () { estado.ajustes.copiaPospuesta = hoy(); guardar(); pintar(); toast("Vale, te lo recordaré más adelante. También está en Ajustes (⚙)."); },
@@ -550,6 +556,11 @@ const ACCIONES = {
   "timer-menos": function () { ajustarDescanso(-15); },
   "timer-mas": function () { ajustarDescanso(15); },
   "timer-saltar": function () { pararDescanso(); },
+  // Descanso en grande o en pequeño: se recuerda para la próxima vez
+  "timer-grande": function () {
+    estado.ajustes.timerGrande = !estado.ajustes.timerGrande; guardar();
+    $("timer").classList.toggle("grande", !!estado.ajustes.timerGrande);
+  },
 
   // ---------- Progreso ----------
   "periodo": function (d) { periodo = parseInt(d); pintarProgreso(); },
