@@ -83,9 +83,19 @@ function guardarSesionNube(d) {
 }
 
 // El "token" dura 1 hora. Antes de usarlo, si está a punto de caducar, se renueva.
-async function tokenAlDia() {
-  if (!conectado()) return false;
-  if (Date.now() < nube.expira - 60000) return true;
+// Si varias partes de la app piden renovar la sesión a la vez, se hace una sola petición
+// y todas esperan su resultado (si no, usan el mismo código de renovación dos veces y alguna falla)
+let renovandoSesion = null;
+function tokenAlDia() {
+  if (!conectado()) return Promise.resolve(false);
+  if (Date.now() < nube.expira - 60000) return Promise.resolve(true);
+  if (!renovandoSesion) {
+    renovandoSesion = renovarSesion().finally(function () { renovandoSesion = null; });
+  }
+  return renovandoSesion;
+}
+
+async function renovarSesion() {
   const r = await pedirNube("/auth/v1/token?grant_type=refresh_token", "POST", { refresh_token: nube.refresco }, null, true);
   if (r.ok && r.datos && r.datos.access_token) { guardarSesionNube(r.datos); return true; }
   if (r.status === 400 || r.status === 401) {          // la sesión ya no vale: hay que volver a entrar
@@ -415,7 +425,11 @@ async function cargarSocialNube() {
   if (!conectado() || socialNube.cargando) return;
   socialNube.cargando = true;
   try {
-    if (!(await tokenAlDia())) { socialNube.error = "Vuelve a iniciar sesión en la nube."; return; }
+    if (!(await tokenAlDia())) {
+      // Si la sesión sigue guardada, el fallo ha sido la conexión; si no, hay que volver a entrar
+      socialNube.error = conectado() ? "No se ha podido conectar. Revisa tu conexión." : "Tu sesión ha caducado. Vuelve a iniciar sesión.";
+      return;
+    }
     const yo = nube.id;
     const am = await pedirNube("/rest/v1/amistades?select=de,a,aceptada,creado", "GET");
     if (!am.ok) { socialNube.error = mensajeErrorNube(am.datos, am.status); return; }

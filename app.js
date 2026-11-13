@@ -1368,7 +1368,11 @@ function socialSinCuentaHtml() {
 }
 
 function estadoCargaSocial() {
-  if (socialNube.error) return '<div class="card stack tight"><p class="err small">' + esc(socialNube.error) + '</p><button class="btn-sec" data-act="social-recargar">Reintentar</button></div>';
+  if (socialNube.error) {
+    // Sin sesión no sirve reintentar: mejor un botón para volver a entrar
+    const boton = conectado() ? '<button class="btn-sec" data-act="social-recargar">Reintentar</button>' : '<button class="btn" data-act="abrir-cuenta" data-a="entrar">Iniciar sesión</button>';
+    return '<div class="card stack tight"><p class="err small">' + esc(socialNube.error) + '</p>' + boton + '</div>';
+  }
   if (!socialNube.cargado) return '<div class="card"><p class="muted">Cargando…</p></div>';
   return "";
 }

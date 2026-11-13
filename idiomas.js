@@ -14853,6 +14853,11 @@ const TRADUCCIONES = {
 "Entrer en tant qu'invité",
 "دخل كضيف"
 ],
+"No se ha podido conectar. Revisa tu conexión.": [
+"Couldn't connect. Check your connection.",
+"Impossible de se connecter. Vérifie ta connexion.",
+"ما قدرناش نتاصلو. شوف الكونيكسيون ديالك."
+],
 "Social": [
 "Social",
 "Social",
