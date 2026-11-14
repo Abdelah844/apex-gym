@@ -228,6 +228,7 @@ const ACCIONES = {
       copiaSesion(); estado.activa.ejercicios.push(ejercicioParaSesion(id));
       estado.activa.actual = estado.activa.ejercicios.length - 1;      // te lleva al ejercicio que acabas de añadir
       window.scrollTo({ top: 0, behavior: "smooth" });
+      setTimeout(descansoTrasAnadir, 0);
     }
     if (partes[0] === "sust-sesion") {
       copiaSesion();
@@ -298,9 +299,11 @@ const ACCIONES = {
     a.actual = paso.ir;
     guardar(); pintarSesion();
     const tarjeta = $("tarjetaEj"); if (tarjeta && paso.ir !== ei) tarjeta.scrollIntoView({ behavior: "smooth", block: "start" });
+    const seg = s.tipo === "drop" ? 0 : (s.tipo === "rp" ? 15 : (e.objetivo.descanso || estado.ajustes.descanso));
+    // Se apunta cuándo acabó esta serie y cuánto tocaba descansar, por si luego añades una serie o un ejercicio
+    a.ultimaSerie = { hora: Date.now(), seg: seg };
     if (paso.fin) { pararDescanso(); toast("✓ ¡Todas las series hechas! Pulsa Terminar.", "ok"); return; }
     if (!paso.descanso) { pararDescanso(); if (paso.ir !== ei) toast("Superserie: ahora " + buscarEj(a.ejercicios[paso.ir].id).nombre); return; }
-    const seg = s.tipo === "drop" ? 0 : (s.tipo === "rp" ? 15 : (e.objetivo.descanso || estado.ajustes.descanso));
     if (seg > 0) empezarDescanso(seg); else pararDescanso();
   },
   "paso": function (ei, si, c) {
@@ -419,6 +422,7 @@ const ACCIONES = {
     series.push({ peso: ult ? ult.peso : 0, reps: ult ? ult.reps : 10, rpe: null, hecha: false });
     estado.activa.actual = parseInt(ei);
     guardar(); pintarSesion(); toast("+1 serie (ahora " + series.length + ")");
+    descansoTrasAnadir();
   },
   "borrar-serie": function (ei, si) {
     const e = estado.activa.ejercicios[ei];
@@ -1435,3 +1439,12 @@ document.addEventListener("input", function (ev) {
   if (!linea || !t.closest(".ts-fila.foco")) return;
   linea.textContent = textoDiscos(parseFloat(String(t.value).replace(",", ".")));
 });
+
+// Si acabas todas las series y luego añades una serie o un ejercicio más, el descanso no había empezado
+// (la app pensaba que habías terminado). Aquí se pone en marcha con el tiempo que queda desde tu última serie.
+function descansoTrasAnadir() {
+  const a = estado.activa;
+  if (!a || !a.ultimaSerie || !$("timer").hidden) return;          // ya hay un descanso en marcha
+  const quedan = Math.round(a.ultimaSerie.seg - (Date.now() - a.ultimaSerie.hora) / 1000);
+  if (quedan >= 5) empezarDescanso(quedan);
+}
