@@ -571,6 +571,16 @@ nav.tabs button.on svg { color: var(--accent); filter: drop-shadow(0 0 6px var(-
 .p3 .escalon-podio { height: 36px; background: linear-gradient(#E3A671, #A8652E); }
 .p1 .avatar { box-shadow: 0 0 0 3px #FFD75E; }
 @media (prefers-reduced-motion: reduce) { .graf-linea, .graf-area, .app.entra-tab, #hoja { animation: none !important; } }
+/* Entrenar: mi semana */
+.mi-semana { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+.semana-dias { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.semana-dia { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.semana-dia .letra { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: .85rem; background: var(--surface2); color: var(--muted); }
+.semana-dia.toca .letra { background: var(--accent); color: #fff; }
+.semana-dia.hoy .letra { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
+.semana-dia .hora { font-size: .68rem; color: var(--muted); min-height: 1em; }
+.semana-fila { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); }
+.semana-fila input[type=time] { width: auto; min-width: 118px; }
 .logros-inicio { display: flex; align-items: center; gap: 14px; width: 100%; }
 .logro-ico { font-size: 1.7rem; line-height: 1; flex: none; width: 40px; text-align: center; }
 .barra-logro { height: 6px; border-radius: 99px; background: var(--surface3); overflow: hidden; }

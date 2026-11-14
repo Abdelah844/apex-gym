@@ -1930,6 +1930,36 @@ function indiceFatiga() {
   return { ratio: ratio, nivel: "normal", texto: "Carga estable. Buen equilibrio entre esfuerzo y recuperación." };
 }
 
+// ---------- Mi semana: días y horas de entreno ----------
+// Los días están en rutina.calendario (0 = lunes … 6 = domingo).
+// Las horas son opcionales y se guardan en ajustes.horasEntreno, por día de la semana: { "0": "18:30" }.
+function horaDeEntreno(diaSemana) {
+  const h = (estado.ajustes.horasEntreno || {})[diaSemana];
+  return typeof h === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(h) ? h : "";
+}
+// A qué hora toca avisar ese día: la hora de entreno si la has puesto; si no, la general de Ajustes
+function momentoAviso(diaSemana) {
+  const h = horaDeEntreno(diaSemana);
+  if (h) return { h: parseInt(h.slice(0, 2)), m: parseInt(h.slice(3, 5)) };
+  return { h: (estado.ajustes.notif || {}).hora || 18, m: 0 };
+}
+// Qué día de la rutina toca ese día de la semana (según el calendario), o null
+function diaRutinaDe(diaSemana) {
+  const r = estado.rutina;
+  if (!r || !Array.isArray(r.calendario)) return null;
+  const i = r.calendario.indexOf(diaSemana);
+  return i >= 0 && r.dias[i] ? r.dias[i] : null;
+}
+// Guarda los días (ordenados) y las horas elegidas en «Mi semana»
+function guardarSemana(dias, horas) {
+  const cal = dias.slice().sort(function (a, b) { return a - b; });
+  if (estado.rutina) estado.rutina.calendario = cal;
+  estado.perfil.diasSemana = cal.slice();
+  const limpias = {};
+  for (const d of cal) if (/^([01]\d|2[0-3]):[0-5]\d$/.test(horas[d] || "")) limpias[d] = horas[d];
+  estado.ajustes.horasEntreno = limpias;
+}
+
 // ---------- Recordatorios ----------
 // Decide si toca avisar ahora (máximo 1 aviso al día). Prioridad: racha en peligro → reto → día de entreno.
 // paraPlan = true: se usa para calcular los avisos de los próximos días (avisos push)
@@ -1937,11 +1967,12 @@ function recordatorioPendiente(ahora, paraPlan) {
   const n = estado.ajustes.notif || {};
   const hoyF = aTexto(ahora);
   if (!paraPlan && n.ultimoAviso === hoyF) return null;
-  if (!paraPlan && ahora.getHours() < (n.hora || 18)) return null;
+  const diaSemana = (ahora.getDay() + 6) % 7;                                      // 0 = lunes … 6 = domingo
+  const mo = momentoAviso(diaSemana);
+  if (!paraPlan && ahora.getHours() * 60 + ahora.getMinutes() < mo.h * 60 + mo.m) return null;
   const validas = sesionesValidas();
   if (validas.some(function (s) { return s.fecha === hoyF; })) return null;          // hoy ya entrenaste
   if (validas.length && estado.sesiones.length && molestiasRecientes()) return null; // con molestias no se presiona
-  const diaSemana = (ahora.getDay() + 6) % 7;                                      // 0 = lunes … 6 = domingo
   // Racha en peligro: fin de semana y aún no llegas al mínimo semanal
   if (n.racha !== false && diaSemana >= 5) {
     const estaSemana = (sesionesPorSemana()[lunesDe(hoyF)] || 0);
@@ -1960,7 +1991,11 @@ function recordatorioPendiente(ahora, paraPlan) {
   // Día de entreno según tu calendario
   if (n.recordatorios !== false) {
     const cal = estado.rutina && Array.isArray(estado.rutina.calendario) ? estado.rutina.calendario : (estado.perfil.diasSemana || []);
-    if (cal.includes(diaSemana)) return { tipo: "entreno", titulo: "💪 Hoy toca entrenar", texto: "Hay que tener disciplina para el cuerpo que deseas." };
+    if (cal.includes(diaSemana)) {
+      // Con hora puesta, Apix te dice qué día de la rutina te toca
+      const dr = horaDeEntreno(diaSemana) ? diaRutinaDe(diaSemana) : null;
+      return { tipo: "entreno", titulo: "💪 Hoy toca entrenar", texto: dr ? "Es tu hora: te toca " + dr.nombre + ". ¡Vamos!" : "Hay que tener disciplina para el cuerpo que deseas." };
+    }
   }
   return null;
 }
@@ -1968,9 +2003,10 @@ function recordatorioPendiente(ahora, paraPlan) {
 // lleguen aunque la app esté cerrada. Se vuelven a calcular cada vez que abres la app o entrenas.
 function planAvisos(ahora, dias) {
   const lista = [];
-  const hora = (estado.ajustes.notif || {}).hora || 18;
   for (let i = 0; i < dias; i++) {
-    const dia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + i, hora, 0, 0);
+    const base = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + i, 12, 0, 0);
+    const mo = momentoAviso((base.getDay() + 6) % 7);          // cada día, a su hora
+    const dia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + i, mo.h, mo.m, 0);
     if (dia <= ahora) continue;                       // hoy, si la hora ya ha pasado
     const aviso = recordatorioPendiente(dia, true);
     if (aviso) lista.push({ cuando: dia.toISOString(), titulo: aviso.titulo, texto: aviso.texto });

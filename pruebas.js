@@ -1055,6 +1055,28 @@ const PRUEBAS = [
     return (d.version === VERSION_DATOS && Array.isArray(d.medidas) && d.ajustes.ultimaCopia === "") || "Migración incompleta";
   }]
   ,
+  ["2.9 Mi semana", "Cada día de entreno avisa a su hora; sin hora, a la general de Ajustes", function () {
+    crearDemo();
+    estado.sesiones = [];                                   // sin entrenos: no hay «hoy ya entrenaste»
+    estado.ajustes.notif = { recordatorios: true, racha: false, retos: false, hora: 18 };
+    guardarSemana([4, 0, 2, 3], { 0: "07:15", 2: "25:00", 5: "10:00" });
+    if (estado.rutina.calendario.join() !== "0,2,3,4") return "Los días no se guardan ordenados";
+    if (horaDeEntreno(0) !== "07:15") return "No guarda la hora del lunes";
+    if (horaDeEntreno(2) !== "" || horaDeEntreno(5) !== "") return "Guarda horas no válidas o de días sin entreno";
+    if (momentoAviso(0).h !== 7 || momentoAviso(0).m !== 15) return "El lunes debería avisar a las 7:15";
+    if (momentoAviso(2).h !== 18 || momentoAviso(2).m !== 0) return "Sin hora debería usar la de Ajustes";
+    const lunes = new Date(2026, 10, 16, 0, 0, 0);          // lunes 16 de noviembre de 2026
+    const plan = planAvisos(lunes, 7);
+    if (plan.length !== 4) return "Deberían salir 4 avisos, salen " + plan.length;
+    const primero = new Date(plan[0].cuando);
+    if (primero.getHours() !== 7 || primero.getMinutes() !== 15) return "El aviso del lunes no sale a las 7:15";
+    if (plan[0].texto.indexOf(estado.rutina.dias[0].nombre) < 0) return "El aviso con hora no dice qué día toca";
+    const segundo = new Date(plan[1].cuando);
+    if (segundo.getHours() !== 18 || segundo.getDay() !== 3) return "El aviso del miércoles debería salir a las 18:00";
+    // En la app (sin push): antes de la hora no avisa, después sí
+    if (recordatorioPendiente(new Date(2026, 10, 16, 7, 0, 0)) !== null) return "Avisa antes de la hora";
+    return recordatorioPendiente(new Date(2026, 10, 16, 7, 20, 0)) !== null || "No avisa después de la hora";
+  }],
   ["2.8 Logros", "Los logros se consiguen al llegar a su meta y no se repiten", function () {
     crearDemo();
     estado.logros = {};

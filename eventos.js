@@ -94,6 +94,32 @@ const ACCIONES = {
     if (c.includes(d)) c.splice(c.indexOf(d), 1); else c.push(d);
     c.sort(); hojaGenerador();
   },
+  // ---------- Mi semana: días, horas y aviso ----------
+  "abrir-semana": function () { hojaSemana(true); },
+  "semana-dia": function (d) {
+    d = parseInt(d);
+    leerHorasSemana();
+    if (semOp.dias.includes(d)) semOp.dias.splice(semOp.dias.indexOf(d), 1); else semOp.dias.push(d);
+    hojaSemana();
+  },
+  "guardar-semana": function () {
+    leerHorasSemana();
+    const n = estado.rutina.dias.length;
+    if (semOp.dias.length !== n) { $("semError").textContent = "Elige exactamente " + n + " días (llevas " + semOp.dias.length + ")."; return; }
+    guardarSemana(semOp.dias, semOp.horas);
+    estado.ajustes.notif.recordatorios = semOp.avisar;
+    const pedir = semOp.avisar && permisoAvisos() === "default";
+    semOp = null;
+    guardar(); cerrarHoja(); pintar(); toast("✓ Semana guardada", "ok");
+    if (pedir) {
+      // Primera vez: el móvil pregunta si dejas que la app te mande avisos
+      Notification.requestPermission().then(function (p) {
+        if (p === "granted") { toast("✓ Avisos activados", "ok"); sincronizarAvisosPush(); }
+        else toast("No se han activado los avisos", "error");
+        pintar();
+      });
+    } else sincronizarAvisosPush();
+  },
   "gen-equipo": function (k) {
     leerOpcionesAvanzadas();
     const l = genOp.equipo;

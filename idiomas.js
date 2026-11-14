@@ -15103,6 +15103,66 @@ const TRADUCCIONES = {
 "Apex ·",
 "Apex ·"
 ],
+"📅 Mi semana": [
+"📅 My week",
+"📅 Ma semaine",
+"📅 السيمانة ديالي"
+],
+"📅 Mi semana · 🔔": [
+"📅 My week · 🔔",
+"📅 Ma semaine · 🔔",
+"📅 السيمانة ديالي · 🔔"
+],
+"Mi semana": [
+"My week",
+"Ma semaine",
+"السيمانة ديالي"
+],
+"Mis días de entreno": [
+"My training days",
+"Mes jours d'entraînement",
+"الأيام ديال التمرين ديالي"
+],
+"¿Qué días entrenas?": [
+"Which days do you train?",
+"Quels jours tu t'entraînes ?",
+"شمن أيام كتتمرن؟"
+],
+"¿A qué hora?": [
+"At what time?",
+"À quelle heure ?",
+"ف شحال ف الساعة؟"
+],
+"(opcional)": [
+"(optional)",
+"(facultatif)",
+"(اختياري)"
+],
+"Hora": [
+"Time",
+"Heure",
+"الساعة"
+],
+"Déjala vacía si no tienes hora fija.": [
+"Leave it empty if you don't have a fixed time.",
+"Laisse vide si tu n'as pas d'heure fixe.",
+"خليها خاوية إلا ما عندكش وقت محدد."
+],
+"🔔 Que Apix me avise a esa hora": [
+"🔔 Have Apix remind me at that time",
+"🔔 Qu'Apix me prévienne à cette heure",
+"🔔 Apix يفكرني ف داك الوقت"
+],
+"Te llega un aviso los días de entreno, aunque la app esté cerrada. Sin hora puesta, se usa la de Ajustes. Si ese día ya has entrenado, no te avisa.": [
+"You get a reminder on training days, even if the app is closed. With no time set, the one in Settings is used. If you've already trained that day, it won't remind you.",
+"Tu reçois un rappel les jours d'entraînement, même si l'app est fermée. Sans heure, celle des Réglages est utilisée. Si tu t'es déjà entraîné ce jour-là, pas de rappel.",
+"كيوصلك تنبيه ف أيام التمرين، واخا الأپليكاسيون مسدودة. إلا ما درتيش الساعة، كتخدم ديال الإعدادات. إلا تمرنتي داك النهار، ما كيفكركش."
+],
+"✓ Semana guardada": [
+"✓ Week saved",
+"✓ Semaine enregistrée",
+"✓ السيمانة تحفظات"
+],
 "Social": [
 "Social",
 "Social",

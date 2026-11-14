@@ -507,6 +507,7 @@ function pintarEntrenar() {
     if (mensajeSugerencia) { h += '<div class="card" style="border-color:var(--good)"><p class="small"><b>Cambio aplicado:</b> ' + esc(mensajeSugerencia) + '</p></div>'; mensajeSugerencia = ""; }
     const fd = factorDuracion();
     h += '<div class="row between"><h2>' + esc(estado.rutina.nombre) + '</h2><span class="muted small">' + estado.rutina.dias.length + ' días</span></div>';
+    h += miSemanaHtml();
     estado.rutina.dias.forEach(function (d, i) {
       const reales = sesionesValidas().filter(function (s) { return s.diaIndex === i && s.diaNombre === d.nombre; });
       const media = reales.length ? Math.round(reales.reduce(function (t, s) { return t + s.duracion; }, 0) / reales.length) : 0;
@@ -589,6 +590,58 @@ function fotosDelDia(dia) {
   });
   const primero = buscarEj(dia.ejercicios[0].id).nombre;
   return h + '</div><p class="muted small">' + esc(primero) + (dia.ejercicios.length > 1 ? ' <span data-no-traducir>+ ' + (dia.ejercicios.length - 1) + '</span>' : "") + '</p>';
+}
+
+// ---------- Mi semana (Entrenar) ----------
+// Tarjeta con los 7 días: los de entreno resaltados, con su hora si la tiene
+function miSemanaHtml() {
+  const cal = estado.rutina.calendario || [];
+  const hoyN = (new Date().getDay() + 6) % 7;
+  const avisa = (estado.ajustes.notif || {}).recordatorios !== false && permisoAvisos() === "granted";
+  let h = '<button class="card mi-semana" data-act="abrir-semana" style="text-align:left"><div class="row between"><p class="label">📅 Mi semana' + (avisa ? ' · 🔔' : '') + '</p><span class="btn-txt small">Cambiar</span></div><div class="semana-dias">';
+  const iniciales = { es: "LMXJVSD", en: "MTWTFSS", fr: "LMMJVSD", ary: "ثثرخجسح" }[typeof IDIOMA_ACTUAL !== "undefined" ? IDIOMA_ACTUAL : "es"] || "LMXJVSD";
+  NOMBRES_DIAS_SEMANA.forEach(function (n, i) {
+    const toca = cal.includes(i);
+    h += '<div class="semana-dia' + (toca ? " toca" : "") + (i === hoyN ? " hoy" : "") + '"><span class="letra" data-no-traducir>' + iniciales[i] + '</span>' +
+      '<span class="hora num" data-no-traducir>' + (toca ? (horaDeEntreno(i) || "·") : "") + '</span></div>';
+  });
+  return h + '</div></button>';
+}
+
+// Ventana para elegir días, hora (opcional) y aviso de Apix (opcional)
+let semOp = null;
+function hojaSemana(nueva) {
+  if (nueva || !semOp) {
+    semOp = { dias: (estado.rutina.calendario || []).slice(), horas: Object.assign({}, estado.ajustes.horasEntreno || {}),
+      avisar: (estado.ajustes.notif || {}).recordatorios !== false && permisoAvisos() === "granted" };
+  }
+  const n = estado.rutina.dias.length;
+  const orden = semOp.dias.slice().sort(function (a, b) { return a - b; });
+  let h = cabeceraHoja("Mis días de entreno", "Mi semana") + '<div class="stack">' +
+    '<div class="card stack tight"><h3>¿Qué días entrenas?</h3><div class="chips">' +
+    NOMBRES_DIAS_SEMANA.map(function (nom, i) {
+      return '<button class="chip' + (semOp.dias.includes(i) ? " on" : "") + '" data-act="semana-dia" data-a="' + i + '">' + nom.slice(0, 2) + '</button>';
+    }).join("") + '</div><p class="muted small">' + (semOp.dias.length === n ? "✓ " + n + " días elegidos." : "Elige " + n + " días (llevas " + semOp.dias.length + ").") + ' Tu rutina tiene ' + n + ' días.</p></div>';
+  if (orden.length) {
+    h += '<div class="card stack tight"><h3>¿A qué hora? <span class="muted small">(opcional)</span></h3>';
+    orden.forEach(function (d, k) {
+      const dr = estado.rutina.dias[k];
+      h += '<label class="semana-fila"><span class="grow"><b>' + NOMBRES_DIAS_SEMANA[d] + '</b>' + (dr && semOp.dias.length === n ? '<span class="muted small" style="display:block">' + esc(dr.nombre) + '</span>' : "") + '</span>' +
+        '<input type="time" data-hora-dia="' + d + '" value="' + (semOp.horas[d] || "") + '" aria-label="Hora"></label>';
+    });
+    h += '<p class="muted small">Déjala vacía si no tienes hora fija.</p></div>';
+  }
+  h += '<div class="card stack tight"><label class="check"><input type="checkbox" id="semAvisar"' + (semOp.avisar ? " checked" : "") + '>🔔 Que Apix me avise a esa hora</label>' +
+    '<p class="muted small">' + (permisoAvisos() === "no" ? "Este navegador no permite avisos. En iPhone, primero añade la app a la pantalla de inicio."
+      : permisoAvisos() === "denied" ? "Has bloqueado los avisos. Actívalos en los ajustes del navegador."
+      : "Te llega un aviso los días de entreno, aunque la app esté cerrada. Sin hora puesta, se usa la de Ajustes. Si ese día ya has entrenado, no te avisa.") + '</p></div>' +
+    '<p class="err" id="semError"></p><button class="btn" data-act="guardar-semana">Guardar</button></div>';
+  abrirHoja(h);
+}
+// Antes de volver a pintar la ventana, se recogen las horas ya escritas
+function leerHorasSemana() {
+  for (const inp of document.querySelectorAll("input[data-hora-dia]")) semOp.horas[inp.dataset.horaDia] = inp.value;
+  if ($("semAvisar")) semOp.avisar = $("semAvisar").checked;
 }
 
 // Anillo de la semana: un círculo que se rellena con cada entreno (verde al cumplir la meta)
