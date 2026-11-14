@@ -42,6 +42,7 @@ const PATRONES = [
   ["Hola, {x}", "Hi, {x}", "Salut, {x}", "سلام، {x}"],
   ["Tu mejor avance: {x} en {x}.", "Your best progress: {x} in {x}.", "Ton meilleur progrès : {x} en {x}.", "أحسن تقدم ديالك: {x} ف {x}."],
   ["📸 Compartir mi mes de {x}", "📸 Share my {x}", "📸 Partager mon mois de {x}", "📸 بارطاجي الشهر ديالي ديال {x}"],
+  ["Te faltan {x} pts para {x}", "{x} pts to reach {x}", "Il te manque {x} pts pour {x}", "ناقصينك {x} نقطة باش توصل {x}"],
   ["Ritmo: {x} al mes", "Pace: {x} a month", "Rythme : {x} par mois", "الريتم: {x} ف الشهر"],
   ["Animación del movimiento: {x}", "Movement animation: {x}", "Animation du mouvement : {x}", "أنيماسيون ديال الحركة: {x}"],
   ["Animación del patrón: {x}", "Pattern animation: {x}", "Animation du schéma : {x}", "أنيماسيون ديال النمط: {x}"],

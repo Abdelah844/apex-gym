@@ -15058,6 +15058,51 @@ const TRADUCCIONES = {
 "Semaine",
 "السيمانة"
 ],
+"Rango máximo": [
+"Top rank",
+"Rang maximum",
+"أعلى رتبة"
+],
+"Récord: ese día superaste todo lo anterior.": [
+"Record: that day you beat everything before it.",
+"Record : ce jour-là, tu as dépassé tout ce que tu avais fait avant.",
+"ريكور: داك النهار فتّي كلشي اللي درتي من قبل."
+],
+"Hierro ·": [
+"Iron ·",
+"Fer ·",
+"حديد ·"
+],
+"Bronce ·": [
+"Bronze ·",
+"Bronze ·",
+"برونز ·"
+],
+"Plata ·": [
+"Silver ·",
+"Argent ·",
+"فضة ·"
+],
+"Oro ·": [
+"Gold ·",
+"Or ·",
+"ذهب ·"
+],
+"Diamante ·": [
+"Diamond ·",
+"Diamant ·",
+"ألماس ·"
+],
+"Titán ·": [
+"Titan ·",
+"Titan ·",
+"تيتان ·"
+],
+"Apex ·": [
+"Apex ·",
+"Apex ·",
+"Apex ·"
+],
 "Social": [
 "Social",
 "Social",

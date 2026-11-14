@@ -135,7 +135,9 @@ function numeroEje(v, rango) {
 }
 
 // tendencia (opcional): otra lista de valores que se dibuja como línea discontinua
-function graficaLinea(etiquetas, valores, unidad, tendencia) {
+let contadorGrafica = 0;
+// marcarRecords: pinta en dorado cada punto que supera a todos los anteriores
+function graficaLinea(etiquetas, valores, unidad, tendencia, marcarRecords) {
   if (valores.length < 2) return '<p class="muted">Necesitas al menos 2 registros para ver la gráfica.</p>';
   const W = 340, H = 170, mx = 36, mt = 14, mb = 26;
   const todos = tendencia ? valores.concat(tendencia) : valores;
@@ -152,16 +154,22 @@ function graficaLinea(etiquetas, valores, unidad, tendencia) {
     s += '<line x1="' + mx + '" x2="' + (W - 10) + '" y1="' + y(v) + '" y2="' + y(v) + '" stroke="var(--line)"/>' +
       '<text x="' + (mx - 6) + '" y="' + (y(v) + 4) + '" text-anchor="end" font-size="10" fill="var(--muted)">' + numeroEje(v, max - min) + '</text>';
   }
-  s += '<polygon points="' + x(0) + ',' + (H - mb) + ' ' + pts + x(valores.length - 1) + ',' + (H - mb) + '" fill="var(--accent)" fill-opacity=".14"/>' +
-    '<polyline points="' + pts + '" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>';
+  const idG = "graf" + (++contadorGrafica);
+  s += '<defs><linearGradient id="' + idG + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".42"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>' +
+    '<polygon class="graf-area" points="' + x(0) + ',' + (H - mb) + ' ' + pts + x(valores.length - 1) + ',' + (H - mb) + '" fill="url(#' + idG + ')"/>' +
+    '<polyline class="graf-linea" pathLength="1" points="' + pts + '" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
   if (tendencia) {
     let ptsT = "";
     tendencia.forEach(function (v, i) { ptsT += x(i).toFixed(1) + "," + y(v).toFixed(1) + " "; });
     s += '<polyline points="' + ptsT + '" fill="none" stroke="var(--good)" stroke-width="2" stroke-dasharray="5 4" stroke-linejoin="round"/>';
   }
+  let maximo = -Infinity;
   valores.forEach(function (v, i) {
     const ult = i === valores.length - 1;
-    s += '<circle cx="' + x(i) + '" cy="' + y(v) + '" r="' + (ult ? 5 : 3) + '" fill="' + (ult ? "var(--pr)" : "var(--accent)") + '"><title>' + etiquetas[i] + ': ' + (Math.round(v * 10) / 10) + ' ' + unidad + '</title></circle>';
+    const record = !!marcarRecords && i > 0 && v > maximo;
+    if (v > maximo) maximo = v;
+    if (record) s += '<circle cx="' + x(i) + '" cy="' + y(v) + '" r="8" fill="var(--oro)" fill-opacity=".25"/>';
+    s += '<circle cx="' + x(i) + '" cy="' + y(v) + '" r="' + (ult || record ? 5 : 3) + '" fill="' + (record ? "var(--oro)" : (ult ? "var(--pr)" : "var(--accent)")) + '"><title>' + etiquetas[i] + ': ' + (Math.round(v * 10) / 10) + ' ' + unidad + '</title></circle>';
   });
   s += '<text x="' + mx + '" y="' + (H - 6) + '" font-size="10" fill="var(--muted)">' + etiquetas[0] + '</text>' +
     '<text x="' + (W - 10) + '" y="' + (H - 6) + '" font-size="10" text-anchor="end" fill="var(--muted)">' + etiquetas[etiquetas.length - 1] + '</text>' +
@@ -887,7 +895,9 @@ function pintarRangos() {
     const ri = d.p === null ? null : rangoDePuntos(d.p);
     h += '<button class="item ranking-fila" data-act="ver-grupo" data-a="' + d.g + '"><span class="pos num">' + (d.p === null ? "–" : pos + 1) + '</span>' + insignia(ri, "sm") +
       '<div class="grow stack tight" style="gap:4px"><div class="row between"><span class="name">' + GRUPOS[d.g] + '</span><span class="small" style="color:' + (ri === null ? "var(--muted)" : RANGOS[ri].color) + ';font-weight:800">' + nombreRango(ri) + (d.p === null ? "" : ' · <span class="num">' + d.p.toFixed(0) + '</span>') + '</span></div>' +
-      (d.p === null ? '<span class="muted small">Sin datos todavía</span>' : '<div class="bar"><i style="width:' + Math.min(100, d.p) + '%;background:' + RANGOS[ri].color + '"></i></div>') + '</div></button>';
+      (d.p === null ? '<span class="muted small">Sin datos todavía</span>'
+        : '<div class="bar"><i style="width:' + (ri < RANGOS.length - 1 ? progresoRango(d.p) : 100) + '%;background:' + RANGOS[ri].color + '"></i></div>' +
+          '<span class="muted small">' + (ri < RANGOS.length - 1 ? 'Te faltan ' + Math.max(1, Math.ceil(RANGOS[ri + 1].min - d.p)) + ' pts para ' + RANGOS[ri + 1].nombre : "Rango máximo") + '</span>') + '</div></button>';
   });
   h += '</div><p class="muted small">Los grupos marcados en el mapa y los 8 principales cuentan para tu rango global.</p></div>';
 
@@ -1333,7 +1343,8 @@ function pintarProgreso() {
     h += '<div class="card stack" id="evolucion"><h3>Evolución por ejercicio</h3>' +
       '<select data-cambio="ej-grafica" aria-label="Ejercicio">' + hechos.map(function (id) { return '<option value="' + id + '"' + (id === ejGrafica ? " selected" : "") + '>' + esc(buscarEj(id).nombre) + '</option>'; }).join("") + '</select>' +
       '<div class="seg">' + [["rm", "1RM"], ["peso", "Peso máx."], ["reps", "Reps máx."], ["tonelaje", "Tonelaje"]].map(function (o) { return '<button data-act="metrica" data-a="' + o[0] + '" class="' + (metrica === o[0] ? "on" : "") + '">' + o[1] + '</button>'; }).join("") + '</div>' +
-      graficaLinea(fechas.map(fechaBonita), fechas.map(function (f) { return metrica === "reps" ? porDia[f] : pesoVista(porDia[f]); }), unidades[metrica]) +
+      graficaLinea(fechas.map(fechaBonita), fechas.map(function (f) { return metrica === "reps" ? porDia[f] : pesoVista(porDia[f]); }), unidades[metrica], null, true) +
+      '<p class="muted small"><span class="punto-oro"></span> Récord: ese día superaste todo lo anterior.</p>' +
       (metrica === "rm" ? '<p class="muted small">1RM estimada con ' + FORMULAS_1RM[estado.ajustes.formula1RM || "epley"].nombre.replace(" (por defecto)", "") + '. Cámbiala en Ajustes.</p>' : "") +
       (metrica === "tonelaje" ? '<p class="muted small">Tonelaje externo de este ejercicio (kg × reps). ' + (ej.equipo === "corporal" ? "En este ejercicio no incluye tu peso corporal, así que puede ser 0." : "") + '</p>' : "") + '</div>';
   }
@@ -1487,10 +1498,11 @@ function amigosNubeHtml() {
     h += '</div></div>';
   }
   const ranking = rankingAmigos();
+  if (ranking.length >= 3) h += podioHtml(ranking);
   h += '<div class="card"><h3>Ranking de amigos</h3>' + (ranking.length > 1 ? '<p class="muted small">Toca a un amigo para ver su perfil y sus entrenos.</p>' : "") + '<div class="list">';
   if (ranking.length <= 1) h += '<p class="muted" style="padding-top:8px">Aún no tienes amigos. Añade a alguien por su usuario para competir en el ranking.</p>';
   ranking.forEach(function (a, i) {
-    h += '<div class="item' + (a.yo ? '' : ' tocable') + '" style="align-items:flex-start"' + (a.yo ? '' : ' data-act="ver-amigo" data-a="' + esc(a.id) + '"') + '><span class="num" style="width:22px;font-weight:700">' + (i + 1) + '</span>' + insignia(a.rango, "sm") + '<div class="grow bloque">' + (a.yo ? '<span class="name">@' + esc(a.usuario || "?") + ' (tú)</span>' : '<button class="link-nombre name" data-act="ver-amigo" data-a="' + esc(a.id) + '">@' + esc(a.usuario || "?") + ' ›</button>') +
+    h += '<div class="item' + (a.yo ? '' : ' tocable') + '" style="align-items:flex-start"' + (a.yo ? '' : ' data-act="ver-amigo" data-a="' + esc(a.id) + '"') + '><span class="num" style="width:22px;font-weight:700">' + (i < 3 && ranking.length > 1 ? ["🥇", "🥈", "🥉"][i] : i + 1) + '</span>' + insignia(a.rango, "sm") + '<div class="grow bloque">' + (a.yo ? '<span class="name">@' + esc(a.usuario || "?") + ' (tú)</span>' : '<button class="link-nombre name" data-act="ver-amigo" data-a="' + esc(a.id) + '">@' + esc(a.usuario || "?") + ' ›</button>') +
       '<span class="muted small">' + nombreRango(a.rango) + ' · racha ' + a.racha + ' sem · ' + a.entrenos + ' entrenos</span>' +
       (a.marcas.length ? '<span class="small">' + a.marcas.map(function (r) { return esc(r.n) + ' ' + String(r.p).replace(".", ",") + '×' + r.r; }).join(" · ") + '</span>' : "") + '</div>' +
       (a.yo ? "" : '<button class="btn-txt small btn-danger" data-act="social-quitar" data-a="' + esc(a.id) + '">' + (confirmar === "social-quitar" + a.id ? "¿Seguro?" : "Quitar") + '</button>') + '</div>';
@@ -1503,6 +1515,20 @@ function amigosNubeHtml() {
   }
   if (estado.ajustes.privacidad === "privado") h += '<p class="muted small">Tu perfil es privado: nadie puede encontrarte ni ver tus datos. Cámbialo en Ajustes.</p>';
   return h;
+}
+
+// Podio: los tres primeros del ranking (el 1.º en el centro y más alto)
+function podioHtml(ranking) {
+  let h = '<div class="card podio">';
+  for (const pos of [1, 0, 2]) {
+    const a = ranking[pos];
+    h += '<div class="podio-puesto p' + (pos + 1) + (a.yo ? '' : ' tocable') + '"' + (a.yo ? '' : ' data-act="ver-amigo" data-a="' + esc(a.id) + '"') + '>' +
+      (pos === 0 ? '<span class="corona" aria-hidden="true">👑</span>' : "") + avatarColor(a.usuario, "grande") +
+      '<span class="name small podio-nombre">' + (a.yo ? "Tú" : '@' + esc(a.usuario || "?")) + '</span>' +
+      '<span class="muted small">' + nombreRango(a.rango) + '</span>' +
+      '<div class="escalon-podio"><b class="num">' + (pos + 1) + '</b></div></div>';
+  }
+  return h + '</div>';
 }
 
 function actividadNubeHtml() {
@@ -1526,24 +1552,34 @@ function actividadNubeHtml() {
   return h + '</div></div><button class="btn-txt" data-act="social-recargar">Actualizar</button>';
 }
 
+// Cada usuario tiene siempre el mismo color (sale de las letras de su nombre)
+function colorUsuario(nombre) {
+  let n = 0;
+  for (const c of String(nombre || "?")) n = (n * 31 + c.charCodeAt(0)) % 360;
+  return "hsl(" + n + " 62% 52%)";
+}
+function avatarColor(nombre, extra) {
+  return '<span class="avatar de-color' + (extra ? " " + extra : "") + '" style="background:' + colorUsuario(nombre) + '">' + esc((nombre || "?")[0]).toUpperCase() + '</span>';
+}
+
 // Una publicación de la nube: autor, resumen del entreno y reacciones
 function postNubeHtml(x) {
   let h = '<div class="post"><div class="row">' +
-    '<button class="avatar" style="width:34px;height:34px;font-size:.85rem" ' + (x.mio ? "" : 'data-act="ver-amigo" data-a="' + esc(x.autorId) + '" aria-label="Ver perfil"') + '>' + esc((x.autor || "?")[0]).toUpperCase() + '</button>' +
+    '<button class="avatar de-color" style="background:' + colorUsuario(x.autor) + '" ' + (x.mio ? "" : 'data-act="ver-amigo" data-a="' + esc(x.autorId) + '" aria-label="Ver perfil"') + '>' + esc((x.autor || "?")[0]).toUpperCase() + '</button>' +
     '<div class="grow">' + (x.mio ? '<span class="name small">@' + esc(x.autor) + ' (tú)</span>' : '<button class="link-nombre name small" data-act="ver-amigo" data-a="' + esc(x.autorId) + '">@' + esc(x.autor) + '</button>') +
     '<span class="muted small">' + fechaBonita(x.fecha) + '</span></div>' +
     '<span class="pill ' + (x.tipo === "record" ? "pr" : (x.tipo === "rango" ? "up" : "keep")) + '">' + { record: "Récord", rango: "Rango", entreno: "Entreno" }[x.tipo] + '</span></div>';
   const d = x.detalle;
   if (d && d.e) {
-    h += '<p><b>' + esc(d.n) + '</b></p><div class="row wrap small muted" style="gap:10px"><span>⏱ ' + d.d + ' min</span><span>🏋️ ' + d.e.length + ' ejercicios</span><span class="num">' + miles(d.v) + ' kg</span>' +
-      (d.p && d.p.length ? '<span style="color:var(--pr)">🏆 ' + d.p.length + ' récord(s)</span>' : "") + '</div>' +
+    h += '<p class="post-titulo"><b>' + esc(d.n) + '</b></p><div class="post-datos"><span>⏱ ' + d.d + ' min</span><span>🏋️ ' + d.e.length + ' ejercicios</span><span class="num">' + miles(d.v) + ' kg</span>' +
+      (d.p && d.p.length ? '<span class="con-record">🏆 ' + d.p.length + ' récord(s)</span>' : "") + '</div>' +
       '<p class="small">' + esc(d.e.slice(0, 3).map(function (e) { const ej = buscarEj(e.i); return (ej ? ej.nombre : e.i); }).join(" · ")) + (d.e.length > 3 ? " …" : "") + '</p>' +
       '<button class="btn-sec small" data-act="ver-post" data-a="' + esc(x.id) + '">Ver entreno completo</button>';
   } else h += '<p>' + esc(x.texto) + '</p>';
   h += '<div class="acts reacciones">' + REACCIONES.map(function (r) {
     const n = x.reacciones.filter(function (y) { return y.r === r; }).length;
     const mia = x.reacciones.some(function (y) { return y.u === nube.id && y.r === r; });
-    return '<button class="' + (mia ? "on" : "") + '" data-act="social-reaccion" data-a="' + esc(x.id) + '" data-b="' + r + '" aria-label="Reaccionar ' + r + '">' + r + (n ? ' ' + n : "") + '</button>';
+    return '<button class="reaccion' + (mia ? " on" : "") + '" data-act="social-reaccion" data-a="' + esc(x.id) + '" data-b="' + r + '" aria-label="Reaccionar ' + r + '"><span class="emoji">' + r + '</span>' + (n ? '<span class="num">' + n + '</span>' : "") + '</button>';
   }).join("") +
     (x.mio ? '<button data-act="social-borrar-post" data-a="' + esc(x.id) + '">' + (confirmar === "social-borrar-post" + x.id ? "Pulsa otra vez" : "Eliminar") + '</button>'
            : '<button data-act="social-denunciar" data-a="' + esc(x.id) + '">Denunciar</button>') + '</div></div>';
@@ -1653,11 +1689,11 @@ function feedHtml() {
     const mio = x.autorId === yo;
     const autor = nombreDe(x.autorId, x.autorNombre);
     const gusta = x.likes.includes(yo);
-    h += '<div class="post' + (x.id === postNuevo ? " nuevo" : "") + '"><div class="row"><div class="avatar" style="width:34px;height:34px;font-size:.85rem">' + esc(autor[0]).toUpperCase() + '</div>' +
+    h += '<div class="post' + (x.id === postNuevo ? " nuevo" : "") + '"><div class="row">' + avatarColor(autor) +
       '<div class="grow"><span class="name small">@' + esc(autor) + (mio ? " (tú)" : "") + '</span><span class="muted small">' + fechaBonita(x.fecha) + (x.demo ? " · ficticio" : "") + '</span></div>' +
       '<span class="pill ' + (x.tipo === "record" ? "pr" : (x.tipo === "rango" ? "up" : "keep")) + '">' + { record: "Récord", rango: "Rango", entreno: "Entreno" }[x.tipo] + '</span></div>' +
       '<p>' + esc(x.texto) + '</p>' +
-      '<div class="acts"><button class="' + (gusta ? "on" : "") + '" data-act="like" data-a="' + x.id + '">' + (gusta ? "♥" : "♡") + ' ' + x.likes.length + '</button>' +
+      '<div class="acts"><button class="reaccion' + (gusta ? " on" : "") + '" data-act="like" data-a="' + x.id + '"><span class="emoji">' + (gusta ? "♥" : "♡") + '</span><span class="num">' + x.likes.length + '</span></button>' +
       '<span>' + x.comentarios.length + ' comentarios</span>' +
       (mio ? '<button data-act="borrar-post" data-a="' + x.id + '">' + (confirmar === "borrar-post" + x.id ? "Pulsa otra vez" : "Eliminar") + '</button>'
            : '<button data-act="denunciar" data-a="' + x.id + '">Denunciar</button>') + '</div>';
@@ -2271,7 +2307,7 @@ function hojaRangoEj(id) {
   abrirHoja(cabeceraHoja(esc(e.nombre), "Rango por ejercicio") + '<div class="stack"><div class="row">' + insignia(ri, "lg") +
     '<div class="grow stack tight"><h2>' + RANGOS[ri].nombre + '</h2><p class="muted num">' + p.toFixed(1).replace(".", ",") + ' puntos · ' + n + ' sesiones</p><div class="bar"><i style="width:' + progresoRango(p) + '%"></i></div></div></div>' +
     (falta ? '<div class="card"><p class="label">Qué te falta</p><p>' + falta + '</p></div>' : "") +
-    '<div class="card stack tight"><h3>Tu evolución (puntos)</h3>' + graficaLinea(fechas.map(fechaBonita), valores, "pts") + '</div>' +
+    '<div class="card stack tight"><h3>Tu evolución (puntos)</h3>' + graficaLinea(fechas.map(fechaBonita), valores, "pts", null, true) + '</div>' +
     '<p class="muted small">Cada ejercicio tiene su propia escala (factor ' + String(Math.round(factorEj(e) * 100) / 100).replace(".", ",") + ', ajustado a tu perfil), así que dos máquinas distintas nunca se mezclan.</p></div>');
 }
 
@@ -2717,7 +2753,43 @@ function pintar() {
   if (tab === "social") pintarSocial();
 }
 
-function irA(nuevo) { tab = nuevo; confirmar = ""; window.scrollTo(0, 0); pintar(); }
+function irA(nuevo) {
+  const cambia = nuevo !== tab;
+  tab = nuevo; confirmar = ""; window.scrollTo(0, 0); pintar();
+  if (cambia) entradaSuave();
+}
+
+// Al cambiar de pestaña, el contenido entra con un fundido corto y las cifras grandes cuentan desde 0
+function entradaSuave() {
+  if (animacionesPausadas()) return;
+  const app = $("app");
+  app.classList.remove("entra-tab"); void app.offsetWidth; app.classList.add("entra-tab");
+  contarNumeros(app);
+}
+function animacionesPausadas() {
+  return !!(estado && estado.ajustes.animaciones === false) || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+}
+// Hace que los números grandes suban desde 0 hasta su valor en medio segundo.
+// Solo toca números sencillos (como 24, +7,5 o 74): los demás se dejan tal cual.
+function contarNumeros(zona) {
+  const lista = zona.querySelectorAll(".big-num, .cifra b, .anillo-num b");
+  for (const el of lista) {
+    if (el.children.length) continue;
+    const texto = el.textContent.trim();
+    const m = texto.match(/^([+−-]?)(\d{1,4})(?:([.,])(\d))?$/);
+    if (!m) continue;
+    const fin = parseFloat(m[2] + "." + (m[4] || "0"));
+    if (!(fin > 0)) continue;
+    const empieza = performance.now(), dura = 550;
+    (function paso(ahora) {
+      if (!el.isConnected) return;
+      const t = Math.min(1, (ahora - empieza) / dura);
+      const v = fin * (1 - Math.pow(1 - t, 3));                 // frena al final
+      el.textContent = t >= 1 ? texto : m[1] + (m[4] ? v.toFixed(1).replace(".", m[3]) : String(Math.round(v)));
+      if (t < 1) requestAnimationFrame(paso);
+    })(empieza);
+  }
+}
 
 // Para los botones de "pulsa otra vez": el primer toque solo avisa
 function pideConfirmar(clave, repintar) {
